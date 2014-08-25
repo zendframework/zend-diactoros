@@ -1,0 +1,41 @@
+{
+  "name": "phly/http",
+  "description": "PSR HTTP Message implementations",
+  "type": "library",
+  "license": "BSD-2-Clause",
+  "keywords": [
+    "http"
+  ],
+  "homepage": "https://github.com/phly/http",
+  "authors": [
+    {
+      "name": "Matthew Weier O'Phinney",
+      "email": "matthew@weierophinney.net",
+      "homepage": "http://mwop.net"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/phly/http/issues",
+    "source": "https://github.com/phly/http"
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "1.0-dev",
+      "dev-develop": "1.1-dev"
+    }
+  },
+  "require": {
+    "php": ">=5.4.8",
+    "psr/http-message": "~1.0-dev@dev"
+  },
+  "require-dev": {
+    "fabpot/php-cs-fixer": "*@dev",
+    "phpunit/PHPUnit": "3.7.*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Phly\\Http\\": "src/",
+      "PhlyTest\\Http\\": "test/"
+    }
+  }
+}
