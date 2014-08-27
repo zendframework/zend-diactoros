@@ -1,7 +1,7 @@
 <?php
 namespace PhlyTest\Http;
 
-use Phly\Http\Output; // test asset
+use Phly\Http\HeaderStack; // test asset
 use Phly\Http\Server;
 use PHPUnit_Framework_TestCase as TestCase;
 
@@ -11,8 +11,7 @@ class ServerTest extends TestCase
 {
     public function setUp()
     {
-        Output::$headers = array();
-        Output::$body    = null;
+        HeaderStack::reset();
 
         $this->callback   = function ($req, $res, $done) { };
         $this->request    = $this->getMock('Psr\Http\Message\RequestInterface');
@@ -21,8 +20,7 @@ class ServerTest extends TestCase
 
     public function tearDown()
     {
-        Output::$headers = array();
-        Output::$body    = null;
+        HeaderStack::reset();
     }
 
     public function testCreateServerFromRequestReturnsServerInstanceWithProvidedObjects()
@@ -99,11 +97,12 @@ class ServerTest extends TestCase
             $res->end('FOOBAR');
         };
         $server = Server::createServer($callback, $server);
+
+        $this->expectOutputString('FOOBAR');
         $server->listen();
 
-        $this->assertContains('HTTP/1.1 200 OK', Output::$headers);
-        $this->assertContains('Content-Type: text/plain', Output::$headers);
-        $this->assertEquals('FOOBAR', Output::$body);
+        $this->assertContains('HTTP/1.1 200 OK', HeaderStack::stack());
+        $this->assertContains('Content-Type: text/plain', HeaderStack::stack());
     }
 
     public function testListenEmitsStatusHeaderWithoutReasonPhraseIfNoReasonPhrase()
@@ -122,10 +121,34 @@ class ServerTest extends TestCase
             $res->end('FOOBAR');
         };
         $server = Server::createServer($callback, $server);
+
+        $this->expectOutputString('FOOBAR');
         $server->listen();
 
-        $this->assertContains('HTTP/1.1 299', Output::$headers);
-        $this->assertContains('Content-Type: text/plain', Output::$headers);
-        $this->assertEquals('FOOBAR', Output::$body);
+        $this->assertContains('HTTP/1.1 299', HeaderStack::stack());
+        $this->assertContains('Content-Type: text/plain', HeaderStack::stack());
+    }
+
+    public function testEnsurePercentCharactersDoNotResultInOutputError()
+    {
+        $server = [
+            'HTTP_HOST' => 'example.com',
+            'HTTP_ACCEPT' => 'application/json',
+            'REQUEST_METHOD' => 'POST',
+            'REQUEST_URI' => '/foo/bar',
+            'QUERY_STRING' => 'bar=baz',
+        ];
+
+        $callback = function ($req, $res) {
+            $res->addHeader('Content-Type', 'text/plain');
+            $res->end('100%');
+        };
+        $server = Server::createServer($callback, $server);
+
+        $this->expectOutputString('100%');
+        $server->listen();
+
+        $this->assertContains('HTTP/1.1 200 OK', HeaderStack::stack());
+        $this->assertContains('Content-Type: text/plain', HeaderStack::stack());
     }
 }

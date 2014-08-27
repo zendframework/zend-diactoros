@@ -17,13 +17,44 @@
 
 namespace Phly\Http;
 
+
 /**
  * Store output artifacts
  */
-abstract class Output
+class HeaderStack
 {
-    public static $headers = array();
-    public static $body;
+    /**
+     * @var array
+     */
+    private static $data = array();
+
+    /**
+     * Reset state
+     */
+    public static function reset()
+    {
+        self::$data = array();
+    }
+
+    /**
+     * Push a header on the stack
+     *
+     * @param string $header
+     */
+    public static function push($header)
+    {
+        self::$data[] = $header;
+    }
+
+    /**
+     * Return the current header stack
+     *
+     * @return array
+     */
+    public static function stack()
+    {
+        return self::$data;
+    }
 }
 
 /**
@@ -43,15 +74,5 @@ function headers_sent()
  */
 function header($value)
 {
-    Output::$headers[] = $value;
-}
-
-/**
- * Emit some output, without creating actual output artifacts
- *
- * @param string $template
- */
-function printf($template)
-{
-    Output::$body = $template;
+    HeaderStack::push($value);
 }
