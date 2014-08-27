@@ -156,8 +156,7 @@ class Server
 
         $this->bufferLevel = null;
 
-        // Using printf so that we can override the function when testing
-        printf($response->getBody());
+        echo $response->getBody();
     }
 
     /**
