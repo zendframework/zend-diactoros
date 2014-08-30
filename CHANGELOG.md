@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release..
 
+## 0.3.0 - 2014-08-30
+
+Adds a `php://input`-specific stream implementation to ensure it's always regarded as read-only, and to implement caching.
+
+### Added
+
+- `Phly\Http\PhpInputStream`
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- `Phly\Http\Request` now creates a `Phly\Http\PhpInputStream` by default.
+
+
 ## 0.2.0 - 2014-08-30
 
 Reworks the implementation to strictly follow the PSR HTTP message interfaces. This includes:

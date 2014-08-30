@@ -34,6 +34,10 @@ class Request implements RequestInterface
     {
         $this->protocol = $protocol;
 
+        if ($stream === 'php://input') {
+            $stream = new PhpInputStream();
+        }
+
         if (! is_string($stream) && ! is_resource($stream) && ! $stream instanceof StreamInterface) {
             throw new InvalidArgumentException('Stream must be a string stream resource identifier, an actual stream resource, or a Psr\Http\Message\StreamInterface implementation');
         }
