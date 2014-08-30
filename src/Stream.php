@@ -12,12 +12,12 @@ class Stream implements StreamInterface
     /**
      * @var resource
      */
-    private $resource;
+    protected $resource;
 
     /**
      * @var string|resource
      */
-    private $stream;
+    protected $stream;
 
     /**
      * @param string|resource $stream
@@ -55,8 +55,7 @@ class Stream implements StreamInterface
             return '';
         }
 
-        rewind($this->resource);
-        return $this->getContents();
+        return stream_get_contents($this->resource, -1, 0);
     }
 
     /**
@@ -157,7 +156,7 @@ class Stream implements StreamInterface
      */
     public function seek($offset, $whence = SEEK_SET)
     {
-        if (! $this->resource) {
+        if (! $this->resource || ! $this->isSeekable()) {
             return false;
         }
 
@@ -225,7 +224,7 @@ class Stream implements StreamInterface
      */
     public function read($length)
     {
-        if (! $this->resource) {
+        if (! $this->resource || ! $this->isReadable()) {
             return '';
         }
 
