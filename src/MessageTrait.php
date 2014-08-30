@@ -2,29 +2,28 @@
 namespace Phly\Http;
 
 use InvalidArgumentException;
-use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\StreamInterface;
 
 /**
- * Abstract MessageInterface implementation to use as a base for
- * Request and Response implementations.
+ * Trait implementing the various methods defined in
+ * \Psr\Http\Message\ MessageInterface.
  */
-abstract class AbstractMessage implements MessageInterface
+trait MessageTrait
 {
     /**
      * @var array
      */
-    protected $headers = [];
+    private $headers = [];
 
     /**
      * @var string
      */
-    protected $protocol = '1.1';
+    private $protocol = '1.1';
 
     /**
      * @var StreamInterface
      */
-    protected $stream;
+    private $stream;
 
     /**
      * Gets the HTTP protocol version as a string.

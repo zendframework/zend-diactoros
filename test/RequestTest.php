@@ -12,20 +12,6 @@ class RequestTest extends TestCase
         $this->request = new Request();
     }
 
-    public function testAllowsManipulatingArbitraryNonPrivateProperties()
-    {
-        $this->request->originalUrl = 'http://foo.example.com/foo';
-        $this->assertTrue(isset($this->request->originalUrl));
-        $this->assertEquals('http://foo.example.com/foo', $this->request->originalUrl);
-        unset($this->request->originalUrl);
-        $this->assertNull($this->request->originalUrl);
-    }
-
-    public function testFetchingUnknownPropertyYieldsNull()
-    {
-        $this->assertNull($this->request->somePropertyWeMadeUp);
-    }
-
     public function testMethodIsNullByDefault()
     {
         $this->assertNull($this->request->getMethod());
@@ -55,12 +41,6 @@ class RequestTest extends TestCase
     {
         $this->setExpectedException('InvalidArgumentException');
         new Request('1.1', ['TOTALLY INVALID']);
-    }
-
-    public function testUnsetDoesNothingIfUserPropertyDoesNotExist()
-    {
-        unset($this->request->foobar);
-        $this->assertFalse(isset($this->request->foobar));
     }
 
     public function testCannotOverrideMethodOnceSet()

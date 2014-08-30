@@ -11,11 +11,11 @@ use Psr\Http\Message\StreamInterface;
  *
  * Allows arbitrary properties, which allows it to be used to transfer
  * state between middlewares.
- *
- * @property string $originalUrl Original URI for the request
  */
-class Request extends AbstractMessage implements RequestInterface
+class Request implements RequestInterface
 {
+    use MessageTrait;
+
     /**
      * @var string
      */
@@ -25,13 +25,6 @@ class Request extends AbstractMessage implements RequestInterface
      * @var Uri
      */
     private $url;
-
-    /**
-     * User-set parameters (usually by middleware)
-     *
-     * @var array
-     */
-    private $userParams = array();
 
     /**
      * @param string $protocol
@@ -50,57 +43,6 @@ class Request extends AbstractMessage implements RequestInterface
         }
 
         $this->setBody($stream);
-    }
-
-    /**
-     * Retrieve arbitrary user parameters
-     *
-     * @param string $name
-     * @return null|mixed null if $name does not exist
-     */
-    public function __get($name)
-    {
-        if (! array_key_exists($name, $this->userParams)) {
-            return null;
-        }
-
-        return $this->userParams[$name];
-    }
-
-    /**
-     * Set arbitrary user properties
-     *
-     * @param string $name
-     * @param mixed $value
-     */
-    public function __set($name, $value)
-    {
-        $this->userParams[$name] = $value;
-    }
-
-    /**
-     * Test if a user property exists
-     *
-     * @param mixed $name
-     * @return bool
-     */
-    public function __isset($name)
-    {
-        return array_key_exists($name, $this->userParams);
-    }
-
-    /**
-     * Remove a previously set user property
-     *
-     * @param string $name
-     */
-    public function __unset($name)
-    {
-        if (! array_key_exists($name, $this->userParams)) {
-            return;
-        }
-
-        unset($this->userParams[$name]);
     }
 
     /**
@@ -163,9 +105,6 @@ class Request extends AbstractMessage implements RequestInterface
             throw new InvalidArgumentException('Invalid URL provided');
         }
 
-        if ($this->originalUrl === null) {
-            $this->originalUrl = $url;
-        }
         $this->url = $url;
     }
 }
