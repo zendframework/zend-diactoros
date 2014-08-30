@@ -2,7 +2,8 @@
 namespace Phly\Http;
 
 use OutOfBoundsException;
-use Psr\Http\Message\RequestInterface as RequestInterface;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * "Serve" incoming HTTP requests

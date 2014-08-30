@@ -15,7 +15,7 @@ class ServerTest extends TestCase
 
         $this->callback   = function ($req, $res, $done) { };
         $this->request    = $this->getMock('Psr\Http\Message\RequestInterface');
-        $this->response   = $this->getMock('Phly\Http\ResponseInterface');
+        $this->response   = $this->getMock('Psr\Http\Message\ResponseInterface');
     }
 
     public function tearDown()
@@ -94,7 +94,7 @@ class ServerTest extends TestCase
 
         $callback = function ($req, $res) {
             $res->addHeader('Content-Type', 'text/plain');
-            $res->end('FOOBAR');
+            $res->getBody()->write('FOOBAR');
         };
         $server = Server::createServer($callback, $server);
 
@@ -118,7 +118,7 @@ class ServerTest extends TestCase
         $callback = function ($req, $res) {
             $res->setStatusCode(299);
             $res->addHeader('Content-Type', 'text/plain');
-            $res->end('FOOBAR');
+            $res->getBody()->write('FOOBAR');
         };
         $server = Server::createServer($callback, $server);
 
@@ -141,7 +141,7 @@ class ServerTest extends TestCase
 
         $callback = function ($req, $res) {
             $res->addHeader('Content-Type', 'text/plain');
-            $res->end('100%');
+            $res->getBody()->write('100%');
         };
         $server = Server::createServer($callback, $server);
 

@@ -2,17 +2,15 @@
 namespace Phly\Http;
 
 use InvalidArgumentException;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 
 /**
  * HTTP response encapsulation
  */
-class Response extends AbstractMessage implements ResponseInterface
+class Response implements ResponseInterface
 {
-    /**
-     * @var bool
-     */
-    private $complete = false;
+    use MessageTrait;
 
     /**
      * Map of standard HTTP status code/reason phrases
@@ -130,10 +128,6 @@ class Response extends AbstractMessage implements ResponseInterface
      */
     public function setStatusCode($code)
     {
-        if ($this->complete) {
-            return;
-        }
-
         if (! is_int($code)
             || (100 > $code || 599 < $code)
         ) {
@@ -176,130 +170,5 @@ class Response extends AbstractMessage implements ResponseInterface
     public function setReasonPhrase($phrase)
     {
         $this->reasonPhrase = $phrase;
-    }
-
-    /**
-     * Set the Stream representing the body content.
-     *
-     * If the response has been marked as complete, performs a no-op.
-     *
-     * @param StreamInterface $body
-     */
-    public function setBody(StreamInterface $body = null)
-    {
-        if ($this->complete) {
-            return;
-        }
-
-        return parent::setBody($body);
-    }
-
-    /**
-     * Set/overwrite a single named header
-     *
-     * If the response has been marked as complete, performs a no-op.
-     *
-     * @param string $header
-     * @param string|string[] $value  Header value(s)
-     */
-    public function setHeader($header, $value)
-    {
-        if ($this->complete) {
-            return;
-        }
-
-        return parent::setHeader($header, $value);
-    }
-
-    /**
-     * Overwrite all existing headers
-     *
-     * If the response has been marked as complete, performs a no-op.
-     *
-     * @param array $headers
-     */
-    public function setHeaders(array $headers)
-    {
-        if ($this->complete) {
-            return;
-        }
-
-        return parent::setHeaders($headers);
-    }
-
-    /**
-     * Add a single named header
-     *
-     * If the response has been marked as complete, performs a no-op.
-     *
-     * @param string $header
-     * @param string $value
-     */
-    public function addHeader($header, $value)
-    {
-        if ($this->complete) {
-            return;
-        }
-
-        return parent::addHeader($header, $value);
-    }
-
-    /**
-     * Add multiple headers at once
-     *
-     * If the response has been marked as complete, performs a no-op.
-     *
-     * @param array $headers
-     */
-    public function addHeaders(array $headers)
-    {
-        if ($this->complete) {
-            return;
-        }
-
-        return parent::addHeaders($headers);
-    }
-
-    /**
-     * Write to the content
-     *
-     * @param mixed $data
-     */
-    public function write($data)
-    {
-        if ($this->complete) {
-            return;
-        }
-        $this->getBody()->write($data);
-    }
-
-    /**
-     * Complete a request
-     *
-     * Any data written after this point will be ignored, as the
-     * request is considered complete at this point.
-     *
-     * @param null|mixed $data
-     */
-    public function end($data = null)
-    {
-        if ($this->complete) {
-            return;
-        }
-        if ($data) {
-            $this->write($data);
-        }
-
-        $this->complete = true;
-    }
-
-    /**
-     * Has the response been marked as complete?
-     *
-     * @return bool
-     */
-    public function isComplete()
-    {
-        return $this->complete;
     }
 }

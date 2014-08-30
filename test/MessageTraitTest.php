@@ -5,7 +5,7 @@ use Phly\Http\Request;
 use Phly\Http\Stream;
 use PHPUnit_Framework_TestCase as TestCase;
 
-class AbstractMessageTest extends TestCase
+class MessageTraitTest extends TestCase
 {
     public function setUp()
     {
