@@ -1,8 +1,6 @@
 <?php
 namespace Phly\Http;
 
-use InvalidArgumentException;
-use Psr\Http\Message\StreamInterface;
 
 /**
  * Caching version of php://input
