@@ -1,6 +1,8 @@
 <?php
 namespace Phly\Http;
 
+use InvalidArgumentException;
+
 /**
  * URI implementation
  *
