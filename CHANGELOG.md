@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release..
 
+## 0.3.1 - TBD
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- `Phly\Http\Uri` now imports `InvalidArgumentException`.
+
 ## 0.3.0 - 2014-08-30
 
 Adds a `php://input`-specific stream implementation to ensure it's always regarded as read-only, and to implement caching.
