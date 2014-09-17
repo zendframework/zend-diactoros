@@ -29,6 +29,13 @@ $ composer require "psr/http-message:~1.0-dev@dev" "phly/http:~1.0-dev@dev"
   - `end($data = null)`, to mark the response as complete, optionally writing data to the body first
   - `isComplete()`, for determining if the response is already complete
 
+Contributing
+------------
+
+- Please write unit tests for any features or bug reports you have.
+- Please run unit tests before opening a pull request. You can do so using `./vendor/bin/phpunit`.
+- Please run CodeSniffer before opening a pull request, and correct any issues. Use the following to run it: `./vendor/bin/phpcs --standard=PSR2 --ignore=test/Bootstrap.php src test`.
+
 Usage
 -----
 
