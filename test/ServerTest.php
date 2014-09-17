@@ -5,15 +5,15 @@ use Phly\Http\HeaderStack; // test asset
 use Phly\Http\Server;
 use PHPUnit_Framework_TestCase as TestCase;
 
-require_once __DIR__ . '/TestAsset/Functions.php';
-
 class ServerTest extends TestCase
 {
     public function setUp()
     {
         HeaderStack::reset();
 
-        $this->callback   = function ($req, $res, $done) { };
+        $this->callback   = function ($req, $res, $done) {
+            //  Intentionally empty
+        };
         $this->request    = $this->getMock('Psr\Http\Message\RequestInterface');
         $this->response   = $this->getMock('Psr\Http\Message\ResponseInterface');
     }
