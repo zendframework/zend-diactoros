@@ -37,5 +37,10 @@
       "Phly\\Http\\": "src/",
       "PhlyTest\\Http\\": "test/"
     }
+  },
+  "autoload-dev": {
+    "files": [
+      "test/TestAsset/Functions.php"
+    ]
   }
 }
