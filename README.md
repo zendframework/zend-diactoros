@@ -64,10 +64,10 @@ $request = Phly\Http\RequestFactory::fromServer($_SERVER, $request);
 
 ```php
 // Write to the response body:
-$response->write("some content\n");
+$response->getBody()->write("some content\n");
 
 // Multiple calls to write() append:
-$response->write("more content\n"); // now "some content\nmore content\n"
+$response->getBody()->write("more content\n"); // now "some content\nmore content\n"
 
 // Mark the response as complete:
 $response->end();
