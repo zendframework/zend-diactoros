@@ -2,7 +2,27 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release..
 
-## 0.3.1 - TBD
+## 0.3.2 - 2014-10-01
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#5](https://github.com/phly/http/pull/5) `Phly\Http\Server::sendHeaders` now _always_ sends
+  multiple header lines if a header has multiple values.
+
+
+## 0.3.1 - 2014-09-03
 
 ### Added
 
