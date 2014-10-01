@@ -151,4 +151,60 @@ class ServerTest extends TestCase
         $this->assertContains('HTTP/1.1 200 OK', HeaderStack::stack());
         $this->assertContains('Content-Type: text/plain', HeaderStack::stack());
     }
+
+    public function testEmitsHeadersWithMultipleValuesMultipleTimes()
+    {
+        $server = [
+            'HTTP_HOST' => 'example.com',
+            'REQUEST_METHOD' => 'GET',
+            'REQUEST_URI' => '/foo/bar',
+        ];
+
+        $callback = function ($req, $res) {
+            $res->addHeader('Content-Type', 'text/plain');
+            $res->addHeader(
+                'Set-Cookie',
+                'foo=bar; expires=Wed, 1 Oct 2014 10:30; path=/foo; domain=example.com'
+            );
+            $res->addHeader(
+                'Set-Cookie',
+                'bar=baz; expires=Wed, 8 Oct 2014 10:30; path=/foo/bar; domain=example.com'
+            );
+        };
+        $server = Server::createServer($callback, $server);
+
+        $server->listen();
+
+        $this->assertContains('HTTP/1.1 200 OK', HeaderStack::stack());
+        $this->assertContains('Content-Type: text/plain', HeaderStack::stack());
+        $this->assertContains(
+            'Set-Cookie: foo=bar; expires=Wed, 1 Oct 2014 10:30; path=/foo; domain=example.com',
+            HeaderStack::stack()
+        );
+        $this->assertContains(
+            'Set-Cookie: bar=baz; expires=Wed, 8 Oct 2014 10:30; path=/foo/bar; domain=example.com',
+            HeaderStack::stack()
+        );
+
+        $stack  = HeaderStack::stack();
+        return $stack;
+    }
+
+    /**
+     * @group 5
+     * @depends testEmitsHeadersWithMultipleValuesMultipleTimes
+     */
+    public function testHeaderOrderIsHonoredWhenEmitted($stack)
+    {
+        $header = array_pop($stack);
+        $this->assertContains(
+            'Set-Cookie: bar=baz; expires=Wed, 8 Oct 2014 10:30; path=/foo/bar; domain=example.com',
+            $header
+        );
+        $header = array_pop($stack);
+        $this->assertContains(
+            'Set-Cookie: foo=bar; expires=Wed, 1 Oct 2014 10:30; path=/foo; domain=example.com',
+            $header
+        );
+    }
 }
