@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release..
 
+## 0.3.3 - 2014-10-01
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Pinned to 0.1.0 of psr/http-message; v0.2.0 introduces breaking changes, which will require
+  updates to this library before we can consume them.
+
 ## 0.3.2 - 2014-10-01
 
 ### Added
