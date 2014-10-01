@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release..
 
+## 0.4.1 - 2014-10-01
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#8](https://github.com/phly/http/pull/8) Update README.md to remove references to methods and interfaces that have been removed.
+- Updated README.md to reference `~0.2.0@dev` as the psr/http-message version when installing via Composer.
+
 ## 0.4.0 - 2014-10-01
 
 ### Added
