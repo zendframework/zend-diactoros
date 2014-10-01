@@ -78,19 +78,4 @@ class ResponseTest extends TestCase
         ]);
         $this->assertTrue($this->response->hasHeader('Content-Type'));
     }
-
-    public function testHasNoWriteMethod()
-    {
-        $this->assertFalse(method_exists($this->response, 'write'));
-    }
-
-    public function testHasNoEndMethod()
-    {
-        $this->assertFalse(method_exists($this->response, 'end'));
-    }
-
-    public function testHasNoIsCompleteMethod()
-    {
-        $this->assertFalse(method_exists($this->response, 'isComplete'));
-    }
 }
