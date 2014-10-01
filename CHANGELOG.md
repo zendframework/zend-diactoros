@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release..
 
+## 0.4.0 - TBD
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Updated implementation to psr/http-message 0.2.0, which:
+  - Renames StreamInterface to StreamableInterface
+  - Adds attach() and getMetadata($key = null) to the stream interface
+  - Removes the $maxLength argument from the getContents() method of the stream interface
+
 ## 0.3.3 - 2014-10-01
 
 ### Added
