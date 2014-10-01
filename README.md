@@ -19,15 +19,12 @@ Installation and Requirements
 Install this library using composer:
 
 ```console
-$ composer require "psr/http-message:~1.0-dev@dev" "phly/http:~1.0-dev@dev"
+$ composer require "psr/http-message:~0.2.0@dev" "phly/http:~1.0-dev@dev"
 ```
 
 `phly/http` has the following dependencies (which are managed by Composer):
 
-- `psr/http-message`, which defines interfaces for HTTP messages, including requests and responses. `phly/http` provides implementations of these, and extends the `ResponseInterface` to provide three additional methods:
-  - `write($data)`, to write data to the response body
-  - `end($data = null)`, to mark the response as complete, optionally writing data to the body first
-  - `isComplete()`, for determining if the response is already complete
+- `psr/http-message`, which defines interfaces for HTTP messages, including requests and responses. `phly/http` provides implementations of each of these.
 
 Contributing
 ------------
@@ -60,25 +57,19 @@ $request = Phly\Http\RequestFactory::fromServer($_SERVER, $request);
 
 ### Manipulating the response
 
-`Phly\Http\ResponseInterface` defines 2 convenience methods for manipulating the response content, as well as a method for marking the response complete. When the response is marked complete, no further manipulation of the response can be made, and all attempts to do so will result in no-ops.
+Use the response object to add headers and provide content for the response.
 
 ```php
 // Write to the response body:
-$response->write("some content\n");
+$response->getBody()->write("some content\n");
 
 // Multiple calls to write() append:
-$response->write("more content\n"); // now "some content\nmore content\n"
+$response->getBody()->write("more content\n"); // now "some content\nmore content\n"
 
-// Mark the response as complete:
-$response->end();
-
-// Alternately, pass content when ending the response:
-$response->end("DONE!");
-
-// Test to see if the response has been marked as complete:
-if ($response->isComplete()) {
-    return;
-}
+// Add headers
+// Note: headers do not need to be added before data is written to the body!
+$response->setHeader('Content-Type', 'text/plain');
+$response->addHeader('X-Show-Something', 'something');
 ```
 
 ### "Serving" an application
@@ -89,7 +80,7 @@ if ($response->isComplete()) {
 // Direct instantiation, with a callback handler, request, and response
 $server = new Phly\Http\Server(
     function ($request, $response, $done) {
-        $response->end("Hello world!");
+        $response->getBody()->write("Hello world!");
     },
     $request,
     $response
@@ -98,7 +89,7 @@ $server = new Phly\Http\Server(
 // Using the createServer factory, and providing it $_SERVER:
 $server = Phly\Http\Server::createServer(
     function ($request, $response, $done) {
-        $response->end("Hello world!");
+        $response->getBody()->write("Hello world!");
     },
     $_SERVER
 );
@@ -106,7 +97,7 @@ $server = Phly\Http\Server::createServer(
 // Using the createServerFromRequest factory, and providing it a request:
 $server = Phly\Http\Server::createServerfromRequest(
   function ($request, $response, $done) {
-      $response->end("Hello world!");
+      $response->getBody()->write("Hello world!");
   },
   $request
 );
@@ -184,7 +175,7 @@ $request = RequestFactory::fromServer($_SERVER, $request); // returns same reque
 
 ### Response Message
 
-`Phly\Http\Response` implements `Phly\Http\ResponseInterface`, which extends `Psr\Http\Message\ResponseInterface`, and includes the following methods:
+`Phly\Http\Response` implements `Psr\Http\Message\ResponseInterface`, and includes the following methods:
 
 ```php
 class Response
@@ -192,21 +183,18 @@ class Response
     public function __construct($stream = 'php://input');
     public function addHeader($name, $value);
     public function addHeaders(array $headers);
-    public function end($data = null); // Mark the response as complete
     public function getBody(); // returns a Stream
     public function getHeader();
     public function getHeaderAsArray();
     public function getHeaders();
     public function getStatusCode();
     public function getReasonPhrase();
-    public function isComplete(); // Is the response complete?
     public function removeHeader($name);
     public function setBody(Psr\Http\Message\StreamInterface $stream);
     public function setHeader($name, $value);
     public function setHeaders(array $headers);
     public function setStatusCode($code);
     public function setReasonPhrase($phrase);
-    public function write($data); // Write data to the body
 }
 ```
 
@@ -246,7 +234,7 @@ The following properties are exposed for read-only access:
 
 ### Stream
 
-`Phly\Http\Stream` is an implementation of `Psr\Http\Message\StreamInterface`, and provides a number of facilities around manipulating the composed PHP stream resource. The constructor accepts a stream, which may be either:
+`Phly\Http\Stream` is an implementation of `Psr\Http\Message\StreamableInterface`, and provides a number of facilities around manipulating the composed PHP stream resource. The constructor accepts a stream, which may be either:
 
 - a stream identifier; e.g., `php://input`, a filename, etc.
 - a PHP stream resource
@@ -267,7 +255,7 @@ class Server
     public function __construct(
         callable $callback,
         Psr\Http\Message\RequestInterface $request,
-        Phly\Conduit\Http\ResponseInterface $response
+        Psr\Http\Message\ResponseInterface $response
     );
     public static function createServer(
         callable $callback,
@@ -276,7 +264,7 @@ class Server
     public static function createServerFromRequest(
         callable $callback,
         Psr\Http\Message\RequestInterface $request,
-        Phly\Conduit\Http\ResponseInterface $response = null
+        Psr\Http\Message\ResponseInterface $response = null
     );
     public function listen(callable $finalHandler = null);
 }
