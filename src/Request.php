@@ -4,7 +4,7 @@ namespace Phly\Http;
 use InvalidArgumentException;
 use RuntimeException;
 use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\StreamInterface;
+use Psr\Http\Message\StreamableInterface;
 
 /**
  * HTTP Request encapsulation
@@ -28,7 +28,7 @@ class Request implements RequestInterface
 
     /**
      * @param string $protocol
-     * @param string|resource|StreamInterface $stream
+     * @param string|resource|StreamableInterface $stream
      */
     public function __construct($protocol = '1.1', $stream = 'php://input')
     {
@@ -38,15 +38,15 @@ class Request implements RequestInterface
             $stream = new PhpInputStream();
         }
 
-        if (! is_string($stream) && ! is_resource($stream) && ! $stream instanceof StreamInterface) {
+        if (! is_string($stream) && ! is_resource($stream) && ! $stream instanceof StreamableInterface) {
             throw new InvalidArgumentException(
                 'Stream must be a string stream resource identifier, '
                 . 'an actual stream resource, '
-                . 'or a Psr\Http\Message\StreamInterface implementation'
+                . 'or a Psr\Http\Message\StreamableInterface implementation'
             );
         }
 
-        if (! $stream instanceof StreamInterface) {
+        if (! $stream instanceof StreamableInterface) {
             $stream = new Stream($stream, 'r');
         }
 
