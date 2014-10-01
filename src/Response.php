@@ -3,7 +3,7 @@ namespace Phly\Http;
 
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\StreamInterface;
+use Psr\Http\Message\StreamableInterface;
 
 /**
  * HTTP response encapsulation
@@ -93,19 +93,19 @@ class Response implements ResponseInterface
     private $statusCode = 200;
 
     /**
-     * @param string|resource|StreamInterface $stream Stream identifier and/or actual stream resource
+     * @param string|resource|StreamableInterface $stream Stream identifier and/or actual stream resource
      */
     public function __construct($stream = 'php://memory')
     {
-        if (! is_string($stream) && ! is_resource($stream) && ! $stream instanceof StreamInterface) {
+        if (! is_string($stream) && ! is_resource($stream) && ! $stream instanceof StreamableInterface) {
             throw new InvalidArgumentException(
                 'Stream must be a string stream resource identifier, '
                 . 'an actual stream resource, '
-                . 'or a Psr\Http\Message\StreamInterface implementation'
+                . 'or a Psr\Http\Message\StreamableInterface implementation'
             );
         }
 
-        if (! $stream instanceof StreamInterface) {
+        if (! $stream instanceof StreamableInterface) {
             $stream = new Stream($stream, 'wb+');
         }
 

@@ -2,12 +2,12 @@
 namespace Phly\Http;
 
 use InvalidArgumentException;
-use Psr\Http\Message\StreamInterface;
+use Psr\Http\Message\StreamableInterface;
 
 /**
  * Implementation of PSR HTTP streams
  */
-class Stream implements StreamInterface
+class Stream implements StreamableInterface
 {
     /**
      * @var resource
@@ -78,13 +78,36 @@ class Stream implements StreamInterface
      *
      * After the stream has been detached, the stream is in an unusable state.
      *
-     * @return resource
+     * @return resource|null
      */
     public function detach()
     {
         $resource = $this->resource;
         $this->resource = null;
         return $resource;
+    }
+
+    /**
+     * Attach a new resource to the instance
+     * 
+     * @param resource|string $resource Resource to attach, or a string 
+     *                                  representing the resource to attach.
+     * @param string $mode If a non-resource is provided, the mode to use
+     *                     when creating the resource.
+     * @throws InvalidArgumentException If a non-resource or non-string is provided,
+     *                                  raises an exception.
+     */
+    public function attach($resource, $mode = 'r')
+    {
+        if (! is_resource($resource) && is_string($resource)) {
+            $resource = fopen($resource, $mode);
+        }
+
+        if (! is_resource($resource)) {
+            throw new InvalidArgumentException(
+                'Invalid stream provided; must be a string stream identifier or resource'
+            );
+        }
     }
 
     /**
@@ -238,16 +261,34 @@ class Stream implements StreamInterface
     /**
      * Returns the remaining contents in a string, up to maxlength bytes.
      *
-     * @param int $maxLength The maximum bytes to read. Defaults to -1 (read
-     *                       all the remaining buffer).
      * @return string
      */
-    public function getContents($maxLength = -1)
+    public function getContents()
     {
         if (! $this->isReadable()) {
             return '';
         }
 
-        return stream_get_contents($this->resource, $maxLength);
+        return stream_get_contents($this->resource);
+    }
+
+    /**
+     * Retrieve metadata from the underlying stream.
+     * 
+     * @see http://php.net/stream_get_meta_data for a description of the expected output.
+     * @return array
+     */
+    public function getMetadata($key = null)
+    {
+        if (null === $key) {
+            return stream_get_meta_data($this->resource);
+        }
+
+        $metadata = stream_get_meta_data($this->resource);
+        if (! array_key_exists($key, $metadata)) {
+            return null;
+        }
+
+        return $metadata[$key];
     }
 }

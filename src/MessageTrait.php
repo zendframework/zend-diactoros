@@ -2,7 +2,7 @@
 namespace Phly\Http;
 
 use InvalidArgumentException;
-use Psr\Http\Message\StreamInterface;
+use Psr\Http\Message\StreamableInterface;
 
 /**
  * Trait implementing the various methods defined in
@@ -21,7 +21,7 @@ trait MessageTrait
     private $protocol = '1.1';
 
     /**
-     * @var StreamInterface
+     * @var StreamableInterface
      */
     private $stream;
 
@@ -40,7 +40,7 @@ trait MessageTrait
     /**
      * Gets the body of the message.
      *
-     * @return StreamInterface|null Returns the body, or null if not set.
+     * @return StreamableInterface|null Returns the body, or null if not set.
      */
     public function getBody()
     {
@@ -50,16 +50,16 @@ trait MessageTrait
     /**
      * Sets the body of the message.
      *
-     * The body MUST be a StreamInterface object. Setting the body to null MUST
+     * The body MUST be a StreamableInterface object. Setting the body to null MUST
      * remove the existing body.
      *
-     * @param StreamInterface|null $body Body.
+     * @param StreamableInterface|null $body Body.
      *
      * @return void
      *
      * @throws \InvalidArgumentException When the body is not valid.
      */
-    public function setBody(StreamInterface $body = null)
+    public function setBody(StreamableInterface $body = null)
     {
         $this->stream = $body;
     }
