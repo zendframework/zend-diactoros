@@ -185,12 +185,17 @@ class Server
             ));
         }
 
-        foreach ($response->getHeaders() as $header => $value) {
-            header(sprintf(
-                '%s: %s',
-                $this->filterHeader($header),
-                implode(',', $value)
-            ));
+        foreach ($response->getHeaders() as $header => $values) {
+            $name  = $this->filterHeader($header);
+            $first = true;
+            foreach ($values as $value) {
+                header(sprintf(
+                    '%s: %s',
+                    $name,
+                    $value
+                ), $first);
+                $first = false;
+            }
         }
     }
 
