@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release..
 
+## 0.4.2 - TBD
+
+### Added
+
+- Ability for header values to allow objects that can be cast to strings. This allows for header objects representing complex values to generate the value.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
 ## 0.4.1 - 2014-10-01
 
 ### Added
