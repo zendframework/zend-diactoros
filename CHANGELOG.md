@@ -17,6 +17,7 @@ This release has some backwards incompatible breaks, including:
 - Note in `Phly\Http\Stream::read()`'s `@return` annotation indicating that it can also return boolean `false`.
 - `Phly\Http\IncomingRequest`, which implements `Psr\Http\Message\IncomingRequestInterface` and provides a server-side request implementation with accessors for each type of request datum typically accessed (cookies, matched path parameters, query string arguments, body parameters, and upload file information). It uses `php://input` as the default body stream.
 - `Phly\Http\IncomingRequestFactory` (which replaces `Phly\Http\RequestFactory`)
+  - `fromGlobals($server, $query, $body, $cookies, $files)` factory method for creating an `IncomingRequest` instance from superglobals; all arguments are optional, and, if not provided, will be derived from the relevant superglobal.
 
 ### Deprecated
 
