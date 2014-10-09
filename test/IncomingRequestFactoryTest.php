@@ -376,4 +376,33 @@ class IncomingRequestFactoryTest extends TestCase
 
         $this->assertEquals('1.0', $request->getProtocolVersion());
     }
+
+    public function testCanCreateIncomingRequestViaFromGlobalsMethod()
+    {
+        $server = [
+            'SERVER_PROTOCOL' => '1.1',
+            'HTTP_HOST' => 'example.com',
+            'HTTP_ACCEPT' => 'application/json',
+            'REQUEST_METHOD' => 'POST',
+            'REQUEST_URI' => '/foo/bar',
+            'QUERY_STRING' => 'bar=baz',
+        ];
+
+        $cookies = $query = $body = $files = [
+            'bar' => 'baz',
+        ];
+
+        $cookies['cookies'] = true;
+        $query['query']     = true;
+        $body['body']       = true;
+        $files['files']     = true;
+
+        $request = IncomingRequestFactory::fromGlobals($server, $query, $body, $cookies, $files);
+        $this->assertInstanceOf('Phly\Http\IncomingRequest', $request);
+        $this->assertEquals($cookies, $request->getCookieParams());
+        $this->assertEquals($query, $request->getQueryParams());
+        $this->assertEquals($body, $request->getBodyParams());
+        $this->assertEquals($files, $request->getFileParams());
+        $this->assertEmpty($request->getPathParams());
+    }
 }

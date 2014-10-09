@@ -15,6 +15,46 @@ use stdClass;
 abstract class IncomingRequestFactory
 {
     /**
+     * Create a request from the supplied superglobal values.
+     *
+     * If any argument is not supplied, the corresponding superglobal value will
+     * be used.
+     *
+     * The IncomingRequest created is then passed to the fromServer() method in
+     * order to marshal the request URI and headers.
+     *
+     * @see fromServer()
+     * @param array $server $_SERVER superglobal
+     * @param array $query $_GET superglobal
+     * @param array $body $_POST superglobal
+     * @param array $cookies $_COOKIE superglobal
+     * @param array $files $_FILES superglobal
+     * @return IncomingRequest
+     */
+    public static function fromGlobals(
+        array $server = null,
+        array $query = null,
+        array $body = null,
+        array $cookies = null,
+        array $files = null
+    ) {
+        $server  = $server  ?: $_SERVER;
+        $query   = $query   ?: $_GET;
+        $body    = $body    ?: $_POST;
+        $cookies = $cookies ?: $_COOKIE;
+        $files   = $files   ?: $_FILES;
+        $request = new IncomingRequest(
+            'php://input',
+            $cookies,
+            [],
+            $query,
+            $body,
+            $files
+        );
+        return self::fromServer($server, $request);
+    }
+
+    /**
      * Populates a request object from the given $_SERVER array
      *
      * @param array $server
