@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release..
 
+## 0.5.0 - TBD
+
+This release has some backwards incompatible breaks, including:
+
+- `Phly\Http\Request` no longer accepts an HTTP protocol version as a constructor argument. Use `setProtocolVersion()` instead.
+
+### Added
+
+- `Phly\Http\MessageTrait::setProtocolVersion($version)`, per changes in PSR-7 (this is now defined in the `MessageInterface`).
+
+### Deprecated
+
+- `Phly\Http\Request` no longer accepts an HTTP protocol version as a constructor argument. Use `setProtocolVersion()` instead.
+
+### Removed
+
+- 
+
+### Fixed
+
+- Nothing.
+
+
 ## 0.4.2 - 2014-10-09
 
 ### Added
