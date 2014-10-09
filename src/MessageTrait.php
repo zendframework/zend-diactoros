@@ -143,12 +143,16 @@ trait MessageTrait
      * or an array of strings.
      *
      * @param string $header Header name
-     * @param string|string[] $value  Header value(s)
+     * @param string|string[]|object|object[] $value  Header values; any objects must be castable to strings
      *
      * @return void
      */
     public function setHeader($header, $value)
     {
+        if (is_object($value) && method_exists($value, '__toString')) {
+            $value = (string) $value;
+        }
+
         if (! is_string($value) && ! is_array($value)) {
             throw new InvalidArgumentException('Invalid header value; must be a string or array of strings');
         }
@@ -156,6 +160,10 @@ trait MessageTrait
         if (is_array($value)) {
             $valid = true;
             array_walk($value, function ($value) use (&$valid) {
+                if (is_object($value) && method_exists($value, '__toString')) {
+                    $value = (string) $value;
+                }
+
                 if (! is_string($value)) {
                     $valid = false;
                 }
@@ -203,13 +211,17 @@ trait MessageTrait
      * value will be appended to the existing list.
      *
      * @param string $header Header name to add
-     * @param string $value  Value of the header
+     * @param string|object $value  Value of the header; if an object, must be able to cast to a string
      *
      * @return void
      */
     public function addHeader($header, $value)
     {
         $header = strtolower($header);
+
+        if (is_object($value) && method_exists($value, '__toString')) {
+            $value = (string) $value;
+        }
 
         if (! is_string($value)) {
             throw new InvalidArgumentException('Invalid header value; must be a string');

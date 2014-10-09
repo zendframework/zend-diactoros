@@ -172,4 +172,28 @@ class MessageTraitTest extends TestCase
         $this->message->removeHeader('X-Foo');
         $this->assertFalse($this->message->hasHeader('X-Foo'));
     }
+
+    public function testAllowAddingHeaderValuesUsingObjectsThatCastToString()
+    {
+        $header = new TestAsset\Header();
+        $header->value = 'foo; bar; baz, bat';
+        $this->message->addHeader('X-Foo', $header);
+        $this->assertEquals((string) $header, $this->message->getHeader('X-Foo'));
+    }
+
+    public function testAllowSettingArrayOfHeaderValuesUsingObjectsThatCastToString()
+    {
+        $values = [];
+        foreach (range(1, 5) as $i) {
+            $header = new TestAsset\Header();
+            $header->value = 'foo(' . $i . ')';
+            $values[] = $header;
+        }
+        $this->message->setHeader('X-Foo', $values);
+
+        $value = $this->message->getHeader('X-Foo');
+        foreach (range(1, 5) as $i) {
+            $this->assertContains('foo(' . $i . ')', $value);
+        }
+    }
 }
