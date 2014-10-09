@@ -11,6 +11,7 @@ This release has some backwards incompatible breaks, including:
 ### Added
 
 - `Phly\Http\MessageTrait::setProtocolVersion($version)`, per changes in PSR-7 (this is now defined in the `MessageInterface`).
+- Note in `Phly\Http\Stream::read()`'s `@return` annotation indicating that it can also return boolean `false`.
 
 ### Deprecated
 
@@ -18,11 +19,11 @@ This release has some backwards incompatible breaks, including:
 
 ### Removed
 
-- 
+- Nothing.
 
 ### Fixed
 
-- Nothing.
+- `Phly\Http\Stream::read()` now returns boolean false when the stream is not readable, or no resource is present.
 
 
 ## 0.4.2 - 2014-10-09
