@@ -141,7 +141,7 @@ class RequestFactoryTest extends TestCase
 
     public function testMarshalHostAndPortUsesHostHeaderWhenPresent()
     {
-        $request = new Request('1.1');
+        $request = new Request();
         $request->addHeader('Host', 'example.com');
 
         $accumulator = (object) ['host' => '', 'port' => null];
@@ -152,7 +152,7 @@ class RequestFactoryTest extends TestCase
 
     public function testMarshalHostAndPortWillDetectPortInHostHeaderWhenPresent()
     {
-        $request = new Request('1.1');
+        $request = new Request();
         $request->addHeader('Host', 'example.com:8000');
 
         $accumulator = (object) ['host' => '', 'port' => null];
@@ -163,7 +163,7 @@ class RequestFactoryTest extends TestCase
 
     public function testMarshalHostAndPortReturnsEmptyValuesIfNoHostHeaderAndNoServerName()
     {
-        $request = new Request('1.1');
+        $request = new Request();
         $accumulator = (object) ['host' => '', 'port' => null];
         RequestFactory::marshalHostAndPort($accumulator, [], $request);
         $this->assertEquals('', $accumulator->host);
@@ -172,7 +172,7 @@ class RequestFactoryTest extends TestCase
 
     public function testMarshalHostAndPortReturnsServerNameForHostWhenPresent()
     {
-        $request = new Request('1.1');
+        $request = new Request();
         $server  = [
             'SERVER_NAME' => 'example.com',
         ];
@@ -184,7 +184,7 @@ class RequestFactoryTest extends TestCase
 
     public function testMarshalHostAndPortReturnsServerPortForPortWhenPresentWithServerName()
     {
-        $request = new Request('1.1');
+        $request = new Request();
         $server  = [
             'SERVER_NAME' => 'example.com',
             'SERVER_PORT' => 8000,
@@ -197,7 +197,7 @@ class RequestFactoryTest extends TestCase
 
     public function testMarshalHostAndPortReturnsServerNameForHostIfServerAddrPresentButHostIsNotIpv6Address()
     {
-        $request = new Request('1.1');
+        $request = new Request();
         $server  = [
             'SERVER_ADDR' => '127.0.0.1',
             'SERVER_NAME' => 'example.com',
@@ -209,7 +209,7 @@ class RequestFactoryTest extends TestCase
 
     public function testMarshalHostAndPortReturnsServerAddrForHostIfPresentAndHostIsIpv6Address()
     {
-        $request = new Request('1.1');
+        $request = new Request();
         $server  = [
             'SERVER_ADDR' => 'FE80::0202:B3FF:FE1E:8329',
             'SERVER_NAME' => '[FE80::0202:B3FF:FE1E:8329]',
@@ -223,7 +223,7 @@ class RequestFactoryTest extends TestCase
 
     public function testMarshalHostAndPortWillDetectPortInIpv6StyleHost()
     {
-        $request = new Request('1.1');
+        $request = new Request();
         $server  = [
             'SERVER_ADDR' => 'FE80::0202:B3FF:FE1E:8329',
             'SERVER_NAME' => '[FE80::0202:B3FF:FE1E:8329:80]',
@@ -236,7 +236,7 @@ class RequestFactoryTest extends TestCase
 
     public function testMarshalUriDetectsHttpsSchemeFromServerValue()
     {
-        $request = new Request('1.1');
+        $request = new Request();
         $request->addHeader('Host', 'example.com');
         $server  = [
             'HTTPS' => true,
@@ -249,7 +249,7 @@ class RequestFactoryTest extends TestCase
 
     public function testMarshalUriUsesHttpSchemeIfHttpsServerValueEqualsOff()
     {
-        $request = new Request('1.1');
+        $request = new Request();
         $request->addHeader('Host', 'example.com');
         $server  = [
             'HTTPS' => 'off',
@@ -262,7 +262,7 @@ class RequestFactoryTest extends TestCase
 
     public function testMarshalUriDetectsHttpsSchemeFromXForwardedProtoValue()
     {
-        $request = new Request('1.1');
+        $request = new Request();
         $request->addHeader('Host', 'example.com');
         $request->addHeader('X-Forwarded-Proto', 'https');
         $server  = [];
@@ -274,7 +274,7 @@ class RequestFactoryTest extends TestCase
 
     public function testMarshalUriStripsQueryStringFromRequestUri()
     {
-        $request = new Request('1.1');
+        $request = new Request();
         $request->addHeader('Host', 'example.com');
         $server = [
             'REQUEST_URI' => '/foo/bar?foo=bar',
@@ -287,7 +287,7 @@ class RequestFactoryTest extends TestCase
 
     public function testMarshalUriInjectsQueryStringFromServer()
     {
-        $request = new Request('1.1');
+        $request = new Request();
         $request->addHeader('Host', 'example.com');
         $server = [
             'REQUEST_URI' => '/foo/bar?foo=bar',
@@ -301,7 +301,7 @@ class RequestFactoryTest extends TestCase
 
     public function testStateOfPassedRequestInstanceIsUpdatedWhenPassedToFromServer()
     {
-        $request = new Request('1.1');
+        $request = new Request();
 
         $server = [
             'HTTP_HOST' => 'example.com',

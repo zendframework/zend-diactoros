@@ -10,13 +10,7 @@ class MessageTraitTest extends TestCase
     public function setUp()
     {
         $this->stream  = new Stream('php://memory', 'wb+');
-        $this->message = new Request('1.1', $this->stream);
-    }
-
-    public function testUsesProtocolVersionProvidedInConstructor()
-    {
-        $message = new Request('1.0', $this->stream);
-        $this->assertEquals('1.0', $message->getProtocolVersion());
+        $this->message = new Request($this->stream);
     }
 
     public function testUsesStreamProvidedInConstructorAsBody()

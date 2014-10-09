@@ -27,7 +27,8 @@ abstract class RequestFactory
 
         if (! $request) {
             $protocol = self::get('SERVER_PROTOCOL', $server, '1.1');
-            $request  = new Request($protocol);
+            $request  = new Request();
+            $request->setProtocolVersion($protocol);
         }
 
         $request->setMethod(self::get('REQUEST_METHOD', $server, 'GET'));
