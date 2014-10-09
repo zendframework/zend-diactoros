@@ -12,6 +12,7 @@ This release has some backwards incompatible breaks, including:
 
 - `Phly\Http\MessageTrait::setProtocolVersion($version)`, per changes in PSR-7 (this is now defined in the `MessageInterface`).
 - Note in `Phly\Http\Stream::read()`'s `@return` annotation indicating that it can also return boolean `false`.
+- `Phly\Http\IncomingRequest`, which implements `Psr\Http\Message\IncomingRequestInterface` and provides a server-side request implementation with accessors for each type of request datum typically accessed (cookies, matched path parameters, query string arguments, body parameters, and upload file information).
 
 ### Deprecated
 
