@@ -1,7 +1,7 @@
 <?php
 namespace Phly\Http;
 
-use Psr\Http\Message\RequestInterface as RequestInterface;
+use Psr\Http\Message\IncomingRequestInterface;
 use stdClass;
 
 /**
@@ -12,22 +12,22 @@ use stdClass;
  * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
-abstract class RequestFactory
+abstract class IncomingRequestFactory
 {
     /**
      * Populates a request object from the given $_SERVER array
      *
      * @param array $server
-     * @param RequestInterface $request
-     * @return RequestInterface The $request provided, only populated with values
+     * @param IncomingRequestInterface $request
+     * @return IncomingRequestInterface The $request provided, only populated with values
      */
-    public static function fromServer(array $server, RequestInterface $request = null)
+    public static function fromServer(array $server, IncomingRequestInterface $request = null)
     {
         $server = self::normalizeServer($server);
 
         if (! $request) {
             $protocol = self::get('SERVER_PROTOCOL', $server, '1.1');
-            $request  = new Request();
+            $request  = new IncomingRequest();
             $request->setProtocolVersion($protocol);
         }
 
@@ -121,10 +121,10 @@ abstract class RequestFactory
      * Marshal the URI from the $_SERVER array and headers
      *
      * @param array $server
-     * @param RequestInterface $request
+     * @param IncomingRequestInterface $request
      * @return Uri
      */
-    public static function marshalUri(array $server, RequestInterface $request)
+    public static function marshalUri(array $server, IncomingRequestInterface $request)
     {
         // URI scheme
         $scheme = 'http';
@@ -164,10 +164,10 @@ abstract class RequestFactory
      * Marshal the host and port from HTTP headers and/or the PHP environment
      *
      * @param array $server
-     * @param RequestInterface $request
+     * @param IncomingRequestInterface $request
      * @return array Array with two members, host and port, at indices 0 and 1, respectively
      */
-    public static function marshalHostAndPort(stdClass $accumulator, array $server, RequestInterface $request)
+    public static function marshalHostAndPort(stdClass $accumulator, array $server, IncomingRequestInterface $request)
     {
         if ($request->hasHeader('host')) {
             return self::marshalHostAndPortFromHeader($accumulator, $request);
@@ -258,10 +258,10 @@ abstract class RequestFactory
      * Marshal the host and port from the request header
      *
      * @param stdClass $accumulator
-     * @param RequestInterface $request
+     * @param IncomingRequestInterface $request
      * @return void
      */
-    private static function marshalHostAndPortFromHeader(stdClass $accumulator, RequestInterface $request)
+    private static function marshalHostAndPortFromHeader(stdClass $accumulator, IncomingRequestInterface $request)
     {
         $accumulator->host = $request->getHeader('host');
         $accumulator->port = null;

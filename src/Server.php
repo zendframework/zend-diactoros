@@ -84,7 +84,7 @@ class Server
         callable $callback,
         array $server
     ) {
-        $request  = RequestFactory::fromServer($server);
+        $request  = IncomingRequestFactory::fromServer($server);
         $response = new Response();
         return new self($callback, $request, $response);
     }
