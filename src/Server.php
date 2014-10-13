@@ -73,18 +73,32 @@ class Server
     /**
      * Create a Server instance
      *
-     * Creates a server instance from the callback and server array
-     * passed; typically this will be the $_SERVER superglobal.
+     * Creates a server instance from the callback and the following
+     * PHP environmental values:
+     *
+     * - server; typically this will be the $_SERVER superglobal
+     * - query; typically this will be the $_GET superglobal
+     * - body; typically this will be the $_POST superglobal
+     * - cookies; typically this will be the $_COOKIE superglobal
+     * - files; typically this will be the $_FILES superglobal
      *
      * @param callable $callback
      * @param array $server
+     * @param array $query
+     * @param array $body
+     * @param array $cookies
+     * @param array $files
      * @return self
      */
     public static function createServer(
         callable $callback,
-        array $server
+        array $server,
+        array $query,
+        array $body,
+        array $cookies,
+        array $files
     ) {
-        $request  = IncomingRequestFactory::fromServer($server);
+        $request  = IncomingRequestFactory::fromGlobals($server, $query, $body, $cookies, $files);
         $response = new Response();
         return new self($callback, $request, $response);
     }

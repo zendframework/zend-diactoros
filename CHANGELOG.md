@@ -10,6 +10,11 @@ This release has some backwards incompatible breaks, including:
 - `Phly\Http\Request` now uses `php://memory` as the default body stream. (`IncomingRequest` uses `php://input` as the default stream.)
 - `Phly\Http\RequestFactory` has been renamed to `Phly\Http\IncomingRequestFactory`
   - It also now expects an `IncomingRequestInterface` if passed a request object to populate.
+- `Phly\Http\Server::createServer()` now expects 4 additional arguments:
+  - `$query`, usually `$_GET`
+  - `$body`, usually `$_POST`
+  - `$cookies`, usually `$_COOKIE`
+  - `$files`, usually `$_FILES`
   
 ### Added
 
@@ -18,6 +23,11 @@ This release has some backwards incompatible breaks, including:
 - `Phly\Http\IncomingRequest`, which implements `Psr\Http\Message\IncomingRequestInterface` and provides a server-side request implementation with accessors for each type of request datum typically accessed (cookies, matched path parameters, query string arguments, body parameters, and upload file information). It uses `php://input` as the default body stream.
 - `Phly\Http\IncomingRequestFactory` (which replaces `Phly\Http\RequestFactory`)
   - `fromGlobals($server, $query, $body, $cookies, $files)` factory method for creating an `IncomingRequest` instance from superglobals; all arguments are optional, and, if not provided, will be derived from the relevant superglobal.
+- `Phly\Http\Server::createServer()` now expects 4 additional arguments:
+  - `$query`, usually `$_GET`
+  - `$body`, usually `$_POST`
+  - `$cookies`, usually `$_COOKIE`
+  - `$files`, usually `$_FILES`
 
 ### Deprecated
 

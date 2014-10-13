@@ -36,23 +36,30 @@ Contributing
 Usage
 -----
 
-Typically, you will consume the Request and Response implementations directly in your applications.
+Typically, you will consume the `Request` or `IncomingRequest` instance, along with a `Response` instance, directly in your applications. In the case of HTTP clients, you will use `Phly\Http\Request` and `Phly\Http\Response`; for server-side applications, you will use `Phly\Http\IncomingRequest` and `Phly\Http\Request`.
 
-### Marshaling the request
+### Marshaling an incoming request
 
-PHP contains a plethora of information about the incoming request, and keeps that information in a variety of locations. `Phly\Http\RequestFactory::fromServer()` can simplify marshaling that information into a request instance.
+PHP contains a plethora of information about the incoming request, and keeps that information in a variety of locations. `Phly\Http\IncomingRequestFactory::fromGlobals()` can simplify marshaling that information into a request instance.
 
-If you do not yet have a request instance, pass it only the `$_SERVER` superglobal:
+You can call the factory method with or without the following arguments, in the following order:
+
+- `$server`, typically `$_SERVER`
+- `$query`, typically `$_GET`
+- `$body`, typically `$_POST`
+- `$cookies`, typically `$_COOKIE`
+- `$files`, typically `$_FILES`
+
+The method will then return a `Phly\Http\IncomingRequest` instance. If any argument is omitted, the associated superglobal will be used.
 
 ```php
-$request = Phly\Http\RequestFactory::fromServer($_SERVER);
-```
-
-If you already have a request instance, pass that as the second parameter:
-
-```php
-// Assignment isn't necessary, as the method will write to the request you provide
-$request = Phly\Http\RequestFactory::fromServer($_SERVER, $request);
+$request = Phly\Http\IncomingRequestFactory::fromGlobals(
+  $_SERVER,
+  $_GET,
+  $_POST,
+  $_COOKIE,
+  $_FILES
+);
 ```
 
 ### Manipulating the response
@@ -74,7 +81,9 @@ $response->addHeader('X-Show-Something', 'something');
 
 ### "Serving" an application
 
-`Phly\Http\Server` mimics a portion of the API of node's http.Server class. You can create a server in one of three ways:
+`Phly\Http\Server` mimics a portion of the API of node's http.Server class. It invokes a callback, passing it an `IncomingRequest`, a `Response`, and optionally a callback to use for incomplete/unhandled requests.
+
+You can create a server in one of three ways:
 
 ```php
 // Direct instantiation, with a callback handler, request, and response
@@ -86,12 +95,16 @@ $server = new Phly\Http\Server(
     $response
 );
 
-// Using the createServer factory, and providing it $_SERVER:
+// Using the createServer factory, providing it with the various superglobals:
 $server = Phly\Http\Server::createServer(
     function ($request, $response, $done) {
         $response->getBody()->write("Hello world!");
     },
-    $_SERVER
+    $_SERVER,
+    $_GET,
+    $_POST,
+    $_COOKIE,
+    $_FILES
 );
 
 // Using the createServerFromRequest factory, and providing it a request:
@@ -126,7 +139,7 @@ $server->listen(function ($error = null) {
 });
 ```
 
-Typically, the listen callback will be an error handler, and can expect to receive the error as its argument.
+Typically, the `listen` callback will be an error handler, and can expect to receive the error as its argument.
 
 API
 ---
@@ -138,7 +151,7 @@ API
 ```php
 class Request
 {
-    public function __construct($protocol = '1.1', $stream = 'php://input');
+    public function __construct($stream = 'php://memory');
     public function addHeader($name, $value);
     public function addHeaders(array $headers);
     public function getBody(); // returns a Stream
@@ -153,24 +166,58 @@ class Request
     public function setHeader($name, $value);
     public function setHeaders(array $headers);
     public function setMethod($method);
+    public function setProtocolVersion($version);
     public function setUrl($url); // string or Uri object
 }
 ```
 
-Additionally, `Request` implements property overloading, allowing the developer to set and retrieve arbitrary properties other than those exposed via getters. This allows the ability to pass values between handlers, if handlers implement a stack.
+### IncomingRequest message
 
-I recommend you store values in properties named after your handlers; use arrays or objects in cases where multiple values may be possible.
-
-#### RequestFactory
-
-This static class can be used to marshal a `Request` instance from the PHP environment. The primary entry point is `Phly\Http\RequestFactory::fromServer(array $server, RequestInterface $request = null)`. This method allows you to either marshal a new request instance, or to populate an existing instance (for example, if you are using another `Psr\Http\Message\RequestInterface`-compatible implementation). Examples of usage are:
+For server-side applications, `Phly\Http\IncomingRequest` provides the same functionality as `Phly\Http\Request`, and adds on the various methods defined in `Psr\Http\Message\IncomingRequestInterface`. These additional methods provide access to incoming data in a uniform manner. The methods are:
 
 ```php
-$request = RequestFactory::fromServer($_SERVER); // returns new Request instance
+class IncomingRequest extends Request
+{
+    public function __construct(
+        $stream = 'php://input',
+        $cookieParams = [],
+        $pathParams = [],
+        $queryParams = [],
+        $bodyParams = [],
+        $fileParams = []
+    );
+    public function getBodyParams();
+    public function getCookieParams();
+    public function getFileParams();
+    public function getPathParams();
+    public function getQueryParams();
+    public function setBodyParams($values);
+    public function setCookieParams($cookies);
+    public function setPathParams(array $values);
+}
+```
+
+Query and file parameters MUST be injected during instantiation. Cookies allow for re-injection for cases where you may want to add additional security measures such as cookie encryption. Body parameters are often de-serialized at runtime based on the incoming Content-Type, and are thus also capable of injection. Finally, path parameters, or parameters that result from routing the request, are always considered runtime artifacts, and thus they, too, are injectable.
+
+#### IncomingRequestFactory
+
+This static class can be used to marshal an `IncomingRequest` instance from the PHP environment. The primary entry point is `Phly\Http\IncomingRequestFactory::fromGlobals(array $server, array $query, array $body, array $cookies, array $files)`. This method will create a new `IncomingRequest` instance with the data provided. Examples of usage are:
+
+```php
+// Returns new IncomingRequest instance, using values from superglobals:
+$request = IncomingRequestFactory::fromGlobals(); 
 
 // or
 
-$request = RequestFactory::fromServer($_SERVER, $request); // returns same request, but populated
+// Returns new IncomingRequest instance, using values provided (in this
+// case, equivalent to the previous!)
+$request = RequestFactory::fromGlobals(
+  $_SERVER,
+  $_GET,
+  $_POST,
+  $_COOKIE,
+  $_FILES
+);
 ```
 
 ### Response Message
@@ -180,21 +227,23 @@ $request = RequestFactory::fromServer($_SERVER, $request); // returns same reque
 ```php
 class Response
 {
-    public function __construct($stream = 'php://input');
+    public function __construct($stream = 'php://memory');
     public function addHeader($name, $value);
     public function addHeaders(array $headers);
     public function getBody(); // returns a Stream
     public function getHeader();
     public function getHeaderAsArray();
     public function getHeaders();
-    public function getStatusCode();
+    public function getProtocolVersion();
     public function getReasonPhrase();
+    public function getStatusCode();
     public function removeHeader($name);
     public function setBody(Psr\Http\Message\StreamInterface $stream);
     public function setHeader($name, $value);
     public function setHeaders(array $headers);
-    public function setStatusCode($code);
+    public function setProtocolVersion($version);
     public function setReasonPhrase($phrase);
+    public function setStatusCode($code);
 }
 ```
 
@@ -259,7 +308,11 @@ class Server
     );
     public static function createServer(
         callable $callback,
-        array $server // usually $_SERVER
+        array $server,  // usually $_SERVER
+        array $query,   // usually $_GET
+        array $body,    // usually $_POST
+        array $cookies, // usually $_COOKIE
+        array $files    // usually $_FILES
     );
     public static function createServerFromRequest(
         callable $callback,
@@ -270,6 +323,6 @@ class Server
 }
 ```
 
-You can create an instance of the `Server` using any of the constructor, `createServer()`, or `createServerFromRequest()` methods. If you wish to use the default request and response implementations, `createServer($middleware, $_SERVER)` is the recommended option, as this method will also marshal the `Request` object based on the PHP request environment.  If you wish to use your own implementations, pass them to the constructor or `createServerFromRequest()` method (the latter will create a default `Response` instance if you omit it).
+You can create an instance of the `Server` using any of the constructor, `createServer()`, or `createServerFromRequest()` methods. If you wish to use the default request and response implementations, `createServer($middleware, $_SERVER, $_GET, $_POST, $_COOKIE, $_FILES)` is the recommended option, as this method will also marshal the `IncomingRequest` object based on the PHP request environment.  If you wish to use your own implementations, pass them to the constructor or `createServerFromRequest()` method (the latter will create a default `Response` instance if you omit it).
 
 `listen()` executes the callback. If a `$finalHandler` is provided, it will be passed as the third argument to the `$callback` registered with the server.

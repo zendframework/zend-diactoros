@@ -69,7 +69,7 @@ class ServerTest extends TestCase
             'REQUEST_URI' => '/foo/bar',
             'QUERY_STRING' => 'bar=baz',
         ];
-        $server = Server::createServer($this->callback, $server);
+        $server = Server::createServer($this->callback, $server, [], [], [], []);
         $this->assertInstanceOf('Phly\Http\Server', $server);
         $this->assertSame($this->callback, $server->callback);
 
@@ -96,7 +96,7 @@ class ServerTest extends TestCase
             $res->addHeader('Content-Type', 'text/plain');
             $res->getBody()->write('FOOBAR');
         };
-        $server = Server::createServer($callback, $server);
+        $server = Server::createServer($callback, $server, [], [], [], []);
 
         $this->expectOutputString('FOOBAR');
         $server->listen();
@@ -120,7 +120,7 @@ class ServerTest extends TestCase
             $res->addHeader('Content-Type', 'text/plain');
             $res->getBody()->write('FOOBAR');
         };
-        $server = Server::createServer($callback, $server);
+        $server = Server::createServer($callback, $server, [], [], [], []);
 
         $this->expectOutputString('FOOBAR');
         $server->listen();
@@ -143,7 +143,7 @@ class ServerTest extends TestCase
             $res->addHeader('Content-Type', 'text/plain');
             $res->getBody()->write('100%');
         };
-        $server = Server::createServer($callback, $server);
+        $server = Server::createServer($callback, $server, [], [], [], []);
 
         $this->expectOutputString('100%');
         $server->listen();
@@ -171,7 +171,7 @@ class ServerTest extends TestCase
                 'bar=baz; expires=Wed, 8 Oct 2014 10:30; path=/foo/bar; domain=example.com'
             );
         };
-        $server = Server::createServer($callback, $server);
+        $server = Server::createServer($callback, $server, [], [], [], []);
 
         $server->listen();
 
