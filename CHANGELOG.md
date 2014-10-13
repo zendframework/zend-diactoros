@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release..
 
+## TBD - TBD
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#11](https://github.com/phly/http/pull/11) Moved `PhlyTest` autoloader configuration to `autoload-dev` key, as it is needed for development purposes only.
+
 ## 0.5.0 - 2014-10-13
 
 This release has some backwards incompatible breaks, including:
