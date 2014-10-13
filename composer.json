@@ -34,11 +34,13 @@
   },
   "autoload": {
     "psr-4": {
-      "Phly\\Http\\": "src/",
-      "PhlyTest\\Http\\": "test/"
+      "Phly\\Http\\": "src/"
     }
   },
   "autoload-dev": {
+    "psr-4": {
+      "PhlyTest\\Http\\": "test/"
+    },
     "files": [
       "test/TestAsset/Functions.php"
     ]
