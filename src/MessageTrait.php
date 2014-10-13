@@ -38,6 +38,18 @@ trait MessageTrait
     }
 
     /**
+     * Set the HTTP protocol version
+     *
+     * The string MUST contain only the HTTP version number (e.g., "1.1", "1.0").
+     * 
+     * @param string $version 
+     */
+    public function setProtocolVersion($version)
+    {
+        $this->protocol = $version;
+    }
+
+    /**
      * Gets the body of the message.
      *
      * @return StreamableInterface|null Returns the body, or null if not set.

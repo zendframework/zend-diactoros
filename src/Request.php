@@ -30,10 +30,8 @@ class Request implements RequestInterface
      * @param string $protocol
      * @param string|resource|StreamableInterface $stream
      */
-    public function __construct($protocol = '1.1', $stream = 'php://input')
+    public function __construct($stream = 'php://memory')
     {
-        $this->protocol = $protocol;
-
         if ($stream === 'php://input') {
             $stream = new PhpInputStream();
         }

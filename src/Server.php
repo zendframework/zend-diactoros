@@ -2,7 +2,7 @@
 namespace Phly\Http;
 
 use OutOfBoundsException;
-use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\IncomingRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
 /**
@@ -27,7 +27,7 @@ class Server
     private $callback;
 
     /**
-     * @var RequestInterface
+     * @var IncomingRequestInterface
      */
     private $request;
 
@@ -42,12 +42,12 @@ class Server
      * Given a callback, a request, and a response, we can create a server.
      *
      * @param callable $callback
-     * @param RequestInterface $request
+     * @param IncomingRequestInterface $request
      * @param ResponseInterface $response
      */
     public function __construct(
         callable $callback,
-        RequestInterface $request,
+        IncomingRequestInterface $request,
         ResponseInterface $response
     ) {
         $this->callback = $callback;
@@ -73,18 +73,32 @@ class Server
     /**
      * Create a Server instance
      *
-     * Creates a server instance from the callback and server array
-     * passed; typically this will be the $_SERVER superglobal.
+     * Creates a server instance from the callback and the following
+     * PHP environmental values:
+     *
+     * - server; typically this will be the $_SERVER superglobal
+     * - query; typically this will be the $_GET superglobal
+     * - body; typically this will be the $_POST superglobal
+     * - cookies; typically this will be the $_COOKIE superglobal
+     * - files; typically this will be the $_FILES superglobal
      *
      * @param callable $callback
      * @param array $server
+     * @param array $query
+     * @param array $body
+     * @param array $cookies
+     * @param array $files
      * @return self
      */
     public static function createServer(
         callable $callback,
-        array $server
+        array $server,
+        array $query,
+        array $body,
+        array $cookies,
+        array $files
     ) {
-        $request  = RequestFactory::fromServer($server);
+        $request  = IncomingRequestFactory::fromGlobals($server, $query, $body, $cookies, $files);
         $response = new Response();
         return new self($callback, $request, $response);
     }
@@ -98,13 +112,13 @@ class Server
      * If no Response object is provided, one will be created.
      *
      * @param callable $callback
-     * @param RequestInterface $request
+     * @param IncomingRequestInterface $request
      * @param null|ResponseInterface $response
      * @return self
      */
     public static function createServerFromRequest(
         callable $callback,
-        RequestInterface $request,
+        IncomingRequestInterface $request,
         ResponseInterface $response = null
     ) {
         if (! $response) {

@@ -40,7 +40,7 @@ class RequestTest extends TestCase
     public function testConstructorRaisesExceptionForInvalidStream()
     {
         $this->setExpectedException('InvalidArgumentException');
-        new Request('1.1', ['TOTALLY INVALID']);
+        new Request(['TOTALLY INVALID']);
     }
 
     public function testCannotOverrideMethodOnceSet()

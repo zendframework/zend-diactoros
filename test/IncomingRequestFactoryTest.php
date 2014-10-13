@@ -1,11 +1,11 @@
 <?php
 namespace PhlyTest\Http;
 
-use Phly\Http\Request;
-use Phly\Http\RequestFactory;
+use Phly\Http\IncomingRequest;
+use Phly\Http\IncomingRequestFactory;
 use PHPUnit_Framework_TestCase as TestCase;
 
-class RequestFactoryTest extends TestCase
+class IncomingRequestFactoryTest extends TestCase
 {
     public function testGetWillReturnValueIfPresentInArray()
     {
@@ -16,7 +16,7 @@ class RequestFactoryTest extends TestCase
         ];
 
         foreach ($array as $key => $value) {
-            $this->assertSame($value, RequestFactory::get($key, $array));
+            $this->assertSame($value, IncomingRequestFactory::get($key, $array));
         }
     }
 
@@ -30,7 +30,7 @@ class RequestFactoryTest extends TestCase
         $default = 'BAT';
 
         foreach ($try as $key) {
-            $this->assertSame($default, RequestFactory::get($key, $array, $default));
+            $this->assertSame($default, IncomingRequestFactory::get($key, $array, $default));
         }
     }
 
@@ -40,7 +40,7 @@ class RequestFactoryTest extends TestCase
             'HTTP_AUTHORIZATION' => 'token',
             'HTTP_X_Foo' => 'bar',
         ];
-        $this->assertSame($server, RequestFactory::normalizeServer($server));
+        $this->assertSame($server, IncomingRequestFactory::normalizeServer($server));
     }
 
     public function testMarshalsExpectedHeadersFromServerArray()
@@ -64,19 +64,19 @@ class RequestFactoryTest extends TestCase
             'Content-Length' => 'UNSPECIFIED',
         ];
 
-        $this->assertEquals($expected, RequestFactory::marshalHeaders($server));
+        $this->assertEquals($expected, IncomingRequestFactory::marshalHeaders($server));
     }
 
     public function testStripQueryStringReturnsUnchangedStringIfNoQueryStringDetected()
     {
         $path = '/foo/bar';
-        $this->assertSame($path, RequestFactory::stripQueryString($path));
+        $this->assertSame($path, IncomingRequestFactory::stripQueryString($path));
     }
 
     public function testStripQueryStringReturnsNormalizedPathWhenQueryStringDetected()
     {
         $path = '/foo/bar?foo=bar';
-        $this->assertSame('/foo/bar', RequestFactory::stripQueryString($path));
+        $this->assertSame('/foo/bar', IncomingRequestFactory::stripQueryString($path));
     }
 
     public function testMarshalRequestUriUsesIISUnencodedUrlValueIfPresentAndUrlWasRewritten()
@@ -86,7 +86,7 @@ class RequestFactoryTest extends TestCase
             'UNENCODED_URL' => '/foo/bar',
         ];
 
-        $this->assertEquals($server['UNENCODED_URL'], RequestFactory::marshalRequestUri($server));
+        $this->assertEquals($server['UNENCODED_URL'], IncomingRequestFactory::marshalRequestUri($server));
     }
 
     public function testMarshalRequestUriUsesHTTPXRewriteUrlIfPresent()
@@ -98,7 +98,7 @@ class RequestFactoryTest extends TestCase
             'HTTP_X_REWRITE_URL' => '/bar/baz',
         ];
 
-        $this->assertEquals($server['HTTP_X_REWRITE_URL'], RequestFactory::marshalRequestUri($server));
+        $this->assertEquals($server['HTTP_X_REWRITE_URL'], IncomingRequestFactory::marshalRequestUri($server));
     }
 
     public function testMarshalRequestUriUsesHTTPXOriginalUrlIfPresent()
@@ -111,7 +111,7 @@ class RequestFactoryTest extends TestCase
             'HTTP_X_ORIGINAL_URL' => '/baz/bat',
         ];
 
-        $this->assertEquals($server['HTTP_X_ORIGINAL_URL'], RequestFactory::marshalRequestUri($server));
+        $this->assertEquals($server['HTTP_X_ORIGINAL_URL'], IncomingRequestFactory::marshalRequestUri($server));
     }
 
     public function testMarshalRequestUriStripsSchemeHostAndPortInformationWhenPresent()
@@ -120,7 +120,7 @@ class RequestFactoryTest extends TestCase
             'REQUEST_URI' => 'http://example.com:8000/foo/bar',
         ];
 
-        $this->assertEquals('/foo/bar', RequestFactory::marshalRequestUri($server));
+        $this->assertEquals('/foo/bar', IncomingRequestFactory::marshalRequestUri($server));
     }
 
     public function testMarshalRequestUriUsesOrigPathInfoIfPresent()
@@ -129,179 +129,179 @@ class RequestFactoryTest extends TestCase
             'ORIG_PATH_INFO' => '/foo/bar',
         ];
 
-        $this->assertEquals('/foo/bar', RequestFactory::marshalRequestUri($server));
+        $this->assertEquals('/foo/bar', IncomingRequestFactory::marshalRequestUri($server));
     }
 
     public function testMarshalRequestUriFallsBackToRoot()
     {
         $server = [];
 
-        $this->assertEquals('/', RequestFactory::marshalRequestUri($server));
+        $this->assertEquals('/', IncomingRequestFactory::marshalRequestUri($server));
     }
 
     public function testMarshalHostAndPortUsesHostHeaderWhenPresent()
     {
-        $request = new Request('1.1');
+        $request = new IncomingRequest();
         $request->addHeader('Host', 'example.com');
 
         $accumulator = (object) ['host' => '', 'port' => null];
-        RequestFactory::marshalHostAndPort($accumulator, [], $request);
+        IncomingRequestFactory::marshalHostAndPort($accumulator, [], $request);
         $this->assertEquals('example.com', $accumulator->host);
         $this->assertNull($accumulator->port);
     }
 
     public function testMarshalHostAndPortWillDetectPortInHostHeaderWhenPresent()
     {
-        $request = new Request('1.1');
+        $request = new IncomingRequest();
         $request->addHeader('Host', 'example.com:8000');
 
         $accumulator = (object) ['host' => '', 'port' => null];
-        RequestFactory::marshalHostAndPort($accumulator, [], $request);
+        IncomingRequestFactory::marshalHostAndPort($accumulator, [], $request);
         $this->assertEquals('example.com', $accumulator->host);
         $this->assertEquals(8000, $accumulator->port);
     }
 
     public function testMarshalHostAndPortReturnsEmptyValuesIfNoHostHeaderAndNoServerName()
     {
-        $request = new Request('1.1');
+        $request = new IncomingRequest();
         $accumulator = (object) ['host' => '', 'port' => null];
-        RequestFactory::marshalHostAndPort($accumulator, [], $request);
+        IncomingRequestFactory::marshalHostAndPort($accumulator, [], $request);
         $this->assertEquals('', $accumulator->host);
         $this->assertNull($accumulator->port);
     }
 
     public function testMarshalHostAndPortReturnsServerNameForHostWhenPresent()
     {
-        $request = new Request('1.1');
+        $request = new IncomingRequest();
         $server  = [
             'SERVER_NAME' => 'example.com',
         ];
         $accumulator = (object) ['host' => '', 'port' => null];
-        RequestFactory::marshalHostAndPort($accumulator, $server, $request);
+        IncomingRequestFactory::marshalHostAndPort($accumulator, $server, $request);
         $this->assertEquals('example.com', $accumulator->host);
         $this->assertNull($accumulator->port);
     }
 
     public function testMarshalHostAndPortReturnsServerPortForPortWhenPresentWithServerName()
     {
-        $request = new Request('1.1');
+        $request = new IncomingRequest();
         $server  = [
             'SERVER_NAME' => 'example.com',
             'SERVER_PORT' => 8000,
         ];
         $accumulator = (object) ['host' => '', 'port' => null];
-        RequestFactory::marshalHostAndPort($accumulator, $server, $request);
+        IncomingRequestFactory::marshalHostAndPort($accumulator, $server, $request);
         $this->assertEquals('example.com', $accumulator->host);
         $this->assertEquals(8000, $accumulator->port);
     }
 
     public function testMarshalHostAndPortReturnsServerNameForHostIfServerAddrPresentButHostIsNotIpv6Address()
     {
-        $request = new Request('1.1');
+        $request = new IncomingRequest();
         $server  = [
             'SERVER_ADDR' => '127.0.0.1',
             'SERVER_NAME' => 'example.com',
         ];
         $accumulator = (object) ['host' => '', 'port' => null];
-        RequestFactory::marshalHostAndPort($accumulator, $server, $request);
+        IncomingRequestFactory::marshalHostAndPort($accumulator, $server, $request);
         $this->assertEquals('example.com', $accumulator->host);
     }
 
     public function testMarshalHostAndPortReturnsServerAddrForHostIfPresentAndHostIsIpv6Address()
     {
-        $request = new Request('1.1');
+        $request = new IncomingRequest();
         $server  = [
             'SERVER_ADDR' => 'FE80::0202:B3FF:FE1E:8329',
             'SERVER_NAME' => '[FE80::0202:B3FF:FE1E:8329]',
             'SERVER_PORT' => 8000,
         ];
         $accumulator = (object) ['host' => '', 'port' => null];
-        RequestFactory::marshalHostAndPort($accumulator, $server, $request);
+        IncomingRequestFactory::marshalHostAndPort($accumulator, $server, $request);
         $this->assertEquals('[FE80::0202:B3FF:FE1E:8329]', $accumulator->host);
         $this->assertEquals(8000, $accumulator->port);
     }
 
     public function testMarshalHostAndPortWillDetectPortInIpv6StyleHost()
     {
-        $request = new Request('1.1');
+        $request = new IncomingRequest();
         $server  = [
             'SERVER_ADDR' => 'FE80::0202:B3FF:FE1E:8329',
             'SERVER_NAME' => '[FE80::0202:B3FF:FE1E:8329:80]',
         ];
         $accumulator = (object) ['host' => '', 'port' => null];
-        RequestFactory::marshalHostAndPort($accumulator, $server, $request);
+        IncomingRequestFactory::marshalHostAndPort($accumulator, $server, $request);
         $this->assertEquals('[FE80::0202:B3FF:FE1E:8329]', $accumulator->host);
         $this->assertEquals(80, $accumulator->port);
     }
 
     public function testMarshalUriDetectsHttpsSchemeFromServerValue()
     {
-        $request = new Request('1.1');
+        $request = new IncomingRequest();
         $request->addHeader('Host', 'example.com');
         $server  = [
             'HTTPS' => true,
         ];
 
-        $uri = RequestFactory::marshalUri($server, $request);
+        $uri = IncomingRequestFactory::marshalUri($server, $request);
         $this->assertInstanceOf('Phly\Http\Uri', $uri);
         $this->assertEquals('https', $uri->scheme);
     }
 
     public function testMarshalUriUsesHttpSchemeIfHttpsServerValueEqualsOff()
     {
-        $request = new Request('1.1');
+        $request = new IncomingRequest();
         $request->addHeader('Host', 'example.com');
         $server  = [
             'HTTPS' => 'off',
         ];
 
-        $uri = RequestFactory::marshalUri($server, $request);
+        $uri = IncomingRequestFactory::marshalUri($server, $request);
         $this->assertInstanceOf('Phly\Http\Uri', $uri);
         $this->assertEquals('http', $uri->scheme);
     }
 
     public function testMarshalUriDetectsHttpsSchemeFromXForwardedProtoValue()
     {
-        $request = new Request('1.1');
+        $request = new IncomingRequest();
         $request->addHeader('Host', 'example.com');
         $request->addHeader('X-Forwarded-Proto', 'https');
         $server  = [];
 
-        $uri = RequestFactory::marshalUri($server, $request);
+        $uri = IncomingRequestFactory::marshalUri($server, $request);
         $this->assertInstanceOf('Phly\Http\Uri', $uri);
         $this->assertEquals('https', $uri->scheme);
     }
 
     public function testMarshalUriStripsQueryStringFromRequestUri()
     {
-        $request = new Request('1.1');
+        $request = new IncomingRequest();
         $request->addHeader('Host', 'example.com');
         $server = [
             'REQUEST_URI' => '/foo/bar?foo=bar',
         ];
 
-        $uri = RequestFactory::marshalUri($server, $request);
+        $uri = IncomingRequestFactory::marshalUri($server, $request);
         $this->assertInstanceOf('Phly\Http\Uri', $uri);
         $this->assertEquals('/foo/bar', $uri->path);
     }
 
     public function testMarshalUriInjectsQueryStringFromServer()
     {
-        $request = new Request('1.1');
+        $request = new IncomingRequest();
         $request->addHeader('Host', 'example.com');
         $server = [
             'REQUEST_URI' => '/foo/bar?foo=bar',
             'QUERY_STRING' => 'bar=baz',
         ];
 
-        $uri = RequestFactory::marshalUri($server, $request);
+        $uri = IncomingRequestFactory::marshalUri($server, $request);
         $this->assertInstanceOf('Phly\Http\Uri', $uri);
         $this->assertEquals('bar=baz', $uri->query);
     }
 
     public function testStateOfPassedRequestInstanceIsUpdatedWhenPassedToFromServer()
     {
-        $request = new Request('1.1');
+        $request = new IncomingRequest();
 
         $server = [
             'HTTP_HOST' => 'example.com',
@@ -311,7 +311,7 @@ class RequestFactoryTest extends TestCase
             'QUERY_STRING' => 'bar=baz',
         ];
 
-        $result = RequestFactory::fromServer($server, $request);
+        $result = IncomingRequestFactory::fromServer($server, $request);
         $this->assertSame($request, $result);
         $this->assertEquals('POST', $request->getMethod());
 
@@ -339,7 +339,7 @@ class RequestFactoryTest extends TestCase
             'QUERY_STRING' => 'bar=baz',
         ];
 
-        $request = RequestFactory::fromServer($server);
+        $request = IncomingRequestFactory::fromServer($server);
         $this->assertInstanceOf('Phly\Http\Request', $request);
 
         $this->assertEquals('1.1', $request->getProtocolVersion());
@@ -371,9 +371,38 @@ class RequestFactoryTest extends TestCase
             'QUERY_STRING' => 'bar=baz',
         ];
 
-        $request = RequestFactory::fromServer($server);
+        $request = IncomingRequestFactory::fromServer($server);
         $this->assertInstanceOf('Phly\Http\Request', $request);
 
         $this->assertEquals('1.0', $request->getProtocolVersion());
+    }
+
+    public function testCanCreateIncomingRequestViaFromGlobalsMethod()
+    {
+        $server = [
+            'SERVER_PROTOCOL' => '1.1',
+            'HTTP_HOST' => 'example.com',
+            'HTTP_ACCEPT' => 'application/json',
+            'REQUEST_METHOD' => 'POST',
+            'REQUEST_URI' => '/foo/bar',
+            'QUERY_STRING' => 'bar=baz',
+        ];
+
+        $cookies = $query = $body = $files = [
+            'bar' => 'baz',
+        ];
+
+        $cookies['cookies'] = true;
+        $query['query']     = true;
+        $body['body']       = true;
+        $files['files']     = true;
+
+        $request = IncomingRequestFactory::fromGlobals($server, $query, $body, $cookies, $files);
+        $this->assertInstanceOf('Phly\Http\IncomingRequest', $request);
+        $this->assertEquals($cookies, $request->getCookieParams());
+        $this->assertEquals($query, $request->getQueryParams());
+        $this->assertEquals($body, $request->getBodyParams());
+        $this->assertEquals($files, $request->getFileParams());
+        $this->assertEmpty($request->getPathParams());
     }
 }

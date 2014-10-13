@@ -2,6 +2,51 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release..
 
+## 0.5.0 - TBD
+
+This release has some backwards incompatible breaks, including:
+
+- `Phly\Http\Request` no longer accepts an HTTP protocol version as a constructor argument. Use `setProtocolVersion()` instead.
+- `Phly\Http\Request` now uses `php://memory` as the default body stream. (`IncomingRequest` uses `php://input` as the default stream.)
+- `Phly\Http\RequestFactory` has been renamed to `Phly\Http\IncomingRequestFactory`
+  - It also now expects an `IncomingRequestInterface` if passed a request object to populate.
+- `Phly\Http\Server::createServer()` now expects 4 additional arguments:
+  - `$query`, usually `$_GET`
+  - `$body`, usually `$_POST`
+  - `$cookies`, usually `$_COOKIE`
+  - `$files`, usually `$_FILES`
+- `Phly\Http\Server` now composes a `Psr\Http\Message\IncomingRequestInterface` instance, not a `Psr\Http\Message\RequestInterface` instance. This has the implication that all handlers will now receive more specifically an `IncomingRequest`. The change affects each of the following method signatures:
+  - `__construct()`
+  - `createServer()`
+  - `createServerFromRequest()`
+  
+### Added
+
+- `Phly\Http\MessageTrait::setProtocolVersion($version)`, per changes in PSR-7 (this is now defined in the `MessageInterface`).
+- Note in `Phly\Http\Stream::read()`'s `@return` annotation indicating that it can also return boolean `false`.
+- `Phly\Http\IncomingRequest`, which implements `Psr\Http\Message\IncomingRequestInterface` and provides a server-side request implementation with accessors for each type of request datum typically accessed (cookies, matched path parameters, query string arguments, body parameters, and upload file information). It uses `php://input` as the default body stream.
+- `Phly\Http\IncomingRequestFactory` (which replaces `Phly\Http\RequestFactory`)
+  - `fromGlobals($server, $query, $body, $cookies, $files)` factory method for creating an `IncomingRequest` instance from superglobals; all arguments are optional, and, if not provided, will be derived from the relevant superglobal.
+- `Phly\Http\Server::createServer()` now expects 4 additional arguments:
+  - `$query`, usually `$_GET`
+  - `$body`, usually `$_POST`
+  - `$cookies`, usually `$_COOKIE`
+  - `$files`, usually `$_FILES`
+
+### Deprecated
+
+- `Phly\Http\Request` no longer accepts an HTTP protocol version as a constructor argument. Use `setProtocolVersion()` instead.
+- `Phly\Http\Server` no longer works with standard `Psr\Http\Message\RequestInterface` implementations; it requires `Psr\Http\Message\IncomingRequestInterface` implementations.
+
+### Removed
+
+- `Phly\Http\RequestFactory` (it is now `Phly\Http\IncomingRequestFactory`)
+
+### Fixed
+
+- `Phly\Http\Stream::read()` now returns boolean false when the stream is not readable, or no resource is present.
+
+
 ## 0.4.2 - 2014-10-09
 
 ### Added

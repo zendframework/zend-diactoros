@@ -243,12 +243,14 @@ class Stream implements StreamableInterface
      *                    them. Fewer than $length bytes may be returned if
      *                    underlying stream call returns fewer bytes.
      *
-     * @return string     Returns the data read from the stream.
+     * @return string|false Returns the data read from the stream; in the event
+     *                      of an error or inability to read, can return boolean
+     *                      false.
      */
     public function read($length)
     {
         if (! $this->resource || ! $this->isReadable()) {
-            return '';
+            return false;
         }
 
         if ($this->eof()) {
