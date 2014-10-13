@@ -14,7 +14,7 @@ class ServerTest extends TestCase
         $this->callback   = function ($req, $res, $done) {
             //  Intentionally empty
         };
-        $this->request    = $this->getMock('Psr\Http\Message\RequestInterface');
+        $this->request    = $this->getMock('Psr\Http\Message\IncomingRequestInterface');
         $this->response   = $this->getMock('Psr\Http\Message\ResponseInterface');
     }
 

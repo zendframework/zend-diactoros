@@ -2,7 +2,7 @@
 namespace Phly\Http;
 
 use OutOfBoundsException;
-use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\IncomingRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
 /**
@@ -27,7 +27,7 @@ class Server
     private $callback;
 
     /**
-     * @var RequestInterface
+     * @var IncomingRequestInterface
      */
     private $request;
 
@@ -42,12 +42,12 @@ class Server
      * Given a callback, a request, and a response, we can create a server.
      *
      * @param callable $callback
-     * @param RequestInterface $request
+     * @param IncomingRequestInterface $request
      * @param ResponseInterface $response
      */
     public function __construct(
         callable $callback,
-        RequestInterface $request,
+        IncomingRequestInterface $request,
         ResponseInterface $response
     ) {
         $this->callback = $callback;
@@ -112,13 +112,13 @@ class Server
      * If no Response object is provided, one will be created.
      *
      * @param callable $callback
-     * @param RequestInterface $request
+     * @param IncomingRequestInterface $request
      * @param null|ResponseInterface $response
      * @return self
      */
     public static function createServerFromRequest(
         callable $callback,
-        RequestInterface $request,
+        IncomingRequestInterface $request,
         ResponseInterface $response = null
     ) {
         if (! $response) {

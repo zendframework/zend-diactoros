@@ -15,6 +15,10 @@ This release has some backwards incompatible breaks, including:
   - `$body`, usually `$_POST`
   - `$cookies`, usually `$_COOKIE`
   - `$files`, usually `$_FILES`
+- `Phly\Http\Server` now composes a `Psr\Http\Message\IncomingRequestInterface` instance, not a `Psr\Http\Message\RequestInterface` instance. This has the implication that all handlers will now receive more specifically an `IncomingRequest`. The change affects each of the following method signatures:
+  - `__construct()`
+  - `createServer()`
+  - `createServerFromRequest()`
   
 ### Added
 
@@ -32,6 +36,7 @@ This release has some backwards incompatible breaks, including:
 ### Deprecated
 
 - `Phly\Http\Request` no longer accepts an HTTP protocol version as a constructor argument. Use `setProtocolVersion()` instead.
+- `Phly\Http\Server` no longer works with standard `Psr\Http\Message\RequestInterface` implementations; it requires `Psr\Http\Message\IncomingRequestInterface` implementations.
 
 ### Removed
 
