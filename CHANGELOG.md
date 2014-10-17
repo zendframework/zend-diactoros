@@ -2,19 +2,29 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release..
 
-## TBD - TBD
+## 0.6.0 - 2014-10.17
+
+Updated component to psr/http-message 0.4.0. That release contains a number of backwards-incompatible changes.
 
 ### Added
 
-- Nothing.
+- Added IncomingRequestFactory::setHeaders() for simplifying setting
+  (overwriting) many headers at once from an array.
+- Updated MessageTrait::addHeader() to allow array values
+- Modified IncomingRequest to `s/PathParams/Attributes/g`
 
 ### Deprecated
 
-- Nothing.
+- IncomingRequest now only allows arrays for either input or return values; Array-like objects are no longer accepted.
+- Removed ability to pass objects to MessageTrait::addHeader()/setHeader()
+- Removed setHeaders()/addHeaders() from MessageTrait
+- Modified IncomingRequest to `s/PathParams/Attributes/g`
 
 ### Removed
 
-- Nothing.
+- Removed ability to pass objects to MessageTrait::addHeader()/setHeader()
+- Removed setHeaders()/addHeaders() from MessageTrait
+- Modified IncomingRequest to `s/PathParams/Attributes/g`
 
 ### Fixed
 

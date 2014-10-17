@@ -62,20 +62,4 @@ class ResponseTest extends TestCase
         $this->setExpectedException('InvalidArgumentException');
         new Response([ 'TOTALLY INVALID' ]);
     }
-
-    public function testSetHeadersDelegatesToParent()
-    {
-        $this->response->setHeaders([
-            'Content-Type' => 'application/json',
-        ]);
-        $this->assertTrue($this->response->hasHeader('Content-Type'));
-    }
-
-    public function testAddHeadersDelegatesToParent()
-    {
-        $this->response->addHeaders([
-            'Content-Type' => 'application/json',
-        ]);
-        $this->assertTrue($this->response->hasHeader('Content-Type'));
-    }
 }

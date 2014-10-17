@@ -403,6 +403,6 @@ class IncomingRequestFactoryTest extends TestCase
         $this->assertEquals($query, $request->getQueryParams());
         $this->assertEquals($body, $request->getBodyParams());
         $this->assertEquals($files, $request->getFileParams());
-        $this->assertEmpty($request->getPathParams());
+        $this->assertEmpty($request->getAttributes());
     }
 }

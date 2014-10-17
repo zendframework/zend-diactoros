@@ -25,23 +25,6 @@ class MessageTraitTest extends TestCase
         $this->assertSame($stream, $this->message->getBody());
     }
 
-    public function testCanSetHeaders()
-    {
-        $headers = array(
-            'Origin'        => 'http://example.com',
-            'Accept'        => 'application/json',
-            'Content-Type'  => 'application/json',
-            'Authorization' => 'Bearer foobartoken',
-        );
-
-        $this->message->setHeaders($headers);
-        $expected = array_change_key_case($headers);
-        array_walk($expected, function (&$value) {
-            $value = [$value];
-        });
-        $this->assertEquals($expected, $this->message->getHeaders());
-    }
-
     public function testGetHeaderAsArrayReturnsHeaderValueAsArray()
     {
         $this->message->setHeader('X-Foo', ['Foo', 'Bar']);
@@ -72,25 +55,6 @@ class MessageTraitTest extends TestCase
         $this->assertEquals('Foo,Bar', $this->message->getHeader('X-Foo'));
     }
 
-    public function testAddHeadersMergesWithExistingHeaders()
-    {
-        $headers = [
-            'Origin'        => 'http://example.com',
-            'Accept'        => 'application/json',
-            'Content-Type'  => 'application/json',
-            'Authorization' => 'Bearer foobartoken',
-        ];
-        $this->message->setHeaders($headers);
-
-        $this->message->addHeaders([
-            'Accept' => 'application/*+json',
-            'X-Foo'  => 'Foo',
-        ]);
-
-        $this->assertEquals(['application/json', 'application/*+json'], $this->message->getHeaderAsArray('accept'));
-        $this->assertEquals('Foo', $this->message->getHeader('x-foo'));
-    }
-
     public function testCanRemoveHeaders()
     {
         $this->message->setHeader('X-Foo', 'Foo');
@@ -107,7 +71,7 @@ class MessageTraitTest extends TestCase
             'false'  => [false],
             'int'    => [1],
             'float'  => [1.1],
-            'array'  => [[ 'foo' => 'bar' ]],
+            'array'  => [[ 'foo' => [ 'bar' ] ]],
             'object' => [(object) [ 'foo' => 'bar' ]],
         ];
     }
@@ -142,19 +106,10 @@ class MessageTraitTest extends TestCase
         $this->message->setHeader('X-Foo', $value);
     }
 
-    public function testSetHeadersRaisesExceptionForNonStringKeys()
-    {
-        $this->setExpectedException('InvalidArgumentException', 'not a string');
-        $this->message->setHeaders([
-            'application/json',
-            'text/plain',
-        ]);
-    }
-
     /**
      * @dataProvider invalidGeneralHeaderValues
      */
-    public function testAddHeaderRaisesExceptionForNonStringValue($value)
+    public function testAddHeaderRaisesExceptionForNonStringNonArrayValue($value)
     {
         $this->setExpectedException('InvalidArgumentException', 'must be a string');
         $this->message->addHeader('X-Foo', $value);
@@ -165,29 +120,5 @@ class MessageTraitTest extends TestCase
         $this->assertFalse($this->message->hasHeader('X-Foo'));
         $this->message->removeHeader('X-Foo');
         $this->assertFalse($this->message->hasHeader('X-Foo'));
-    }
-
-    public function testAllowAddingHeaderValuesUsingObjectsThatCastToString()
-    {
-        $header = new TestAsset\Header();
-        $header->value = 'foo; bar; baz, bat';
-        $this->message->addHeader('X-Foo', $header);
-        $this->assertEquals((string) $header, $this->message->getHeader('X-Foo'));
-    }
-
-    public function testAllowSettingArrayOfHeaderValuesUsingObjectsThatCastToString()
-    {
-        $values = [];
-        foreach (range(1, 5) as $i) {
-            $header = new TestAsset\Header();
-            $header->value = 'foo(' . $i . ')';
-            $values[] = $header;
-        }
-        $this->message->setHeader('X-Foo', $values);
-
-        $value = $this->message->getHeader('X-Foo');
-        foreach (range(1, 5) as $i) {
-            $this->assertContains('foo(' . $i . ')', $value);
-        }
     }
 }
