@@ -6,7 +6,7 @@ use Psr\Http\Message\StreamableInterface;
 
 /**
  * Trait implementing the various methods defined in
- * \Psr\Http\Message\ MessageInterface.
+ * \Psr\Http\Message\MessageInterface.
  */
 trait MessageTrait
 {
@@ -155,65 +155,23 @@ trait MessageTrait
      * or an array of strings.
      *
      * @param string $header Header name
-     * @param string|string[]|object|object[] $value  Header values; any objects must be castable to strings
-     *
-     * @return void
+     * @param string|string[] $value  Header value(s)
      */
     public function setHeader($header, $value)
     {
-        if (is_object($value) && method_exists($value, '__toString')) {
-            $value = (string) $value;
-        }
-
-        if (! is_string($value) && ! is_array($value)) {
-            throw new InvalidArgumentException('Invalid header value; must be a string or array of strings');
-        }
-
-        if (is_array($value)) {
-            $valid = true;
-            array_walk($value, function ($value) use (&$valid) {
-                if (is_object($value) && method_exists($value, '__toString')) {
-                    $value = (string) $value;
-                }
-
-                if (! is_string($value)) {
-                    $valid = false;
-                }
-            });
-
-            if (! $valid) {
-                throw new InvalidArgumentException('Invalid header value; must be a string or array of strings');
-            }
-        }
+        $header = strtolower($header);
 
         if (is_string($value)) {
-            $value = [$value];
+            $value = [ $value ];
         }
 
-        $this->headers[strtolower($header)] = $value;
-    }
-
-    /**
-     * Sets headers, replacing any headers that have already been set on the message.
-     *
-     * The array keys MUST be a string. The array values must be either a
-     * string or an array of strings.
-     *
-     * @param array $headers Headers to set.
-     *
-     * @return void
-     */
-    public function setHeaders(array $headers)
-    {
-        $this->headers = [];
-
-        foreach ($headers as $key => $value) {
-            if (! is_string($key)) {
-                throw new InvalidArgumentException('One or more keys in the headers array is not a string');
-            }
-
-            $this->setHeader($key, $value);
+        if (! is_array($value) || ! $this->arrayContainsOnlyStrings($value)) {
+            throw new InvalidArgumentException(
+                'Invalid header value; must be a string or array of strings'
+            );
         }
+
+        $this->headers[$header] = $value;
     }
 
     /**
@@ -223,20 +181,20 @@ trait MessageTrait
      * value will be appended to the existing list.
      *
      * @param string $header Header name to add
-     * @param string|object $value  Value of the header; if an object, must be able to cast to a string
-     *
-     * @return void
+     * @param string|string[] $value  Value of the header; a string or array of strings
      */
     public function addHeader($header, $value)
     {
         $header = strtolower($header);
 
-        if (is_object($value) && method_exists($value, '__toString')) {
-            $value = (string) $value;
+        if (is_string($value)) {
+            $value = [ $value ];
         }
 
-        if (! is_string($value)) {
-            throw new InvalidArgumentException('Invalid header value; must be a string');
+        if (! is_array($value) || ! $this->arrayContainsOnlyStrings($value)) {
+            throw new InvalidArgumentException(
+                'Invalid header value; must be a string or array of strings'
+            );
         }
 
         if (! $this->hasHeader($header)) {
@@ -244,27 +202,7 @@ trait MessageTrait
             return;
         }
 
-        $this->headers[$header][] = $value;
-    }
-
-    /**
-     * Merges in an associative array of headers.
-     *
-     * Each array key MUST be a string representing the case-insensitive name
-     * of a header. Each value MUST be either a string or an array of strings.
-     * For each value, the value is appended to any existing header of the same
-     * name, or, if a header does not already exist by the given name, then the
-     * header is added.
-     *
-     * @param array $headers Associative array of headers to add to the message
-     *
-     * @return void
-     */
-    public function addHeaders(array $headers)
-    {
-        foreach ($headers as $header => $value) {
-            $this->addHeader($header, $value);
-        }
+        $this->headers[$header] = array_merge($this->headers[$header], $value);
     }
 
     /**
@@ -281,5 +219,33 @@ trait MessageTrait
         }
 
         unset($this->headers[strtolower($header)]);
+    }
+
+    /**
+     * Test that an array contains only strings
+     * 
+     * @param array $array 
+     * @return bool
+     */
+    private function arrayContainsOnlyStrings(array $array)
+    {
+        return array_reduce($array, [ __CLASS__, 'filterStringValue'], true);
+    }
+
+    /**
+     * Test if a value is a string
+     *
+     * Used with array_reduce.
+     * 
+     * @param bool $carry 
+     * @param mixed $item 
+     * @return bool
+     */
+    private static function filterStringValue($carry, $item)
+    {
+        if (! is_string($item)) {
+            return false;
+        }
+        return $carry;
     }
 }

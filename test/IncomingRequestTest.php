@@ -31,9 +31,9 @@ class IncomingRequestTest extends TestCase
         $this->assertEmpty($this->request->getBodyParams());
     }
 
-    public function testPathParamsAreEmptyByDefault()
+    public function testAttributesAreEmptyByDefault()
     {
-        $this->assertEmpty($this->request->getPathParams());
+        $this->assertEmpty($this->request->getAttributes());
     }
 
     /**
@@ -63,35 +63,35 @@ class IncomingRequestTest extends TestCase
     }
 
     /**
-     * @depends testPathParamsAreEmptyByDefault
+     * @depends testAttributesAreEmptyByDefault
      */
-    public function testPathParamsAreMutable()
+    public function testAttributesAreMutable()
     {
         $params = [
             'foo' => 'bar',
             'baz' => 'bat',
         ];
-        $this->request->setPathParams($params);
-        $this->assertEquals($params, $this->request->getPathParams());
+        $this->request->setAttributes($params);
+        $this->assertEquals($params, $this->request->getAttributes());
     }
 
     public function testRequestDataMayBeSetAsDiscreteConstructorArguments()
     {
-        $cookies = $path = $query = $body = $files = [
+        $cookies = $attributes = $query = $body = $files = [
             'foo' => 'bar',
             'baz' => 'bat',
         ];
 
         $cookies['cookies'] = true;
-        $path['path']       = true;
+        $attributes['path'] = true;
         $query['query']     = true;
         $body['body']       = true;
         $files['files']     = true;
 
-        $request = new IncomingRequest('php://memory', $cookies, $path, $query, $body, $files);
+        $request = new IncomingRequest('php://memory', $cookies, $attributes, $query, $body, $files);
 
         $this->assertEquals($cookies, $request->getCookieParams());
-        $this->assertEquals($path, $request->getPathParams());
+        $this->assertEquals($attributes, $request->getAttributes());
         $this->assertEquals($query, $request->getQueryParams());
         $this->assertEquals($body, $request->getBodyParams());
         $this->assertEquals($files, $request->getFileParams());
@@ -99,13 +99,13 @@ class IncomingRequestTest extends TestCase
 
     public function testRequestDataMayBePassedViaAnAssociativeArray()
     {
-        $cookies = $path = $query = $body = $files = [
+        $cookies = $attributes = $query = $body = $files = [
             'foo' => 'bar',
             'baz' => 'bat',
         ];
 
         $cookies['cookies'] = true;
-        $path['path']       = true;
+        $attributes['path'] = true;
         $query['query']     = true;
         $body['body']       = true;
         $files['files']     = true;
@@ -113,7 +113,7 @@ class IncomingRequestTest extends TestCase
         $data = [
             'stream'       => 'php://memory',
             'cookieParams' => $cookies,
-            'pathParams'   => $path,
+            'attributes'   => $attributes,
             'queryParams'  => $query,
             'bodyParams'   => $body,
             'fileParams'   => $files,
@@ -122,7 +122,7 @@ class IncomingRequestTest extends TestCase
         $request = new IncomingRequest($data);
 
         $this->assertEquals($cookies, $request->getCookieParams());
-        $this->assertEquals($path, $request->getPathParams());
+        $this->assertEquals($attributes, $request->getAttributes());
         $this->assertEquals($query, $request->getQueryParams());
         $this->assertEquals($body, $request->getBodyParams());
         $this->assertEquals($files, $request->getFileParams());

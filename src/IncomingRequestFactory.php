@@ -2,6 +2,7 @@
 namespace Phly\Http;
 
 use Psr\Http\Message\IncomingRequestInterface;
+use Psr\Http\Message\RequestInterface;
 use stdClass;
 
 /**
@@ -72,7 +73,7 @@ abstract class IncomingRequestFactory
         }
 
         $request->setMethod(self::get('REQUEST_METHOD', $server, 'GET'));
-        $request->setHeaders(self::marshalHeaders($server));
+        self::setHeaders($request, self::marshalHeaders($server));
         $request->setUrl(self::marshalUri($server, $request));
         return $request;
     }
@@ -155,6 +156,21 @@ abstract class IncomingRequestFactory
         }
 
         return $headers;
+    }
+
+    /**
+     * Set the headers for a request.
+     *
+     * Injects the given request instance with the headers provided.
+     * 
+     * @param RequestInterface $request 
+     * @param array $headers 
+     */
+    public static function setHeaders(RequestInterface $request, array $headers)
+    {
+        foreach ($headers as $header => $values) {
+            $request->setHeader($header, $values);
+        }
     }
 
     /**
