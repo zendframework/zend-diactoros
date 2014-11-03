@@ -56,12 +56,12 @@ class IncomingRequestFactoryTest extends TestCase
         ];
 
         $expected = [
-            'Authorization' => 'token',
-            'Content-Type' => 'application/json',
-            'Accept' => 'application/json',
-            'X-Foo-Bar' => 'FOOBAR',
-            'Content-MD5' => 'CONTENT-MD5',
-            'Content-Length' => 'UNSPECIFIED',
+            'authorization' => 'token',
+            'content-type' => 'application/json',
+            'accept' => 'application/json',
+            'x-foo-bar' => 'FOOBAR',
+            'content-md5' => 'CONTENT-MD5',
+            'content-length' => 'UNSPECIFIED',
         ];
 
         $this->assertEquals($expected, IncomingRequestFactory::marshalHeaders($server));
@@ -141,8 +141,7 @@ class IncomingRequestFactoryTest extends TestCase
 
     public function testMarshalHostAndPortUsesHostHeaderWhenPresent()
     {
-        $request = new IncomingRequest();
-        $request->addHeader('Host', 'example.com');
+        $request = new IncomingRequest('http://example.com/', 'GET', [ 'Host' => 'example.com' ]);
 
         $accumulator = (object) ['host' => '', 'port' => null];
         IncomingRequestFactory::marshalHostAndPort($accumulator, [], $request);
@@ -152,8 +151,7 @@ class IncomingRequestFactoryTest extends TestCase
 
     public function testMarshalHostAndPortWillDetectPortInHostHeaderWhenPresent()
     {
-        $request = new IncomingRequest();
-        $request->addHeader('Host', 'example.com:8000');
+        $request = new IncomingRequest('http://example.com:8000/', 'GET', [ 'Host' => 'example.com:8000' ]);
 
         $accumulator = (object) ['host' => '', 'port' => null];
         IncomingRequestFactory::marshalHostAndPort($accumulator, [], $request);
@@ -163,7 +161,7 @@ class IncomingRequestFactoryTest extends TestCase
 
     public function testMarshalHostAndPortReturnsEmptyValuesIfNoHostHeaderAndNoServerName()
     {
-        $request = new IncomingRequest();
+        $request = new IncomingRequest('http://example.com/');
         $accumulator = (object) ['host' => '', 'port' => null];
         IncomingRequestFactory::marshalHostAndPort($accumulator, [], $request);
         $this->assertEquals('', $accumulator->host);
@@ -172,7 +170,7 @@ class IncomingRequestFactoryTest extends TestCase
 
     public function testMarshalHostAndPortReturnsServerNameForHostWhenPresent()
     {
-        $request = new IncomingRequest();
+        $request = new IncomingRequest('http://example.com/');
         $server  = [
             'SERVER_NAME' => 'example.com',
         ];
@@ -184,7 +182,7 @@ class IncomingRequestFactoryTest extends TestCase
 
     public function testMarshalHostAndPortReturnsServerPortForPortWhenPresentWithServerName()
     {
-        $request = new IncomingRequest();
+        $request = new IncomingRequest('http://example.com/');
         $server  = [
             'SERVER_NAME' => 'example.com',
             'SERVER_PORT' => 8000,
@@ -197,7 +195,7 @@ class IncomingRequestFactoryTest extends TestCase
 
     public function testMarshalHostAndPortReturnsServerNameForHostIfServerAddrPresentButHostIsNotIpv6Address()
     {
-        $request = new IncomingRequest();
+        $request = new IncomingRequest('http://example.com/');
         $server  = [
             'SERVER_ADDR' => '127.0.0.1',
             'SERVER_NAME' => 'example.com',
@@ -209,7 +207,7 @@ class IncomingRequestFactoryTest extends TestCase
 
     public function testMarshalHostAndPortReturnsServerAddrForHostIfPresentAndHostIsIpv6Address()
     {
-        $request = new IncomingRequest();
+        $request = new IncomingRequest('http://example.com/');
         $server  = [
             'SERVER_ADDR' => 'FE80::0202:B3FF:FE1E:8329',
             'SERVER_NAME' => '[FE80::0202:B3FF:FE1E:8329]',
@@ -223,7 +221,7 @@ class IncomingRequestFactoryTest extends TestCase
 
     public function testMarshalHostAndPortWillDetectPortInIpv6StyleHost()
     {
-        $request = new IncomingRequest();
+        $request = new IncomingRequest('http://example.com/');
         $server  = [
             'SERVER_ADDR' => 'FE80::0202:B3FF:FE1E:8329',
             'SERVER_NAME' => '[FE80::0202:B3FF:FE1E:8329:80]',
@@ -236,8 +234,7 @@ class IncomingRequestFactoryTest extends TestCase
 
     public function testMarshalUriDetectsHttpsSchemeFromServerValue()
     {
-        $request = new IncomingRequest();
-        $request->addHeader('Host', 'example.com');
+        $request = new IncomingRequest('http://example.com/', null, [ 'Host' => 'example.com' ]);
         $server  = [
             'HTTPS' => true,
         ];
@@ -249,8 +246,9 @@ class IncomingRequestFactoryTest extends TestCase
 
     public function testMarshalUriUsesHttpSchemeIfHttpsServerValueEqualsOff()
     {
-        $request = new IncomingRequest();
-        $request->addHeader('Host', 'example.com');
+        $request = new IncomingRequest('http://example.com/', null, [
+            'Host' => 'example.com',
+        ]);
         $server  = [
             'HTTPS' => 'off',
         ];
@@ -262,9 +260,10 @@ class IncomingRequestFactoryTest extends TestCase
 
     public function testMarshalUriDetectsHttpsSchemeFromXForwardedProtoValue()
     {
-        $request = new IncomingRequest();
-        $request->addHeader('Host', 'example.com');
-        $request->addHeader('X-Forwarded-Proto', 'https');
+        $request = new IncomingRequest('http://example.com/', null, [
+            'Host'              => 'example.com',
+            'X-Forwarded-Proto' => 'https',
+        ]);
         $server  = [];
 
         $uri = IncomingRequestFactory::marshalUri($server, $request);
@@ -274,8 +273,9 @@ class IncomingRequestFactoryTest extends TestCase
 
     public function testMarshalUriStripsQueryStringFromRequestUri()
     {
-        $request = new IncomingRequest();
-        $request->addHeader('Host', 'example.com');
+        $request = new IncomingRequest('http://example.com/', null, [
+            'Host' => 'example.com',
+        ]);
         $server = [
             'REQUEST_URI' => '/foo/bar?foo=bar',
         ];
@@ -287,8 +287,9 @@ class IncomingRequestFactoryTest extends TestCase
 
     public function testMarshalUriInjectsQueryStringFromServer()
     {
-        $request = new IncomingRequest();
-        $request->addHeader('Host', 'example.com');
+        $request = new IncomingRequest('http://example.com/', null, [
+            'Host' => 'example.com',
+        ]);
         $server = [
             'REQUEST_URI' => '/foo/bar?foo=bar',
             'QUERY_STRING' => 'bar=baz',
@@ -297,84 +298,6 @@ class IncomingRequestFactoryTest extends TestCase
         $uri = IncomingRequestFactory::marshalUri($server, $request);
         $this->assertInstanceOf('Phly\Http\Uri', $uri);
         $this->assertEquals('bar=baz', $uri->query);
-    }
-
-    public function testStateOfPassedRequestInstanceIsUpdatedWhenPassedToFromServer()
-    {
-        $request = new IncomingRequest();
-
-        $server = [
-            'HTTP_HOST' => 'example.com',
-            'HTTP_ACCEPT' => 'application/json',
-            'REQUEST_METHOD' => 'POST',
-            'REQUEST_URI' => '/foo/bar',
-            'QUERY_STRING' => 'bar=baz',
-        ];
-
-        $result = IncomingRequestFactory::fromServer($server, $request);
-        $this->assertSame($request, $result);
-        $this->assertEquals('POST', $request->getMethod());
-
-        $this->assertTrue($request->hasHeader('Accept'));
-        $this->assertEquals('application/json', $request->getHeader('Accept'));
-        $this->assertTrue($request->hasHeader('Host'));
-        $this->assertEquals('example.com', $request->getHeader('Host'));
-
-        $uri = $request->getUrl();
-        $this->assertInstanceOf('Phly\Http\Uri', $uri);
-        $this->assertEquals('http', $uri->scheme);
-        $this->assertEquals('example.com', $uri->host);
-        $this->assertNull($uri->port);
-        $this->assertEquals('/foo/bar', $uri->path);
-        $this->assertEquals('bar=baz', $uri->query);
-    }
-
-    public function testFromServerWillCreateARequestInstanceIfNonePassed()
-    {
-        $server = [
-            'HTTP_HOST' => 'example.com',
-            'HTTP_ACCEPT' => 'application/json',
-            'REQUEST_METHOD' => 'POST',
-            'REQUEST_URI' => '/foo/bar',
-            'QUERY_STRING' => 'bar=baz',
-        ];
-
-        $request = IncomingRequestFactory::fromServer($server);
-        $this->assertInstanceOf('Phly\Http\Request', $request);
-
-        $this->assertEquals('1.1', $request->getProtocolVersion());
-
-        $this->assertEquals('POST', $request->getMethod());
-
-        $this->assertTrue($request->hasHeader('Accept'));
-        $this->assertEquals('application/json', $request->getHeader('Accept'));
-        $this->assertTrue($request->hasHeader('Host'));
-        $this->assertEquals('example.com', $request->getHeader('Host'));
-
-        $uri = $request->getUrl();
-        $this->assertInstanceOf('Phly\Http\Uri', $uri);
-        $this->assertEquals('http', $uri->scheme);
-        $this->assertEquals('example.com', $uri->host);
-        $this->assertNull($uri->port);
-        $this->assertEquals('/foo/bar', $uri->path);
-        $this->assertEquals('bar=baz', $uri->query);
-    }
-
-    public function testFromServerWillCreateARequestUsingProtocolFromServer()
-    {
-        $server = [
-            'SERVER_PROTOCOL' => '1.0',
-            'HTTP_HOST' => 'example.com',
-            'HTTP_ACCEPT' => 'application/json',
-            'REQUEST_METHOD' => 'POST',
-            'REQUEST_URI' => '/foo/bar',
-            'QUERY_STRING' => 'bar=baz',
-        ];
-
-        $request = IncomingRequestFactory::fromServer($server);
-        $this->assertInstanceOf('Phly\Http\Request', $request);
-
-        $this->assertEquals('1.0', $request->getProtocolVersion());
     }
 
     public function testCanCreateIncomingRequestViaFromGlobalsMethod()

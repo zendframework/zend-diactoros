@@ -87,23 +87,26 @@ class IncomingRequest implements IncomingRequestInterface
             if (isset($url['headers']) && is_array($url['headers']) && empty($headers)) {
                 $headers = $url['headers'];
             }
-            if (isset($url['serverParams']) && empty($serverParams)) {
-                $serverParams = $url['serverParams'];
+            if (isset($url['server']) && empty($serverParams)) {
+                $serverParams = $url['server'];
             }
-            if (isset($url['cookieParams']) && empty($cookieParams)) {
-                $cookieParams = $url['cookieParams'];
+            if (isset($url['cookie']) && empty($cookieParams)) {
+                $cookieParams = $url['cookie'];
+            }
+            if (isset($url['query']) && empty($queryParams)) {
+                $queryParams = $url['query'];
+            }
+            if (isset($url['body']) && empty($bodyParams)) {
+                $bodyParams = $url['body'];
+            }
+            if (isset($url['file']) && empty($fileParams)) {
+                $fileParams = $url['file'];
             }
             if (isset($url['attributes']) && empty($attributes)) {
                 $attributes = $url['attributes'];
             }
-            if (isset($url['queryParams']) && empty($queryParams)) {
-                $queryParams = $url['queryParams'];
-            }
-            if (isset($url['bodyParams']) && empty($bodyParams)) {
-                $bodyParams = $url['bodyParams'];
-            }
-            if (isset($url['fileParams']) && empty($fileParams)) {
-                $fileParams = $url['fileParams'];
+            if (isset($url['protocol']) && empty($protocolVersion)) {
+                $protocolVersion = $url['protocol'];
             }
 
             $url = isset($url['url']) ? $url['url'] : null;

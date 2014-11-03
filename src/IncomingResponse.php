@@ -42,7 +42,7 @@ class IncomingResponse implements IncomingResponseInterface
         ) {
             throw new InvalidArgumentException(sprintf(
                 'Invalid status code "%s"',
-                $statusCode
+                (is_scalar($statusCode) ? $statusCode : gettype($statusCode))
             ));
         }
 

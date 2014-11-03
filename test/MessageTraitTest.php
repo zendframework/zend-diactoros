@@ -1,7 +1,7 @@
 <?php
 namespace PhlyTest\Http;
 
-use Phly\Http\Request;
+use Phly\Http\OutgoingRequest as Request;
 use Phly\Http\Stream;
 use PHPUnit_Framework_TestCase as TestCase;
 
