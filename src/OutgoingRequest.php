@@ -3,28 +3,15 @@ namespace Phly\Http;
 
 use InvalidArgumentException;
 use RuntimeException;
-use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\OutgoingRequestInterface;
 use Psr\Http\Message\StreamableInterface;
 
 /**
- * HTTP Request encapsulation
- *
- * Allows arbitrary properties, which allows it to be used to transfer
- * state between middlewares.
+ * HTTP Request encapsulation for client-side requests.
  */
-class Request implements RequestInterface
+class OutgoingRequest implements OutgoingRequestInterface
 {
-    use MessageTrait;
-
-    /**
-     * @var string
-     */
-    private $method;
-
-    /**
-     * @var Uri
-     */
-    private $url;
+    use WritableMessageTrait, RequestTrait;
 
     /**
      * @param string $protocol
@@ -32,10 +19,6 @@ class Request implements RequestInterface
      */
     public function __construct($stream = 'php://memory')
     {
-        if ($stream === 'php://input') {
-            $stream = new PhpInputStream();
-        }
-
         if (! is_string($stream) && ! is_resource($stream) && ! $stream instanceof StreamableInterface) {
             throw new InvalidArgumentException(
                 'Stream must be a string stream resource identifier, '
@@ -52,16 +35,6 @@ class Request implements RequestInterface
     }
 
     /**
-     * Gets the HTTP method of the request.
-     *
-     * @return string Returns the request method.
-     */
-    public function getMethod()
-    {
-        return $this->method;
-    }
-
-    /**
      * Sets the method to be performed on the resource identified by the Request-URI.
      *
      * While HTTP method names are typically all uppercase characters, HTTP
@@ -74,40 +47,25 @@ class Request implements RequestInterface
      */
     public function setMethod($method)
     {
-        if ($this->method !== null) {
-            throw new RuntimeException('Method cannot be overwritten');
-        }
         $this->method = $method;
-    }
-
-    /**
-     * Gets the absolute request URL.
-     *
-     * @return Uri
-     */
-    public function getUrl()
-    {
-        return $this->url;
     }
 
     /**
      * Sets the request URL.
      *
-     * @param string|Uri $url Request URL.
+     * @param string $url Request URL.
      *
      * @throws InvalidArgumentException If the URL is invalid.
      */
     public function setUrl($url)
     {
-        if (is_string($url)) {
-            $url = new Uri($url);
+        if (! is_string($url)) {
+            throw new InvalidArgumentException('Invalid URL provided; must be a string');
         }
 
-        if (! $url instanceof Uri) {
-            throw new InvalidArgumentException('Invalid URL provided; must be a string or Uri instance');
-        }
+        $uriInstance = new Uri($url);
 
-        if (! $url->isValid()) {
+        if (! $uriInstance->isValid()) {
             throw new InvalidArgumentException('Invalid URL provided');
         }
 

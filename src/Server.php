@@ -3,7 +3,7 @@ namespace Phly\Http;
 
 use OutOfBoundsException;
 use Psr\Http\Message\IncomingRequestInterface;
-use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\OutgoingResponseInterface;
 
 /**
  * "Serve" incoming HTTP requests
@@ -32,7 +32,7 @@ class Server
     private $request;
 
     /**
-     * @var ResponseInterface
+     * @var OutgoingResponseInterface
      */
     private $response;
 
@@ -43,12 +43,12 @@ class Server
      *
      * @param callable $callback
      * @param IncomingRequestInterface $request
-     * @param ResponseInterface $response
+     * @param OutgoingResponseInterface $response
      */
     public function __construct(
         callable $callback,
         IncomingRequestInterface $request,
-        ResponseInterface $response
+        OutgoingResponseInterface $response
     ) {
         $this->callback = $callback;
         $this->request  = $request;
@@ -99,7 +99,7 @@ class Server
         array $files
     ) {
         $request  = IncomingRequestFactory::fromGlobals($server, $query, $body, $cookies, $files);
-        $response = new Response();
+        $response = new OutgoingResponse();
         return new self($callback, $request, $response);
     }
 
@@ -113,16 +113,16 @@ class Server
      *
      * @param callable $callback
      * @param IncomingRequestInterface $request
-     * @param null|ResponseInterface $response
+     * @param null|OutgoingResponseInterface $response
      * @return self
      */
     public static function createServerFromRequest(
         callable $callback,
         IncomingRequestInterface $request,
-        ResponseInterface $response = null
+        OutgoingResponseInterface $response = null
     ) {
         if (! $response) {
-            $response = new Response();
+            $response = new OutgoingResponse();
         }
         return new self($callback, $request, $response);
     }
@@ -157,9 +157,9 @@ class Server
      *
      * Finally, the response body will be emitted.
      *
-     * @param ResponseInterface $response
+     * @param OutgoingResponseInterface $response
      */
-    private function send(ResponseInterface $response)
+    private function send(OutgoingResponseInterface $response)
     {
         if (! headers_sent()) {
             $this->sendHeaders($response);
@@ -180,9 +180,9 @@ class Server
      * Sends the response status/reason, followed by all headers;
      * header names are filtered to be word-cased.
      *
-     * @param ResponseInterface $response
+     * @param OutgoingResponseInterface $response
      */
-    private function sendHeaders(ResponseInterface $response)
+    private function sendHeaders(OutgoingResponseInterface $response)
     {
         if ($response->getReasonPhrase()) {
             header(sprintf(

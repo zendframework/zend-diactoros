@@ -2,13 +2,13 @@
 namespace Phly\Http;
 
 use Psr\Http\Message\IncomingRequestInterface;
-use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\MessageInterface;
 use stdClass;
 
 /**
  * Class for marshaling a request object from the current PHP environment.
  *
- * Logic largely refactors ZF2's Zend\Http\PhpEnvironment\Request class.
+ * Logic largely refactored from the ZF2 Zend\Http\PhpEnvironment\Request class.
  *
  * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
@@ -39,20 +39,28 @@ abstract class IncomingRequestFactory
         array $cookies = null,
         array $files = null
     ) {
-        $server  = $server  ?: $_SERVER;
+        $server  = self::normalizeServer($server ?: $_SERVER);
+        $headers = self::marshalHeaders($server);
+        $url     = (string) self::marshalUriFromServer($server, $headers);
+        $method  = self::get('REQUEST_METHOD', $server, 'GET');
         $query   = $query   ?: $_GET;
         $body    = $body    ?: $_POST;
         $cookies = $cookies ?: $_COOKIE;
         $files   = $files   ?: $_FILES;
+
         $request = new IncomingRequest(
+            $url,
+            $method,
+            $headers,
             'php://input',
+            $server,
             $cookies,
-            [],
             $query,
             $body,
-            $files
+            $files,
+            []
         );
-        return self::fromServer($server, $request);
+        return $request;
     }
 
     /**
@@ -60,22 +68,16 @@ abstract class IncomingRequestFactory
      *
      * @param array $server
      * @param IncomingRequestInterface $request
-     * @return IncomingRequestInterface The $request provided, only populated with values
+     * @return void
+     * @deprecated as of 0.7.0. Use fromGlobals().
+     * @throws Exception\DeprecatedMethodException on all requests.
      */
     public static function fromServer(array $server, IncomingRequestInterface $request = null)
     {
-        $server = self::normalizeServer($server);
-
-        if (! $request) {
-            $protocol = self::get('SERVER_PROTOCOL', $server, '1.1');
-            $request  = new IncomingRequest();
-            $request->setProtocolVersion($protocol);
-        }
-
-        $request->setMethod(self::get('REQUEST_METHOD', $server, 'GET'));
-        self::setHeaders($request, self::marshalHeaders($server));
-        $request->setUrl(self::marshalUri($server, $request));
-        return $request;
+        throw new Exception\DeprecatedMethodException(sprintf(
+            '%s is deprecated as of phly/http 0.7.0dev; always use fromGlobals()',
+            __METHOD__
+        ));
     }
 
     /**
@@ -159,28 +161,14 @@ abstract class IncomingRequestFactory
     }
 
     /**
-     * Set the headers for a request.
-     *
-     * Injects the given request instance with the headers provided.
-     * 
-     * @param RequestInterface $request 
-     * @param array $headers 
-     */
-    public static function setHeaders(RequestInterface $request, array $headers)
-    {
-        foreach ($headers as $header => $values) {
-            $request->setHeader($header, $values);
-        }
-    }
-
-    /**
      * Marshal the URI from the $_SERVER array and headers
      *
      * @param array $server
-     * @param IncomingRequestInterface $request
+     * @param MessageInterface $request
      * @return Uri
+     * @deprecated as of 0.7.0; use marshalUriFromServer() instead.
      */
-    public static function marshalUri(array $server, IncomingRequestInterface $request)
+    public static function marshalUri(array $server, MessageInterface $request)
     {
         // URI scheme
         $scheme = 'http';
@@ -217,16 +205,72 @@ abstract class IncomingRequestFactory
     }
 
     /**
+     * Marshal the URI from the $_SERVER array and headers
+     *
+     * @param array $server
+     * @param array $headers
+     * @return Uri
+     */
+    public static function marshalUriFromServer(array $server, array $headers)
+    {
+        // URI scheme
+        $scheme = 'http';
+        $https  = self::get('HTTPS', $server);
+        if (($https && 'off' !== $https)
+            || self::get('x-forwarded-proto', $headers, false) === 'https'
+        ) {
+            $scheme = 'https';
+        }
+
+        // Set the host
+        $accumulator = (object) ['host' => '', 'port' => null];
+        self::marshalHostAndPort($accumulator, $server, $headers);
+        $host = $accumulator->host;
+        $port = $accumulator->port;
+
+        // URI path
+        $path = self::marshalRequestUri($server);
+        $path = self::stripQueryString($path);
+
+        // URI query
+        $query = null;
+        if (isset($server['QUERY_STRING'])) {
+            $query = ltrim($server['QUERY_STRING'], '?');
+        }
+
+        return Uri::fromArray(compact(
+            'scheme',
+            'host',
+            'port',
+            'path',
+            'query'
+        ));
+    }
+
+    /**
      * Marshal the host and port from HTTP headers and/or the PHP environment
      *
      * @param array $server
-     * @param IncomingRequestInterface $request
+     * @param MessageInterface $request
+     * @return array Array with two members, host and port, at indices 0 and 1, respectively
+     * @deprecated as of 0.7.0; use marshalHostAndPortFromHeaders() instead.
+     */
+    public static function marshalHostAndPort(stdClass $accumulator, array $server, MessageInterface $request)
+    {
+        return self::marshalHostAndPortFromHeaders($accumulator, $server, $request->getHeaders());
+    }
+
+    /**
+     * Marshal the host and port from HTTP headers and/or the PHP environment
+     *
+     * @param array $server
+     * @param array $headers
      * @return array Array with two members, host and port, at indices 0 and 1, respectively
      */
-    public static function marshalHostAndPort(stdClass $accumulator, array $server, IncomingRequestInterface $request)
+    public static function marshalHostAndPortFromHeaders(stdClass $accumulator, array $server, array $headers)
     {
-        if ($request->hasHeader('host')) {
-            return self::marshalHostAndPortFromHeader($accumulator, $request);
+        if (self::get('host', $headers, false)) {
+            return self::marshalHostAndPortFromHeader($accumulator, self::get('host', $headers));
         }
 
         if (! isset($server['SERVER_NAME'])) {
@@ -314,12 +358,16 @@ abstract class IncomingRequestFactory
      * Marshal the host and port from the request header
      *
      * @param stdClass $accumulator
-     * @param IncomingRequestInterface $request
+     * @param string|array $host
      * @return void
      */
-    private static function marshalHostAndPortFromHeader(stdClass $accumulator, IncomingRequestInterface $request)
+    private static function marshalHostAndPortFromHeader(stdClass $accumulator, $host)
     {
-        $accumulator->host = $request->getHeader('host');
+        if (is_array($host)) {
+            $host = implode(', ', $host);
+        }
+
+        $accumulator->host = $host;
         $accumulator->port = null;
 
         // works for regname, IPv4 & IPv6
