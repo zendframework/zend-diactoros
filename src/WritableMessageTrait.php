@@ -27,13 +27,12 @@ trait WritableMessageTrait
     /**
      * Sets the body of the message.
      *
-     * The body MUST be a StreamableInterface object. Setting the body to null MUST
-     * remove the existing body.
+     * The body MUST be a StreamableInterface object.
      *
-     * @param null|StreamableInterface $body Body.
+     * @param StreamableInterface $body Body.
      * @return void
      */
-    public function setBody(StreamableInterface $body = null)
+    public function setBody(StreamableInterface $body)
     {
         $this->stream = $body;
     }
