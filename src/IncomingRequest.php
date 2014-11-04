@@ -3,35 +3,31 @@ namespace Phly\Http;
 
 use InvalidArgumentException;
 use Psr\Http\Message\IncomingRequestInterface;
+use Psr\Http\Message\StreamableInterface;
 
 /**
  * Incoming (server-side) HTTP request
  *
  * Extends the Request definition to add methods for accessing incoming data,
- * specifically cookies, matched path parameters, query string arguments, body
- * parameters, and upload file information.
+ * specifically server parameters, cookies, matched path parameters, query 
+ * string arguments, body parameters, and upload file information.
  *
- * Cookies may be overwritten later; this facility may be useful for enabling
- * cookie encryption.
- *
- * Body parameters are often only available after performing content negotiation
- * and deserialization of the request body; as such, they, too, may be injected
- * after instantiation.
- *
- * Path parameters are discovered via decomposing the request (and usually
- * specifically the URI path), and will be injected by the application.
+ * "Attributes" are discovered via decomposing the request (and usually
+ * specifically the URI path), and typically will be injected by the application.
  */
-class IncomingRequest extends Request implements IncomingRequestInterface
+class IncomingRequest implements IncomingRequestInterface
 {
-    /**
-     * @var array
-     */
-    private $attributes = [];
+    use MessageTrait, RequestTrait, ImmutableHeadersTrait;
 
     /**
      * @var array
      */
-    private $bodyParams = [];
+    private $attributes;
+
+    /**
+     * @var array
+     */
+    private $bodyParams;
 
     /**
      * @var array
@@ -49,50 +45,94 @@ class IncomingRequest extends Request implements IncomingRequestInterface
     private $queryParams;
 
     /**
-     * @param string|\Psr\Http\Message\StreamableInterface|array $stream
+     * @var array
+     */
+    private $serverParams;
+
+    /**
+     * @param string $url URL for the incoming request.
+     * @param string $method HTTP request method.
+     * @param array $headers HTTP headers.
+     * @param string|StreamableInterface|array $stream
      *     Stream representing message body. Alternately, this can be an 
      *     array with keys for each of the possible arguments.
+     * @param array $serverParams Server parameters
      * @param array $cookieParams Deserialized cookies
-     * @param array $attributes Attributes derived from the request
      * @param array $queryParams Deserialized query string arguments
      * @param array $bodyParams Deserialized body parameters
      * @param array $fileParams Upload file information; should be in PHP's $_FILES format
+     * @param array $attributes Attributes derived from the request
+     * @param string $protocolVersion HTTP protocol version; if not provided,
+     *     will attempt to determine it from the $serverParams, and will default
+     *     to 1.1 if auto-detection fails.
      * @return void
      */
     public function __construct(
+        $url,
+        $method = null,
+        array $headers = [],
         $stream = 'php://input',
+        array $serverParams = [],
         array $cookieParams = [],
-        array $attributes = [],
         array $queryParams = [],
         array $bodyParams = [],
-        array $fileParams = []
+        array $fileParams = [],
+        array $attributes = [],
+        $protocolVersion = null
     ) {
-        if (is_array($stream)) {
-            if (isset($stream['cookieParams']) && empty($cookieParams)) {
-                $cookieParams = $stream['cookieParams'];
+        if (is_array($url)) {
+            if (isset($url['method']) && empty($method)) {
+                $method = $url['method'];
             }
-            if (isset($stream['attributes']) && empty($attributes)) {
-                $attributes = $stream['attributes'];
+            if (isset($url['headers']) && is_array($url['headers']) && empty($headers)) {
+                $headers = $url['headers'];
             }
-            if (isset($stream['queryParams']) && empty($queryParams)) {
-                $queryParams = $stream['queryParams'];
+            if (isset($url['server']) && empty($serverParams)) {
+                $serverParams = $url['server'];
             }
-            if (isset($stream['bodyParams']) && empty($bodyParams)) {
-                $bodyParams = $stream['bodyParams'];
+            if (isset($url['cookie']) && empty($cookieParams)) {
+                $cookieParams = $url['cookie'];
             }
-            if (isset($stream['fileParams']) && empty($fileParams)) {
-                $fileParams = $stream['fileParams'];
+            if (isset($url['query']) && empty($queryParams)) {
+                $queryParams = $url['query'];
+            }
+            if (isset($url['body']) && empty($bodyParams)) {
+                $bodyParams = $url['body'];
+            }
+            if (isset($url['file']) && empty($fileParams)) {
+                $fileParams = $url['file'];
+            }
+            if (isset($url['attributes']) && empty($attributes)) {
+                $attributes = $url['attributes'];
+            }
+            if (isset($url['protocol']) && empty($protocolVersion)) {
+                $protocolVersion = $url['protocol'];
             }
 
-            $stream = isset($stream['stream']) ? $stream['stream'] : 'php://input';
+            $url = isset($url['url']) ? $url['url'] : null;
         }
 
-        parent::__construct($stream);
+        $this->setUrl($url);
+        $this->setMethod($method);
+        $this->setHeaders($headers);
+        $this->setStream($stream);
+        $this->setServerParams($serverParams);
         $this->setCookieParams($cookieParams);
-        $this->setAttributes($attributes);
         $this->setQueryParams($queryParams);
         $this->setBodyParams($bodyParams);
         $this->setFileParams($fileParams);
+        $this->setAttributes($attributes);
+        $this->setProtocolVersion($protocolVersion);
+    }
+
+    /**
+     * Retrieve server params
+     * 
+     * @return array
+     */
+    public function getServerParams()
+    {
+        return $this->serverParams;
     }
 
     /**
@@ -105,22 +145,6 @@ class IncomingRequest extends Request implements IncomingRequestInterface
     public function getCookieParams()
     {
         return $this->cookieParams;
-    }
-
-    /**
-     * Set cookie parameters.
-     *
-     * Allows a library to set the cookie parameters. Use cases include
-     * libraries that implement additional security practices, such as
-     * encrypting or hashing cookie values; in such cases, they will read
-     * the original value, filter them, and re-inject into the incoming
-     * request..
-     *
-     * @param array $cookies Cookie values/structs
-     */
-    public function setCookieParams(array $cookies)
-    {
-        $this->cookieParams = $cookies;
     }
 
     /**
@@ -137,18 +161,6 @@ class IncomingRequest extends Request implements IncomingRequestInterface
     public function getQueryParams()
     {
         return $this->queryParams;
-    }
-
-    /**
-     * Set query parameters
-     *
-     * Internal method only.
-     * 
-     * @param array $queryParams 
-     */
-    private function setQueryParams(array $queryParams)
-    {
-        $this->queryParams = $queryParams;
     }
 
     /**
@@ -169,18 +181,6 @@ class IncomingRequest extends Request implements IncomingRequestInterface
     }
 
     /**
-     * Set upload file data.
-     *
-     * Internal method only.
-     * 
-     * @param array $fileParams 
-     */
-    private function setFileParams(array $fileParams)
-    {
-        $this->fileParams = $fileParams;
-    }
-
-    /**
      * Retrieve any parameters provided in the request body.
      *
      * If the request body can be deserialized, and if the deserialized values
@@ -198,20 +198,6 @@ class IncomingRequest extends Request implements IncomingRequestInterface
     }
 
     /**
-     * Set the request body parameters.
-     *
-     * If the body content can be deserialized as an array, the values obtained may then
-     * be injected into the response using this method. This method will
-     * typically be invoked by a factory marshaling request parameters.
-     * 
-     * @param array $values The deserialized body parameters, if any.
-     */
-    public function setBodyParams(array $values)
-    {
-        $this->bodyParams = $values;
-    }
-
-    /**
      * Retrieve attributes derived from the request
      *
      * If a router or similar is used to match against the path and/or request,
@@ -226,6 +212,25 @@ class IncomingRequest extends Request implements IncomingRequestInterface
     }
 
     /**
+     * Retrieve a single attribute by name.
+     *
+     * If the attribute is not present, return the value provided in $default
+     * instead.
+     * 
+     * @param string $attribute 
+     * @param mixed $default 
+     * @return mixed
+     */
+    public function getAttribute($attribute, $default = null)
+    {
+        if (! array_key_exists($attribute, $this->attributes)) {
+            return $default;
+        }
+
+        return $this->attributes[$attribute];
+    }
+
+    /**
      * Set parameters discovered by matching that path
      *
      * If a router or similar is used to match against the path and/or request,
@@ -237,5 +242,169 @@ class IncomingRequest extends Request implements IncomingRequestInterface
     public function setAttributes(array $values)
     {
         $this->attributes = $values;
+    }
+
+    /**
+     * Set a single named attribute
+     * 
+     * @param string $attribute 
+     * @param mixed $value 
+     * @return void
+     */
+    public function setAttribute($attribute, $value)
+    {
+        $this->attributes[$attribute] = $value;
+    }
+
+    /**
+     * Set the request url.
+     * 
+     * @param string $url 
+     * @return void
+     * @throws InvalidArgumentException for missing or invalid URLs.
+     */
+    private function setUrl($url)
+    {
+        if (empty($url)) {
+            throw new InvalidArgumentException('No URL provided to incoming request!');
+        }
+
+        $uri = new Uri($url);
+        if (! $uri->isValid()) {
+            throw new InvalidArgumentException('Invalid URL provided to incoming request!');
+        }
+
+        $this->url = $url;
+    }
+
+    /**
+     * Set the request method.
+     *
+     * Normalizes to uppercase.
+     * 
+     * @param string $method 
+     * @return void
+     */
+    private function setMethod($method)
+    {
+        $method = $method ?: 'GET';
+        $this->method = strtoupper($method);
+    }
+
+    /**
+     * Set the body stream
+     * 
+     * @param string|resource|StreamableInterface $stream 
+     * @return void
+     */
+    private function setStream($stream)
+    {
+        if ($stream === 'php://input') {
+            $stream = new PhpInputStream();
+        }
+
+        if (! is_string($stream) && ! is_resource($stream) && ! $stream instanceof StreamableInterface) {
+            throw new InvalidArgumentException(
+                'Stream must be a string stream resource identifier, '
+                . 'an actual stream resource, '
+                . 'or a Psr\Http\Message\StreamableInterface implementation'
+            );
+        }
+
+        if (! $stream instanceof StreamableInterface) {
+            $stream = new Stream($stream, 'r');
+        }
+
+        $this->stream = $stream;
+    }
+
+    /**
+     * Set server parameters.
+     *
+     * Allows a library to set the server parameters, usually from $_SERVER.
+     *
+     * Internal method only.
+     *
+     * @param array $params Server parameters
+     */
+    private function setServerParams(array $params)
+    {
+        $this->serverParams = $params;
+    }
+
+    /**
+     * Set cookie parameters.
+     *
+     * Allows a library to set the cookie parameters, usually from $_COOKIE.
+     *
+     * Internal method only.
+     *
+     * @param array $cookies Cookie values/structs
+     */
+    private function setCookieParams(array $cookies)
+    {
+        $this->cookieParams = $cookies;
+    }
+
+    /**
+     * Set query parameters
+     *
+     * Internal method only.
+     * 
+     * @param array $queryParams 
+     */
+    private function setQueryParams(array $queryParams)
+    {
+        $this->queryParams = $queryParams;
+    }
+
+    /**
+     * Set the request body parameters.
+     *
+     * If the body content can be deserialized as an array, the values obtained 
+     * may then be injected into the request.
+     *
+     * Internal method only.
+     * 
+     * @param array $values The deserialized body parameters, if any.
+     */
+    public function setBodyParams(array $values)
+    {
+        $this->bodyParams = $values;
+    }
+
+    /**
+     * Set upload file data.
+     *
+     * Internal method only.
+     * 
+     * @param array $fileParams 
+     */
+    private function setFileParams(array $fileParams)
+    {
+        $this->fileParams = $fileParams;
+    }
+
+    /**
+     * Set the HTTP protocol version
+     * 
+     * @param mixed $protocolVersion 
+     * @return void
+     */
+    private function setProtocolVersion($protocolVersion)
+    {
+        if ($protocolVersion) {
+            $this->protocol = $protocolVersion;
+            return;
+        }
+
+        if (isset($this->serverParams['SERVER_PROTOCOL'])
+            && $this->serverParams['SERVER_PROTOCOL']
+        ) {
+            $this->protocol = $this->serverParams['SERVER_PROTOCOL'];
+            return;
+        }
+
+        $this->protocol = '1.1';
     }
 }

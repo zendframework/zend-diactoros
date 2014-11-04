@@ -1,11 +1,11 @@
 <?php
 namespace PhlyTest\Http;
 
-use Phly\Http\Request;
+use Phly\Http\OutgoingRequest as Request;
 use Phly\Http\Uri;
 use PHPUnit_Framework_TestCase as TestCase;
 
-class RequestTest extends TestCase
+class OutgoingRequestTest extends TestCase
 {
     public function setUp()
     {
@@ -28,26 +28,10 @@ class RequestTest extends TestCase
         $this->assertNull($this->request->getUrl());
     }
 
-    public function testSetUrlCastsStringsToUriObjects()
-    {
-        $url = 'http://test.example.com/foo';
-        $this->request->setUrl($url);
-        $uri = $this->request->getUrl();
-        $this->assertInstanceOf('Phly\Http\Uri', $uri);
-        $this->assertEquals($url, $uri->uri);
-    }
-
     public function testConstructorRaisesExceptionForInvalidStream()
     {
         $this->setExpectedException('InvalidArgumentException');
         new Request(['TOTALLY INVALID']);
-    }
-
-    public function testCannotOverrideMethodOnceSet()
-    {
-        $this->request->setMethod('POST');
-        $this->setExpectedException('RuntimeException');
-        $this->request->setMethod('PATCH');
     }
 
     public function invalidUrls()

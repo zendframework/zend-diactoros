@@ -2,7 +2,49 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release..
 
-## 0.6.0 - 2014-10.17
+## 0.7.0 - 2014-11-04
+
+Updated component to psr/http-message 0.5.1. That release contains a number of backwards-incompatible changes:
+
+- `Phly\Http\Request` and `Phly\Http\Response` were removed.
+- `Phly\Http\MessageTrait` was altered to provide only accessors.
+- `Phly\Http\IncomingResponse`, `Phly\Http\OutgoingResponse`, and `Phly\Http\OutgoingRequest` were added, providing segregation between client-side and server-side request/response pairs, and marking "incoming" variants as immutable. This necessitated adding `Phly\Http\RequestTrait`, `Phly\Http\ResponseTrait`, `Phly\Http\WritableMessageTrait`, and `Phly\Http\ImmutableHeadersTrait` to reduce code duplication and codify commonalities between different types.
+
+### Added
+
+- `Phly\Http\WritableMessageTrait` was added, and contains mutator (setter) methods for the properties defined in `Phly\Http\MessageTrait`. `setBody()` no longer allows setting a `null` value.
+- `Phly\Http\ImmutableHeadersTrait` was added, and contains a _private_ mutator (setter) method for populating the headers of a message; this will typically be composed into an immutable message type to allow setting headers via the constructor in a normalized fashion.
+- `Phly\Http\RequestTrait` was added, defining accessors (getters) for request instances: the request method and url.
+- `Phly\Http\ResponseTrait` was added, defining accessors (getters) for response instances: the status code and reason phrase.
+- `Phly\Http\IncomingRequest::__construct()` was modified to allow providing the url, request method, headers, and `$_SERVER` values. Please note the change in constructor arguments when populating an incoming request instance manually.
+- `Phly\Http\IncomingRequest::getAttribute($attribute, $default = null)` was added to allow easy retrieval of a single attribute value.
+- `Phly\Http\IncomingRequest::setAttribute($attribute, $value)` was added to allow easy setting of a single attribute value.
+- `Phly\Http\OutgoingResponse` was added, as the complement to `Phly\Http\IncomingRequest`. It is fully mutable.
+- `Phly\Http\OutgoingRequest` was added, for making client-side HTTP requests. It is fully mutable.
+- `Phly\Http\IncomingResponse` was added, as a complement to `Phly\Http\OutgoingRequest`, and represents the response returned from such a request. It is immutable, and all values must be set via the constructor.
+
+### Deprecated
+
+- `Phly\Http\OutgoingRequest::setUrl()` no longer allows passing a `Phly\Http\Uri` (or an other object) instance; only strings are allowed.
+- `Phly\Http\RequestTrait::getUrl()` no longer returns a `Phly\Http\Uri` instance, only strings.
+- `Phly\Http\IncomingRequestFactory::fromServer()`; since all values of a request must be added during instantiation, this method no longer made sense for marshaling values for an existing request instance. This method now throws
+- `Phly\Http\IncomingRequestFactory::marshalUri()`; we can no longer assume we have a request instance, only headers. As such, `Phly\Http\IncomingRequestFactory::marshalUriFromServer()` is now preferred as it uses the header values instead (`marshalUri()` now proxies to this method).
+- `Phly\Http\IncomingRequestFactory::marshalHostAndPort()`; we can no longer assume we have a request instance, only headers. As such, `Phly\Http\IncomingRequestFactory::marshalHostAndPortFromHeaders()` is now preferred as it uses the header values instead (`marshalHostAndPort()` now proxies to this method).
+
+### Removed
+
+- All mutator methods (setters) were removed from `Phly\Http\MessageTrait`.
+- `Phly\Http\Request` was removed.
+- `Phly\Http\Response` was removed.
+- `Phly\Http\IncomingRequest::setCookieParams()` was removed.
+- `Phly\Http\IncomingRequest::setBodyParams()` was removed.
+
+### Fixed
+
+- CS issues.
+- Removed obsolete tests.
+
+## 0.6.0 - 2014-10-17
 
 Updated component to psr/http-message 0.4.0. That release contains a number of backwards-incompatible changes.
 

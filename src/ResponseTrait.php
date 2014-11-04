@@ -1,17 +1,11 @@
 <?php
 namespace Phly\Http;
 
-use InvalidArgumentException;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\StreamableInterface;
-
 /**
- * HTTP response encapsulation
+ * Common (accessor) methods for all HTTP responses.
  */
-class Response implements ResponseInterface
+trait ResponseTrait
 {
-    use MessageTrait;
-
     /**
      * Map of standard HTTP status code/reason phrases
      *
@@ -93,26 +87,6 @@ class Response implements ResponseInterface
     private $statusCode = 200;
 
     /**
-     * @param string|resource|StreamableInterface $stream Stream identifier and/or actual stream resource
-     */
-    public function __construct($stream = 'php://memory')
-    {
-        if (! is_string($stream) && ! is_resource($stream) && ! $stream instanceof StreamableInterface) {
-            throw new InvalidArgumentException(
-                'Stream must be a string stream resource identifier, '
-                . 'an actual stream resource, '
-                . 'or a Psr\Http\Message\StreamableInterface implementation'
-            );
-        }
-
-        if (! $stream instanceof StreamableInterface) {
-            $stream = new Stream($stream, 'wb+');
-        }
-
-        $this->setBody($stream);
-    }
-
-    /**
      * Gets the response Status-Code.
      *
      * The Status-Code is a 3-digit integer result code of the server's attempt
@@ -123,23 +97,6 @@ class Response implements ResponseInterface
     public function getStatusCode()
     {
         return $this->statusCode;
-    }
-
-    /**
-     * Sets the status code of this response.
-     *
-     * @param integer $code The 3-digit integer result code to set.
-     */
-    public function setStatusCode($code)
-    {
-        if (! is_int($code)
-            || (100 > $code || 599 < $code)
-        ) {
-            throw new InvalidArgumentException('Status code must be between 100 and 599, inclusive');
-        }
-
-        $this->statusCode   = $code;
-        $this->reasonPhrase = null;
     }
 
     /**
@@ -157,22 +114,9 @@ class Response implements ResponseInterface
         if (! $this->reasonPhrase
             && isset($this->phrases[$this->statusCode])
         ) {
-            $this->setReasonPhrase($this->phrases[$this->statusCode]);
+            $this->reasonPhrase = $this->phrases[$this->statusCode];
         }
 
         return $this->reasonPhrase;
-    }
-
-    /**
-     * Sets the Reason-Phrase of the response.
-     *
-     * If no Reason-Phrase is specified, implementations MAY choose to default
-     * to the RFC 2616 recommended reason phrase for the response's Status-Code.
-     *
-     * @param string $phrase The Reason-Phrase to set.
-     */
-    public function setReasonPhrase($phrase)
-    {
-        $this->reasonPhrase = $phrase;
     }
 }

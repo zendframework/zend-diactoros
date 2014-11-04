@@ -15,7 +15,7 @@ class ServerTest extends TestCase
             //  Intentionally empty
         };
         $this->request    = $this->getMock('Psr\Http\Message\IncomingRequestInterface');
-        $this->response   = $this->getMock('Psr\Http\Message\ResponseInterface');
+        $this->response   = $this->getMock('Psr\Http\Message\OutgoingResponseInterface');
     }
 
     public function tearDown()
@@ -45,7 +45,7 @@ class ServerTest extends TestCase
         $this->assertInstanceOf('Phly\Http\Server', $server);
         $this->assertSame($this->callback, $server->callback);
         $this->assertSame($this->request, $server->request);
-        $this->assertInstanceOf('Phly\Http\Response', $server->response);
+        $this->assertInstanceOf('Phly\Http\OutgoingResponse', $server->response);
     }
 
     public function testCannotAccessArbitraryProperties()
@@ -73,13 +73,13 @@ class ServerTest extends TestCase
         $this->assertInstanceOf('Phly\Http\Server', $server);
         $this->assertSame($this->callback, $server->callback);
 
-        $this->assertInstanceOf('Phly\Http\Request', $server->request);
+        $this->assertInstanceOf('Phly\Http\IncomingRequest', $server->request);
         $request = $server->request;
         $this->assertEquals('POST', $request->getMethod());
-        $this->assertEquals('/foo/bar', $request->getUrl()->path);
+        $this->assertEquals('/foo/bar', parse_url($request->getUrl(), PHP_URL_PATH));
         $this->assertTrue($request->hasHeader('Accept'));
 
-        $this->assertInstanceOf('Phly\Http\Response', $server->response);
+        $this->assertInstanceOf('Phly\Http\OutgoingResponse', $server->response);
     }
 
     public function testListenInvokesCallbackAndSendsResponse()
@@ -116,7 +116,7 @@ class ServerTest extends TestCase
         ];
 
         $callback = function ($req, $res) {
-            $res->setStatusCode(299);
+            $res->setStatus(299);
             $res->addHeader('Content-Type', 'text/plain');
             $res->getBody()->write('FOOBAR');
         };

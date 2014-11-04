@@ -8,7 +8,12 @@ class IncomingRequestTest extends TestCase
 {
     public function setUp()
     {
-        $this->request = new IncomingRequest();
+        $this->request = new IncomingRequest('http://example.com/');
+    }
+
+    public function testServerParamsAreEmptyByDefault()
+    {
+        $this->assertEmpty($this->request->getServerParams());
     }
 
     public function testQueryParamsAreEmptyByDefault()
@@ -37,32 +42,6 @@ class IncomingRequestTest extends TestCase
     }
 
     /**
-     * @depends testCookiesAreEmptyByDefault
-     */
-    public function testCookieParamsAreMutable()
-    {
-        $cookies = [
-            'foo' => 'bar',
-            'baz' => 'bat',
-        ];
-        $this->request->setCookieParams($cookies);
-        $this->assertEquals($cookies, $this->request->getCookieParams());
-    }
-
-    /**
-     * @depends testBodyParamsAreEmptyByDefault
-     */
-    public function testBodyParamsAreMutable()
-    {
-        $params = [
-            'foo' => 'bar',
-            'baz' => 'bat',
-        ];
-        $this->request->setBodyParams($params);
-        $this->assertEquals($params, $this->request->getBodyParams());
-    }
-
-    /**
      * @depends testAttributesAreEmptyByDefault
      */
     public function testAttributesAreMutable()
@@ -77,54 +56,101 @@ class IncomingRequestTest extends TestCase
 
     public function testRequestDataMayBeSetAsDiscreteConstructorArguments()
     {
-        $cookies = $attributes = $query = $body = $files = [
+        $server = $cookies = $attributes = $query = $body = $files = [
             'foo' => 'bar',
             'baz' => 'bat',
         ];
 
+        $server['server']   = true;
         $cookies['cookies'] = true;
         $attributes['path'] = true;
         $query['query']     = true;
         $body['body']       = true;
         $files['files']     = true;
 
-        $request = new IncomingRequest('php://memory', $cookies, $attributes, $query, $body, $files);
+        $headers = [
+            'X-Foo' => 'bar',
+            'X-Bar' => ['baz', 'bat'],
+        ];
 
+        $request = new IncomingRequest(
+            'http://example.com/',
+            'post',
+            $headers,
+            'php://memory',
+            $server,
+            $cookies,
+            $query,
+            $body,
+            $files,
+            $attributes,
+            '1.0'
+        );
+
+        $this->assertEquals('http://example.com/', $request->getUrl());
+        $this->assertEquals('POST', $request->getMethod());
+        $this->assertEquals([
+            'x-foo' => ['bar'],
+            'x-bar' => ['baz', 'bat'],
+        ], $request->getHeaders());
+
+        $this->assertEquals($server, $request->getServerParams());
         $this->assertEquals($cookies, $request->getCookieParams());
-        $this->assertEquals($attributes, $request->getAttributes());
         $this->assertEquals($query, $request->getQueryParams());
         $this->assertEquals($body, $request->getBodyParams());
         $this->assertEquals($files, $request->getFileParams());
+        $this->assertEquals($attributes, $request->getAttributes());
+        $this->assertEquals('1.0', $request->getProtocolVersion());
     }
 
     public function testRequestDataMayBePassedViaAnAssociativeArray()
     {
-        $cookies = $attributes = $query = $body = $files = [
+        $server = $cookies = $attributes = $query = $body = $files = [
             'foo' => 'bar',
             'baz' => 'bat',
         ];
 
+        $server['server']   = true;
         $cookies['cookies'] = true;
         $attributes['path'] = true;
         $query['query']     = true;
         $body['body']       = true;
         $files['files']     = true;
 
+        $headers = [
+            'X-Foo' => 'bar',
+            'X-Bar' => ['baz', 'bat'],
+        ];
+
         $data = [
+            'url'          => 'http://example.com/',
+            'method'       => 'post',
+            'headers'      => $headers,
             'stream'       => 'php://memory',
-            'cookieParams' => $cookies,
+            'server'       => $server,
+            'cookie'       => $cookies,
+            'query'        => $query,
+            'body'         => $body,
+            'file'         => $files,
             'attributes'   => $attributes,
-            'queryParams'  => $query,
-            'bodyParams'   => $body,
-            'fileParams'   => $files,
+            'protocol'     => '1.0',
         ];
 
         $request = new IncomingRequest($data);
 
+        $this->assertEquals('http://example.com/', $request->getUrl());
+        $this->assertEquals('POST', $request->getMethod());
+        $this->assertEquals([
+            'x-foo' => ['bar'],
+            'x-bar' => ['baz', 'bat'],
+        ], $request->getHeaders());
+
+        $this->assertEquals($server, $request->getServerParams());
         $this->assertEquals($cookies, $request->getCookieParams());
-        $this->assertEquals($attributes, $request->getAttributes());
         $this->assertEquals($query, $request->getQueryParams());
         $this->assertEquals($body, $request->getBodyParams());
         $this->assertEquals($files, $request->getFileParams());
+        $this->assertEquals($attributes, $request->getAttributes());
+        $this->assertEquals('1.0', $request->getProtocolVersion());
     }
 }

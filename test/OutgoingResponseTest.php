@@ -1,10 +1,10 @@
 <?php
 namespace PhlyTest\Http;
 
-use Phly\Http\Response;
+use Phly\Http\OutgoingResponse as Response;
 use PHPUnit_Framework_TestCase as TestCase;
 
-class ResponseTest extends TestCase
+class OutgoingResponseTest extends TestCase
 {
     public function setUp()
     {
@@ -18,7 +18,7 @@ class ResponseTest extends TestCase
 
     public function testStatusCodeIsMutable()
     {
-        $this->response->setStatusCode(400);
+        $this->response->setStatus(400);
         $this->assertEquals(400, $this->response->getStatusCode());
     }
 
@@ -41,20 +41,19 @@ class ResponseTest extends TestCase
     public function testCannotSetInvalidStatusCode($code)
     {
         $this->setExpectedException('InvalidArgumentException');
-        $this->response->setStatusCode($code);
+        $this->response->setStatus($code);
     }
 
     public function testReasonPhraseDefaultsToStandards()
     {
-        $this->response->setStatusCode(422);
+        $this->response->setStatus(422);
         $this->assertEquals('Unprocessable Entity', $this->response->getReasonPhrase());
     }
 
     public function testCanSetCustomReasonPhrase()
     {
-        $this->response->setStatusCode(422);
-        $this->response->setReasonPhrase('FOO BAR!');
-        $this->assertEquals('FOO BAR!', $this->response->getReasonPhrase());
+        $this->response->setStatus(422, 'Foo Bar!');
+        $this->assertEquals('Foo Bar!', $this->response->getReasonPhrase());
     }
 
     public function testConstructorRaisesExceptionForInvalidStream()
