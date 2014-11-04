@@ -69,16 +69,16 @@ class IncomingRequest implements IncomingRequestInterface
      */
     public function __construct(
         $url,
-        $method             = null,
-        array $headers      = [],
-        $stream             = 'php://input',
+        $method = null,
+        array $headers = [],
+        $stream = 'php://input',
         array $serverParams = [],
         array $cookieParams = [],
-        array $queryParams  = [],
-        array $bodyParams   = [],
-        array $fileParams   = [],
-        array $attributes   = [],
-        $protocolVersion    = null
+        array $queryParams = [],
+        array $bodyParams = [],
+        array $fileParams = [],
+        array $attributes = [],
+        $protocolVersion = null
     ) {
         if (is_array($url)) {
             if (isset($url['method']) && empty($method)) {
