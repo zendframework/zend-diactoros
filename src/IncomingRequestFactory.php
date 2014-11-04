@@ -83,6 +83,8 @@ abstract class IncomingRequestFactory
     /**
      * Access a value in an array, returning a default value if not found
      *
+     * Will also do a case-insensitive search if a case sensitive search fails.
+     *
      * @param string $key
      * @param array $values
      * @param mixed $default
@@ -93,6 +95,33 @@ abstract class IncomingRequestFactory
         if (array_key_exists($key, $values)) {
             return $values[$key];
         }
+
+        return $default;
+    }
+
+    /**
+     * Search for a header value.
+     *
+     * Does a case-insensitive search for a matching header.
+     *
+     * If found, it is returned as a string, using comma concatenation.
+     *
+     * If not, the $default is returned.
+     * 
+     * @param string $header 
+     * @param array $headers 
+     * @param mixed $default 
+     * @return string
+     */
+    public static function getHeader($header, array $headers, $default = null)
+    {
+        $header  = strtolower($header);
+        $headers = array_change_key_case($headers, CASE_LOWER);
+        if (array_key_exists($header, $headers)) {
+            $value = is_array($headers[$header]) ? implode(', ', $headers[$header]) : $headers[$header];
+            return $value;
+        }
+
         return $default;
     }
 
@@ -172,38 +201,7 @@ abstract class IncomingRequestFactory
      */
     public static function marshalUri(array $server, MessageInterface $request)
     {
-        // URI scheme
-        $scheme = 'http';
-        $https = self::get('HTTPS', $server);
-        if (($https && 'off' !== $https)
-            || $request->getHeader('x-forwarded-proto') == 'https'
-        ) {
-            $scheme = 'https';
-        }
-
-        // Set the host
-        $accumulator = (object) ['host' => '', 'port' => null];
-        self::marshalHostAndPort($accumulator, $server, $request);
-        $host = $accumulator->host;
-        $port = $accumulator->port;
-
-        // URI path
-        $path = self::marshalRequestUri($server);
-        $path = self::stripQueryString($path);
-
-        // URI query
-        $query = null;
-        if (isset($server['QUERY_STRING'])) {
-            $query = ltrim($server['QUERY_STRING'], '?');
-        }
-
-        return Uri::fromArray(compact(
-            'scheme',
-            'host',
-            'port',
-            'path',
-            'query'
-        ));
+        return self::marshalUriFromServer($server, $request->getHeaders());
     }
 
     /**
@@ -219,7 +217,7 @@ abstract class IncomingRequestFactory
         $scheme = 'http';
         $https  = self::get('HTTPS', $server);
         if (($https && 'off' !== $https)
-            || self::get('x-forwarded-proto', $headers, false) === 'https'
+            || self::getHeader('x-forwarded-proto', $headers, false) === 'https'
         ) {
             $scheme = 'https';
         }
@@ -271,8 +269,8 @@ abstract class IncomingRequestFactory
      */
     public static function marshalHostAndPortFromHeaders(stdClass $accumulator, array $server, array $headers)
     {
-        if (self::get('host', $headers, false)) {
-            return self::marshalHostAndPortFromHeader($accumulator, self::get('host', $headers));
+        if (self::getHeader('host', $headers, false)) {
+            return self::marshalHostAndPortFromHeader($accumulator, self::getHeader('host', $headers));
         }
 
         if (! isset($server['SERVER_NAME'])) {
