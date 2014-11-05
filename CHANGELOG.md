@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release..
 
+## 0.7.1 - 2014-11-05
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- README.md file now reflects actual API and presents client-side use cases.
+
+
 ## 0.7.0 - 2014-11-04
 
 Updated component to psr/http-message 0.5.1. That release contains a number of backwards-incompatible changes:
