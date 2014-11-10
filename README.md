@@ -38,7 +38,7 @@ Usage
 
 Usage will differ based on whether you are writing an HTTP client, or a server-side application.
 
-For HTTP client purposes, you will create and populate an `OutoingRequest` instance, and the client should return an `IncomingResponse` instance.
+For HTTP client purposes, you will create and populate an `OutgoingRequest` instance, and the client should return an `IncomingResponse` instance.
 
 For server-side applications, you will create an `IncomingRequest` instance, and populate and return an `OutgoingResponse` instance.
 
@@ -100,6 +100,8 @@ $request = Phly\Http\IncomingRequestFactory::fromGlobals(
 Use the response object to add headers and provide content for the response.
 
 ```php
+$response = new Phly\Http\OutgoingResponse();
+
 // Write to the response body:
 $response->getBody()->write("some content\n");
 
