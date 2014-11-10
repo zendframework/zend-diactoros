@@ -101,6 +101,7 @@ Use the response object to add headers and provide content for the response.
 
 ```php
 $response = new Phly\Http\OutgoingResponse();
+
 // Write to the response body:
 $response->getBody()->write("some content\n");
 
