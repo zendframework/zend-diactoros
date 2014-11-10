@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release..
 
+## X.Y.Z - TBD
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#17](https://github.com/phly/http/pull/17) Fixes a typo in the README, and demonstrates instantiating an `OutgoingResponse` prior to consuming it.
+
+
 ## 0.7.1 - 2014-11-05
 
 ### Added
