@@ -1,7 +1,7 @@
 <?php
 namespace Phly\Http;
 
-use Psr\Http\Message\IncomingRequestInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\MessageInterface;
 use stdClass;
 
@@ -13,7 +13,7 @@ use stdClass;
  * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
-abstract class IncomingRequestFactory
+abstract class ServerRequestFactory
 {
     /**
      * Create a request from the supplied superglobal values.
@@ -21,7 +21,7 @@ abstract class IncomingRequestFactory
      * If any argument is not supplied, the corresponding superglobal value will
      * be used.
      *
-     * The IncomingRequest created is then passed to the fromServer() method in
+     * The ServerRequest created is then passed to the fromServer() method in
      * order to marshal the request URI and headers.
      *
      * @see fromServer()
@@ -30,7 +30,7 @@ abstract class IncomingRequestFactory
      * @param array $body $_POST superglobal
      * @param array $cookies $_COOKIE superglobal
      * @param array $files $_FILES superglobal
-     * @return IncomingRequest
+     * @return ServerRequest
      */
     public static function fromGlobals(
         array $server = null,
@@ -40,26 +40,20 @@ abstract class IncomingRequestFactory
         array $files = null
     ) {
         $server  = self::normalizeServer($server ?: $_SERVER);
-        $headers = self::marshalHeaders($server);
-        $url     = (string) self::marshalUriFromServer($server, $headers);
-        $method  = self::get('REQUEST_METHOD', $server, 'GET');
-        $query   = $query   ?: $_GET;
-        $body    = $body    ?: $_POST;
-        $cookies = $cookies ?: $_COOKIE;
         $files   = $files   ?: $_FILES;
-
-        $request = new IncomingRequest(
-            $url,
-            $method,
-            $headers,
+        $request = new ServerRequest(
             'php://input',
             $server,
-            $cookies,
-            $query,
-            $body,
-            $files,
-            []
+            $files
         );
+
+        $request->setMethod(self::get('REQUEST_METHOD', $server, 'GET'));
+        $request->setAbsoluteUri((string) self::marshalUriFromServer($server, $headers));
+        $request->setHeaders(self::marshalHeaders($server));
+        $request->setCookieParams($cookies ?: $_COOKIE);
+        $request->setQueryParams($query ?: $_GET);
+        $request->setBodyParams($body ?: $_POST);
+
         return $request;
     }
 
@@ -67,12 +61,12 @@ abstract class IncomingRequestFactory
      * Populates a request object from the given $_SERVER array
      *
      * @param array $server
-     * @param IncomingRequestInterface $request
+     * @param ServerRequestInterface $request
      * @return void
      * @deprecated as of 0.7.0. Use fromGlobals().
      * @throws Exception\DeprecatedMethodException on all requests.
      */
-    public static function fromServer(array $server, IncomingRequestInterface $request = null)
+    public static function fromServer(array $server, ServerRequestInterface $request = null)
     {
         throw new Exception\DeprecatedMethodException(sprintf(
             '%s is deprecated as of phly/http 0.7.0dev; always use fromGlobals()',
@@ -107,10 +101,10 @@ abstract class IncomingRequestFactory
      * If found, it is returned as a string, using comma concatenation.
      *
      * If not, the $default is returned.
-     * 
-     * @param string $header 
-     * @param array $headers 
-     * @param mixed $default 
+     *
+     * @param string $header
+     * @param array $headers
+     * @param mixed $default
      * @return string
      */
     public static function getHeader($header, array $headers, $default = null)
