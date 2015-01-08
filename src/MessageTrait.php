@@ -1,6 +1,7 @@
 <?php
 namespace Phly\Http;
 
+use InvalidArgumentException;
 use Psr\Http\Message\StreamableInterface;
 
 /**
@@ -118,7 +119,7 @@ trait MessageTrait
      */
     public function getHeader($header)
     {
-        $header = $this->getHeaderAsArray($header);
+        $header = $this->getHeaderLines($header);
         if (! $header) {
             return '';
         }

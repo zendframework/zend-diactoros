@@ -1,7 +1,7 @@
 <?php
 namespace PhlyTest\Http;
 
-use Phly\Http\OutgoingRequest as Request;
+use Phly\Http\Request;
 use Phly\Http\Stream;
 use PHPUnit_Framework_TestCase as TestCase;
 
@@ -25,10 +25,10 @@ class MessageTraitTest extends TestCase
         $this->assertSame($stream, $this->message->getBody());
     }
 
-    public function testGetHeaderAsArrayReturnsHeaderValueAsArray()
+    public function testGetHeaderLinesReturnsHeaderValueAsArray()
     {
         $this->message->setHeader('X-Foo', ['Foo', 'Bar']);
-        $this->assertEquals(['Foo', 'Bar'], $this->message->getHeaderAsArray('X-Foo'));
+        $this->assertEquals(['Foo', 'Bar'], $this->message->getHeaderLines('X-Foo'));
     }
 
     public function testGetHeaderReturnsHeaderValueAsCommaConcatenatedString()
