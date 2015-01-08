@@ -14,8 +14,8 @@ class ServerTest extends TestCase
         $this->callback   = function ($req, $res, $done) {
             //  Intentionally empty
         };
-        $this->request    = $this->getMock('Psr\Http\Message\IncomingRequestInterface');
-        $this->response   = $this->getMock('Psr\Http\Message\OutgoingResponseInterface');
+        $this->request    = $this->getMock('Psr\Http\Message\ServerRequestInterface');
+        $this->response   = $this->getMock('Psr\Http\Message\ResponseInterface');
     }
 
     public function tearDown()
@@ -45,7 +45,7 @@ class ServerTest extends TestCase
         $this->assertInstanceOf('Phly\Http\Server', $server);
         $this->assertSame($this->callback, $server->callback);
         $this->assertSame($this->request, $server->request);
-        $this->assertInstanceOf('Phly\Http\OutgoingResponse', $server->response);
+        $this->assertInstanceOf('Phly\Http\Response', $server->response);
     }
 
     public function testCannotAccessArbitraryProperties()
@@ -73,13 +73,13 @@ class ServerTest extends TestCase
         $this->assertInstanceOf('Phly\Http\Server', $server);
         $this->assertSame($this->callback, $server->callback);
 
-        $this->assertInstanceOf('Phly\Http\IncomingRequest', $server->request);
+        $this->assertInstanceOf('Phly\Http\ServerRequest', $server->request);
         $request = $server->request;
         $this->assertEquals('POST', $request->getMethod());
         $this->assertEquals('/foo/bar', parse_url($request->getUrl(), PHP_URL_PATH));
         $this->assertTrue($request->hasHeader('Accept'));
 
-        $this->assertInstanceOf('Phly\Http\OutgoingResponse', $server->response);
+        $this->assertInstanceOf('Phly\Http\Response', $server->response);
     }
 
     public function testListenInvokesCallbackAndSendsResponse()
