@@ -1,10 +1,10 @@
 <?php
 namespace PhlyTest\Http;
 
-use Phly\Http\OutgoingResponse as Response;
+use Phly\Http\Response;
 use PHPUnit_Framework_TestCase as TestCase;
 
-class OutgoingResponseTest extends TestCase
+class ResponseTest extends TestCase
 {
     public function setUp()
     {
@@ -29,7 +29,7 @@ class OutgoingResponseTest extends TestCase
             'too-high' => [600],
             'null' => [null],
             'bool' => [true],
-            'string' => ['100'],
+            'string' => ['foo'],
             'array' => [[200]],
             'object' => [(object) [200]],
         ];
