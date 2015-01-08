@@ -13,6 +13,17 @@ class MessageTraitTest extends TestCase
         $this->message = new Request($this->stream);
     }
 
+    public function testProtocolHasAcceptableDefault()
+    {
+        $this->assertEquals('1.1', $this->message->getProtocolVersion());
+    }
+
+    public function testProtocolIsMutable()
+    {
+        $this->message->setProtocolVersion('1.0');
+        $this->assertEquals('1.0', $this->message->getProtocolVersion());
+    }
+
     public function testUsesStreamProvidedInConstructorAsBody()
     {
         $this->assertSame($this->stream, $this->message->getBody());
