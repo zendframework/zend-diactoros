@@ -66,8 +66,8 @@ class ServerRequest extends Request implements ServerRequestInterface
         array $fileParams = []
     ) {
         $this->setStream($stream);
-        $this->setServerParams($serverParams);
-        $this->setFileParams($fileParams);
+        $this->serverParams = $serverParams;
+        $this->fileParams   = $fileParams;
     }
 
     /**
@@ -258,27 +258,6 @@ class ServerRequest extends Request implements ServerRequestInterface
     public function setAttribute($attribute, $value)
     {
         $this->attributes[$attribute] = $value;
-    }
-
-    /**
-     * Set the request url.
-     *
-     * @param string $url
-     * @return void
-     * @throws InvalidArgumentException for missing or invalid URLs.
-     */
-    private function setUrl($url)
-    {
-        if (empty($url)) {
-            throw new InvalidArgumentException('No URL provided to incoming request!');
-        }
-
-        $uri = new Uri($url);
-        if (! $uri->isValid()) {
-            throw new InvalidArgumentException('Invalid URL provided to incoming request!');
-        }
-
-        $this->url = $uri;
     }
 
     /**
