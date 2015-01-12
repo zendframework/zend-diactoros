@@ -243,7 +243,7 @@ class Request implements RequestInterface
         }
 
         if (null === $query) {
-            $baseUri = str_replace($path, '', $this->absoluteUri);
+            $baseUri = preg_replace('#^([^:]+://[^/]+)' . preg_quote($path) . '#', '$1', $this->absoluteUri);
             return $this->setAbsoluteUri($baseUri . $url);
         }
 

@@ -133,4 +133,12 @@ class RequestTest extends TestCase
         $request = $request->setUrl('/bar/baz');
         $this->assertEquals('https://example.com:10082/bar/baz', $request->getAbsoluteUri());
     }
+
+    public function testSettingUrlWhenOnlyOnlyRootPathIsPresentInAbsoluteUriShouldNotRaiseErrors()
+    {
+        $request = $this->request->setAbsoluteUri('http://example.com/');
+        $request = $request->setUrl('/foo');
+        $this->assertEquals('/foo', $request->getUrl());
+        $this->assertEquals('http://example.com/foo', $request->getAbsoluteUri());
+    }
 }
