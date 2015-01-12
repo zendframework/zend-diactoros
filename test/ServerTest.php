@@ -93,8 +93,9 @@ class ServerTest extends TestCase
         ];
 
         $callback = function ($req, $res) {
-            $res->addHeader('Content-Type', 'text/plain');
+            $res = $res->addHeader('Content-Type', 'text/plain');
             $res->getBody()->write('FOOBAR');
+            return $res;
         };
         $server = Server::createServer($callback, $server, [], [], [], []);
 
@@ -116,9 +117,10 @@ class ServerTest extends TestCase
         ];
 
         $callback = function ($req, $res) {
-            $res->setStatus(299);
-            $res->addHeader('Content-Type', 'text/plain');
+            $res = $res->setStatus(299);
+            $res = $res->addHeader('Content-Type', 'text/plain');
             $res->getBody()->write('FOOBAR');
+            return $res;
         };
         $server = Server::createServer($callback, $server, [], [], [], []);
 
@@ -140,8 +142,9 @@ class ServerTest extends TestCase
         ];
 
         $callback = function ($req, $res) {
-            $res->addHeader('Content-Type', 'text/plain');
+            $res = $res->addHeader('Content-Type', 'text/plain');
             $res->getBody()->write('100%');
+            return $res;
         };
         $server = Server::createServer($callback, $server, [], [], [], []);
 
@@ -161,15 +164,16 @@ class ServerTest extends TestCase
         ];
 
         $callback = function ($req, $res) {
-            $res->addHeader('Content-Type', 'text/plain');
-            $res->addHeader(
+            $res = $res->addHeader('Content-Type', 'text/plain');
+            $res = $res->addHeader(
                 'Set-Cookie',
                 'foo=bar; expires=Wed, 1 Oct 2014 10:30; path=/foo; domain=example.com'
             );
-            $res->addHeader(
+            $res = $res->addHeader(
                 'Set-Cookie',
                 'bar=baz; expires=Wed, 8 Oct 2014 10:30; path=/foo/bar; domain=example.com'
             );
+            return $res;
         };
         $server = Server::createServer($callback, $server, [], [], [], []);
 

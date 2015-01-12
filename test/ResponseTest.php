@@ -16,10 +16,11 @@ class ResponseTest extends TestCase
         $this->assertEquals(200, $this->response->getStatusCode());
     }
 
-    public function testStatusCodeIsMutable()
+    public function testStatusCodeMutatorReturnsCloneWithChanges()
     {
-        $this->response->setStatus(400);
-        $this->assertEquals(400, $this->response->getStatusCode());
+        $response = $this->response->setStatus(400);
+        $this->assertNotSame($this->response, $response);
+        $this->assertEquals(400, $response->getStatusCode());
     }
 
     public function invalidStatusCodes()
@@ -41,19 +42,19 @@ class ResponseTest extends TestCase
     public function testCannotSetInvalidStatusCode($code)
     {
         $this->setExpectedException('InvalidArgumentException');
-        $this->response->setStatus($code);
+        $response = $this->response->setStatus($code);
     }
 
     public function testReasonPhraseDefaultsToStandards()
     {
-        $this->response->setStatus(422);
-        $this->assertEquals('Unprocessable Entity', $this->response->getReasonPhrase());
+        $response = $this->response->setStatus(422);
+        $this->assertEquals('Unprocessable Entity', $response->getReasonPhrase());
     }
 
     public function testCanSetCustomReasonPhrase()
     {
-        $this->response->setStatus(422, 'Foo Bar!');
-        $this->assertEquals('Foo Bar!', $this->response->getReasonPhrase());
+        $response = $this->response->setStatus(422, 'Foo Bar!');
+        $this->assertEquals('Foo Bar!', $response->getReasonPhrase());
     }
 
     public function testConstructorRaisesExceptionForInvalidStream()

@@ -22,11 +22,12 @@ class ServerRequestTest extends TestCase
         $this->assertEmpty($this->request->getQueryParams());
     }
 
-    public function testQueryParamsAreMutable()
+    public function testQueryParamsMutatorReturnsCloneWithChanges()
     {
         $value = ['foo' => 'bar'];
-        $this->request->setQueryParams($value);
-        $this->assertEquals($value, $this->request->getQueryParams());
+        $request = $this->request->setQueryParams($value);
+        $this->assertNotSame($this->request, $request);
+        $this->assertEquals($value, $request->getQueryParams());
     }
 
     public function testCookiesAreEmptyByDefault()
@@ -34,11 +35,12 @@ class ServerRequestTest extends TestCase
         $this->assertEmpty($this->request->getCookieParams());
     }
 
-    public function testCookiesAreMutable()
+    public function testCookiesMutatorReturnsCloneWithChanges()
     {
         $value = ['foo' => 'bar'];
-        $this->request->setCookieParams($value);
-        $this->assertEquals($value, $this->request->getCookieParams());
+        $request = $this->request->setCookieParams($value);
+        $this->assertNotSame($this->request, $request);
+        $this->assertEquals($value, $request->getCookieParams());
     }
 
     public function testFileParamsAreEmptyByDefault()
@@ -51,11 +53,12 @@ class ServerRequestTest extends TestCase
         $this->assertEmpty($this->request->getBodyParams());
     }
 
-    public function testBodyParamsAreMutable()
+    public function testBodyParamsMutatorReturnsCloneWithChanges()
     {
         $value = ['foo' => 'bar'];
-        $this->request->setBodyParams($value);
-        $this->assertEquals($value, $this->request->getBodyParams());
+        $request = $this->request->setBodyParams($value);
+        $this->assertNotSame($this->request, $request);
+        $this->assertEquals($value, $request->getBodyParams());
     }
 
     public function testAttributesAreEmptyByDefault()
@@ -66,14 +69,15 @@ class ServerRequestTest extends TestCase
     /**
      * @depends testAttributesAreEmptyByDefault
      */
-    public function testAttributesAreMutable()
+    public function testAttributesMutatorReturnsCloneWithChanges()
     {
         $params = [
             'foo' => 'bar',
             'baz' => 'bat',
         ];
-        $this->request->setAttributes($params);
-        $this->assertEquals($params, $this->request->getAttributes());
+        $request = $this->request->setAttributes($params);
+        $this->assertNotSame($this->request, $request);
+        $this->assertEquals($params, $request->getAttributes());
     }
 
     public function testStreamAndServerAndFilesMayBeSetAsDiscreteConstructorArguments()

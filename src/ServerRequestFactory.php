@@ -49,14 +49,14 @@ abstract class ServerRequestFactory
 
         $headers = self::marshalHeaders($server);
 
-        $request->setMethod(self::get('REQUEST_METHOD', $server, 'GET'));
-        $request->setAbsoluteUri((string) self::marshalUriFromServer($server, $headers));
+        $request = $request->setMethod(self::get('REQUEST_METHOD', $server, 'GET'));
+        $request = $request->setAbsoluteUri((string) self::marshalUriFromServer($server, $headers));
         foreach ($headers as $header => $values) {
-            $request->setHeader($header, $values);
+            $request = $request->setHeader($header, $values);
         }
-        $request->setCookieParams($cookies ?: $_COOKIE);
-        $request->setQueryParams($query ?: $_GET);
-        $request->setBodyParams($body ?: $_POST);
+        $request = $request->setCookieParams($cookies ?: $_COOKIE);
+        $request = $request->setQueryParams($query ?: $_GET);
+        $request = $request->setBodyParams($body ?: $_POST);
 
         return $request;
     }

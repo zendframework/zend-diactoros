@@ -109,7 +109,7 @@ class Response implements ResponseInterface
             $stream = new Stream($stream, 'wb+');
         }
 
-        $this->setBody($stream);
+        $this->stream = $stream;
     }
 
     /**
@@ -168,7 +168,9 @@ class Response implements ResponseInterface
             ));
         }
 
-        $this->statusCode   = (int) $code;
-        $this->reasonPhrase = $reasonPhrase;
+        $new = clone $this;
+        $new->statusCode   = (int) $code;
+        $new->reasonPhrase = $reasonPhrase;
+        return $new;
     }
 }

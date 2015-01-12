@@ -123,7 +123,9 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public function setCookieParams(array $cookies)
     {
-        $this->cookieParams = $cookies;
+        $new = clone $this;
+        $new->cookieParams = $cookies;
+        return $new;
     }
 
     /**
@@ -162,7 +164,9 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public function setQueryParams(array $query)
     {
-        $this->queryParams = $query;
+        $new = clone $this;
+        $new->queryParams = $query;
+        return $new;
     }
 
     /**
@@ -198,7 +202,9 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public function setBodyParams(array $params)
     {
-        $this->bodyParams = $params;
+        $new = clone $this;
+        $new->bodyParams = $params;
+        return $new;
     }
 
     /**
@@ -245,7 +251,9 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public function setAttributes(array $values)
     {
-        $this->attributes = $values;
+        $new = clone $this;
+        $new->attributes = $values;
+        return $new;
     }
 
     /**
@@ -257,7 +265,9 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public function setAttribute($attribute, $value)
     {
-        $this->attributes[$attribute] = $value;
+        $new = clone $this;
+        $new->attributes[$attribute] = $value;
+        return $new;
     }
 
     /**
@@ -272,7 +282,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public function setMethod($method)
     {
-        parent::setMethod(strtoupper($method));
+        return parent::setMethod(strtoupper($method));
     }
 
     /**

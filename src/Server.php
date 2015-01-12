@@ -144,8 +144,11 @@ class Server
         $callback = $this->callback;
         ob_start();
         $this->bufferLevel = ob_get_level();
-        $callback($this->request, $this->response, $finalHandler);
-        $this->send($this->response);
+        $response = $callback($this->request, $this->response, $finalHandler);
+        if (! $response instanceof ResponseInterface) {
+            $response = $this->response;
+        }
+        $this->send($response);
     }
 
     /**

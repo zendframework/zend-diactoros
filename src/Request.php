@@ -46,7 +46,7 @@ class Request implements RequestInterface
             $stream = new Stream($stream, 'r');
         }
 
-        $this->setBody($stream);
+        $this->stream = $stream;
     }
 
     /**
@@ -67,12 +67,13 @@ class Request implements RequestInterface
      * modify the given string.
      *
      * @param string $method Case-insensitive method.
-     *
-     * @return void
+     * @return RequestInterface
      */
     public function setMethod($method)
     {
-        $this->method = $method;
+        $new = clone $this;
+        $new->method = $method;
+        return $new;
     }
 
     /**
@@ -138,8 +139,10 @@ class Request implements RequestInterface
             );
         }
 
-        $this->absoluteUri = $uri;
-        $this->setUrlFromAbsoluteUri($parts);
+        $new = clone $this;
+        $new->absoluteUri = $uri;
+        $this->setUrlFromAbsoluteUri($new, $parts);
+        return $new;
     }
 
     /**
@@ -188,17 +191,19 @@ class Request implements RequestInterface
             $normalized .= '?' . $parts['query'];
         }
 
-        $this->url = $normalized;
-        $this->setAbsoluteUriFromUrl($this->url);
+        $new = $this->setAbsoluteUriFromUrl($normalized);
+        $new->url = $normalized;
+        return $new;
     }
 
     /**
      * Set the URL from the parts present in the absolute URI
      *
+     * @param Request $request
      * @param array $parts
      * @return void
      */
-    private function setUrlFromAbsoluteUri(array $parts)
+    private function setUrlFromAbsoluteUri(Request $request, array $parts)
     {
         $url = '';
         if (isset($parts['path']) && ! empty($parts['path'])) {
@@ -209,7 +214,7 @@ class Request implements RequestInterface
             $url .= '?' . $parts['query'];
         }
 
-        $this->url = $url;
+        $request->url = $url;
     }
 
     /**
@@ -221,7 +226,7 @@ class Request implements RequestInterface
     private function setAbsoluteUriFromUrl($url)
     {
         if (! $this->absoluteUri) {
-            return;
+            return clone $this;
         }
 
         $url   = '/' . ltrim($url, '/');
@@ -229,24 +234,21 @@ class Request implements RequestInterface
         $query = parse_url($this->absoluteUri, PHP_URL_QUERY);
 
         if (null === $path && null === $query) {
-            $this->setAbsoluteUri($this->absoluteUri . $url);
-            return;
+            return $this->setAbsoluteUri($this->absoluteUri . $url);
         }
 
         if (null === $path) {
             $baseUri = str_replace('?' . $query, '', $this->absoluteUri);
-            $this->setAbsoluteUri($baseUri . $url);
-            return;
+            return $this->setAbsoluteUri($baseUri . $url);
         }
 
         if (null === $query) {
             $baseUri = str_replace($path, '', $this->absoluteUri);
-            $this->setAbsoluteUri($baseUri . $url);
-            return;
+            return $this->setAbsoluteUri($baseUri . $url);
         }
 
         $baseUri = str_replace('?' . $query, '', $this->absoluteUri);
         $baseUri = str_replace($path, '', $baseUri);
-        $this->setAbsoluteUri($baseUri . $url);
+        return $this->setAbsoluteUri($baseUri . $url);
     }
 }

@@ -2,6 +2,7 @@
 namespace Phly\Http;
 
 use InvalidArgumentException;
+use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\StreamableInterface;
 
 /**
@@ -44,11 +45,13 @@ trait MessageTrait
      * "1.1", "1.0").
      *
      * @param string $version HTTP protocol version
-     * @return void
+     * @return MessageInterface
      */
     public function setProtocolVersion($version)
     {
-        $this->protocol = $version;
+        $new = clone $this;
+        $new->protocol = $version;
+        return $new;
     }
 
     /**
@@ -67,11 +70,13 @@ trait MessageTrait
      * The body MUST be a StreamableInterface object.
      *
      * @param StreamableInterface $body Body.
-     * @return void
+     * @return MessageInterface
      */
     public function setBody(StreamableInterface $body)
     {
-        $this->stream = $body;
+        $new = clone $this;
+        $new->stream = $body;
+        return $new;
     }
 
     /**
@@ -153,6 +158,7 @@ trait MessageTrait
      *
      * @param string $header Header name
      * @param string|string[] $value  Header value(s)
+     * @return MessageInterface
      */
     public function setHeader($header, $value)
     {
@@ -168,7 +174,9 @@ trait MessageTrait
             );
         }
 
-        $this->headers[$header] = $value;
+        $new = clone $this;
+        $new->headers[$header] = $value;
+        return $new;
     }
 
     /**
@@ -179,6 +187,7 @@ trait MessageTrait
      *
      * @param string $header Header name to add
      * @param string|string[] $value  Value of the header; a string or array of strings
+     * @return MessageInterface
      */
     public function addHeader($header, $value)
     {
@@ -195,11 +204,12 @@ trait MessageTrait
         }
 
         if (! $this->hasHeader($header)) {
-            $this->setHeader($header, $value);
-            return;
+            return $this->setHeader($header, $value);
         }
 
-        $this->headers[$header] = array_merge($this->headers[$header], $value);
+        $new = clone $this;
+        $new->headers[$header] = array_merge($this->headers[$header], $value);
+        return $new;
     }
 
     /**
@@ -207,15 +217,17 @@ trait MessageTrait
      *
      * @param string $header HTTP header to remove
      *
-     * @return void
+     * @return MessageInterface
      */
     public function removeHeader($header)
     {
         if (! $this->hasHeader($header)) {
-            return;
+            return $this;
         }
 
-        unset($this->headers[strtolower($header)]);
+        $new = clone $this;
+        unset($new->headers[strtolower($header)]);
+        return $new;
     }
 
     /**
