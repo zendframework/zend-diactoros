@@ -19,14 +19,14 @@ class RequestTest extends TestCase
 
     public function testMethodMutatorReturnsCloneWithChangedMethod()
     {
-        $request = $this->request->setMethod('GET');
+        $request = $this->request->withMethod('GET');
         $this->assertNotSame($this->request, $request);
         $this->assertEquals('GET', $request->getMethod());
     }
 
-    public function testUrlIsNullByDefault()
+    public function testUriIsNullByDefault()
     {
-        $this->assertNull($this->request->getUrl());
+        $this->assertNull($this->request->getUri());
     }
 
     public function testConstructorRaisesExceptionForInvalidStream()
@@ -48,97 +48,13 @@ class RequestTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider invalidUrls
-     */
-    public function testCannotSetUrlWithInvalidType($url)
+    public function testWithUriReturnsNewInstanceWithNewUri()
     {
-        $this->setExpectedException('InvalidArgumentException', 'must be');
-        $request = $this->request->setUrl($url);
-    }
-
-    public function testAbsoluteUriIsNullByDefault()
-    {
-        $this->assertNull($this->request->getAbsoluteUri());
-    }
-
-    /**
-     * @dataProvider invalidUrls
-     */
-    public function testCannotSetAbsoluteUriWithInvalidType($uri)
-    {
-        $this->setExpectedException('InvalidArgumentException', 'must be');
-        $request = $this->request->setAbsoluteUri($uri);
-    }
-
-    public function invalidAbsoluteUris()
-    {
-        return [
-            'empty'                => [''],
-            'query-only'           => ['?foo=bar'],
-            'path-only'            => ['/foo'],
-            'path+query'           => ['/foo?bar=baz'],
-            'host+path+query'      => ['//foo.com/foo?bar=baz'],
-            'host+port+path+query' => ['//foo.com:8080/foo?bar=baz'],
-            'scheme-only'          => ['http://'],
-        ];
-    }
-
-    /**
-     * @dataProvider invalidAbsoluteUris
-     */
-    public function testCannotSetAbsoluteUriWithMissingRequiredInformation($uri)
-    {
-        $this->setExpectedException('InvalidArgumentException');
-        $request = $this->request->setAbsoluteUri($uri);
-    }
-
-    public function testSettingUrlUpdatesAbsoluteUri()
-    {
-        $request = $this->request->setAbsoluteUri('https://example.com:10082/foo/bar?baz=bat');
+        $request = $this->request->withUri(new Uri('https://example.com:10082/foo/bar?baz=bat'));
         $this->assertNotSame($this->request, $request);
-        $request2 = $request->setUrl('/baz/bat?foo=bar');
+        $request2 = $request->withUri(new Uri('/baz/bat?foo=bar'));
         $this->assertNotSame($this->request, $request2);
         $this->assertNotSame($request, $request2);
-        $this->assertEquals('https://example.com:10082/baz/bat?foo=bar', $request2->getAbsoluteUri());
-    }
-
-    public function testSettingAbsoluteUriSetsUrl()
-    {
-        $request = $this->request->setUrl('/baz/bat?foo=bar');
-        $this->assertNotSame($this->request, $request);
-        $request2 = $request->setAbsoluteUri('https://example.com:10082/foo/bar?baz=bat');
-        $this->assertNotSame($this->request, $request2);
-        $this->assertNotSame($request, $request2);
-        $this->assertEquals('/foo/bar?baz=bat', $request2->getUrl());
-    }
-
-    public function testSettingEmptyUrlClearsAbsoluteUriPath()
-    {
-        $request = $this->request->setAbsoluteUri('https://example.com:10082/foo/bar?baz=bat');
-        $request = $request->setUrl('');
-        $this->assertEquals('https://example.com:10082/', $request->getAbsoluteUri());
-    }
-
-    public function testSettingUrlToQueryStringOnlyClearsAbsoluteUriPathAndSetsQueryString()
-    {
-        $request = $this->request->setAbsoluteUri('https://example.com:10082/foo/bar?baz=bat');
-        $request = $request->setUrl('?foo=bar');
-        $this->assertEquals('https://example.com:10082/?foo=bar', $request->getAbsoluteUri());
-    }
-
-    public function testSettingUrlToPathResetsAbsoluteUriPathAndClearsAbsoluteUriQueryString()
-    {
-        $request = $this->request->setAbsoluteUri('https://example.com:10082/foo/bar?baz=bat');
-        $request = $request->setUrl('/bar/baz');
-        $this->assertEquals('https://example.com:10082/bar/baz', $request->getAbsoluteUri());
-    }
-
-    public function testSettingUrlWhenOnlyOnlyRootPathIsPresentInAbsoluteUriShouldNotRaiseErrors()
-    {
-        $request = $this->request->setAbsoluteUri('http://example.com/');
-        $request = $request->setUrl('/foo');
-        $this->assertEquals('/foo', $request->getUrl());
-        $this->assertEquals('http://example.com/foo', $request->getAbsoluteUri());
+        $this->assertEquals('/baz/bat?foo=bar', (string) $request2->getUri());
     }
 }

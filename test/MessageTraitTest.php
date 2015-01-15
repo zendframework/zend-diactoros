@@ -20,7 +20,7 @@ class MessageTraitTest extends TestCase
 
     public function testProtocolMutatorReturnsCloneWithChanges()
     {
-        $message = $this->message->setProtocolVersion('1.0');
+        $message = $this->message->withProtocolVersion('1.0');
         $this->assertNotSame($this->message, $message);
         $this->assertEquals('1.0', $message->getProtocolVersion());
     }
@@ -33,21 +33,21 @@ class MessageTraitTest extends TestCase
     public function testBodyMutatorReturnsCloneWithChanges()
     {
         $stream  = new Stream('php://memory', 'wb+');
-        $message = $this->message->setBody($stream);
+        $message = $this->message->withBody($stream);
         $this->assertNotSame($this->message, $message);
         $this->assertSame($stream, $message->getBody());
     }
 
     public function testGetHeaderLinesReturnsHeaderValueAsArray()
     {
-        $message = $this->message->setHeader('X-Foo', ['Foo', 'Bar']);
+        $message = $this->message->withHeader('X-Foo', ['Foo', 'Bar']);
         $this->assertNotSame($this->message, $message);
         $this->assertEquals(['Foo', 'Bar'], $message->getHeaderLines('X-Foo'));
     }
 
     public function testGetHeaderReturnsHeaderValueAsCommaConcatenatedString()
     {
-        $message = $this->message->setHeader('X-Foo', ['Foo', 'Bar']);
+        $message = $this->message->withHeader('X-Foo', ['Foo', 'Bar']);
         $this->assertNotSame($this->message, $message);
         $this->assertEquals('Foo,Bar', $message->getHeader('X-Foo'));
     }
@@ -59,26 +59,26 @@ class MessageTraitTest extends TestCase
 
     public function testHasHeaderReturnsTrueIfHeaderIsPresent()
     {
-        $message = $this->message->setHeader('X-Foo', 'Foo');
+        $message = $this->message->withHeader('X-Foo', 'Foo');
         $this->assertNotSame($this->message, $message);
         $this->assertTrue($message->hasHeader('X-Foo'));
     }
 
     public function testAddHeaderAppendsToExistingHeader()
     {
-        $message  = $this->message->setHeader('X-Foo', 'Foo');
+        $message  = $this->message->withHeader('X-Foo', 'Foo');
         $this->assertNotSame($this->message, $message);
-        $message2 = $message->addHeader('X-Foo', 'Bar');
+        $message2 = $message->withAddedHeader('X-Foo', 'Bar');
         $this->assertNotSame($message, $message2);
         $this->assertEquals('Foo,Bar', $message2->getHeader('X-Foo'));
     }
 
     public function testCanRemoveHeaders()
     {
-        $message = $this->message->setHeader('X-Foo', 'Foo');
+        $message = $this->message->withHeader('X-Foo', 'Foo');
         $this->assertNotSame($this->message, $message);
         $this->assertTrue($message->hasHeader('x-foo'));
-        $message2 = $message->removeHeader('x-foo');
+        $message2 = $message->withoutHeader('x-foo');
         $this->assertNotSame($this->message, $message2);
         $this->assertNotSame($message, $message2);
         $this->assertFalse($message2->hasHeader('X-Foo'));
@@ -103,7 +103,7 @@ class MessageTraitTest extends TestCase
     public function testSetHeaderRaisesExceptionForInvalidNestedHeaderValue($value)
     {
         $this->setExpectedException('InvalidArgumentException', 'Invalid header value');
-        $message = $this->message->setHeader('X-Foo', [ $value ]);
+        $message = $this->message->withHeader('X-Foo', [ $value ]);
     }
 
     public function invalidHeaderValues()
@@ -124,7 +124,7 @@ class MessageTraitTest extends TestCase
     public function testSetHeaderRaisesExceptionForInvalidValueType($value)
     {
         $this->setExpectedException('InvalidArgumentException', 'Invalid header value');
-        $message = $this->message->setHeader('X-Foo', $value);
+        $message = $this->message->withHeader('X-Foo', $value);
     }
 
     /**
@@ -133,13 +133,13 @@ class MessageTraitTest extends TestCase
     public function testAddHeaderRaisesExceptionForNonStringNonArrayValue($value)
     {
         $this->setExpectedException('InvalidArgumentException', 'must be a string');
-        $message = $this->message->addHeader('X-Foo', $value);
+        $message = $this->message->withAddedHeader('X-Foo', $value);
     }
 
     public function testRemoveHeaderDoesNothingIfHeaderDoesNotExist()
     {
         $this->assertFalse($this->message->hasHeader('X-Foo'));
-        $message = $this->message->removeHeader('X-Foo');
+        $message = $this->message->withoutHeader('X-Foo');
         $this->assertSame($this->message, $message);
         $this->assertFalse($message->hasHeader('X-Foo'));
     }

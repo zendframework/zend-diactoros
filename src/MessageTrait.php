@@ -39,7 +39,7 @@ trait MessageTrait
     }
 
     /**
-     * Set the HTTP protocol version.
+     * Create a new instance with the specified HTTP protocol version.
      *
      * The version string MUST contain only the HTTP version number (e.g.,
      * "1.1", "1.0").
@@ -47,7 +47,7 @@ trait MessageTrait
      * @param string $version HTTP protocol version
      * @return MessageInterface
      */
-    public function setProtocolVersion($version)
+    public function withProtocolVersion($version)
     {
         $new = clone $this;
         $new->protocol = $version;
@@ -65,14 +65,14 @@ trait MessageTrait
     }
 
     /**
-     * Sets the body of the message.
+     * Create a new instance with the specified message body.
      *
      * The body MUST be a StreamableInterface object.
      *
      * @param StreamableInterface $body Body.
      * @return MessageInterface
      */
-    public function setBody(StreamableInterface $body)
+    public function withBody(StreamableInterface $body)
     {
         $new = clone $this;
         $new->stream = $body;
@@ -150,8 +150,7 @@ trait MessageTrait
     }
 
     /**
-     * Sets a header, replacing any existing values of any headers with the
-     * same case-insensitive name.
+     * Create a new instance with the specified header/value pair.
      *
      * The header name is case-insensitive. The header values MUST be a string
      * or an array of strings.
@@ -160,7 +159,7 @@ trait MessageTrait
      * @param string|string[] $value  Header value(s)
      * @return MessageInterface
      */
-    public function setHeader($header, $value)
+    public function withHeader($header, $value)
     {
         $header = strtolower($header);
 
@@ -180,7 +179,8 @@ trait MessageTrait
     }
 
     /**
-     * Appends a header value for the specified header.
+     * Create a new instance with the specified header value appended to any
+     * existing values.
      *
      * Existing values for the specified header will be maintained. The new
      * value will be appended to the existing list.
@@ -189,7 +189,7 @@ trait MessageTrait
      * @param string|string[] $value  Value of the header; a string or array of strings
      * @return MessageInterface
      */
-    public function addHeader($header, $value)
+    public function withAddedHeader($header, $value)
     {
         $header = strtolower($header);
 
@@ -213,13 +213,15 @@ trait MessageTrait
     }
 
     /**
-     * Remove a specific header by case-insensitive name.
+     * Create a new instance that removes the specified header.
+     *
+     * Header name MUST be compared in a case-insensitive manner.
      *
      * @param string $header HTTP header to remove
      *
      * @return MessageInterface
      */
-    public function removeHeader($header)
+    public function withoutHeader($header)
     {
         if (! $this->hasHeader($header)) {
             return $this;
