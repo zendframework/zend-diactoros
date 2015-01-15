@@ -40,11 +40,6 @@ class ServerRequest extends Request implements ServerRequestInterface
     private $fileParams;
 
     /**
-     * @var string
-     */
-    private $method = 'GET';
-
-    /**
      * @var array
      */
     private $queryParams;
