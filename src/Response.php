@@ -153,7 +153,7 @@ class Response implements ResponseInterface
      * @param null|string $reasonPhrase The reason phrase to use with the status provided;
      *     if none is provided, and the status has a match in ResponseTrait::$phrases, the
      *     corresponding value will be used.
-     * @return void
+     * @return Response
      */
     public function withStatus($code, $reasonPhrase = null)
     {
