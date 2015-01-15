@@ -204,7 +204,7 @@ trait MessageTrait
         }
 
         if (! $this->hasHeader($header)) {
-            return $this->setHeader($header, $value);
+            return $this->withHeader($header, $value);
         }
 
         $new = clone $this;
