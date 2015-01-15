@@ -17,7 +17,7 @@ class Uri implements UriInterface
     /**
      * @var string
      */
-    private $authority = '';
+    private $userInfo = '';
 
     /**
      * @var string
@@ -61,9 +61,7 @@ class Uri implements UriInterface
     {
         return self::createUriString(
             $this->scheme,
-            $this->authority,
-            $this->host,
-            $this->port,
+            $this->getAuthority(),
             $this->path,
             $this->query,
             $this->fragment
@@ -91,24 +89,54 @@ class Uri implements UriInterface
     /**
      * Retrieve the authority portion of the URI.
      *
-     * The authority portion of a URI when present, can consist of a username,
-     * and optionally the password/credentials for that user. The return MUST
-     * be a string, in the format of "username[:password]", where the colon and
-     * password are only present if they were provided. (Brackets MUST NOT be
-     * present; they are used here to indicate that those items are optional)
+     * The authority portion of the URI is:
      *
-     * The string returned MUST strip off the trailing "@" delimiter if
-     * present.
+     * <pre>
+     * [user-info@]host[:port]
+     * </pre>
+     *
+     * If the port component is not set or is the standard port for the current
+     * scheme, it SHOULD NOT be included.
      *
      * This method MUST return an empty string if no authority information is
      * present.
      *
-     * @return string Authority portion of the URI, in "username[:password]"
+     * @return string Authority portion of the URI, in "[user-info@]host[:port]"
      *     format.
      */
     public function getAuthority()
     {
-        return $this->authority;
+        if (empty($this->host)) {
+            return '';
+        }
+
+        $authority = $this->host;
+        if (! empty($this->userInfo)) {
+            $authority = $this->userInfo . '@' . $authority;
+        }
+
+        if ($this->isNonStandardPort($this->scheme, $this->host, $this->port)) {
+            $authority .= ':' . $this->port;
+        }
+
+        return $authority;
+    }
+
+    /**
+     * Retrieve the user information portion of the URI, if present.
+     *
+     * If a user is present in the URI, this will return that value;
+     * additionally, if the password is also present, it will be appended to the
+     * user value, with a colon (":") separating the values.
+     *
+     * Implementations MUST NOT return the "@" suffix when returning this value.
+     *
+     * @return string User information portion of the URI, if present, in
+     *     "username[:password]" format.
+     */
+    public function getUserInfo()
+    {
+        return $this->userInfo;
     }
 
     /**
@@ -205,9 +233,9 @@ class Uri implements UriInterface
             $scheme = str_replace('://', '', $scheme);
         }
 
-        if (! in_array($scheme, ['http', 'https', 'file'])) {
+        if (! in_array($scheme, ['', 'http', 'https', 'file'], true)) {
             throw new InvalidArgumentException(sprintf(
-                'Unsupported scheme "%s"; must be one of "http", "https", or "file"',
+                'Unsupported scheme "%s"; must be one of an empty string, "http", "https", or "file"',
                 $scheme
             ));
         }
@@ -218,28 +246,28 @@ class Uri implements UriInterface
     }
 
     /**
-     * Create a new instance with the specified authority information.
+     * Create a new instance with the specified user information.
      *
      * This method MUST retain the state of the current instance, and return
-     * a new instance that contains the specified authority information.
+     * a new instance that contains the specified user information.
      *
-     * Password is optional, but the authority information MUST include the
+     * Password is optional, but the user information MUST include the
      * user.
      *
      * @param string $user User name to use for authority.
      * @param null|string $password Password associated with $user.
-     * @return UriInterface A new instance with the specified authority
+     * @return UriInterface A new instance with the specified user
      *     information.
      */
-    public function withAuthority($user, $password = null)
+    public function withUserInfo($user, $password = null)
     {
-        $authority = $user;
+        $info = $user;
         if ($password) {
-            $authority .= ':' . $password;
+            $info .= ':' . $password;
         }
 
         $new = clone $this;
-        $new->authority = $authority;
+        $new->userInfo = $info;
         return $new;
     }
 
@@ -409,9 +437,9 @@ class Uri implements UriInterface
      *
      * @return bool
      */
-    public function isOriginForm()
+    public function isOrigin()
     {
-        return (empty($this->scheme) && empty($this->host));
+        return (empty($this->scheme) && empty($this->getAuthority()) && empty($this->fragment));
     }
 
     /**
@@ -421,9 +449,9 @@ class Uri implements UriInterface
      *
      * @return bool
      */
-    public function isAbsoluteForm()
+    public function isAbsolute()
     {
-        return (! empty($this->scheme) && ! empty($this->host));
+        return (! empty($this->scheme) && ! empty($this->getAuthority()));
     }
 
     /**
@@ -434,25 +462,23 @@ class Uri implements UriInterface
      *
      * @return bool
      */
-    public function isAuthorityForm()
+    public function isAuthority()
     {
-        return ($this->isAbsoluteForm() && ! empty($this->authority));
+        return ($this->getAuthority() === $this->__toString());
     }
 
     /**
-     * Indicate whether the URI is an asterix form.
+     * Indicate whether the URI is an asterisk form.
      *
-     * An asterix form URI will have "*" as the path, and no other URI parts.
+     * An asterisk form URI will have "*" as the path, and no other URI parts.
      *
      * @return bool
      */
-    public function isAsterixForm()
+    public function isAsterisk()
     {
         return (
             empty($this->scheme)
-            && empty($this->authority)
-            && empty($this->host)
-            && empty($this->port)
+            && empty($this->getAuthority())
             && empty($this->query)
             && empty($this->fragment)
             && $this->path === '*'
@@ -467,7 +493,7 @@ class Uri implements UriInterface
         $parts = parse_url($uri);
 
         $this->scheme    = isset($parts['scheme'])   ? $parts['scheme']   : '';
-        $this->authority = isset($parts['user'])     ? $parts['user']     : '';
+        $this->userInfo  = isset($parts['user'])     ? $parts['user']     : '';
         $this->host      = isset($parts['host'])     ? $parts['host']     : '';
         $this->port      = isset($parts['port'])     ? $parts['port']     : null;
         $this->path      = isset($parts['path'])     ? $parts['path']     : '';
@@ -475,7 +501,7 @@ class Uri implements UriInterface
         $this->fragment  = isset($parts['fragment']) ? $parts['fragment'] : '';
 
         if (isset($parts['pass'])) {
-            $this->authority .= ':' . $parts['pass'];
+            $this->userInfo .= ':' . $parts['pass'];
         }
     }
 
@@ -484,20 +510,18 @@ class Uri implements UriInterface
      *
      * @param string $scheme
      * @param string $authority
-     * @param string $host
-     * @param int $port
      * @param string $path
      * @param string $query
      * @param string $fragment
      * @return string
      */
-    private static function createUriString($scheme, $authority, $host, $port, $path, $query, $fragment)
+    private static function createUriString($scheme, $authority, $path, $query, $fragment)
     {
         if ($scheme === 'file') {
             return self::createFileUriString($path);
         }
 
-        return self::createWebUriString($scheme, $authority, $host, $port, $path, $query, $fragment);
+        return self::createWebUriString($scheme, $authority, $path, $query, $fragment);
     }
 
     /**
@@ -516,14 +540,12 @@ class Uri implements UriInterface
      *
      * @param string $scheme
      * @param string $authority
-     * @param string $host
-     * @param int $port
      * @param string $path
      * @param string $query
      * @param string $fragment
      * @return string
      */
-    private static function createWebUriString($scheme, $authority, $host, $port, $path, $query, $fragment)
+    private static function createWebUriString($scheme, $authority, $path, $query, $fragment)
     {
         $uri = '';
 
@@ -531,16 +553,8 @@ class Uri implements UriInterface
             $uri .= sprintf('%s://', $scheme);
         }
 
-        if (! empty($authority) && ! empty($host)) {
-            $uri .= $authority . '@';
-        }
-
-        if (! empty($host)) {
-            $uri .= $host;
-        }
-
-        if (self::isNonStandardPort($scheme, $host, $port)) {
-            $uri .= sprintf(':%d', $port);
+        if (! empty($authority)) {
+            $uri .= $authority;
         }
 
         if ($path) {

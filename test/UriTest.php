@@ -10,9 +10,10 @@ class UriTest extends TestCase
     {
         $uri = new Uri('https://user:pass@local.example.com:3001/foo?bar=baz#quz');
         $this->assertEquals('https', $uri->getScheme());
-        $this->assertEquals('user:pass', $uri->getAuthority());
+        $this->assertEquals('user:pass', $uri->getUserInfo());
         $this->assertEquals('local.example.com', $uri->getHost());
         $this->assertEquals(3001, $uri->getPort());
+        $this->assertEquals('user:pass@local.example.com:3001', $uri->getAuthority());
         $this->assertEquals('/foo', $uri->getPath());
         $this->assertEquals('bar=baz', $uri->getQuery());
         $this->assertEquals('quz', $uri->getFragment());
@@ -34,21 +35,21 @@ class UriTest extends TestCase
         $this->assertEquals('http://user:pass@local.example.com:3001/foo?bar=baz#quz', (string) $new);
     }
 
-    public function testWithAuthorityReturnsNewInstanceWithProvidedUser()
+    public function testWithUserInfoReturnsNewInstanceWithProvidedUser()
     {
         $uri = new Uri('https://user:pass@local.example.com:3001/foo?bar=baz#quz');
-        $new = $uri->withAuthority('matthew');
+        $new = $uri->withUserInfo('matthew');
         $this->assertNotSame($uri, $new);
-        $this->assertEquals('matthew', $new->getAuthority());
+        $this->assertEquals('matthew', $new->getUserInfo());
         $this->assertEquals('https://matthew@local.example.com:3001/foo?bar=baz#quz', (string) $new);
     }
 
-    public function testWithAuthorityReturnsNewInstanceWithProvidedUserAndPassword()
+    public function testWithUserInfoReturnsNewInstanceWithProvidedUserAndPassword()
     {
         $uri = new Uri('https://user:pass@local.example.com:3001/foo?bar=baz#quz');
-        $new = $uri->withAuthority('matthew', 'zf2');
+        $new = $uri->withUserInfo('matthew', 'zf2');
         $this->assertNotSame($uri, $new);
-        $this->assertEquals('matthew:zf2', $new->getAuthority());
+        $this->assertEquals('matthew:zf2', $new->getUserInfo());
         $this->assertEquals('https://matthew:zf2@local.example.com:3001/foo?bar=baz#quz', (string) $new);
     }
 
@@ -167,7 +168,7 @@ class UriTest extends TestCase
         $this->assertEquals('https://user:pass@local.example.com:3001/foo?bar=baz#qat', (string) $new);
     }
 
-    public function validOriginForm()
+    public function validOrigins()
     {
         return [
             'path-only'         => [ '/foo/bar' ],
@@ -177,15 +178,15 @@ class UriTest extends TestCase
     }
 
     /**
-     * @dataProvider validOriginForm
+     * @dataProvider validOrigins
      */
-    public function testValidOriginFormsReturnTrueWhenTested($url)
+    public function testValidOriginsReturnTrueWhenTested($url)
     {
         $uri = new Uri($url);
-        $this->assertTrue($uri->isOriginForm());
+        $this->assertTrue($uri->isOrigin());
     }
 
-    public function invalidOriginForm()
+    public function invalidOrigins()
     {
         return [
             'scheme-and-host'            => [ 'http://example.com' ],
@@ -195,15 +196,15 @@ class UriTest extends TestCase
     }
 
     /**
-     * @dataProvider invalidOriginForm
+     * @dataProvider invalidOrigins
      */
-    public function testInvalidOriginFormsReturnFalseWhenTested($url)
+    public function testInvalidOriginsReturnFalseWhenTested($url)
     {
         $uri = new Uri($url);
-        $this->assertFalse($uri->isOriginForm());
+        $this->assertFalse($uri->isOrigin());
     }
 
-    public function validAbsoluteForm()
+    public function validAbsolute()
     {
         return [
             'scheme-host'                           => [ 'http://example.com' ],
@@ -222,47 +223,46 @@ class UriTest extends TestCase
     }
 
     /**
-     * @dataProvider validAbsoluteForm
+     * @dataProvider validAbsolute
      */
-    public function testValidAbsoluteFormsReturnTrueWhenTested($url)
+    public function testValidAbsoluteReturnTrueWhenTested($url)
     {
         $uri = new Uri($url);
-        $this->assertTrue($uri->isAbsoluteForm());
+        $this->assertTrue($uri->isAbsolute());
     }
 
     /**
-     * @dataProvider validOriginForm
+     * @dataProvider validOrigins
      */
-    public function testInvalidAbsoluteFormsReturnFalseWhenTested($url)
+    public function testInvalidAbsoluteReturnFalseWhenTested($url)
     {
         $uri = new Uri($url);
-        $this->assertFalse($uri->isAbsoluteForm());
+        $this->assertFalse($uri->isAbsolute());
     }
 
-    public function validAuthorityForm()
+    public function validAuthority()
     {
         return [
-            'scheme-authority-host'                 => [ 'http://user@example.com' ],
-            'scheme-authority-host-path'            => [ 'http://user@example.com/foo' ],
-            'scheme-authority-host-port'            => [ 'http://user@example.com:3000' ],
-            'scheme-authority-host-port-path'       => [ 'http://user@example.com:3000/foo' ],
-            'scheme-authority-host-path-query'      => [ 'http://user@example.com/foo?bar=baz' ],
-            'scheme-authority-host-port-path-query' => [ 'http://user@example.com:3000/foo?bar=baz' ],
+            'host'           => [ 'http://example.com' ],
+            'host-port'      => [ 'http://example.com:3000' ],
+            'user-host'      => [ 'http://user@example.com' ],
+            'user-host-port' => [ 'http://user@example.com:3000' ],
         ];
     }
 
     /**
-     * @dataProvider validAuthorityForm
+     * @dataProvider validAuthority
      */
-    public function testValidAuthorityFormsReturnTrueWhenTested($url)
+    public function testValidAuthorityReturnsTrueWhenTested($url)
     {
         $uri = new Uri($url);
-        $this->assertTrue($uri->isAuthorityForm());
+        $uri = $uri->withScheme('');
+        $this->assertTrue($uri->isAuthority());
     }
 
-    public function invalidAuthorityForm()
+    public function invalidAuthority()
     {
-        return array_merge($this->validOriginForm(), [
+        return array_merge($this->validOrigins(), [
             'scheme-host'                           => [ 'http://example.com' ],
             'scheme-host-port'                      => [ 'http://example.com:3000' ],
             'scheme-host-path'                      => [ 'http://example.com/foo' ],
@@ -273,34 +273,53 @@ class UriTest extends TestCase
     }
 
     /**
-     * @dataProvider invalidAuthorityForm
+     * @dataProvider invalidAuthority
      */
-    public function testInvalidAuthorityFormsReturnFalseWhenTested($url)
+    public function testInvalidAuthorityReturnsFalseWhenTested($url)
     {
         $uri = new Uri($url);
-        $this->assertFalse($uri->isAuthorityForm());
+        $this->assertFalse($uri->isAuthority());
     }
 
-    public function testValidAsterixFormsReturnTrueWhenTested()
+    public function testValidAsteriskReturnTrueWhenTested()
     {
         $uri = new Uri('*');
-        $this->assertTrue($uri->isAsterixForm());
+        $this->assertTrue($uri->isAsterisk());
     }
 
-    public function invalidAsterixForm()
+    public function invalidAsterisk()
     {
         return array_merge(
-            $this->validOriginForm(),
-            $this->validAbsoluteForm()
+            $this->validOrigins(),
+            $this->validAbsolute()
         );
     }
 
     /**
-     * @dataProvider invalidAsterixForm
+     * @dataProvider invalidAsterisk
      */
-    public function testInvalidAsterixFormsReturnFalseWhenTested($url)
+    public function testInvalidAsteriskReturnFalseWhenTested($url)
     {
         $uri = new Uri($url);
-        $this->assertFalse($uri->isAsterixForm());
+        $this->assertFalse($uri->isAsterisk());
+    }
+
+    public function authorityInfo()
+    {
+        return [
+            'host-only'      => [ 'http://foo.com/bar',         'foo.com' ],
+            'host-port'      => [ 'http://foo.com:3000/bar',    'foo.com:3000' ],
+            'user-host'      => [ 'http://me@foo.com/bar',      'me@foo.com' ],
+            'user-host-port' => [ 'http://me@foo.com:3000/bar', 'me@foo.com:3000' ],
+        ];
+    }
+
+    /**
+     * @dataProvider authorityInfo
+     */
+    public function testRetrievingAuthorityReturnsExpectedValues($url, $expected)
+    {
+        $uri = new Uri($url);
+        $this->assertEquals($expected, $uri->getAuthority());
     }
 }
