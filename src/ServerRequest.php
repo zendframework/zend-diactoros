@@ -121,7 +121,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      * @param array $cookies Array of key/value pairs representing cookies.
      * @return void
      */
-    public function setCookieParams(array $cookies)
+    public function withCookieParams(array $cookies)
     {
         $new = clone $this;
         $new->cookieParams = $cookies;
@@ -162,7 +162,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      *     $_GET.
      * @return void
      */
-    public function setQueryParams(array $query)
+    public function withQueryParams(array $query)
     {
         $new = clone $this;
         $new->queryParams = $query;
@@ -200,7 +200,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      * @param array $params The deserialized body parameters.
      * @return void
      */
-    public function setBodyParams(array $params)
+    public function withBodyParams(array $params)
     {
         $new = clone $this;
         $new->bodyParams = $params;
@@ -249,7 +249,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      *
      * @param array $values Path parameters matched by routing
      */
-    public function setAttributes(array $values)
+    public function withAttributes(array $values)
     {
         $new = clone $this;
         $new->attributes = $values;
@@ -263,7 +263,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      * @param mixed $value
      * @return void
      */
-    public function setAttribute($attribute, $value)
+    public function withAttribute($attribute, $value)
     {
         $new = clone $this;
         $new->attributes[$attribute] = $value;
@@ -280,9 +280,9 @@ class ServerRequest extends Request implements ServerRequestInterface
      * @param string $method
      * @return void
      */
-    public function setMethod($method)
+    public function withMethod($method)
     {
-        return parent::setMethod(strtoupper($method));
+        return parent::withMethod(strtoupper($method));
     }
 
     /**

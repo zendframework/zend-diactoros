@@ -25,7 +25,7 @@ class ServerRequestTest extends TestCase
     public function testQueryParamsMutatorReturnsCloneWithChanges()
     {
         $value = ['foo' => 'bar'];
-        $request = $this->request->setQueryParams($value);
+        $request = $this->request->withQueryParams($value);
         $this->assertNotSame($this->request, $request);
         $this->assertEquals($value, $request->getQueryParams());
     }
@@ -38,7 +38,7 @@ class ServerRequestTest extends TestCase
     public function testCookiesMutatorReturnsCloneWithChanges()
     {
         $value = ['foo' => 'bar'];
-        $request = $this->request->setCookieParams($value);
+        $request = $this->request->withCookieParams($value);
         $this->assertNotSame($this->request, $request);
         $this->assertEquals($value, $request->getCookieParams());
     }
@@ -56,7 +56,7 @@ class ServerRequestTest extends TestCase
     public function testBodyParamsMutatorReturnsCloneWithChanges()
     {
         $value = ['foo' => 'bar'];
-        $request = $this->request->setBodyParams($value);
+        $request = $this->request->withBodyParams($value);
         $this->assertNotSame($this->request, $request);
         $this->assertEquals($value, $request->getBodyParams());
     }
@@ -75,7 +75,7 @@ class ServerRequestTest extends TestCase
             'foo' => 'bar',
             'baz' => 'bat',
         ];
-        $request = $this->request->setAttributes($params);
+        $request = $this->request->withAttributes($params);
         $this->assertNotSame($this->request, $request);
         $this->assertEquals($params, $request->getAttributes());
     }
