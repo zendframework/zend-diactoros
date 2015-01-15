@@ -155,7 +155,7 @@ class Response implements ResponseInterface
      *     corresponding value will be used.
      * @return void
      */
-    public function setStatus($code, $reasonPhrase = null)
+    public function withStatus($code, $reasonPhrase = null)
     {
         if (! is_numeric($code)
             || is_float($code)

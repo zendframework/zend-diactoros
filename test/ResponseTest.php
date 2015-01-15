@@ -18,7 +18,7 @@ class ResponseTest extends TestCase
 
     public function testStatusCodeMutatorReturnsCloneWithChanges()
     {
-        $response = $this->response->setStatus(400);
+        $response = $this->response->withStatus(400);
         $this->assertNotSame($this->response, $response);
         $this->assertEquals(400, $response->getStatusCode());
     }
@@ -42,18 +42,18 @@ class ResponseTest extends TestCase
     public function testCannotSetInvalidStatusCode($code)
     {
         $this->setExpectedException('InvalidArgumentException');
-        $response = $this->response->setStatus($code);
+        $response = $this->response->withStatus($code);
     }
 
     public function testReasonPhraseDefaultsToStandards()
     {
-        $response = $this->response->setStatus(422);
+        $response = $this->response->withStatus(422);
         $this->assertEquals('Unprocessable Entity', $response->getReasonPhrase());
     }
 
     public function testCanSetCustomReasonPhrase()
     {
-        $response = $this->response->setStatus(422, 'Foo Bar!');
+        $response = $this->response->withStatus(422, 'Foo Bar!');
         $this->assertEquals('Foo Bar!', $response->getReasonPhrase());
     }
 
