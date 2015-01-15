@@ -49,14 +49,14 @@ abstract class ServerRequestFactory
 
         $headers = self::marshalHeaders($server);
 
-        $request = $request->setMethod(self::get('REQUEST_METHOD', $server, 'GET'));
-        $request = $request->setAbsoluteUri((string) self::marshalUriFromServer($server, $headers));
+        $request = $request->withMethod(self::get('REQUEST_METHOD', $server, 'GET'));
+        $request = $request->withUri(self::marshalUriFromServer($server, $headers));
         foreach ($headers as $header => $values) {
-            $request = $request->setHeader($header, $values);
+            $request = $request->withHeader($header, $values);
         }
-        $request = $request->setCookieParams($cookies ?: $_COOKIE);
-        $request = $request->setQueryParams($query ?: $_GET);
-        $request = $request->setBodyParams($body ?: $_POST);
+        $request = $request->withCookieParams($cookies ?: $_COOKIE);
+        $request = $request->withQueryParams($query ?: $_GET);
+        $request = $request->withBodyParams($body ?: $_POST);
 
         return $request;
     }
@@ -211,6 +211,8 @@ abstract class ServerRequestFactory
      */
     public static function marshalUriFromServer(array $server, array $headers)
     {
+        $uri = new Uri('');
+
         // URI scheme
         $scheme = 'http';
         $https  = self::get('HTTPS', $server);
@@ -219,30 +221,35 @@ abstract class ServerRequestFactory
         ) {
             $scheme = 'https';
         }
+        if (! empty($scheme)) {
+            $uri = $uri->withScheme($scheme);
+        }
 
         // Set the host
         $accumulator = (object) ['host' => '', 'port' => null];
         self::marshalHostAndPortFromHeaders($accumulator, $server, $headers);
         $host = $accumulator->host;
         $port = $accumulator->port;
+        if (! empty($host)) {
+            $uri = $uri->withHost($host);
+            if (! empty($port)) {
+                $uri = $uri->withPort($port);
+            }
+        }
 
         // URI path
         $path = self::marshalRequestUri($server);
         $path = self::stripQueryString($path);
 
         // URI query
-        $query = null;
+        $query = '';
         if (isset($server['QUERY_STRING'])) {
             $query = ltrim($server['QUERY_STRING'], '?');
         }
 
-        return Uri::fromArray(compact(
-            'scheme',
-            'host',
-            'port',
-            'path',
-            'query'
-        ));
+        return $uri
+            ->withPath($path)
+            ->withQuery($query);
     }
 
     /**
