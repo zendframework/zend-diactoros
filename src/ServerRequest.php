@@ -266,6 +266,23 @@ class ServerRequest extends Request implements ServerRequestInterface
     }
 
     /**
+     * Proxy to receive the request method.
+     *
+     * This overrides the parent functionality to ensure the method is never
+     * empty; if no method is present, it returns 'GET'.
+     *
+     * @return string
+     */
+    public function getMethod()
+    {
+        $method = parent::getMethod();
+        if (empty ($method)) {
+            return 'GET';
+        }
+        return $method;
+    }
+
+    /**
      * Set the request method.
      *
      * Unlike the regular Request implementation, the server-side
