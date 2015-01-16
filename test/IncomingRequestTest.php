@@ -153,4 +153,10 @@ class IncomingRequestTest extends TestCase
         $this->assertEquals($attributes, $request->getAttributes());
         $this->assertEquals('1.0', $request->getProtocolVersion());
     }
+
+    public function testGetUrlIssue19()
+    {
+        $request = new IncomingRequest('http://example.com/');
+        $this->assertInstanceOf('Phly\Http\Uri', $request->getUrl());
+    }
 }
