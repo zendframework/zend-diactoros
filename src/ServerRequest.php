@@ -236,32 +236,36 @@ class ServerRequest extends Request implements ServerRequestInterface
     }
 
     /**
-     * Set parameters discovered by matching that path
-     *
-     * If a router or similar is used to match against the path and/or request,
-     * this method can be used to inject them, so long as those
-     * results can be represented as an array.
-     *
-     * @param array $values Path parameters matched by routing
-     */
-    public function withAttributes(array $values)
-    {
-        $new = clone $this;
-        $new->attributes = $values;
-        return $new;
-    }
-
-    /**
      * Set a single named attribute
      *
      * @param string $attribute
      * @param mixed $value
-     * @return void
+     * @return self
      */
     public function withAttribute($attribute, $value)
     {
         $new = clone $this;
         $new->attributes[$attribute] = $value;
+        return $new;
+    }
+
+    /**
+     * Remove a single named attribute
+     *
+     * If the attribute did not exist, returns the current instance; otherwise,
+     * returns a new instance that removes the given attribute.
+     *
+     * @param string $attribute
+     * @return self
+     */
+    public function withoutAttribute($attribute)
+    {
+        if (! isset($this->attributes[$attribute])) {
+            return $this;
+        }
+
+        $new = clone $this;
+        unset($new->attributes[$attribute]);
         return $new;
     }
 

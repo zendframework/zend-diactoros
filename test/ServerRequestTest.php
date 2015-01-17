@@ -69,15 +69,22 @@ class ServerRequestTest extends TestCase
     /**
      * @depends testAttributesAreEmptyByDefault
      */
-    public function testAttributesMutatorReturnsCloneWithChanges()
+    public function testAttributeMutatorReturnsCloneWithChanges()
     {
-        $params = [
-            'foo' => 'bar',
-            'baz' => 'bat',
-        ];
-        $request = $this->request->withAttributes($params);
+        $request = $this->request->withAttribute('foo', 'bar');
         $this->assertNotSame($this->request, $request);
-        $this->assertEquals($params, $request->getAttributes());
+        $this->assertEquals('bar', $request->getAttribute('foo'));
+        return $request;
+    }
+
+    /**
+     * @depends testAttributeMutatorReturnsCloneWithChanges
+     */
+    public function testRemovingAttributeReturnsCloneWithoutAttribute($request)
+    {
+        $new = $request->withoutAttribute('foo');
+        $this->assertNotSame($request, $new);
+        $this->assertNull($new->getAttribute('foo', null));
     }
 
     public function testStreamAndServerAndFilesMayBeSetAsDiscreteConstructorArguments()
