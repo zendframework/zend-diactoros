@@ -5,7 +5,7 @@ use InvalidArgumentException;
 use RuntimeException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\StreamableInterface;
-use Psr\Http\Message\UriInterface;
+use Psr\Http\Message\UriTargetInterface;
 
 /**
  * HTTP Request encapsulation
@@ -88,8 +88,8 @@ class Request implements RequestInterface
      * This method MUST return a UriInterface instance.
      *
      * @link http://tools.ietf.org/html/rfc3986#section-4.3
-     * @return UriInterface Returns a UriInterface instance representing the
-     *     URI of the request, if any.
+     * @return UriTargetInterface Returns a UriTargetInterface instance
+     *     representing the URI of the request, if any.
      */
     public function getUri()
     {
@@ -104,10 +104,10 @@ class Request implements RequestInterface
      * new UriInterface instance.
      *
      * @link http://tools.ietf.org/html/rfc3986#section-4.3
-     * @param UriInterface $uri New request URI to use.
+     * @param UriTargetInterface $uri New request URI to use.
      * @return self
      */
-    public function withUri(UriInterface $uri)
+    public function withUri(UriTargetInterface $uri)
     {
         $new = clone $this;
         $new->uri = $uri;

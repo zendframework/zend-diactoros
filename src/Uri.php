@@ -2,7 +2,7 @@
 namespace Phly\Http;
 
 use InvalidArgumentException;
-use Psr\Http\Message\UriInterface;
+use Psr\Http\Message\UriTargetInterface;
 
 /**
  * Implementation of Psr\Http\MessageInterface.
@@ -14,7 +14,7 @@ use Psr\Http\Message\UriInterface;
  * state of the current instance and return a new instance that contains the
  * changed state.
  */
-class Uri implements UriInterface
+class Uri implements UriTargetInterface
 {
     /**
      * @var string
