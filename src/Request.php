@@ -9,6 +9,10 @@ use Psr\Http\Message\UriInterface;
 
 /**
  * HTTP Request encapsulation
+ *
+ * Requests are considered immutable; all methods that might change state are
+ * implemented such that they retain the internal state of the current
+ * message and return a new instance that contains the changed state.
  */
 class Request implements RequestInterface
 {
@@ -27,6 +31,7 @@ class Request implements RequestInterface
     /**
      * @param string $protocol
      * @param string|resource|StreamableInterface $stream
+     * @throws InvalidArgumentException for invalid streams.
      */
     public function __construct($stream = 'php://memory')
     {
@@ -46,7 +51,7 @@ class Request implements RequestInterface
     }
 
     /**
-     * Gets the HTTP method of the request.
+     * Retrieves the HTTP method of the request.
      *
      * @return string Returns the request method.
      */
@@ -56,15 +61,19 @@ class Request implements RequestInterface
     }
 
     /**
-     * Create a new instance with the specified method to be performed on the
-     * resource identified by the Request-URI.
+     * Create a new instance with the provided HTTP method.
      *
      * While HTTP method names are typically all uppercase characters, HTTP
      * method names are case-sensitive and thus implementations SHOULD NOT
      * modify the given string.
      *
+     * This method MUST be implemented in such a way as to retain the
+     * immutability of the message, and MUST return a new instance that has the
+     * changed request method.
+     *
      * @param string $method Case-insensitive method.
-     * @return RequestInterface
+     * @return self
+     * @throws InvalidArgumentException for invalid HTTP methods.
      */
     public function withMethod($method)
     {
@@ -74,11 +83,13 @@ class Request implements RequestInterface
     }
 
     /**
-     * Retrieves the composed UriInterface instance.
+     * Retrieves the URI instance.
+     *
+     * This method MUST return a UriInterface instance.
      *
      * @link http://tools.ietf.org/html/rfc3986#section-4.3
-     * @return UriInterface|null Returns the composed UriInterface instance; if
-     *     none is present, returns null.
+     * @return UriInterface Returns a UriInterface instance representing the
+     *     URI of the request, if any.
      */
     public function getUri()
     {
@@ -86,12 +97,15 @@ class Request implements RequestInterface
     }
 
     /**
-     * Sets the UriInterface instance representing the URI of the request.
+     * Create a new instance with the provided URI.
+     *
+     * This method MUST be implemented in such a way as to retain the
+     * immutability of the message, and MUST return a new instance that has the
+     * new UriInterface instance.
      *
      * @link http://tools.ietf.org/html/rfc3986#section-4.3
-     * @param UriInterface $uri Request URI.
-     * @return Request
-     * @throws InvalidArgumentException If the URI is invalid.
+     * @param UriInterface $uri New request URI to use.
+     * @return self
      */
     public function withUri(UriInterface $uri)
     {

@@ -7,6 +7,10 @@ use Psr\Http\Message\StreamableInterface;
 
 /**
  * HTTP response encapsulation.
+ *
+ * Responses are considered immutable; all methods that might change state are
+ * implemented such that they retain the internal state of the current
+ * message and return a new instance that contains the changed state.
  */
 class Response implements ResponseInterface
 {
@@ -94,6 +98,7 @@ class Response implements ResponseInterface
 
     /**
      * @param string|resource|StreamableInterface $stream Stream identifier and/or actual stream resource
+     * @throws InvalidArgumentException on invalid stream.
      */
     public function __construct($stream = 'php://memory')
     {
@@ -126,14 +131,25 @@ class Response implements ResponseInterface
     }
 
     /**
-     * Gets the response Reason-Phrase, a short textual description of the Status-Code.
+     * Create a new instance with the specified status code, and optionally
+     * reason phrase, for the response.
      *
-     * Because a Reason-Phrase is not a required element in response
-     * Status-Line, the Reason-Phrase value MAY be null. Implementations MAY
-     * choose to return the default RFC 2616 recommended reason phrase for the
-     * response's Status-Code.
+     * If no Reason-Phrase is specified, implementations MAY choose to default
+     * to the RFC 7231 or IANA recommended reason phrase for the response's
+     * Status-Code.
      *
-     * @return string|null Reason phrase, or null if unknown.
+     * This method MUST be implemented in such a way as to retain the
+     * immutability of the message, and MUST return a new instance that has the
+     * updated status and reason phrase.
+     *
+     * @link http://tools.ietf.org/html/rfc7231#section-6
+     * @link http://www.iana.org/assignments/http-status-codes/http-status-codes.xhtml
+     * @param integer $code The 3-digit integer result code to set.
+     * @param null|string $reasonPhrase The reason phrase to use with the
+     *     provided status code; if none is provided, implementations MAY
+     *     use the defaults as suggested in the HTTP specification.
+     * @return self
+     * @throws InvalidArgumentException For invalid status code arguments.
      */
     public function getReasonPhrase()
     {
@@ -147,13 +163,17 @@ class Response implements ResponseInterface
     }
 
     /**
-     * Sets the status code of this response.
+     * Gets the response Reason-Phrase, a short textual description of the Status-Code.
      *
-     * @param integer $code The 3-digit integer result code to set.
-     * @param null|string $reasonPhrase The reason phrase to use with the status provided;
-     *     if none is provided, and the status has a match in ResponseTrait::$phrases, the
-     *     corresponding value will be used.
-     * @return Response
+     * Because a Reason-Phrase is not a required element in a response
+     * Status-Line, the Reason-Phrase value MAY be null. Implementations MAY
+     * choose to return the default RFC 7231 recommended reason phrase (or those
+     * listed in the IANA HTTP Status Code Registry) for the response's
+     * Status-Code.
+     *
+     * @link http://tools.ietf.org/html/rfc7231#section-6
+     * @link http://www.iana.org/assignments/http-status-codes/http-status-codes.xhtml
+     * @return string|null Reason phrase, or null if unknown.
      */
     public function withStatus($code, $reasonPhrase = null)
     {
