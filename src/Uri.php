@@ -464,7 +464,7 @@ class Uri implements UriInterface
      */
     public function isAuthority()
     {
-        return ($this->getAuthority() === $this->__toString());
+        return ((string) $this === $this->getAuthority());
     }
 
     /**
@@ -476,13 +476,7 @@ class Uri implements UriInterface
      */
     public function isAsterisk()
     {
-        return (
-            empty($this->scheme)
-            && empty($this->getAuthority())
-            && empty($this->query)
-            && empty($this->fragment)
-            && $this->path === '*'
-        );
+        return ((string) $this === '*');
     }
 
     /**
