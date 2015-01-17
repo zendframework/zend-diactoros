@@ -281,6 +281,9 @@ class UriTest extends TestCase
         $this->assertFalse($uri->isAuthority());
     }
 
+    /**
+     * @group fail
+     */
     public function testValidAsteriskReturnTrueWhenTested()
     {
         $uri = new Uri('*');
@@ -321,5 +324,28 @@ class UriTest extends TestCase
     {
         $uri = new Uri($url);
         $this->assertEquals($expected, $uri->getAuthority());
+    }
+
+    public function testCanEmitOriginFormUrl()
+    {
+        $url = '/foo/bar?baz=bat';
+        $uri = new Uri($url);
+        $this->assertEquals($url, (string) $uri);
+    }
+
+    public function testCanEmitAuthorityFormUrl()
+    {
+        $authority = 'me:too@example.com:3000';
+        $uri = ( new Uri() )
+            ->withUserInfo('me', 'too')
+            ->withHost('example.com')
+            ->withPort(3000);
+        $this->assertEquals($authority, (string) $uri);
+    }
+
+    public function testCanEmitAsteriskFormUrl()
+    {
+        $uri = new Uri('*');
+        $this->assertEquals('*', (string) $uri);
     }
 }

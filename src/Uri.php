@@ -46,10 +46,20 @@ class Uri implements UriInterface
 
     /**
      * @param string $uri
+     * @throws InvalidArgumentException on non-string $uri argument
      */
-    public function __construct($uri)
+    public function __construct($uri = '')
     {
-        $this->parseUri($uri);
+        if (! is_string($uri)) {
+            throw new InvalidArgumentException(
+                'URI passed to constructor must be a string; received "%s"',
+                (is_object($uri) ? get_class($uri) : gettype($uri))
+            );
+        }
+
+        if (! empty($uri)) {
+            $this->parseUri($uri);
+        }
     }
 
     /**
@@ -59,6 +69,14 @@ class Uri implements UriInterface
      */
     public function __toString()
     {
+        if ($this->isAsterisk()) {
+            return '*';
+        }
+
+        if ($this->isAuthority()) {
+            return $this->getAuthority();
+        }
+
         return self::createUriString(
             $this->scheme,
             $this->getAuthority(),
@@ -464,7 +482,13 @@ class Uri implements UriInterface
      */
     public function isAuthority()
     {
-        return ((string) $this === $this->getAuthority());
+        return (
+            ! empty($this->getAuthority())
+            && empty($this->scheme)
+            && empty($this->path)
+            && empty($this->query)
+            && empty($this->fragment)
+        );
     }
 
     /**
@@ -476,7 +500,13 @@ class Uri implements UriInterface
      */
     public function isAsterisk()
     {
-        return ((string) $this === '*');
+        return (
+            empty($this->scheme)
+            && empty($this->getAuthority())
+            && empty($this->query)
+            && empty($this->fragment)
+            && $this->path === '*'
+        );
     }
 
     /**
@@ -576,6 +606,10 @@ class Uri implements UriInterface
      */
     private static function isNonStandardPort($scheme, $host, $port)
     {
+        if (! $scheme) {
+            return true;
+        }
+
         if (! $host || ! $port) {
             return false;
         }
