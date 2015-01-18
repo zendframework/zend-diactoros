@@ -274,7 +274,7 @@ class IncomingRequest implements IncomingRequestInterface
             throw new InvalidArgumentException('Invalid URL provided to incoming request!');
         }
 
-        $this->url = $url;
+        $this->url = $uri;
     }
 
     /**

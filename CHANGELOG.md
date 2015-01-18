@@ -18,6 +18,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
+- [#20](https://github.com/phly/http/pull/20) Fixes `IncomingRequest::setUrl()` to ensure it uses the `Uri` instance when setting the property, and not the string URL.
 - [#17](https://github.com/phly/http/pull/17) Fixes a typo in the README, and demonstrates instantiating an `OutgoingResponse` prior to consuming it.
 
 
