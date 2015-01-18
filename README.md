@@ -48,13 +48,25 @@ A client will _send_ a request, and _return_ a response. As a developer, you wil
 
 ```php
 // Create a request
-$request = new Phly\Http\Request();
-$request = $request->setUrl('http://example.com');
-$request = $request->setMethod('PATCH');
-$request = $request->addHeader('Authorization', 'Bearer ' . $token);
-$request = $request->addHeader('Content-Type', 'application/json');
-$request->getBody()->write(json_encode($data));
+$request = (new Phly\Http\Request())
+    ->withUri(new Phly\Http\Uri('http://example.com'))
+    ->withMethod('PATCH')
+    ->withAddedHeader('Authorization', 'Bearer ' . $token)
+    ->withAddedHeader('Content-Type', 'application/json');
 
+// OR:
+$request = new Phly\Http\Request(
+    'http://example.com',
+    'PATCH',
+    'php://memory',
+    [
+        'Authorization' => 'Bearer ' . $token,
+        'Content-Type'  => 'application/json',
+    ]
+);
+
+// Once you have the instance:
+$request->getBody()->write(json_encode($data));
 $response = $client->send($request);
 
 printf("Response status: %d (%s)\n", $response->getStatusCode(), $response->getReasonPhrase());
@@ -110,8 +122,9 @@ $response->getBody()->write("more content\n"); // now "some content\nmore conten
 
 // Add headers
 // Note: headers do not need to be added before data is written to the body!
-$response = $response->setHeader('Content-Type', 'text/plain');
-$response = $response->addHeader('X-Show-Something', 'something');
+$response = $response
+    ->withHeader('Content-Type', 'text/plain')
+    ->withAddedHeader('X-Show-Something', 'something');
 ```
 
 #### "Serving" an application
@@ -186,28 +199,31 @@ API
 ```php
 class Request
 {
-    public function __construct($stream = 'php://memory');
-    public function setMethod($method);
-    public function setAbsoluteUri($uri);
-    public function setUrl($url);
-    public function setProtocolVersion($version);
+    public function __construct(
+        $uri = null,
+        $method = null,
+        $body = 'php://memory',
+        array $headers = []
+    );
     public function getMethod();
-    public function getAbsoluteUri();
-    public function getUrl();
-    public function setHeader($header, $value);
-    public function addHeader($header, $value);
-    public function removeHeader($header);
-    public function setBody(Psr\Http\Message\StreamableInterface $body);
+    public function getUri();
     public function getProtocolVersion();
     public function getBody();
-    public function getHeaders();
     public function hasHeader($header);
     public function getHeader($header);
     public function getHeaderLines($header);
+    public function getHeaders();
+    public function withMethod($method);
+    public function withUri(Psr\Http\Message\UriTargetInterface $uri);
+    public function withProtocolVersion($version);
+    public function withHeader($header, $value);
+    public function withAddedHeader($header, $value);
+    public function withoutHeader($header);
+    public function withBody(Psr\Http\Message\StreamableInterface $body);
 }
 ```
 
-Requests are immutable. Any methods that would change state -- those prefixed with `get`, `set`, `add`, and `remove` -- all return a new instance with the changes requested.
+Requests are immutable. Any methods that would change state -- those prefixed with `with` and `without` -- all return a new instance with the changes requested.
 
 ### ServerRequest Message
 
@@ -217,70 +233,77 @@ For server-side applications, `Phly\Http\ServerRequest` implements `Psr\Http\Mes
 class ServerRequest
 {
     public function __construct(
-        $stream = 'php://input',
         array $serverParams = [],
-        array $fileParams = []
+        array $fileParams = [],
+        $uri = null,
+        $method = null,
+        $body = 'php://input',
+        array $headers = []
     );
-    public function getBodyParams();
-    public function setBodyParams(array $params);
-    public function getCookieParams();
-    public function setCookieParams(array $cookies);
-    public function getFileParams();
-    public function getServerParams();
-    public function getQueryParams();
-    public function setQueryParams(array $query);
-    public function getAttributes();
-    public function getAttribute($attribute, $default = NULL);
-    public function setAttributes(array $values);
-    public function setAttribute($attribute, $value);
     public function getMethod();
-    public function setMethod($method);
-    public function getAbsoluteUri();
-    public function setAbsoluteUri($uri);
-    public function getUrl();
-    public function setUrl($url);
+    public function getUri();
     public function getProtocolVersion();
-    public function setProtocolVersion($version);
-    public function getBody();
-    public function setBody(Psr\Http\Message\StreamableInterface $stream);
-    public function getHeaders();
     public function hasHeader($header);
     public function getHeader($header);
-    public function getHeaderAsArray($header);
-    public function addHeader($header, $value);
-    public function removeHeader($header);
-    public function setHeader($header, $value);
+    public function getHeaderLines($header);
+    public function getHeaders();
+    public function getCookieParams();
+    public function getQueryParams();
+    public function getBody();
+    public function getBodyParams();
+    public function getAttribute($attribute, $default = NULL);
+    public function getAttributes();
+    public function getServerParams();
+    public function getFileParams();
+    public function hasHeader($header);
+
+    public function withMethod($method);
+    public function withUri(Psr\Http\Message\UriTargetInterface $uri);
+    public function withProtocolVersion($version);
+    public function withHeader($header, $value);
+    public function withAddedHeader($header, $value);
+    public function withoutHeader($header);
+    public function withCookieParams(array $cookies);
+    public function withQueryParams(array $query);
+    public function withBody(Psr\Http\Message\StreamableInterface $stream);
+    public function withBodyParams(array $params);
+    public function withAttribute($attribute, $value);
+    public function withoutAttribute($attribute);
 }
 ```
 
-The `ServerRequest` is immutable. Any methods that would change state -- those prefixed with `get`, `set`, `add`, and `remove` -- all return a new instance with the changes requested. Two input sources, server and file parameters, are considered completely immutable, however, as they cannot be recalculated, and, rather, are the sources for other values.
+The `ServerRequest` is immutable. Any methods that would change state -- those prefixed with `with` and `without` -- all return a new instance with the changes requested. Two input sources, server and file parameters, are considered completely immutable, however, as they cannot be recalculated, and, rather, are the sources for other values.
 
 ### Response Message
 
 `Phly\Http\Response` provides an implementation of `Psr\Http\Message\ResponseInterface`, an object to be used to aggregate response information for both HTTP clients and server-side applications, including headers and message body content. It includes the following:
 
 ```php
-class OutgoingResponse
+class Response
 {
-    public function __construct($stream = 'php://memory');
-    public function setStatus($code, $reasonPhrase = NULL);
-    public function setProtocolVersion($version);
+    public function __construct(
+        $body = 'php://memory',
+        $statusCode = 200,
+        array $headers = []
+    );
+    public function getProtocolVersion();
     public function getStatusCode();
     public function getReasonPhrase();
-    public function setHeader($header, $value);
-    public function addHeader($header, $value);
-    public function removeHeader($header);
-    public function setBody(Psr\Http\Message\StreamableInterface $body);
-    public function getProtocolVersion();
-    public function getBody();
-    public function getHeaders();
-    public function hasHeader($header);
     public function getHeader($header);
-    public function getHeaderAsArray($header);
+    public function getHeaderLines($header);
+    public function getHeaders();
+    public function getBody();
+    public function hasHeader($header);
+    public function withProtocolVersion($version);
+    public function withStatus($code, $reasonPhrase = NULL);
+    public function withHeader($header, $value);
+    public function withAddedHeader($header, $value);
+    public function withoutHeader($header);
+    public function withBody(Psr\Http\Message\StreamableInterface $body);
 }
 ```
 
-Like the `Request` and `ServerRequest`, responses are immutable. Any methods that would change state -- those prefixed with `get`, `set`, `add`, and `remove` -- all return a new instance with the changes requested.
+Like the `Request` and `ServerRequest`, responses are immutable. Any methods that would change state -- those prefixed with `with` and `without` -- all return a new instance with the changes requested.
 
 #### ServerRequestFactory
 
@@ -305,37 +328,36 @@ $request = RequestFactory::fromGlobals(
 
 ### URI
 
-`Phly\Http\Uri` models and validates URIs. The request object casts URLs to `Uri` objects, and returns them from `getUrl()`, giving an OOP interface to the parts of a URI. It implements `__toString()`, allowing it to be represented as a string and `echo()`'d directly. The following methods are pertinent:
+`Phly\Http\Uri` is an implementation of `Psr\Http\Message\UriTargetInterface`, and models and validates URIs and request targets. It implements `__toString()`, allowing it to be represented as a string and `echo()`'d directly. The following methods are pertinent:
 
 ```php
 class Uri
 {
-    public static function fromArray(array $parts);
-    public function __construct($uri);
-    public function isValid();
-    public function setPath($path);
+    public function __construct($uri = '');
+    public function getScheme();
+    public function getAuthority();
+    public function getUserInfo();
+    public function getHost();
+    public function getPort();
+    public function getPath();
+    public function getQuery();
+    public function getFragment();
+    public function withScheme($scheme);
+    public function withUserInfo($user, $password = null);
+    public function withHost($host);
+    public function withPort($port);
+    public function withPath($path);
+    public function withQuery($query);
+    public function withFragment($fragment);
+    public function isOrigin();
+    public function isAbsolute();
+    public function isAuthority();
+    public function isAsterisk();
+    public function __toString();
 }
 ```
 
-`fromArray()` expects an array of URI parts, and should contain 1 or more of the following keys:
-
-- scheme
-- host
-- port
-- path
-- query
-- fragment
-
-`setPath()` accepts a path, but does not actually change the `Uri` instance; it instead returns a clone of the current instance with the new path.
-
-The following properties are exposed for read-only access:
-
-- scheme
-- host
-- port
-- path
-- query
-- fragment
+Like the various message objects, URIs are immutable. Any methods that would change state -- those prefixed with `with` and `without` -- all return a new instance with the changes requested.
 
 ### Stream
 
