@@ -2,6 +2,7 @@
 namespace PhlyTest\Http;
 
 use Phly\Http\ServerRequest;
+use Phly\Http\Uri;
 use PHPUnit_Framework_TestCase as TestCase;
 use ReflectionProperty;
 
@@ -87,7 +88,7 @@ class ServerRequestTest extends TestCase
         $this->assertNull($new->getAttribute('foo', null));
     }
 
-    public function testStreamAndServerAndFilesMayBeSetAsDiscreteConstructorArguments()
+    public function testUsesProvidedConstructorArguments()
     {
         $server = $files = [
             'foo' => 'bar',
@@ -97,19 +98,32 @@ class ServerRequestTest extends TestCase
         $server['server'] = true;
         $files['files']   = true;
 
+        $uri = new Uri('http://example.com');
+        $method = 'POST';
+        $headers = [
+            'host' => ['example.com'],
+        ];
+
         $request = new ServerRequest(
-            'php://memory',
             $server,
-            $files
+            $files,
+            $uri,
+            $method,
+            'php://memory',
+            $headers
         );
+
+        $this->assertEquals($server, $request->getServerParams());
+        $this->assertEquals($files, $request->getFileParams());
+
+        $this->assertSame($uri, $request->getUri());
+        $this->assertEquals($method, $request->getMethod());
+        $this->assertEquals($headers, $request->getHeaders());
 
         $body = $request->getBody();
         $r = new ReflectionProperty($body, 'stream');
         $r->setAccessible(true);
         $stream = $r->getValue($body);
-
         $this->assertEquals('php://memory', $stream);
-        $this->assertEquals($server, $request->getServerParams());
-        $this->assertEquals($files, $request->getFileParams());
     }
 }

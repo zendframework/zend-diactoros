@@ -21,8 +21,6 @@ use Psr\Http\Message\StreamableInterface;
  */
 class ServerRequest extends Request implements ServerRequestInterface
 {
-    use MessageTrait;
-
     /**
      * @var array
      */
@@ -54,17 +52,24 @@ class ServerRequest extends Request implements ServerRequestInterface
     private $serverParams;
 
     /**
-     * @param string|resource|StreamableInterface $stream Stream representing message body.
      * @param array $serverParams Server parameters, typically from $_SERVER
      * @param array $fileParams Upload file information; should be in PHP's $_FILES format
-     * @return void
+     * @param null|string $uri URI for the request, if any.
+     * @param null|string $method HTTP method for the request, if any.
+     * @param string|resource|StreamableInterface $body Message body, if any.
+     * @param array $headers Headers for the message, if any.
+     * @throws InvalidArgumentException for any invalid value.
      */
     public function __construct(
-        $stream = 'php://input',
         array $serverParams = [],
-        array $fileParams = []
+        array $fileParams = [],
+        $uri = null,
+        $method = null,
+        $body = 'php://input',
+        array $headers = []
     ) {
-        $this->setStream($stream);
+        $body = $this->getStream($body);
+        parent::__construct($uri, $method, $body, $headers);
         $this->serverParams = $serverParams;
         $this->fileParams   = $fileParams;
     }
@@ -348,10 +353,10 @@ class ServerRequest extends Request implements ServerRequestInterface
      * @param string|resource|StreamableInterface $stream
      * @return void
      */
-    private function setStream($stream)
+    private function getStream($stream)
     {
         if ($stream === 'php://input') {
-            $stream = new PhpInputStream();
+            return new PhpInputStream();
         }
 
         if (! is_string($stream) && ! is_resource($stream) && ! $stream instanceof StreamableInterface) {
@@ -363,9 +368,9 @@ class ServerRequest extends Request implements ServerRequestInterface
         }
 
         if (! $stream instanceof StreamableInterface) {
-            $stream = new Stream($stream, 'r');
+            return new Stream($stream, 'r');
         }
 
-        $this->stream = $stream;
+        return $stream;
     }
 }

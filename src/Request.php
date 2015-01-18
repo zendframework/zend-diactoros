@@ -29,25 +29,54 @@ class Request implements RequestInterface
     private $uri;
 
     /**
-     * @param string $protocol
-     * @param string|resource|StreamableInterface $stream
-     * @throws InvalidArgumentException for invalid streams.
+     * Supported HTTP methods
+     *
+     * @var array
      */
-    public function __construct($stream = 'php://memory')
+    private $validMethods = [
+        'CONNECT',
+        'DELETE',
+        'GET',
+        'HEAD',
+        'OPTIONS',
+        'POST',
+        'PUT',
+        'TRACE',
+    ];
+
+    /**
+     * @param null|string $uri URI for the request, if any.
+     * @param null|string $method HTTP method for the request, if any.
+     * @param string|resource|StreamableInterface $body Message body, if any.
+     * @param array $headers Headers for the message, if any.
+     * @throws InvalidArgumentException for any invalid value.
+     */
+    public function __construct($uri = null, $method = null, $body = 'php://memory', array $headers = [])
     {
-        if (! is_string($stream) && ! is_resource($stream) && ! $stream instanceof StreamableInterface) {
+        if (! $uri instanceof UriTargetInterface && ! is_string($uri) && null !== $uri) {
             throw new InvalidArgumentException(
-                'Stream must be a string stream resource identifier, '
+                'Invalid URI provided; must be null, a string, or a Psr\Http\Message\UriTargetInterface instance'
+            );
+        }
+
+        $this->validateMethod($method);
+
+        if (! is_string($body) && ! is_resource($body) && ! $body instanceof StreamableInterface) {
+            throw new InvalidArgumentException(
+                'Body must be a string stream resource identifier, '
                 . 'an actual stream resource, '
                 . 'or a Psr\Http\Message\StreamableInterface implementation'
             );
         }
 
-        if (! $stream instanceof StreamableInterface) {
-            $stream = new Stream($stream, 'r');
+        if (is_string($uri)) {
+            $uri = new Uri($uri);
         }
 
-        $this->stream = $stream;
+        $this->method  = $method;
+        $this->uri     = $uri;
+        $this->stream  = ($body instanceof StreamableInterface) ? $body : new Stream($body, 'r');
+        $this->headers = $this->filterHeaders($headers);
     }
 
     /**
@@ -77,6 +106,7 @@ class Request implements RequestInterface
      */
     public function withMethod($method)
     {
+        $this->validateMethod($method);
         $new = clone $this;
         $new->method = $method;
         return $new;
@@ -112,5 +142,34 @@ class Request implements RequestInterface
         $new = clone $this;
         $new->uri = $uri;
         return $new;
+    }
+
+    /**
+     * Validate the HTTP method
+     *
+     * @param null|string $method
+     * @throws InvalidArgumentException on invalid HTTP method.
+     */
+    private function validateMethod($method)
+    {
+        if (null === $method) {
+            return true;
+        }
+
+        if (! is_string($method)) {
+            throw new InvalidArgumentException(sprintf(
+                'Unsupported HTTP method; must be a string, received %s',
+                (is_object($method) ? get_class($method) : gettype($method))
+            ));
+        }
+
+        $method = strtoupper($method);
+
+        if (! in_array($method, $this->validMethods, true)) {
+            throw new InvalidArgumentException(sprintf(
+                'Unsupported HTTP method "%s" provided',
+                $method
+            ));
+        }
     }
 }

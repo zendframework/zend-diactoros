@@ -281,9 +281,6 @@ class UriTest extends TestCase
         $this->assertFalse($uri->isAuthority());
     }
 
-    /**
-     * @group fail
-     */
     public function testValidAsteriskReturnTrueWhenTested()
     {
         $uri = new Uri('*');

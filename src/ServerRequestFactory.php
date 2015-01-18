@@ -41,24 +41,20 @@ abstract class ServerRequestFactory
     ) {
         $server  = self::normalizeServer($server ?: $_SERVER);
         $files   = $files   ?: $_FILES;
+        $headers = self::marshalHeaders($server);
         $request = new ServerRequest(
-            'php://input',
             $server,
-            $files
+            $files,
+            self::marshalUriFromServer($server, $headers),
+            self::get('REQUEST_METHOD', $server, 'GET'),
+            'php://input',
+            $headers
         );
 
-        $headers = self::marshalHeaders($server);
-
-        $request = $request->withMethod(self::get('REQUEST_METHOD', $server, 'GET'));
-        $request = $request->withUri(self::marshalUriFromServer($server, $headers));
-        foreach ($headers as $header => $values) {
-            $request = $request->withHeader($header, $values);
-        }
-        $request = $request->withCookieParams($cookies ?: $_COOKIE);
-        $request = $request->withQueryParams($query ?: $_GET);
-        $request = $request->withBodyParams($body ?: $_POST);
-
-        return $request;
+        return $request
+            ->withCookieParams($cookies ?: $_COOKIE)
+            ->withQueryParams($query ?: $_GET)
+            ->withBodyParams($body ?: $_POST);
     }
 
     /**

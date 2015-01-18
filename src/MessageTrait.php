@@ -280,6 +280,36 @@ trait MessageTrait
     }
 
     /**
+     * Filter a set of headers to ensure they are in the correct internal format.
+     *
+     * Used by message constructors to allow setting all initial headers at once.
+     *
+     * @param array $originalHeaders Headers to filter.
+     * @return array Filtered headers.
+     */
+    private function filterHeaders(array $originalHeaders)
+    {
+        $headers = [];
+        foreach ($originalHeaders as $header => $value) {
+            if (! is_string($header)) {
+                continue;
+            }
+
+            if (! is_array($value) && ! is_string($value)) {
+                continue;
+            }
+
+            if (! is_array($value)) {
+                $value = [ $value ];
+            }
+
+            $headers[strtolower($header)] = $value;
+        }
+
+        return $headers;
+    }
+
+    /**
      * Test if a value is a string
      *
      * Used with array_reduce.

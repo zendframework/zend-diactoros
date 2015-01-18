@@ -98,11 +98,13 @@ class Response implements ResponseInterface
 
     /**
      * @param string|resource|StreamableInterface $stream Stream identifier and/or actual stream resource
-     * @throws InvalidArgumentException on invalid stream.
+     * @param int $status Status code for the response, if any.
+     * @param array $headers Headers for the response, if any.
+     * @throws InvalidArgumentException on any invalid element.
      */
-    public function __construct($stream = 'php://memory')
+    public function __construct($body = 'php://memory', $status = 200, array $headers = [])
     {
-        if (! is_string($stream) && ! is_resource($stream) && ! $stream instanceof StreamableInterface) {
+        if (! is_string($body) && ! is_resource($body) && ! $body instanceof StreamableInterface) {
             throw new InvalidArgumentException(
                 'Stream must be a string stream resource identifier, '
                 . 'an actual stream resource, '
@@ -110,11 +112,13 @@ class Response implements ResponseInterface
             );
         }
 
-        if (! $stream instanceof StreamableInterface) {
-            $stream = new Stream($stream, 'wb+');
+        if (null !== $status) {
+            $this->validateStatus($status);
         }
 
-        $this->stream = $stream;
+        $this->stream     = ($body instanceof StreamableInterface) ? $body : new Stream($body, 'wb+');
+        $this->statusCode = $status ? (int) $status : 200;
+        $this->headers    = $this->filterHeaders($headers);
     }
 
     /**
@@ -177,6 +181,21 @@ class Response implements ResponseInterface
      */
     public function withStatus($code, $reasonPhrase = null)
     {
+        $this->validateStatus($code);
+        $new = clone $this;
+        $new->statusCode   = (int) $code;
+        $new->reasonPhrase = $reasonPhrase;
+        return $new;
+    }
+
+    /**
+     * Validate a status code.
+     *
+     * @param int|string $code
+     * @throws InvalidArgumentException on an invalid status code.
+     */
+    private function validateStatus($code)
+    {
         if (! is_numeric($code)
             || is_float($code)
             || $code < 100
@@ -187,10 +206,5 @@ class Response implements ResponseInterface
                 (is_scalar($code) ? $code : gettype($code))
             ));
         }
-
-        $new = clone $this;
-        $new->statusCode   = (int) $code;
-        $new->reasonPhrase = $reasonPhrase;
-        return $new;
     }
 }

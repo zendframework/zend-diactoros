@@ -10,7 +10,7 @@ class MessageTraitTest extends TestCase
     public function setUp()
     {
         $this->stream  = new Stream('php://memory', 'wb+');
-        $this->message = new Request($this->stream);
+        $this->message = new Request(null, null, $this->stream);
     }
 
     public function testProtocolHasAcceptableDefault()

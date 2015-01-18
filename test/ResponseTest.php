@@ -2,6 +2,7 @@
 namespace PhlyTest\Http;
 
 use Phly\Http\Response;
+use Phly\Http\Stream;
 use PHPUnit_Framework_TestCase as TestCase;
 
 class ResponseTest extends TestCase
@@ -61,5 +62,83 @@ class ResponseTest extends TestCase
     {
         $this->setExpectedException('InvalidArgumentException');
         new Response([ 'TOTALLY INVALID' ]);
+    }
+
+    public function testConstructorCanAcceptAllMessageParts()
+    {
+        $body = new Stream('php://memory');
+        $status = 302;
+        $headers = [
+            'location' => [ 'http://example.com/' ],
+        ];
+
+        $response = new Response($body, $status, $headers);
+        $this->assertSame($body, $response->getBody());
+        $this->assertEquals(302, $response->getStatusCode());
+        $this->assertEquals($headers, $response->getHeaders());
+    }
+
+    public function invalidStatus()
+    {
+        return [
+            'true' => [ true ],
+            'false' => [ false ],
+            'float' => [ 100.1 ],
+            'bad-string' => [ 'Two hundred' ],
+            'array' => [ [ 200 ] ],
+            'object' => [ (object) [ 'statusCode' => 200 ] ],
+            'too-small' => [ 1 ],
+            'too-big' => [ 600 ],
+        ];
+    }
+
+    /**
+     * @dataProvider invalidStatus
+     */
+    public function testConstructorRaisesExceptionForInvalidStatus($code)
+    {
+        $this->setExpectedException('InvalidArgumentException', 'Invalid status code');
+        new Response('php://memory', $code);
+    }
+
+    public function invalidResponseBody()
+    {
+        return [
+            'true'       => [ true ],
+            'false'      => [ false ],
+            'int'        => [ 1 ],
+            'float'      => [ 1.1 ],
+            'array'      => [ ['BODY'] ],
+            'stdClass'   => [ (object) [ 'body' => 'BODY'] ],
+        ];
+    }
+
+    /**
+     * @dataProvider invalidResponseBody
+     */
+    public function testConstructorRaisesExceptionForInvalidBody($body)
+    {
+        $this->setExpectedException('InvalidArgumentException', 'stream');
+        new Response($body);
+    }
+
+    public function testConstructorIgonoresInvalidHeaders()
+    {
+        $headers = [
+            [ 'INVALID' ],
+            'x-invalid-null' => null,
+            'x-invalid-true' => true,
+            'x-invalid-false' => false,
+            'x-invalid-int' => 1,
+            'x-invalid-object' => (object) ['INVALID'],
+            'x-valid-string' => 'VALID',
+            'x-valid-array' => [ 'VALID' ],
+        ];
+        $expected = [
+            'x-valid-string' => [ 'VALID' ],
+            'x-valid-array' => [ 'VALID' ],
+        ];
+        $response = new Response('php://memory', null, $headers);
+        $this->assertEquals($expected, $response->getHeaders());
     }
 }
