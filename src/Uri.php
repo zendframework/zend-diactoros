@@ -493,7 +493,8 @@ class Uri implements UriTargetInterface
      */
     public function isOrigin()
     {
-        return (empty($this->scheme) && empty($this->getAuthority()) && empty($this->fragment));
+        $authority = $this->getAuthority();
+        return (empty($this->scheme) && empty($authority) && empty($this->fragment));
     }
 
     /**
@@ -508,7 +509,8 @@ class Uri implements UriTargetInterface
      */
     public function isAbsolute()
     {
-        return (! empty($this->scheme) && ! empty($this->getAuthority()));
+        $authority = $this->getAuthority();
+        return (! empty($this->scheme) && ! empty($authority));
     }
 
     /**
@@ -523,8 +525,9 @@ class Uri implements UriTargetInterface
      */
     public function isAuthority()
     {
+        $authority = $this->getAuthority();
         return (
-            ! empty($this->getAuthority())
+            ! empty($authority)
             && empty($this->scheme)
             && empty($this->path)
             && empty($this->query)
@@ -543,9 +546,10 @@ class Uri implements UriTargetInterface
      */
     public function isAsterisk()
     {
+        $authority = $this->getAuthority();
         return (
             empty($this->scheme)
-            && empty($this->getAuthority())
+            && empty($authority)
             && empty($this->query)
             && empty($this->fragment)
             && $this->path === '*'

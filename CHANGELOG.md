@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release..
 
+## 0.8.2 - 2015-01-19
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Updated `Phly\Http\Uri` to work under PHP 5.4. (Failed previously due to calling `empty()` on method calls.)
+
 ## 0.8.1 - 2015-01-18
 
 ### Added
