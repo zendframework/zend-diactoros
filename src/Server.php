@@ -2,8 +2,8 @@
 namespace Phly\Http;
 
 use OutOfBoundsException;
-use Psr\Http\Message\IncomingRequestInterface;
-use Psr\Http\Message\OutgoingResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * "Serve" incoming HTTP requests
@@ -27,12 +27,12 @@ class Server
     private $callback;
 
     /**
-     * @var IncomingRequestInterface
+     * @var ServerRequestInterface
      */
     private $request;
 
     /**
-     * @var OutgoingResponseInterface
+     * @var ResponseInterface
      */
     private $response;
 
@@ -42,13 +42,13 @@ class Server
      * Given a callback, a request, and a response, we can create a server.
      *
      * @param callable $callback
-     * @param IncomingRequestInterface $request
-     * @param OutgoingResponseInterface $response
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
      */
     public function __construct(
         callable $callback,
-        IncomingRequestInterface $request,
-        OutgoingResponseInterface $response
+        ServerRequestInterface $request,
+        ResponseInterface $response
     ) {
         $this->callback = $callback;
         $this->request  = $request;
@@ -98,8 +98,8 @@ class Server
         array $cookies,
         array $files
     ) {
-        $request  = IncomingRequestFactory::fromGlobals($server, $query, $body, $cookies, $files);
-        $response = new OutgoingResponse();
+        $request  = ServerRequestFactory::fromGlobals($server, $query, $body, $cookies, $files);
+        $response = new Response();
         return new self($callback, $request, $response);
     }
 
@@ -112,17 +112,17 @@ class Server
      * If no Response object is provided, one will be created.
      *
      * @param callable $callback
-     * @param IncomingRequestInterface $request
-     * @param null|OutgoingResponseInterface $response
+     * @param ServerRequestInterface $request
+     * @param null|ResponseInterface $response
      * @return self
      */
     public static function createServerFromRequest(
         callable $callback,
-        IncomingRequestInterface $request,
-        OutgoingResponseInterface $response = null
+        ServerRequestInterface $request,
+        ResponseInterface $response = null
     ) {
         if (! $response) {
-            $response = new OutgoingResponse();
+            $response = new Response();
         }
         return new self($callback, $request, $response);
     }
@@ -144,8 +144,11 @@ class Server
         $callback = $this->callback;
         ob_start();
         $this->bufferLevel = ob_get_level();
-        $callback($this->request, $this->response, $finalHandler);
-        $this->send($this->response);
+        $response = $callback($this->request, $this->response, $finalHandler);
+        if (! $response instanceof ResponseInterface) {
+            $response = $this->response;
+        }
+        $this->send($response);
     }
 
     /**
@@ -157,9 +160,9 @@ class Server
      *
      * Finally, the response body will be emitted.
      *
-     * @param OutgoingResponseInterface $response
+     * @param ResponseInterface $response
      */
-    private function send(OutgoingResponseInterface $response)
+    private function send(ResponseInterface $response)
     {
         if (! headers_sent()) {
             $this->sendHeaders($response);
@@ -180,9 +183,9 @@ class Server
      * Sends the response status/reason, followed by all headers;
      * header names are filtered to be word-cased.
      *
-     * @param OutgoingResponseInterface $response
+     * @param ResponseInterface $response
      */
-    private function sendHeaders(OutgoingResponseInterface $response)
+    private function sendHeaders(ResponseInterface $response)
     {
         if ($response->getReasonPhrase()) {
             header(sprintf(

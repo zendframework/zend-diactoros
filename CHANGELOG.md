@@ -2,6 +2,54 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release..
 
+## 0.8.0 - 2015-01-18
+
+This version is for most intents and purposes a complete rewrite. It reverts in
+many respects to the implementations in the 0.6 series:
+
+- `Phly\Http\Request`
+- `Phly\Http\Response`
+- `Phly\Http\ServerRequest` (which was `IncomingRequest` in 0.6)
+
+However, the messages are now immutable, and setters have been renamed to use
+`with` and `without` verbiage to better imply that they now return a new
+instance, and do not change state on the given instance on which the method was
+called. Constructors have been rewritten to accept the most common arguments
+first, and to accept all message properties. (The exception to this is that
+`Phly\Http\ServerRequest` only accepts the `$_SERVER` and `$_FILES`
+superglobals; all others must be injected via the mutators.)
+
+Additionally, this release updates `Phly\Http\Uri` to follow the
+psr/http-message >= 0.6.0 `Psr\Http\Message\UriTargetInterface` definition,
+which breaks backwards compatibility. The new implementation remains immutable,
+but now defines methods for all URI segments.
+
+### Added
+
+- `Phly\Http\Request`.
+- `Phly\Http\Response`.
+- `Phly\Http\ServerRequest`, which replaces `Phly\Http\IncomingRequest`.
+- `Phly\Http\ServerRequestFactory`, which replaces
+  `Phly\Http\IncomingRequestFactory`.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- `Phly\Http\IncomingRequest` (replaced by `Phly\Http\ServerRequest`).
+- `Phly\Http\OutgoingRequest`.
+- `Phly\Http\IncomingResponse`.
+- `Phly\Http\OutgoingResponse`.
+- `Phly\Http\IncomingRequestFactory` (replaced by
+  `Phly\Http\ServerRequestFactory`).
+
+### Fixed
+
+- Nothing.
+
+
 ## 0.7.2 - 2015-01-18
 
 ### Added

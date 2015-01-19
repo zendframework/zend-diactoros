@@ -205,6 +205,17 @@ class StreamTest extends TestCase
         $this->assertEquals(2, $stream->tell());
     }
 
+    public function testRewindResetsToStartOfStream()
+    {
+        $this->tmpnam = tempnam(sys_get_temp_dir(), 'phly');
+        file_put_contents($this->tmpnam, 'FOO BAR');
+        $resource = fopen($this->tmpnam, 'wb+');
+        $stream = new Stream($resource);
+        $this->assertTrue($stream->seek(2));
+        $stream->rewind();
+        $this->assertEquals(0, $stream->tell());
+    }
+
     public function testSeekReturnsFalseWhenStreamIsDetached()
     {
         $this->tmpnam = tempnam(sys_get_temp_dir(), 'phly');

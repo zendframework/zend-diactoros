@@ -188,6 +188,21 @@ class Stream implements StreamableInterface
     }
 
     /**
+     * Rewind the stream
+     * 
+     * @return bool Returns TRUE on success, FALSE on failure
+     */
+    public function rewind()
+    {
+        if (! $this->isSeekable()) {
+            return false;
+        }
+
+        $result = fseek($this->resource, 0);
+        return (0 === $result);
+    }
+
+    /**
      * Returns whether or not the stream is writable
      *
      * @return bool

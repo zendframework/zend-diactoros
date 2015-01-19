@@ -14,8 +14,8 @@ class ServerTest extends TestCase
         $this->callback   = function ($req, $res, $done) {
             //  Intentionally empty
         };
-        $this->request    = $this->getMock('Psr\Http\Message\IncomingRequestInterface');
-        $this->response   = $this->getMock('Psr\Http\Message\OutgoingResponseInterface');
+        $this->request    = $this->getMock('Psr\Http\Message\ServerRequestInterface');
+        $this->response   = $this->getMock('Psr\Http\Message\ResponseInterface');
     }
 
     public function tearDown()
@@ -45,7 +45,7 @@ class ServerTest extends TestCase
         $this->assertInstanceOf('Phly\Http\Server', $server);
         $this->assertSame($this->callback, $server->callback);
         $this->assertSame($this->request, $server->request);
-        $this->assertInstanceOf('Phly\Http\OutgoingResponse', $server->response);
+        $this->assertInstanceOf('Phly\Http\Response', $server->response);
     }
 
     public function testCannotAccessArbitraryProperties()
@@ -73,13 +73,13 @@ class ServerTest extends TestCase
         $this->assertInstanceOf('Phly\Http\Server', $server);
         $this->assertSame($this->callback, $server->callback);
 
-        $this->assertInstanceOf('Phly\Http\IncomingRequest', $server->request);
+        $this->assertInstanceOf('Phly\Http\ServerRequest', $server->request);
         $request = $server->request;
         $this->assertEquals('POST', $request->getMethod());
-        $this->assertEquals('/foo/bar', parse_url($request->getUrl(), PHP_URL_PATH));
+        $this->assertEquals('/foo/bar', $request->getUri()->getPath());
         $this->assertTrue($request->hasHeader('Accept'));
 
-        $this->assertInstanceOf('Phly\Http\OutgoingResponse', $server->response);
+        $this->assertInstanceOf('Phly\Http\Response', $server->response);
     }
 
     public function testListenInvokesCallbackAndSendsResponse()
@@ -93,8 +93,9 @@ class ServerTest extends TestCase
         ];
 
         $callback = function ($req, $res) {
-            $res->addHeader('Content-Type', 'text/plain');
+            $res = $res->withAddedHeader('Content-Type', 'text/plain');
             $res->getBody()->write('FOOBAR');
+            return $res;
         };
         $server = Server::createServer($callback, $server, [], [], [], []);
 
@@ -116,9 +117,10 @@ class ServerTest extends TestCase
         ];
 
         $callback = function ($req, $res) {
-            $res->setStatus(299);
-            $res->addHeader('Content-Type', 'text/plain');
+            $res = $res->withStatus(299);
+            $res = $res->withAddedHeader('Content-Type', 'text/plain');
             $res->getBody()->write('FOOBAR');
+            return $res;
         };
         $server = Server::createServer($callback, $server, [], [], [], []);
 
@@ -140,8 +142,9 @@ class ServerTest extends TestCase
         ];
 
         $callback = function ($req, $res) {
-            $res->addHeader('Content-Type', 'text/plain');
+            $res = $res->withAddedHeader('Content-Type', 'text/plain');
             $res->getBody()->write('100%');
+            return $res;
         };
         $server = Server::createServer($callback, $server, [], [], [], []);
 
@@ -161,15 +164,16 @@ class ServerTest extends TestCase
         ];
 
         $callback = function ($req, $res) {
-            $res->addHeader('Content-Type', 'text/plain');
-            $res->addHeader(
+            $res = $res->withAddedHeader('Content-Type', 'text/plain');
+            $res = $res->withAddedHeader(
                 'Set-Cookie',
                 'foo=bar; expires=Wed, 1 Oct 2014 10:30; path=/foo; domain=example.com'
             );
-            $res->addHeader(
+            $res = $res->withAddedHeader(
                 'Set-Cookie',
                 'bar=baz; expires=Wed, 8 Oct 2014 10:30; path=/foo/bar; domain=example.com'
             );
+            return $res;
         };
         $server = Server::createServer($callback, $server, [], [], [], []);
 
