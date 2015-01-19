@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release..
 
+## 0.8.1 - 2015-01-18
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Updated README.md to reference `psr/http-message:~0.6.0`, as that's the
+  minimum version with which the 0.8 series will work.
+
+
 ## 0.8.0 - 2015-01-18
 
 This version is for most intents and purposes a complete rewrite. It reverts in
