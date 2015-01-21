@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release..
 
+## 0.8.3 - 2015-01-21
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Updated `Phly\Http\Uri` to allow empty paths (previously, it had prefixed even
+  empty paths with a "/").
+
 ## 0.8.2 - 2015-01-19
 
 ### Added

@@ -404,7 +404,7 @@ class Uri implements UriTargetInterface
             );
         }
 
-        if (strpos($path, '/') !== 0) {
+        if (! empty($path) && strpos($path, '/') !== 0) {
             $path = '/' . $path;
         }
 

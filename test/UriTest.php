@@ -345,4 +345,11 @@ class UriTest extends TestCase
         $uri = new Uri('*');
         $this->assertEquals('*', (string) $uri);
     }
+
+    public function testCanUseAnEmptyPath()
+    {
+        $uri = new Uri('http://example.com/foo');
+        $new = $uri->withPath('');
+        $this->assertEquals('', $new->getPath());
+    }
 }
