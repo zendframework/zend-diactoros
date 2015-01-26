@@ -97,7 +97,7 @@ class Uri implements UriTargetInterface
         return self::createUriString(
             $this->scheme,
             $this->getAuthority(),
-            $this->path,
+            $this->getPath(), // Absolute URIs should use a "/" for an empty path
             $this->query,
             $this->fragment
         );
@@ -212,10 +212,19 @@ class Uri implements UriTargetInterface
      * This method MUST return a string; if no path is present it MUST return
      * an empty string.
      *
+     * If the instance represents an absolute- or origin-form, and the path is
+     * empty, this method MUST return "/".
+     *
      * @return string The path segment of the URI.
      */
     public function getPath()
     {
+        if (empty($this->path)
+            && ($this->isOrigin() || $this->isAbsolute())
+        ) {
+            return '/';
+        }
+
         return $this->path;
     }
 
