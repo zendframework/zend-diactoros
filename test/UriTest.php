@@ -346,10 +346,72 @@ class UriTest extends TestCase
         $this->assertEquals('*', (string) $uri);
     }
 
-    public function testCanUseAnEmptyPath()
+    public function nonAbsoluteTargetsWithEmptyPaths()
+    {
+        return [
+            'host-only'        => [ [ 'host' => 'api.example.com' ] ],
+            'host-query'       => [ [ 'host' => 'api.example.com', 'query' => 'foo=bar' ] ],
+            'host-port'        => [ [ 'host' => 'api.example.com', 'port' => 80 ] ],
+            'host-port-query'  => [ [ 'host' => 'api.example.com', 'port' => 80, 'query' => 'foo=bar' ] ],
+            'user-host'        => [ [ 'user-info' => 'matthew', 'host' => 'api.example.com' ] ],
+            'user-host-query'  => [ [ 'user-info' => 'matthew', 'host' => 'api.example.com', 'query' => 'foo=bar' ] ],
+            'authority'        => [ [ 'user-info' => 'matthew', 'host' => 'api.example.com', 'port' => 80 ] ],
+            'authority-query'  => [ [
+                'user-info' => 'matthew',
+                'host'      => 'api.example.com',
+                'port'      => 80,
+                'query'     => 'foo=bar',
+            ] ],
+        ];
+    }
+
+    /**
+     * @dataProvider nonAbsoluteTargetsWithEmptyPaths
+     */
+    public function testCanUseAnEmptyPathWithANonUriTargets(array $parts)
+    {
+        $uri = new Uri();
+        foreach ($parts as $type => $value) {
+            switch ($type) {
+                case 'user-info':
+                    $uri = $uri->withUserInfo($value);
+                    break;
+                case 'host':
+                    $uri = $uri->withHost($value);
+                    break;
+                case 'port':
+                    $uri = $uri->withPort($value);
+                    break;
+                case 'query':
+                    $uri = $uri->withQuery($value);
+                    break;
+            }
+        }
+        $this->assertEquals('', $uri->getPath());
+    }
+
+    public function testSettingEmptyPathOnAbsoluteUriIsEquivalentToSettingRootPath()
     {
         $uri = new Uri('http://example.com/foo');
         $new = $uri->withPath('');
-        $this->assertEquals('', $new->getPath());
+        $this->assertEquals('/', $new->getPath());
+    }
+
+    public function testStringRepresentationOfAbsoluteUriWithNoPathNormalizesPath()
+    {
+        $uri = new Uri('http://example.com');
+        $this->assertEquals('http://example.com/', (string) $uri);
+    }
+
+    public function testEmptyPathOnOriginFormIsEquivalentToRootPath()
+    {
+        $uri = new Uri('?foo=bar');
+        $this->assertEquals('/', $uri->getPath());
+    }
+
+    public function testStringRepresentationOfOriginFormWithNoPathNormalizesPath()
+    {
+        $uri = new Uri('?foo=bar');
+        $this->assertEquals('/?foo=bar', (string) $uri);
     }
 }

@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release..
 
+## 0.8.4 - TBD
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#23](https://github.com/phly/http/pull/24) and [#24](https://github.com/phly/http/pull/24)
+  detailed several use cases where empty paths and root paths were not being
+  represented correctly. The correct, normalized form of an origin-form or
+  absolute-form request-target is that an empty path should be represented by a
+  "/". As of this release, this is now correct.
+
 ## 0.8.3 - 2015-01-21
 
 ### Added
