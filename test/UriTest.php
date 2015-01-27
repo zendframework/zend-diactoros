@@ -478,4 +478,11 @@ class UriTest extends TestCase
         $new = $uri->withQuery('?foo=bar');
         $this->assertEquals('foo=bar', $new->getQuery());
     }
+
+    public function testStripsFragmentPrefixIfPresent()
+    {
+        $uri = new Uri('http://example.com');
+        $new = $uri->withFragment('#/foo/bar');
+        $this->assertEquals('/foo/bar', $new->getFragment());
+    }
 }
