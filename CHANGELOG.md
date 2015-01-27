@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release..
 
+## 0.9.1 - 2015-01-27
+
+### Added
+
+- Now tests against HHVM (and passes!).
+- Many more tests, particularly against `Stream`, `ServerRequestFactory`, and
+  `Uri`.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- `ServerRequestFactory::fromServer()`; this should have been removed in 0.9.0,
+  and was only raising an exception anyways.
+
+### Fixed
+
+- `Stream::attach()` was not assigning the resource to the instance; it now
+  does.
+- `Uri::__construct()` was creating an error condition instead of an exception
+  when a non-string URI was provided.
+
 ## 0.9.0 - 2015-01-26
 
 This release breaks compatibility with regards to the "final handler" callable
