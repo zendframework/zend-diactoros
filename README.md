@@ -179,7 +179,7 @@ $server->listen();
 At this time, you can optionally provide a callback to `listen()`; this will be passed to the handler as the third argument (`$done`):
 
 ```php
-$server->listen(function ($error = null) {
+$server->listen(function ($request, $response, $error = null) {
     if (! $error) {
         return;
     }
@@ -187,7 +187,9 @@ $server->listen(function ($error = null) {
 });
 ```
 
-Typically, the `listen` callback will be an error handler, and can expect to receive the error as its argument.
+Typically, the `listen` callback will be an error handler, and can expect to
+receive the request, response, and error as its arguments (though the error may
+be null).
 
 API
 ---
