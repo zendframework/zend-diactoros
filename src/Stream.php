@@ -99,8 +99,17 @@ class Stream implements StreamableInterface
      */
     public function attach($resource, $mode = 'r')
     {
+        $error = null;
         if (! is_resource($resource) && is_string($resource)) {
+            set_error_handler(function ($e) use (&$error) {
+                $error = $e;
+            }, E_WARNING);
             $resource = fopen($resource, $mode);
+            restore_error_handler();
+        }
+
+        if ($error) {
+            throw new InvalidArgumentException('Invalid stream reference provided');
         }
 
         if (! is_resource($resource)) {
@@ -108,6 +117,8 @@ class Stream implements StreamableInterface
                 'Invalid stream provided; must be a string stream identifier or resource'
             );
         }
+
+        $this->resource = $resource;
     }
 
     /**

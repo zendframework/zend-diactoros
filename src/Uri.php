@@ -58,10 +58,10 @@ class Uri implements UriTargetInterface
     public function __construct($uri = '')
     {
         if (! is_string($uri)) {
-            throw new InvalidArgumentException(
+            throw new InvalidArgumentException(sprintf(
                 'URI passed to constructor must be a string; received "%s"',
                 (is_object($uri) ? get_class($uri) : gettype($uri))
-            );
+            ));
         }
 
         if (! empty($uri)) {
@@ -456,12 +456,6 @@ class Uri implements UriTargetInterface
             $query = substr($query, 1);
         }
 
-        if (! $this->validateQuery($query)) {
-            throw new InvalidArgumentException(
-                'Query string must be parseable by parse_str'
-            );
-        }
-
         $new = clone $this;
         $new->query = $query;
         return $new;
@@ -597,36 +591,6 @@ class Uri implements UriTargetInterface
      */
     private static function createUriString($scheme, $authority, $path, $query, $fragment)
     {
-        if ($scheme === 'file') {
-            return self::createFileUriString($path);
-        }
-
-        return self::createWebUriString($scheme, $authority, $path, $query, $fragment);
-    }
-
-    /**
-     * Return a URI for a file
-     *
-     * @param string $path
-     * @return string
-     */
-    private static function createFileUriString($path)
-    {
-        return sprintf('file://%s', self::normalizePath($path));
-    }
-
-    /**
-     * Return a URI for a web address
-     *
-     * @param string $scheme
-     * @param string $authority
-     * @param string $path
-     * @param string $query
-     * @param string $fragment
-     * @return string
-     */
-    private static function createWebUriString($scheme, $authority, $path, $query, $fragment)
-    {
         $uri = '';
 
         if (!empty($scheme)) {
@@ -638,7 +602,7 @@ class Uri implements UriTargetInterface
         }
 
         if ($path) {
-            $uri .= self::normalizePath($path);
+            $uri .= $path;
         }
 
         if ($query) {
@@ -679,36 +643,5 @@ class Uri implements UriTargetInterface
         }
 
         return false;
-    }
-
-    /**
-     * Normalize a path by prefixing it with a slash if necessary
-     *
-     * @param string $path
-     * @return string
-     */
-    private static function normalizePath($path)
-    {
-        if ('/' === $path[0]) {
-            return $path;
-        }
-        return '/' . $path;
-    }
-
-    /**
-     * Validate a query string
-     *
-     * @param string $query
-     * @return bool
-     */
-    private function validateQuery($query)
-    {
-        if (empty($query)) {
-            return true;
-        }
-
-        $parsed = array();
-        parse_str($query, $parsed);
-        return (! empty($parsed));
     }
 }

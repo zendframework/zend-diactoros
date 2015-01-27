@@ -414,4 +414,95 @@ class UriTest extends TestCase
         $uri = new Uri('?foo=bar');
         $this->assertEquals('/?foo=bar', (string) $uri);
     }
+
+    public function invalidConstructorUris()
+    {
+        return [
+            'null' => [ null ],
+            'true' => [ true ],
+            'false' => [ false ],
+            'int' => [ 1 ],
+            'float' => [ 1.1 ],
+            'array' => [ [ 'http://example.com/' ] ],
+            'object' => [ (object) [ 'uri' => 'http://example.com/' ] ],
+        ];
+    }
+
+    /**
+     * @dataProvider invalidConstructorUris
+     */
+    public function testConstructorRaisesExceptionForNonStringURI($uri)
+    {
+        $this->setExpectedException('InvalidArgumentException');
+        new Uri($uri);
+    }
+
+    public function testMutatingSchemeStripsOffDelimiter()
+    {
+        $uri = new Uri('http://example.com');
+        $new = $uri->withScheme('https://');
+        $this->assertEquals('https', $new->getScheme());
+    }
+
+    public function invalidSchemes()
+    {
+        return [
+            'mailto' => [ 'mailto' ],
+            'ftp'    => [ 'ftp' ],
+            'telnet' => [ 'telnet' ],
+            'ssh'    => [ 'ssh' ],
+            'git'    => [ 'git' ],
+        ];
+    }
+
+    /**
+     * @dataProvider invalidSchemes
+     */
+    public function testMutatingWithNonWebSchemeRaisesAnException($scheme)
+    {
+        $uri = new Uri('http://example.com');
+        $this->setExpectedException('InvalidArgumentException', 'Unsupported scheme');
+        $uri->withScheme($scheme);
+    }
+
+    public function testPathIsPrefixedWithSlashIfSetWithoutOne()
+    {
+        $uri = new Uri('http://example.com');
+        $new = $uri->withPath('foo/bar');
+        $this->assertEquals('/foo/bar', $new->getPath());
+    }
+
+    public function testStripsQueryPrefixIfPresent()
+    {
+        $uri = new Uri('http://example.com');
+        $new = $uri->withQuery('?foo=bar');
+        $this->assertEquals('foo=bar', $new->getQuery());
+    }
+
+    public function testStripsFragmentPrefixIfPresent()
+    {
+        $uri = new Uri('http://example.com');
+        $new = $uri->withFragment('#/foo/bar');
+        $this->assertEquals('/foo/bar', $new->getFragment());
+    }
+
+    public function standardSchemePortCombinations()
+    {
+        return [
+            'http'  => [ 'http', 80 ],
+            'https' => [ 'https', 443 ],
+        ];
+    }
+
+    /**
+     * @dataProvider standardSchemePortCombinations
+     */
+    public function testAuthorityOmitsPortForStandardSchemePortCombinations($scheme, $port)
+    {
+        $uri = (new Uri())
+            ->withHost('example.com')
+            ->withScheme($scheme)
+            ->withPort($port);
+        $this->assertEquals('example.com', $uri->getAuthority());
+    }
 }

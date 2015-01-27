@@ -5,6 +5,7 @@ use Phly\Http\ServerRequest;
 use Phly\Http\ServerRequestFactory;
 use Phly\Http\Uri;
 use PHPUnit_Framework_TestCase as TestCase;
+use ReflectionProperty;
 
 class ServerRequestFactoryTest extends TestCase
 {
@@ -353,5 +354,47 @@ class ServerRequestFactoryTest extends TestCase
         $this->assertEquals($body, $request->getBodyParams());
         $this->assertEquals($files, $request->getFileParams());
         $this->assertEmpty($request->getAttributes());
+    }
+
+    public function testNormalizeServerUsesMixedCaseAuthorizationHeaderFromApacheWhenPresent()
+    {
+        $r = new ReflectionProperty('Phly\Http\ServerRequestFactory', 'apacheRequestHeaders');
+        $r->setAccessible(true);
+        $r->setValue(function () {
+            return ['Authorization' => 'foobar'];
+        });
+
+        $server = ServerRequestFactory::normalizeServer([]);
+
+        $this->assertArrayHasKey('HTTP_AUTHORIZATION', $server);
+        $this->assertEquals('foobar', $server['HTTP_AUTHORIZATION']);
+    }
+
+    public function testNormalizeServerUsesLowerCaseAuthorizationHeaderFromApacheWhenPresent()
+    {
+        $r = new ReflectionProperty('Phly\Http\ServerRequestFactory', 'apacheRequestHeaders');
+        $r->setAccessible(true);
+        $r->setValue(function () {
+            return ['authorization' => 'foobar'];
+        });
+
+        $server = ServerRequestFactory::normalizeServer([]);
+
+        $this->assertArrayHasKey('HTTP_AUTHORIZATION', $server);
+        $this->assertEquals('foobar', $server['HTTP_AUTHORIZATION']);
+    }
+
+    public function testNormalizeServerReturnsArrayUnalteredIfApacheHeadersDoNotContainAuthorization()
+    {
+        $r = new ReflectionProperty('Phly\Http\ServerRequestFactory', 'apacheRequestHeaders');
+        $r->setAccessible(true);
+        $r->setValue(function () {
+            return [];
+        });
+
+        $expected = ['FOO_BAR' => 'BAZ'];
+        $server = ServerRequestFactory::normalizeServer($expected);
+
+        $this->assertEquals($expected, $server);
     }
 }
