@@ -602,7 +602,7 @@ class Uri implements UriTargetInterface
         }
 
         if ($path) {
-            $uri .= self::normalizePath($path);
+            $uri .= $path;
         }
 
         if ($query) {
@@ -643,19 +643,5 @@ class Uri implements UriTargetInterface
         }
 
         return false;
-    }
-
-    /**
-     * Normalize a path by prefixing it with a slash if necessary
-     *
-     * @param string $path
-     * @return string
-     */
-    private static function normalizePath($path)
-    {
-        if ('/' === $path[0]) {
-            return $path;
-        }
-        return '/' . $path;
     }
 }
