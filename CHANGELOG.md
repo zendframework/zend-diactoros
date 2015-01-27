@@ -2,6 +2,47 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release..
 
+## 0.9.0 - 2015-01-26
+
+This release breaks compatibility with regards to the "final handler" callable
+used with `Server::listen()`. It was previously documented that such a callable
+should have the signature:
+
+```php
+function ($err = null) {
+}
+```
+
+[phly/conduit](https://github.com/phly/conduit) was the primary consumer of
+this, and used it as a `$next` argument. However, the semantics of `$next`
+changed in 0.11.0 to always require a request and response, and moves the
+`$error` argument to an optional third argument:
+
+```php
+function ($request, $response, $err = null) {
+}
+```
+
+This release adds a test to validate the behavior, which wasn't previously
+tested, and updates the documentation to reflect the above.
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- `Server::listen()`'s optional `$finalHandler` argument now has an updated
+  signature of `function ($req, $res, $err = null)`.
+
 ## 0.8.4 - 2015-01-26
 
 ### Added
