@@ -58,23 +58,6 @@ abstract class ServerRequestFactory
     }
 
     /**
-     * Populates a request object from the given $_SERVER array
-     *
-     * @param array $server
-     * @param ServerRequestInterface $request
-     * @return void
-     * @deprecated as of 0.7.0. Use fromGlobals().
-     * @throws Exception\DeprecatedMethodException on all requests.
-     */
-    public static function fromServer(array $server, ServerRequestInterface $request = null)
-    {
-        throw new Exception\DeprecatedMethodException(sprintf(
-            '%s is deprecated as of phly/http 0.7.0dev; always use fromGlobals()',
-            __METHOD__
-        ));
-    }
-
-    /**
      * Access a value in an array, returning a default value if not found
      *
      * Will also do a case-insensitive search if a case sensitive search fails.
