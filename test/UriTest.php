@@ -464,4 +464,11 @@ class UriTest extends TestCase
         $this->setExpectedException('InvalidArgumentException', 'Unsupported scheme');
         $uri->withScheme($scheme);
     }
+
+    public function testPathIsPrefixedWithSlashIfSetWithoutOne()
+    {
+        $uri = new Uri('http://example.com');
+        $new = $uri->withPath('foo/bar');
+        $this->assertEquals('/foo/bar', $new->getPath());
+    }
 }
