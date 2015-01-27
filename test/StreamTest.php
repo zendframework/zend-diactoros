@@ -3,6 +3,7 @@ namespace PhlyTest\Http;
 
 use Phly\Http\Stream;
 use PHPUnit_Framework_TestCase as TestCase;
+use ReflectionProperty;
 
 class StreamTest extends TestCase
 {
@@ -286,5 +287,54 @@ class StreamTest extends TestCase
         $resource = fopen($this->tmpnam, 'w');
         $stream = new Stream($resource);
         $this->assertEquals('', $stream->getContents());
+    }
+
+    public function invalidResources()
+    {
+        $this->tmpnam = tempnam(sys_get_temp_dir(), 'PHLY');
+        return [
+            'null' => [ null ],
+            'false' => [ false ],
+            'true' => [ true ],
+            'int' => [ 1 ],
+            'float' => [ 1.1 ],
+            'string-non-resource' => [ 'foo-bar-baz' ],
+            'array' => [ [ fopen($this->tmpnam, 'r+') ] ],
+            'object' => [ (object) [ 'resource' => fopen($this->tmpnam, 'r+') ] ],
+        ];
+    }
+
+    /**
+     * @dataProvider invalidResources
+     */
+    public function testAttachWithNonStringNonResourceRaisesException($resource)
+    {
+        $this->setExpectedException('InvalidArgumentException', 'Invalid stream');
+        $this->stream->attach($resource);
+    }
+
+    public function testAttachWithResourceAttachesResource()
+    {
+        $this->tmpnam = tempnam(sys_get_temp_dir(), 'PHLY');
+        $resource = fopen($this->tmpnam, 'r+');
+        $this->stream->attach($resource);
+
+        $r = new ReflectionProperty($this->stream, 'resource');
+        $r->setAccessible(true);
+        $test = $r->getValue($this->stream);
+        $this->assertSame($resource, $test);
+    }
+
+    public function testAttachWithStringRepresentingResourceCreatesAndAttachesResource()
+    {
+        $this->tmpnam = tempnam(sys_get_temp_dir(), 'PHLY');
+        $this->stream->attach($this->tmpnam);
+
+        $resource = fopen($this->tmpnam, 'r+');
+        fwrite($resource, 'FooBar');
+
+        $this->stream->rewind();
+        $test = (string) $this->stream;
+        $this->assertEquals('FooBar', $test);
     }
 }
