@@ -365,4 +365,39 @@ class StreamTest extends TestCase
         $test = $this->stream->getContents();
         $this->assertEquals('Bar', $test);
     }
+
+    public function testGetMetadataReturnsAllMetadataWhenNoKeyPresent()
+    {
+        $this->tmpnam = tempnam(sys_get_temp_dir(), 'PHLY');
+        $resource = fopen($this->tmpnam, 'r+');
+        $this->stream->attach($resource);
+
+        $expected = stream_get_meta_data($resource);
+        $test     = $this->stream->getMetadata();
+
+        $this->assertEquals($expected, $test);
+    }
+
+    public function testGetMetadataReturnsDataForSpecifiedKey()
+    {
+        $this->tmpnam = tempnam(sys_get_temp_dir(), 'PHLY');
+        $resource = fopen($this->tmpnam, 'r+');
+        $this->stream->attach($resource);
+
+        $metadata = stream_get_meta_data($resource);
+        $expected = $metadata['uri'];
+
+        $test     = $this->stream->getMetadata('uri');
+
+        $this->assertEquals($expected, $test);
+    }
+
+    public function testGetMetadataReturnsNullIfNoDataExistsForKey()
+    {
+        $this->tmpnam = tempnam(sys_get_temp_dir(), 'PHLY');
+        $resource = fopen($this->tmpnam, 'r+');
+        $this->stream->attach($resource);
+
+        $this->assertNull($this->stream->getMetadata('TOTALLY_MADE_UP'));
+    }
 }
