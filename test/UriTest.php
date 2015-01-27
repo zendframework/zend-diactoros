@@ -485,4 +485,24 @@ class UriTest extends TestCase
         $new = $uri->withFragment('#/foo/bar');
         $this->assertEquals('/foo/bar', $new->getFragment());
     }
+
+    public function standardSchemePortCombinations()
+    {
+        return [
+            'http'  => [ 'http', 80 ],
+            'https' => [ 'https', 443 ],
+        ];
+    }
+
+    /**
+     * @dataProvider standardSchemePortCombinations
+     */
+    public function testAuthorityOmitsPortForStandardSchemePortCombinations($scheme, $port)
+    {
+        $uri = (new Uri())
+            ->withHost('example.com')
+            ->withScheme($scheme)
+            ->withPort($port);
+        $this->assertEquals('example.com', $uri->getAuthority());
+    }
 }
