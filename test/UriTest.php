@@ -414,4 +414,26 @@ class UriTest extends TestCase
         $uri = new Uri('?foo=bar');
         $this->assertEquals('/?foo=bar', (string) $uri);
     }
+
+    public function invalidConstructorUris()
+    {
+        return [
+            'null' => [ null ],
+            'true' => [ true ],
+            'false' => [ false ],
+            'int' => [ 1 ],
+            'float' => [ 1.1 ],
+            'array' => [ [ 'http://example.com/' ] ],
+            'object' => [ (object) [ 'uri' => 'http://example.com/' ] ],
+        ];
+    }
+
+    /**
+     * @dataProvider invalidConstructorUris
+     */
+    public function testConstructorRaisesExceptionForNonStringURI($uri)
+    {
+        $this->setExpectedException('InvalidArgumentException');
+        new Uri($uri);
+    }
 }

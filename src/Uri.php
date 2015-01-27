@@ -58,10 +58,10 @@ class Uri implements UriTargetInterface
     public function __construct($uri = '')
     {
         if (! is_string($uri)) {
-            throw new InvalidArgumentException(
+            throw new InvalidArgumentException(sprintf(
                 'URI passed to constructor must be a string; received "%s"',
                 (is_object($uri) ? get_class($uri) : gettype($uri))
-            );
+            ));
         }
 
         if (! empty($uri)) {
