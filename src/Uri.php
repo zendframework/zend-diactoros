@@ -591,36 +591,6 @@ class Uri implements UriTargetInterface
      */
     private static function createUriString($scheme, $authority, $path, $query, $fragment)
     {
-        if ($scheme === 'file') {
-            return self::createFileUriString($path);
-        }
-
-        return self::createWebUriString($scheme, $authority, $path, $query, $fragment);
-    }
-
-    /**
-     * Return a URI for a file
-     *
-     * @param string $path
-     * @return string
-     */
-    private static function createFileUriString($path)
-    {
-        return sprintf('file://%s', self::normalizePath($path));
-    }
-
-    /**
-     * Return a URI for a web address
-     *
-     * @param string $scheme
-     * @param string $authority
-     * @param string $path
-     * @param string $query
-     * @param string $fragment
-     * @return string
-     */
-    private static function createWebUriString($scheme, $authority, $path, $query, $fragment)
-    {
         $uri = '';
 
         if (!empty($scheme)) {
