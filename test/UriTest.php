@@ -471,4 +471,11 @@ class UriTest extends TestCase
         $new = $uri->withPath('foo/bar');
         $this->assertEquals('/foo/bar', $new->getPath());
     }
+
+    public function testStripsQueryPrefixIfPresent()
+    {
+        $uri = new Uri('http://example.com');
+        $new = $uri->withQuery('?foo=bar');
+        $this->assertEquals('foo=bar', $new->getQuery());
+    }
 }

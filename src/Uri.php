@@ -456,12 +456,6 @@ class Uri implements UriTargetInterface
             $query = substr($query, 1);
         }
 
-        if (! $this->validateQuery($query)) {
-            throw new InvalidArgumentException(
-                'Query string must be parseable by parse_str'
-            );
-        }
-
         $new = clone $this;
         $new->query = $query;
         return $new;
@@ -693,22 +687,5 @@ class Uri implements UriTargetInterface
             return $path;
         }
         return '/' . $path;
-    }
-
-    /**
-     * Validate a query string
-     *
-     * @param string $query
-     * @return bool
-     */
-    private function validateQuery($query)
-    {
-        if (empty($query)) {
-            return true;
-        }
-
-        $parsed = array();
-        parse_str($query, $parsed);
-        return (! empty($parsed));
     }
 }
