@@ -14,8 +14,12 @@ class ServerTest extends TestCase
         $this->callback   = function ($req, $res, $done) {
             //  Intentionally empty
         };
-        $this->request    = $this->getMock('Psr\Http\Message\ServerRequestInterface');
-        $this->response   = $this->getMock('Psr\Http\Message\ResponseInterface');
+        $this->request = $this
+            ->getMockBuilder('Psr\Http\Message\ServerRequestInterface')
+            ->getMock();
+        $this->response = $this
+            ->getMockBuilder('Psr\Http\Message\ResponseInterface')
+            ->getMock();
     }
 
     public function tearDown()
@@ -210,5 +214,40 @@ class ServerTest extends TestCase
             'Set-Cookie: foo=bar; expires=Wed, 1 Oct 2014 10:30; path=/foo; domain=example.com',
             $header
         );
+    }
+
+    public function testListenPassesCallableArgumentToCallback()
+    {
+        $phpunit  = $this;
+        $invoked  = false;
+        $request  = $this->request;
+        $response = $this->response;
+
+        $this->response
+            ->expects($this->once())
+            ->method('getHeaders')
+            ->will($this->returnValue([]));
+
+        $final = function ($req, $res, $err = null) use ($phpunit, $request, $response, &$invoked) {
+            $phpunit->assertSame($request, $req);
+            $phpunit->assertSame($response, $res);
+            $invoked = true;
+        };
+
+        $callback = function ($req, $res, callable $final = null) use ($phpunit) {
+            if (! $final) {
+                $phpunit->fail('No final callable passed!');
+            }
+
+            $final($req, $res);
+        };
+
+        $server = Server::createServerFromRequest(
+            $callback,
+            $this->request,
+            $this->response
+        );
+        $server->listen($final);
+        $this->assertTrue($invoked);
     }
 }
