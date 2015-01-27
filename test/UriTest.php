@@ -436,4 +436,32 @@ class UriTest extends TestCase
         $this->setExpectedException('InvalidArgumentException');
         new Uri($uri);
     }
+
+    public function testMutatingSchemeStripsOffDelimiter()
+    {
+        $uri = new Uri('http://example.com');
+        $new = $uri->withScheme('https://');
+        $this->assertEquals('https', $new->getScheme());
+    }
+
+    public function invalidSchemes()
+    {
+        return [
+            'mailto' => [ 'mailto' ],
+            'ftp'    => [ 'ftp' ],
+            'telnet' => [ 'telnet' ],
+            'ssh'    => [ 'ssh' ],
+            'git'    => [ 'git' ],
+        ];
+    }
+
+    /**
+     * @dataProvider invalidSchemes
+     */
+    public function testMutatingWithNonWebSchemeRaisesAnException($scheme)
+    {
+        $uri = new Uri('http://example.com');
+        $this->setExpectedException('InvalidArgumentException', 'Unsupported scheme');
+        $uri->withScheme($scheme);
+    }
 }
