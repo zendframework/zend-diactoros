@@ -337,4 +337,32 @@ class StreamTest extends TestCase
         $test = (string) $this->stream;
         $this->assertEquals('FooBar', $test);
     }
+
+    public function testGetContentsShouldGetFullStreamContents()
+    {
+        $this->tmpnam = tempnam(sys_get_temp_dir(), 'PHLY');
+        $resource = fopen($this->tmpnam, 'r+');
+        $this->stream->attach($resource);
+
+        fwrite($resource, 'FooBar');
+
+        // rewind, because current pointer is at end of stream!
+        $this->stream->rewind();
+        $test = $this->stream->getContents();
+        $this->assertEquals('FooBar', $test);
+    }
+
+    public function testGetContentsShouldReturnStreamContentsFromCurrentPointer()
+    {
+        $this->tmpnam = tempnam(sys_get_temp_dir(), 'PHLY');
+        $resource = fopen($this->tmpnam, 'r+');
+        $this->stream->attach($resource);
+
+        fwrite($resource, 'FooBar');
+
+        // seek to position 3
+        $this->stream->seek(3);
+        $test = $this->stream->getContents();
+        $this->assertEquals('Bar', $test);
+    }
 }
