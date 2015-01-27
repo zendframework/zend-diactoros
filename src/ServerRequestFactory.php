@@ -16,6 +16,13 @@ use stdClass;
 abstract class ServerRequestFactory
 {
     /**
+     * Function to use to get apache request headers; present only to simplify mocking.
+     * 
+     * @var callable
+     */
+    private static $apacheRequestHeaders = 'apache_request_headers';
+
+    /**
      * Create a request from the supplied superglobal values.
      *
      * If any argument is not supplied, the corresponding superglobal value will
@@ -112,13 +119,14 @@ abstract class ServerRequestFactory
     public static function normalizeServer(array $server)
     {
         // This seems to be the only way to get the Authorization header on Apache
+        $apacheRequestHeaders = self::$apacheRequestHeaders;
         if (isset($server['HTTP_AUTHORIZATION'])
-            || ! function_exists('apache_request_headers')
+            || ! is_callable($apacheRequestHeaders)
         ) {
             return $server;
         }
 
-        $apacheRequestHeaders = apache_request_headers();
+        $apacheRequestHeaders = $apacheRequestHeaders();
         if (isset($apacheRequestHeaders['Authorization'])) {
             $server['HTTP_AUTHORIZATION'] = $apacheRequestHeaders['Authorization'];
             return $server;
