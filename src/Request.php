@@ -110,16 +110,15 @@ class Request implements RequestInterface
         }
 
         if (! $this->uri) {
-            $this->requestTarget = '/';
-            return $this->requestTarget;
+            return '/';
         }
 
-        $this->requestTarget = $this->uri->getPath();
+        $target = $this->uri->getPath();
         if ($this->uri->getQuery()) {
-            $this->requestTarget .= '?' . $this->uri->getQuery();
+            $target .= '?' . $this->uri->getQuery();
         }
 
-        return $this->requestTarget;
+        return $target;
     }
 
     /**
