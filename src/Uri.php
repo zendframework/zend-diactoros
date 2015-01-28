@@ -2,19 +2,19 @@
 namespace Phly\Http;
 
 use InvalidArgumentException;
-use Psr\Http\Message\UriTargetInterface;
+use Psr\Http\Message\UriInterface;
 
 /**
- * Implementation of Psr\Http\MessageInterface.
+ * Implementation of Psr\Http\UriInterface.
  *
- * Provides a value object surrounding a request target, typically a URI.
+ * Provides a value object representing a URI for HTTP requests.
  *
  * Instances of this class  are considered immutable; all methods that
  * might change state are implemented such that they retain the internal
  * state of the current instance and return a new instance that contains the
  * changed state.
  */
-class Uri implements UriTargetInterface
+class Uri implements UriInterface
 {
     /**
      * @var string
@@ -86,14 +86,6 @@ class Uri implements UriTargetInterface
      */
     public function __toString()
     {
-        if ($this->isAsterisk()) {
-            return '*';
-        }
-
-        if ($this->isAuthority()) {
-            return $this->getAuthority();
-        }
-
         return self::createUriString(
             $this->scheme,
             $this->getAuthority(),
@@ -212,16 +204,13 @@ class Uri implements UriTargetInterface
      * This method MUST return a string; if no path is present it MUST return
      * an empty string.
      *
-     * If the instance represents an absolute- or origin-form, and the path is
-     * empty, this method MUST return "/".
+     * If the path is empty, this method MUST return "/".
      *
      * @return string The path segment of the URI.
      */
     public function getPath()
     {
-        if (empty($this->path)
-            && ($this->isOrigin() || $this->isAbsolute())
-        ) {
+        if (empty($this->path)) {
             return '/';
         }
 
@@ -483,80 +472,6 @@ class Uri implements UriTargetInterface
         $new = clone $this;
         $new->fragment = $fragment;
         return $new;
-    }
-
-    /**
-     * Indicate whether the URI is in origin-form.
-     *
-     * Origin-form is a URI that includes only the path, and optionally the
-     * query string.
-     *
-     * @link http://tools.ietf.org/html/rfc7230#section-5.3.1
-     * @return bool
-     */
-    public function isOrigin()
-    {
-        $authority = $this->getAuthority();
-        return (empty($this->scheme) && empty($authority) && empty($this->fragment));
-    }
-
-    /**
-     * Indicate whether the URI is absolute.
-     *
-     * An absolute URI contains minimally a non-empty scheme and non-empty
-     * authority.
-     *
-     * @see getAuthority()
-     * @link http://tools.ietf.org/html/rfc7230#section-5.3.2
-     * @return bool
-     */
-    public function isAbsolute()
-    {
-        $authority = $this->getAuthority();
-        return (! empty($this->scheme) && ! empty($authority));
-    }
-
-    /**
-     * Indicate whether the URI is in authority form.
-     *
-     * An authority-form URI is an URI that contains ONLY the authority
-     * information.
-     *
-     * @see getAuthority()
-     * @link http://tools.ietf.org/html/rfc7230#section-5.3.3
-     * @return bool
-     */
-    public function isAuthority()
-    {
-        $authority = $this->getAuthority();
-        return (
-            ! empty($authority)
-            && empty($this->scheme)
-            && empty($this->path)
-            && empty($this->query)
-            && empty($this->fragment)
-        );
-    }
-
-    /**
-     * Indicate whether the URI is an asterisk-form.
-     *
-     * An asterisk form URI will contain "*" as the path, and no other URI
-     * segments.
-     *
-     * @link http://tools.ietf.org/html/rfc7230#section-5.3.4
-     * @return bool
-     */
-    public function isAsterisk()
-    {
-        $authority = $this->getAuthority();
-        return (
-            empty($this->scheme)
-            && empty($authority)
-            && empty($this->query)
-            && empty($this->fragment)
-            && $this->path === '*'
-        );
     }
 
     /**

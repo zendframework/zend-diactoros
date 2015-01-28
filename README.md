@@ -19,7 +19,7 @@ Installation and Requirements
 Install this library using composer:
 
 ```console
-$ composer require "psr/http-message:~0.6.0" "phly/http:~1.0-dev@dev"
+$ composer require "psr/http-message:~0.8.0" "phly/http:~1.0-dev@dev"
 ```
 
 `phly/http` has the following dependencies (which are managed by Composer):
@@ -64,6 +64,12 @@ $request = new Phly\Http\Request(
         'Content-Type'  => 'application/json',
     ]
 );
+
+// If you want to set a non-origin-form request target, set the
+// request-target explicitly:
+$request = $request->withRequestTarget((string) $uri);       // absolute-form
+$request = $request->withRequestTarget($uri->getAuthority(); // authority-form
+$request = $request->withRequestTarget('*');                 // asterisk-form
 
 // Once you have the instance:
 $request->getBody()->write(json_encode($data));
@@ -207,6 +213,7 @@ class Request
         $body = 'php://memory',
         array $headers = []
     );
+    public function getRequestTarget();
     public function getMethod();
     public function getUri();
     public function getProtocolVersion();
@@ -215,8 +222,9 @@ class Request
     public function getHeader($header);
     public function getHeaderLines($header);
     public function getHeaders();
+    public function withRequestTarget($requestTarget);
     public function withMethod($method);
-    public function withUri(Psr\Http\Message\UriTargetInterface $uri);
+    public function withUri(Psr\Http\Message\UriInterface $uri);
     public function withProtocolVersion($version);
     public function withHeader($header, $value);
     public function withAddedHeader($header, $value);
@@ -242,6 +250,7 @@ class ServerRequest
         $body = 'php://input',
         array $headers = []
     );
+    public function getRequestTarget();
     public function getMethod();
     public function getUri();
     public function getProtocolVersion();
@@ -259,8 +268,9 @@ class ServerRequest
     public function getFileParams();
     public function hasHeader($header);
 
+    public function withRequestTarget($requestTarget);
     public function withMethod($method);
-    public function withUri(Psr\Http\Message\UriTargetInterface $uri);
+    public function withUri(Psr\Http\Message\UriInterface $uri);
     public function withProtocolVersion($version);
     public function withHeader($header, $value);
     public function withAddedHeader($header, $value);
@@ -330,7 +340,7 @@ $request = RequestFactory::fromGlobals(
 
 ### URI
 
-`Phly\Http\Uri` is an implementation of `Psr\Http\Message\UriTargetInterface`, and models and validates URIs and request targets. It implements `__toString()`, allowing it to be represented as a string and `echo()`'d directly. The following methods are pertinent:
+`Phly\Http\Uri` is an implementation of `Psr\Http\Message\UriInterface`, and models and validates URIs. It implements `__toString()`, allowing it to be represented as a string and `echo()`'d directly. The following methods are pertinent:
 
 ```php
 class Uri
@@ -351,10 +361,6 @@ class Uri
     public function withPath($path);
     public function withQuery($query);
     public function withFragment($fragment);
-    public function isOrigin();
-    public function isAbsolute();
-    public function isAuthority();
-    public function isAsterisk();
     public function __toString();
 }
 ```

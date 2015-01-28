@@ -5,7 +5,7 @@ use InvalidArgumentException;
 use RuntimeException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\StreamableInterface;
-use Psr\Http\Message\UriTargetInterface;
+use Psr\Http\Message\UriInterface;
 
 /**
  * HTTP Request encapsulation
@@ -24,6 +24,13 @@ class Request implements RequestInterface
     private $method;
 
     /**
+     * The request-target, if it has been provided or calculated.
+     *
+     * @var null|string
+     */
+    private $requestTarget;
+
+    /**
      * @var null|UriInterface
      */
     private $uri;
@@ -39,6 +46,7 @@ class Request implements RequestInterface
         'GET',
         'HEAD',
         'OPTIONS',
+        'PATCH',
         'POST',
         'PUT',
         'TRACE',
@@ -53,9 +61,9 @@ class Request implements RequestInterface
      */
     public function __construct($uri = null, $method = null, $body = 'php://memory', array $headers = [])
     {
-        if (! $uri instanceof UriTargetInterface && ! is_string($uri) && null !== $uri) {
+        if (! $uri instanceof UriInterface && ! is_string($uri) && null !== $uri) {
             throw new InvalidArgumentException(
-                'Invalid URI provided; must be null, a string, or a Psr\Http\Message\UriTargetInterface instance'
+                'Invalid URI provided; must be null, a string, or a Psr\Http\Message\UriInterface instance'
             );
         }
 
@@ -77,6 +85,72 @@ class Request implements RequestInterface
         $this->uri     = $uri;
         $this->stream  = ($body instanceof StreamableInterface) ? $body : new Stream($body, 'r');
         $this->headers = $this->filterHeaders($headers);
+    }
+
+    /**
+     * Retrieves the message's request target.
+     *
+     * Retrieves the message's request-target either as it will appear (for
+     * clients), as it appeared at request (for servers), or as it was
+     * specified for the instance (see withRequestTarget()).
+     *
+     * In most cases, this will be the origin-form of the composed URI,
+     * unless a value was provided to the concrete implementation (see
+     * withRequestTarget() below).
+     *
+     * If no URI is available, and no request-target has been specifically
+     * provided, this method MUST return the string "/".
+     *
+     * @return string
+     */
+    public function getRequestTarget()
+    {
+        if (null !== $this->requestTarget) {
+            return $this->requestTarget;
+        }
+
+        if (! $this->uri) {
+            $this->requestTarget = '/';
+            return $this->requestTarget;
+        }
+
+        $this->requestTarget = $this->uri->getPath();
+        if ($this->uri->getQuery()) {
+            $this->requestTarget .= '?' . $this->uri->getQuery();
+        }
+
+        return $this->requestTarget;
+    }
+
+    /**
+     * Create a new instance with a specific request-target.
+     *
+     * If the request needs a non-origin-form request-target — e.g., for
+     * specifying an absolute-form, authority-form, or asterisk-form —
+     * this method may be used to create an instance with the specified
+     * request-target, verbatim.
+     *
+     * This method MUST be implemented in such a way as to retain the
+     * immutability of the message, and MUST return a new instance that has the
+     * changed request target.
+     *
+     * @link http://tools.ietf.org/html/rfc7230#section-2.7 (for the various
+     *     request-target forms allowed in request messages)
+     * @param mixed $requestTarget
+     * @return self
+     * @throws InvalidArgumentException if the request target is invalid.
+     */
+    public function withRequestTarget($requestTarget)
+    {
+        if (preg_match('#\s#', $requestTarget)) {
+            throw new InvalidArgumentException(
+                'Invalid request target provided; cannot contain whitespace'
+            );
+        }
+
+        $new = clone $this;
+        $new->requestTarget = $requestTarget;
+        return $new;
     }
 
     /**
@@ -118,7 +192,7 @@ class Request implements RequestInterface
      * This method MUST return a UriInterface instance.
      *
      * @link http://tools.ietf.org/html/rfc3986#section-4.3
-     * @return UriTargetInterface Returns a UriTargetInterface instance
+     * @return UriInterface Returns a UriInterface instance
      *     representing the URI of the request, if any.
      */
     public function getUri()
@@ -134,10 +208,10 @@ class Request implements RequestInterface
      * new UriInterface instance.
      *
      * @link http://tools.ietf.org/html/rfc3986#section-4.3
-     * @param UriTargetInterface $uri New request URI to use.
+     * @param UriInterface $uri New request URI to use.
      * @return self
      */
-    public function withUri(UriTargetInterface $uri)
+    public function withUri(UriInterface $uri)
     {
         $new = clone $this;
         $new->uri = $uri;

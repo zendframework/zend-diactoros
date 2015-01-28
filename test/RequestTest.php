@@ -162,4 +162,83 @@ class RequestTest extends TestCase
         $request = new Request(null, null, 'php://memory', $headers);
         $this->assertEquals($expected, $request->getHeaders());
     }
+
+    public function testRequestTargetIsSlashWhenNoUriPresent()
+    {
+        $request = new Request();
+        $this->assertEquals('/', $request->getRequestTarget());
+    }
+
+    public function testRequestTargetIsSlashWhenUriHasNoPathOrQuery()
+    {
+        $request = (new Request())
+            ->withUri(new Uri('http://example.com'));
+        $this->assertEquals('/', $request->getRequestTarget());
+    }
+
+    public function requestsWithUri()
+    {
+        return [
+            'absolute-uri' => [
+                (new Request())
+                ->withUri(new Uri('https://api.example.com/user'))
+                ->withMethod('POST'),
+                '/user'
+            ],
+            'absolute-uri-with-query' => [
+                (new Request())
+                ->withUri(new Uri('https://api.example.com/user?foo=bar'))
+                ->withMethod('POST'),
+                '/user?foo=bar'
+            ],
+            'relative-uri' => [
+                (new Request())
+                ->withUri(new Uri('/user'))
+                ->withMethod('GET'),
+                '/user'
+            ],
+            'relative-uri-with-query' => [
+                (new Request())
+                ->withUri(new Uri('/user?foo=bar'))
+                ->withMethod('GET'),
+                '/user?foo=bar'
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider requestsWithUri
+     */
+    public function testReturnsRequestTargetWhenUriIsPresent($request, $expected)
+    {
+        $this->assertEquals($expected, $request->getRequestTarget());
+    }
+
+    public function validRequestTargets()
+    {
+        return [
+            'asterisk-form'         => [ '*' ],
+            'authority-form'        => [ 'api.example.com' ],
+            'absolute-form'         => [ 'https://api.example.com/users' ],
+            'absolute-form-query'   => [ 'https://api.example.com/users?foo=bar' ],
+            'origin-form-path-only' => [ '/users' ],
+            'origin-form'           => [ '/users?id=foo' ],
+        ];
+    }
+
+    /**
+     * @dataProvider validRequestTargets
+     */
+    public function testCanProvideARequestTarget($requestTarget)
+    {
+        $request = (new Request())->withRequestTarget($requestTarget);
+        $this->assertEquals($requestTarget, $request->getRequestTarget());
+    }
+
+    public function testRequestTargetCannotContainWhitespace()
+    {
+        $request = new Request();
+        $this->setExpectedException('InvalidArgumentException', 'Invalid request target');
+        $request->withRequestTarget('foo bar baz');
+    }
 }
