@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release..
 
+## 0.10.1 - TBD
+
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- A patch was added to ensure the request-target is always recalculated if not
+  set explicitly.
+
 ## 0.10.0 - 2015-01-28
 
 This release is backwards incompatible with 0.9.X. It updates its
