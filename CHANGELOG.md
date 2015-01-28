@@ -2,6 +2,48 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release..
 
+## 0.10.0 - 2015-01-28
+
+This release is backwards incompatible with 0.9.X. It updates its
+psr/http-message dependency to 0.7.0, which introduces the following changes:
+
+- `Psr\Http\Message\UriTargetInterface` was renamed to
+  `Psr\Http\Message\UriInterface`; `Phly\Http\Uri` was updated to reflect this
+  change, as was `Phly\Http\Request`.
+- `Psr\Http\Message\UriInterface` removes the methods `isOrigin()`,
+  `isAbsolute()`, `isAuthority()`, and `isAsterisk()`, and `Phly\Http\Uri` does
+  likewise.
+- `Psr\Http\Message\RequestInterface` adds the methods `getRequestTarget()` and
+  `withRequestTarget($requestTarget)`; `Phly\Http\Request` was updated to add these.
+
+Unless you were using the methods removed from `Phly\Http\Uri`, this update
+should pose no challenges to upgrading.
+
+### Added
+
+- `Phly\Http\Request::getRequestTarget()`, which retrieves the request-target. By
+  default, it uses the URI composed in the request to provide a request-target
+  in origin-form (and the string "/" if no URI is present or the URI has no
+  path).
+- `Phly\Http\Request::withRequestTarget($requestTarget)`, which creates a new
+  instance with the specified request-target. If the request-target contains any
+  whitespace, the method raises an exception.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- `Phly\Http\Uri::isOrigin()`
+- `Phly\Http\Uri::isAbsolute()`
+- `Phly\Http\Uri::isAuthority()`
+- `Phly\Http\Uri::isAsterisk()`
+
+### Fixed
+
+- Nothing.
+
 ## 0.9.1 - 2015-01-27
 
 ### Added
