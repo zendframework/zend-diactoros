@@ -241,4 +241,19 @@ class RequestTest extends TestCase
         $this->setExpectedException('InvalidArgumentException', 'Invalid request target');
         $request->withRequestTarget('foo bar baz');
     }
+
+    public function testRequestTargetDoesNotCacheBetweenInstances()
+    {
+        $request = (new Request())->withUri(new Uri('https://example.com/foo/bar'));
+        $original = $request->getRequestTarget();
+        $newRequest = $request->withUri(new Uri('http://mwop.net/bar/baz'));
+        $this->assertNotEquals($original, $newRequest->getRequestTarget());
+    }
+
+    public function testSettingNewUriResetsRequestTarget()
+    {
+        $request = (new Request())->withUri(new Uri('https://example.com/foo/bar'));
+        $original = $request->getRequestTarget();
+        $newRequest = $request->withUri(new Uri('http://mwop.net/bar/baz'));
+    }
 }
