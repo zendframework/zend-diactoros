@@ -26,7 +26,10 @@
   },
   "require": {
     "php": ">=5.4.8",
-    "psr/http-message": "~0.6.0"
+    "psr/http-message": "~0.8.0"
+  },
+  "require-dev": {
+    "phpunit/PHPUnit": "3.7.*",
   },
   "require-dev": {
     "phpunit/PHPUnit": "3.7.*",
