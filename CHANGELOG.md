@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release..
 
+## 0.10.2 - TBD
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#31](https://github.com/phly/http/pull/31) corrects the unit test suite to
+  read "Http", and not "Conduit".
+
 ## 0.10.1 - 2015-01-28
 
 ### Added
