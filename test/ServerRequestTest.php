@@ -49,17 +49,17 @@ class ServerRequestTest extends TestCase
         $this->assertEmpty($this->request->getFileParams());
     }
 
-    public function testBodyParamsAreEmptyByDefault()
+    public function testParsedBodyIsEmptyByDefault()
     {
-        $this->assertEmpty($this->request->getBodyParams());
+        $this->assertEmpty($this->request->getParsedBody());
     }
 
-    public function testBodyParamsMutatorReturnsCloneWithChanges()
+    public function testParsedBodyMutatorReturnsCloneWithChanges()
     {
         $value = ['foo' => 'bar'];
-        $request = $this->request->withBodyParams($value);
+        $request = $this->request->withParsedBody($value);
         $this->assertNotSame($this->request, $request);
-        $this->assertEquals($value, $request->getBodyParams());
+        $this->assertEquals($value, $request->getParsedBody());
     }
 
     public function testAttributesAreEmptyByDefault()

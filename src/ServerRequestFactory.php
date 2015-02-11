@@ -61,7 +61,7 @@ abstract class ServerRequestFactory
         return $request
             ->withCookieParams($cookies ?: $_COOKIE)
             ->withQueryParams($query ?: $_GET)
-            ->withBodyParams($body ?: $_POST);
+            ->withParsedBody($body ?: $_POST);
     }
 
     /**

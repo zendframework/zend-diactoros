@@ -351,7 +351,7 @@ class ServerRequestFactoryTest extends TestCase
         $this->assertInstanceOf('Phly\Http\ServerRequest', $request);
         $this->assertEquals($cookies, $request->getCookieParams());
         $this->assertEquals($query, $request->getQueryParams());
-        $this->assertEquals($body, $request->getBodyParams());
+        $this->assertEquals($body, $request->getParsedBody());
         $this->assertEquals($files, $request->getFileParams());
         $this->assertEmpty($request->getAttributes());
     }
