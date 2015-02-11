@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release..
 
+## 0.11.0 - TBD
+
+This release contains one backwards incompatible change. The upstream
+psr/http-message's `ServerRequestInterface` renamed the following methods:
+
+- `getBodyParams()` was renamed to `getParsedBody()`.
+- `withBodyParams()` was renamed to `withParsedBody()`.
+
+Additionally, `withParsedBody()` removes the `array` typehint.
+
+### Added
+
+- `Phly\Http\ServerRequest::getParsedBody()` (replaces `getBodyParams()`)
+- `Phly\Http\ServerRequest::withParsedBody()` (replaces `getBodyParams()`)
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- `Phly\Http\ServerRequest::getBodyParams()` (replaced with `getParsedBody()`)
+- `Phly\Http\ServerRequest::withBodyParams()` (replaced with `getParsedBody()`)
+
+### Fixed
+
+- `Phly\Http\ServerRequestFactory` was updated to call `withParsedBody()` when
+  seeding parsed body data.
+
 ## 0.10.2 - 2015-02-11
 
 ### Added
