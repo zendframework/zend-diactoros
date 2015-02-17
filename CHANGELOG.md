@@ -30,6 +30,8 @@ Additionally, `withParsedBody()` removes the `array` typehint.
 
 - `Phly\Http\ServerRequestFactory` was updated to call `withParsedBody()` when
   seeding parsed body data.
+- [#34](https://github.com/phly/http/pull/34) Fix `Phly\Http\Response` docblocks
+  to mirror those of psr/http-message.
 
 ## 0.10.2 - 2015-02-11
 
