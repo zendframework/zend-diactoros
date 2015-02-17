@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release..
 
-## 0.11.0 - TBD
+## 0.11.0 - 2015-02-17
 
 This release contains one backwards incompatible change. The upstream
 psr/http-message's `ServerRequestInterface` renamed the following methods:
