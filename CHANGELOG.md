@@ -34,6 +34,8 @@ Additionally, `withParsedBody()` removes the `array` typehint.
   to mirror those of psr/http-message.
 - [#35](https://github.com/phly/http/pull/35) Remove unused variable from test
   bootstrap.
+- [#37](https://github.com/phly/http/pull/37) Rename `phpunit.xml` to
+  `phpunit.xml.dist`.
 
 ## 0.10.2 - 2015-02-11
 
