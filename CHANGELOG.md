@@ -32,6 +32,8 @@ Additionally, `withParsedBody()` removes the `array` typehint.
   seeding parsed body data.
 - [#34](https://github.com/phly/http/pull/34) Fix `Phly\Http\Response` docblocks
   to mirror those of psr/http-message.
+- [#35](https://github.com/phly/http/pull/35) Remove unused variable from test
+  bootstrap.
 
 ## 0.10.2 - 2015-02-11
 
