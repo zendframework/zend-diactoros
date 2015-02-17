@@ -133,6 +133,30 @@ class Response implements ResponseInterface
     {
         return $this->statusCode;
     }
+     
+    /**
+     * Gets the response Reason-Phrase, a short textual description of the Status-Code.
+     *
+     * Because a Reason-Phrase is not a required element in a response
+     * Status-Line, the Reason-Phrase value MAY be null. Implementations MAY
+     * choose to return the default RFC 7231 recommended reason phrase (or those
+     * listed in the IANA HTTP Status Code Registry) for the response's
+     * Status-Code.
+     *
+     * @link http://tools.ietf.org/html/rfc7231#section-6
+     * @link http://www.iana.org/assignments/http-status-codes/http-status-codes.xhtml
+     * @return string|null Reason phrase, or null if unknown.
+     */
+    public function getReasonPhrase()
+    {
+        if (! $this->reasonPhrase
+            && isset($this->phrases[$this->statusCode])
+        ) {
+            $this->reasonPhrase = $this->phrases[$this->statusCode];
+        }
+
+        return $this->reasonPhrase;
+    }
 
     /**
      * Create a new instance with the specified status code, and optionally
@@ -154,30 +178,6 @@ class Response implements ResponseInterface
      *     use the defaults as suggested in the HTTP specification.
      * @return self
      * @throws InvalidArgumentException For invalid status code arguments.
-     */
-    public function getReasonPhrase()
-    {
-        if (! $this->reasonPhrase
-            && isset($this->phrases[$this->statusCode])
-        ) {
-            $this->reasonPhrase = $this->phrases[$this->statusCode];
-        }
-
-        return $this->reasonPhrase;
-    }
-
-    /**
-     * Gets the response Reason-Phrase, a short textual description of the Status-Code.
-     *
-     * Because a Reason-Phrase is not a required element in a response
-     * Status-Line, the Reason-Phrase value MAY be null. Implementations MAY
-     * choose to return the default RFC 7231 recommended reason phrase (or those
-     * listed in the IANA HTTP Status Code Registry) for the response's
-     * Status-Code.
-     *
-     * @link http://tools.ietf.org/html/rfc7231#section-6
-     * @link http://www.iana.org/assignments/http-status-codes/http-status-codes.xhtml
-     * @return string|null Reason phrase, or null if unknown.
      */
     public function withStatus($code, $reasonPhrase = null)
     {
