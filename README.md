@@ -261,7 +261,7 @@ class ServerRequest
     public function getCookieParams();
     public function getQueryParams();
     public function getBody();
-    public function getBodyParams();
+    public function getParsedBody();
     public function getAttribute($attribute, $default = NULL);
     public function getAttributes();
     public function getServerParams();
@@ -278,7 +278,7 @@ class ServerRequest
     public function withCookieParams(array $cookies);
     public function withQueryParams(array $query);
     public function withBody(Psr\Http\Message\StreamableInterface $stream);
-    public function withBodyParams(array $params);
+    public function withParsedBody(array $params);
     public function withAttribute($attribute, $value);
     public function withoutAttribute($attribute);
 }
