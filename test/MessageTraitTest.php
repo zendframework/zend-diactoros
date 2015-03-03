@@ -52,6 +52,13 @@ class MessageTraitTest extends TestCase
         $this->assertEquals('Foo,Bar', $message->getHeader('X-Foo'));
     }
 
+    public function testGetHeadersKeepsHeaderCaseSensitivity()
+    {
+        $message = $this->message->withHeader('X-Foo', ['Foo', 'Bar']);
+        $this->assertNotSame($this->message, $message);
+        $this->assertEquals([ 'X-Foo' => [ 'Foo', 'Bar' ] ], $message->getHeaders());
+    }
+
     public function testHasHeaderReturnsFalseIfHeaderIsNotPresent()
     {
         $this->assertFalse($this->message->hasHeader('X-Foo'));
