@@ -2,7 +2,6 @@
 namespace Phly\Http;
 
 use InvalidArgumentException;
-use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\StreamableInterface;
 
 /**
@@ -17,6 +16,11 @@ trait MessageTrait
      * @var array
      */
     private $headers = [];
+
+    /**
+     * @var array
+     */
+    private $headerNames = [];
 
     /**
      * @var string
@@ -83,7 +87,13 @@ trait MessageTrait
      */
     public function getHeaders()
     {
-        return $this->headers;
+        $headers = [];
+
+        foreach ($this->headers as $name => $value) {
+            $headers[$this->headerNames[$name]] = $value;
+        }
+
+        return $headers;
     }
 
     /**
@@ -96,7 +106,7 @@ trait MessageTrait
      */
     public function hasHeader($header)
     {
-        return array_key_exists(strtolower($header), $this->headers);
+        return array_key_exists(strtolower($header), $this->headerNames);
     }
 
     /**
@@ -158,8 +168,6 @@ trait MessageTrait
      */
     public function withHeader($header, $value)
     {
-        $header = strtolower($header);
-
         if (is_string($value)) {
             $value = [ $value ];
         }
@@ -170,8 +178,11 @@ trait MessageTrait
             );
         }
 
+        $lowerHeader = strtolower($header);
+
         $new = clone $this;
-        $new->headers[$header] = $value;
+        $new->headerNames[$lowerHeader] = $header;
+        $new->headers[$lowerHeader] = $value;
         return $new;
     }
 
@@ -194,8 +205,6 @@ trait MessageTrait
      */
     public function withAddedHeader($header, $value)
     {
-        $header = strtolower($header);
-
         if (is_string($value)) {
             $value = [ $value ];
         }
@@ -210,8 +219,10 @@ trait MessageTrait
             return $this->withHeader($header, $value);
         }
 
+        $lowerHeader = strtolower($header);
+
         $new = clone $this;
-        $new->headers[$header] = array_merge($this->headers[$header], $value);
+        $new->headers[$lowerHeader] = array_merge($this->headers[$lowerHeader], $value);
         return $new;
     }
 
@@ -233,8 +244,10 @@ trait MessageTrait
             return $this;
         }
 
+        $lowerHeader = strtolower($header);
+
         $new = clone $this;
-        unset($new->headers[strtolower($header)]);
+        unset($new->headers[$lowerHeader], $new->headerNames[$lowerHeader]);
         return $new;
     }
 
@@ -285,11 +298,11 @@ trait MessageTrait
      * Used by message constructors to allow setting all initial headers at once.
      *
      * @param array $originalHeaders Headers to filter.
-     * @return array Filtered headers.
+     * @return array Filtered headers and names.
      */
     private function filterHeaders(array $originalHeaders)
     {
-        $headers = [];
+        $headerNames = $headers = [];
         foreach ($originalHeaders as $header => $value) {
             if (! is_string($header)) {
                 continue;
@@ -299,14 +312,17 @@ trait MessageTrait
                 continue;
             }
 
+            $lowerHeader = strtolower($header);
+
             if (! is_array($value)) {
                 $value = [ $value ];
             }
 
-            $headers[strtolower($header)] = $value;
+            $headerNames[$lowerHeader] = $header;
+            $headers[$lowerHeader] = $value;
         }
 
-        return $headers;
+        return [ $headerNames, $headers ];
     }
 
     /**

@@ -81,10 +81,11 @@ class Request implements RequestInterface
             $uri = new Uri($uri);
         }
 
-        $this->method  = $method;
-        $this->uri     = $uri;
-        $this->stream  = ($body instanceof StreamableInterface) ? $body : new Stream($body, 'r');
-        $this->headers = $this->filterHeaders($headers);
+        $this->method = $method;
+        $this->uri    = $uri;
+        $this->stream = ($body instanceof StreamableInterface) ? $body : new Stream($body, 'r');
+
+        list($this->headerNames, $this->headers) = $this->filterHeaders($headers);
     }
 
     /**
