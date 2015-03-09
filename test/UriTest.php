@@ -79,7 +79,10 @@ class UriTest extends TestCase
         $new = $uri->withPort($port);
         $this->assertNotSame($uri, $new);
         $this->assertEquals($port, $new->getPort());
-        $this->assertEquals('https://user:pass@local.example.com:'.$port.'/foo?bar=baz#quz', (string) $new);
+        $this->assertEquals(
+            sprintf('https://user:pass@local.example.com:%d/foo?bar=baz#quz', $port),
+            (string) $new
+        );
     }
 
     public function invalidPorts()
