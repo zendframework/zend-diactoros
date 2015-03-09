@@ -346,7 +346,7 @@ class Uri implements UriInterface
      */
     public function withPort($port)
     {
-        if (! is_integer($port) || (is_string($port) && ! is_numeric($port))) {
+        if (!(is_integer($port) || (is_string($port) && is_numeric($port)))) {
             throw new InvalidArgumentException(sprintf(
                 'Invalid port "%s" specified; must be an integer or integer string',
                 (is_object($port) ? get_class($port) : gettype($port))
