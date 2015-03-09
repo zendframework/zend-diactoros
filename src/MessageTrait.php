@@ -13,11 +13,15 @@ use Psr\Http\Message\StreamableInterface;
 trait MessageTrait
 {
     /**
+     * List of all registered headers, as key => array of values.
+     *
      * @var array
      */
     private $headers = [];
 
     /**
+     * Map of normalized header name to original name used to register header.
+     *
      * @var array
      */
     private $headerNames = [];
@@ -87,13 +91,7 @@ trait MessageTrait
      */
     public function getHeaders()
     {
-        $headers = [];
-
-        foreach ($this->headers as $name => $value) {
-            $headers[$this->headerNames[$name]] = $value;
-        }
-
-        return $headers;
+        return $this->headers;
     }
 
     /**
@@ -125,12 +123,12 @@ trait MessageTrait
      */
     public function getHeader($header)
     {
-        $header = $this->getHeaderLines($header);
-        if (! $header) {
+        $value = $this->getHeaderLines($header);
+        if (! $value) {
             return '';
         }
 
-        return implode(',', $header);
+        return implode(',', $value);
     }
 
     /**
@@ -145,9 +143,11 @@ trait MessageTrait
             return [];
         }
 
-        $header = $this->headers[strtolower($header)];
-        $header = is_array($header) ? $header : [$header];
-        return $header;
+        $header = $this->headerNames[strtolower($header)];
+
+        $value = $this->headers[$header];
+        $value = is_array($value) ? $value : [$value];
+        return $value;
     }
 
     /**
@@ -178,11 +178,12 @@ trait MessageTrait
             );
         }
 
-        $lowerHeader = strtolower($header);
+        $normalized = strtolower($header);
 
         $new = clone $this;
-        $new->headerNames[$lowerHeader] = $header;
-        $new->headers[$lowerHeader] = $value;
+
+        $new->headerNames[$normalized] = $header;
+        $new->headers[$header] = $value;
         return $new;
     }
 
@@ -219,10 +220,11 @@ trait MessageTrait
             return $this->withHeader($header, $value);
         }
 
-        $lowerHeader = strtolower($header);
+        $normalized = strtolower($header);
+        $header     = $this->headerNames[$normalized];
 
         $new = clone $this;
-        $new->headers[$lowerHeader] = array_merge($this->headers[$lowerHeader], $value);
+        $new->headers[$header] = array_merge($this->headers[$header], $value);
         return $new;
     }
 
@@ -244,10 +246,11 @@ trait MessageTrait
             return $this;
         }
 
-        $lowerHeader = strtolower($header);
+        $normalized = strtolower($header);
+        $original   = $this->headerNames[$normalized];
 
         $new = clone $this;
-        unset($new->headers[$lowerHeader], $new->headerNames[$lowerHeader]);
+        unset($new->headers[$original], $new->headerNames[$normalized]);
         return $new;
     }
 
