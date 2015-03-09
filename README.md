@@ -19,7 +19,7 @@ Installation and Requirements
 Install this library using composer:
 
 ```console
-$ composer require "psr/http-message:~0.8.0" "phly/http:~1.0-dev@dev"
+$ composer require "psr/http-message:^0.9" "phly/http:~1.0-dev@dev"
 ```
 
 `phly/http` has the following dependencies (which are managed by Composer):
