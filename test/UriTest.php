@@ -62,13 +62,24 @@ class UriTest extends TestCase
         $this->assertEquals('https://user:pass@framework.zend.com:3001/foo?bar=baz#quz', (string) $new);
     }
 
-    public function testWithPortReturnsNewInstanceWithProvidedPort()
+    public function validPorts()
+    {
+        return [
+            'int'       => [ 3000 ],
+            'string'    => [ "3000" ]
+        ];
+    }
+
+    /**
+     * @dataProvider validPorts
+     */
+    public function testWithPortReturnsNewInstanceWithProvidedPort($port)
     {
         $uri = new Uri('https://user:pass@local.example.com:3001/foo?bar=baz#quz');
-        $new = $uri->withPort(3000);
+        $new = $uri->withPort($port);
         $this->assertNotSame($uri, $new);
-        $this->assertEquals(3000, $new->getPort());
-        $this->assertEquals('https://user:pass@local.example.com:3000/foo?bar=baz#quz', (string) $new);
+        $this->assertEquals($port, $new->getPort());
+        $this->assertEquals('https://user:pass@local.example.com:'.$port.'/foo?bar=baz#quz', (string) $new);
     }
 
     public function invalidPorts()
