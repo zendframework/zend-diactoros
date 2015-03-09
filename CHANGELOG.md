@@ -20,6 +20,8 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - [#45](https://github.com/phly/http/pull/45) Fix port numeric comparison to
   properly accept port integers specified via strings.
+- [#46](https://github.com/phly/http/pull/46) Fix install instructions to
+  reference psr/http-message `^0.9`.
 
 ## 0.11.0 - 2015-02-17
 
