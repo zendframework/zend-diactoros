@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release..
 
+## 0.11.1 - TBD
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#45](https://github.com/phly/http/pull/45) Fix port numeric comparison to
+  properly accept port integers specified via strings.
+- [#46](https://github.com/phly/http/pull/46) Fix install instructions to
+  reference psr/http-message `^0.9`.
+
 ## 0.11.0 - 2015-02-17
 
 This release contains one backwards incompatible change. The upstream
