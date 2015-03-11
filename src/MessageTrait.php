@@ -315,14 +315,12 @@ trait MessageTrait
                 continue;
             }
 
-            $lowerHeader = strtolower($header);
-
             if (! is_array($value)) {
                 $value = [ $value ];
             }
 
-            $headerNames[$lowerHeader] = $header;
-            $headers[$lowerHeader] = $value;
+            $headerNames[strtolower($header)] = $header;
+            $headers[$header] = $value;
         }
 
         return [ $headerNames, $headers ];

@@ -177,4 +177,11 @@ class MessageTraitTest extends TestCase
         $this->assertSame($this->message, $message);
         $this->assertFalse($message->hasHeader('X-Foo'));
     }
+
+    public function testHeadersInitialization()
+    {
+        $headers = ['X-Foo' => ['bar']];
+        $this->message = new Request(null, null, $this->stream, $headers);
+        $this->assertSame($headers, $this->message->getHeaders());
+    }
 }
