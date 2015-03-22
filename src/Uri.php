@@ -52,6 +52,12 @@ class Uri implements UriInterface
     private $fragment = '';
 
     /**
+     * generated uri string cache
+     * @var string|null
+     */
+    private $uriString;
+
+    /**
      * @param string $uri
      * @throws InvalidArgumentException on non-string $uri argument
      */
@@ -86,13 +92,16 @@ class Uri implements UriInterface
      */
     public function __toString()
     {
-        return self::createUriString(
-            $this->scheme,
-            $this->getAuthority(),
-            $this->getPath(), // Absolute URIs should use a "/" for an empty path
-            $this->query,
-            $this->fragment
-        );
+        if (null === $this->uriString) {
+            $this->uriString = self::createUriString(
+                $this->scheme,
+                $this->getAuthority(),
+                $this->getPath(), // Absolute URIs should use a "/" for an empty path
+                $this->query,
+                $this->fragment
+            );
+        }
+        return $this->uriString;
     }
 
     /**
@@ -278,7 +287,9 @@ class Uri implements UriInterface
         }
 
         $new = clone $this;
+        $new->uriString = null;
         $new->scheme = $scheme;
+
         return $new;
     }
 
@@ -304,7 +315,9 @@ class Uri implements UriInterface
         }
 
         $new = clone $this;
+        $new->uriString = null;
         $new->userInfo = $info;
+
         return $new;
     }
 
@@ -323,7 +336,9 @@ class Uri implements UriInterface
     public function withHost($host)
     {
         $new = clone $this;
+        $new->uriString = null;
         $new->host = $host;
+
         return $new;
     }
 
@@ -363,7 +378,9 @@ class Uri implements UriInterface
         }
 
         $new = clone $this;
+        $new->uriString = null;
         $new->port = $port;
+
         return $new;
     }
 
@@ -407,7 +424,9 @@ class Uri implements UriInterface
         }
 
         $new = clone $this;
+        $new->uriString = null;
         $new->path = $path;
+
         return $new;
     }
 
@@ -446,7 +465,9 @@ class Uri implements UriInterface
         }
 
         $new = clone $this;
+        $new->uriString = null;
         $new->query = $query;
+
         return $new;
     }
 
@@ -470,7 +491,9 @@ class Uri implements UriInterface
         }
 
         $new = clone $this;
+        $new->uriString = null;
         $new->fragment = $fragment;
+
         return $new;
     }
 
@@ -508,7 +531,7 @@ class Uri implements UriInterface
     {
         $uri = '';
 
-        if (!empty($scheme)) {
+        if (! empty($scheme)) {
             $uri .= sprintf('%s://', $scheme);
         }
 
