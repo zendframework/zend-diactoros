@@ -287,8 +287,10 @@ class Uri implements UriInterface
         }
 
         $new = clone $this;
-        $new->uriString = null;
-        $new->scheme = $scheme;
+        if ($scheme !== $this->scheme) {
+            $new->scheme = $scheme;
+            $new->uriString = null;
+        }
 
         return $new;
     }
@@ -315,8 +317,10 @@ class Uri implements UriInterface
         }
 
         $new = clone $this;
-        $new->uriString = null;
-        $new->userInfo = $info;
+        if ($info !== $this->userInfo) {
+            $new->userInfo = $info;
+            $new->uriString = null;
+        }
 
         return $new;
     }
@@ -336,8 +340,10 @@ class Uri implements UriInterface
     public function withHost($host)
     {
         $new = clone $this;
-        $new->uriString = null;
-        $new->host = $host;
+        if ($host !== $this->host) {
+            $new->host = $host;
+            $new->uriString = null;
+        }
 
         return $new;
     }
@@ -378,8 +384,10 @@ class Uri implements UriInterface
         }
 
         $new = clone $this;
-        $new->uriString = null;
-        $new->port = $port;
+        if ($port !== $this->port) {
+            $new->port = $port;
+            $new->uriString = null;
+        }
 
         return $new;
     }
@@ -424,8 +432,10 @@ class Uri implements UriInterface
         }
 
         $new = clone $this;
-        $new->uriString = null;
-        $new->path = $path;
+        if ($path !== $this->path) {
+            $new->path = $path;
+            $new->uriString = null;
+        }
 
         return $new;
     }
@@ -465,8 +475,10 @@ class Uri implements UriInterface
         }
 
         $new = clone $this;
-        $new->uriString = null;
-        $new->query = $query;
+        if ($query !== $this->query) {
+            $new->query = $query;
+            $new->uriString = null;
+        }
 
         return $new;
     }
@@ -491,8 +503,10 @@ class Uri implements UriInterface
         }
 
         $new = clone $this;
-        $new->uriString = null;
-        $new->fragment = $fragment;
+        if ($fragment !== $this->fragment) {
+            $new->fragment = $fragment;
+            $new->uriString = null;
+        }
 
         return $new;
     }
