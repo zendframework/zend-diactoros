@@ -18,6 +18,8 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
+- [#48](https://github.com/phly/http/pull/48) Cache generated URI string after
+  first generation.
 - [#42](https://github.com/phly/http/pull/42) Updated `Stream::getSize()` to
   return the stream size if a resource is composed.
 - [#41](https://github.com/phly/http/pull/41) Fixed examples in README to
