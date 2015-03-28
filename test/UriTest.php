@@ -323,4 +323,101 @@ class UriTest extends TestCase
             ->withPort($port);
         $this->assertEquals('example.com', $uri->getAuthority());
     }
+
+    /**
+     * @group 48
+     */
+    public function testWithSchemeReturnsSameInstanceWhenSchemeDoesNotChange()
+    {
+        $uri = new Uri('http://example.com');
+        $test = $uri->withScheme('http');
+        $this->assertSame($uri, $test);
+    }
+
+    /**
+     * @group 48
+     */
+    public function testWithUserInfoReturnsSameInstanceWhenUserInfoDoesNotChange()
+    {
+        $uri = new Uri('http://me:too@example.com');
+        $test = $uri->withUserInfo('me', 'too');
+        $this->assertSame($uri, $test);
+    }
+
+    /**
+     * @group 48
+     */
+    public function testWithHostReturnsSameInstanceWhenHostDoesNotChange()
+    {
+        $uri = new Uri('http://me:too@example.com');
+        $test = $uri->withHost('example.com');
+        $this->assertSame($uri, $test);
+    }
+
+    /**
+     * @group 48
+     */
+    public function testWithPortReturnsSameInstanceWhenPortDoesNotChange()
+    {
+        $uri = new Uri('http://example.com:8080');
+        $test = $uri->withPort(8080);
+        $this->assertSame($uri, $test);
+    }
+
+    /**
+     * @group 48
+     */
+    public function testWithPathReturnsSameInstanceWhenPathDoesNotChange()
+    {
+        $uri = new Uri('http://example.com/test/path');
+        $test = $uri->withPath('/test/path');
+        $this->assertSame($uri, $test);
+    }
+
+    /**
+     * @group 48
+     */
+    public function testWithQueryReturnsSameInstanceWhenQueryDoesNotChange()
+    {
+        $uri = new Uri('http://example.com/test/path?foo=bar');
+        $test = $uri->withQuery('foo=bar');
+        $this->assertSame($uri, $test);
+    }
+
+    /**
+     * @group 48
+     */
+    public function testWithFragmentReturnsSameInstanceWhenFragmentDoesNotChange()
+    {
+        $uri = new Uri('http://example.com/test/path?foo=bar#/baz/bat');
+        $test = $uri->withFragment('/baz/bat');
+        $this->assertSame($uri, $test);
+    }
+
+    public function mutations()
+    {
+        return [
+            'scheme'    => ['withScheme', 'https'],
+            'user-info' => ['withUserInfo', 'foo'],
+            'host'      => ['withHost', 'www.example.com'],
+            'port'      => ['withPort', 8080],
+            'path'      => ['withPath', '/changed'],
+            'query'     => ['withQuery', 'changed=value'],
+            'fragment'  => ['withFragment', 'changed'],
+        ];
+    }
+
+    /**
+     * @group 48
+     * @dataProvider mutations
+     */
+    public function testMutationResetsUriStringPropertyInClone($method, $value)
+    {
+        $uri = new Uri('http://example.com/path?query=string#fragment');
+        $string = (string) $uri;
+        $this->assertAttributeEquals($string, 'uriString', $uri);
+        $test = $uri->{$method}($value);
+        $this->assertAttributeInternalType('null', 'uriString', $test);
+        $this->assertAttributeEquals($string, 'uriString', $uri);
+    }
 }

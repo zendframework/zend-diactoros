@@ -92,15 +92,18 @@ class Uri implements UriInterface
      */
     public function __toString()
     {
-        if (null === $this->uriString) {
-            $this->uriString = self::createUriString(
-                $this->scheme,
-                $this->getAuthority(),
-                $this->getPath(), // Absolute URIs should use a "/" for an empty path
-                $this->query,
-                $this->fragment
-            );
+        if (null !== $this->uriString) {
+            return $this->uriString;
         }
+
+        $this->uriString = self::createUriString(
+            $this->scheme,
+            $this->getAuthority(),
+            $this->getPath(), // Absolute URIs should use a "/" for an empty path
+            $this->query,
+            $this->fragment
+        );
+
         return $this->uriString;
     }
 
@@ -279,6 +282,11 @@ class Uri implements UriInterface
             $scheme = str_replace('://', '', $scheme);
         }
 
+        if ($scheme === $this->scheme) {
+            // Do nothing if no change was made.
+            return $this;
+        }
+
         if (! in_array($scheme, ['', 'http', 'https'], true)) {
             throw new InvalidArgumentException(sprintf(
                 'Unsupported scheme "%s"; must be one of an empty string, "http", or "https"',
@@ -287,10 +295,8 @@ class Uri implements UriInterface
         }
 
         $new = clone $this;
-        if ($scheme !== $this->scheme) {
-            $new->scheme = $scheme;
-            $new->uriString = null;
-        }
+        $new->scheme = $scheme;
+        $new->uriString = null;
 
         return $new;
     }
@@ -316,11 +322,14 @@ class Uri implements UriInterface
             $info .= ':' . $password;
         }
 
-        $new = clone $this;
-        if ($info !== $this->userInfo) {
-            $new->userInfo = $info;
-            $new->uriString = null;
+        if ($info === $this->userInfo) {
+            // Do nothing if no change was made.
+            return $this;
         }
+
+        $new = clone $this;
+        $new->userInfo = $info;
+        $new->uriString = null;
 
         return $new;
     }
@@ -339,11 +348,14 @@ class Uri implements UriInterface
      */
     public function withHost($host)
     {
-        $new = clone $this;
-        if ($host !== $this->host) {
-            $new->host = $host;
-            $new->uriString = null;
+        if ($host === $this->host) {
+            // Do nothing if no change was made.
+            return $this;
         }
+
+        $new = clone $this;
+        $new->host = $host;
+        $new->uriString = null;
 
         return $new;
     }
@@ -376,6 +388,11 @@ class Uri implements UriInterface
 
         $port = (int) $port;
 
+        if ($port === $this->port) {
+            // Do nothing if no change was made.
+            return $this;
+        }
+
         if ($port < 1 || $port > 65535) {
             throw new InvalidArgumentException(sprintf(
                 'Invalid port "%d" specified; must be a valid TCP/UDP port',
@@ -384,10 +401,8 @@ class Uri implements UriInterface
         }
 
         $new = clone $this;
-        if ($port !== $this->port) {
-            $new->port = $port;
-            $new->uriString = null;
-        }
+        $new->port = $port;
+        $new->uriString = null;
 
         return $new;
     }
@@ -415,6 +430,11 @@ class Uri implements UriInterface
             );
         }
 
+        if ($path === $this->path) {
+            // Do nothing if no change was made.
+            return $this;
+        }
+
         if (strpos($path, '?') !== false) {
             throw new InvalidArgumentException(
                 'Invalid path provided; must not contain a query string'
@@ -432,10 +452,8 @@ class Uri implements UriInterface
         }
 
         $new = clone $this;
-        if ($path !== $this->path) {
-            $new->path = $path;
-            $new->uriString = null;
-        }
+        $new->path = $path;
+        $new->uriString = null;
 
         return $new;
     }
@@ -464,6 +482,11 @@ class Uri implements UriInterface
             );
         }
 
+        if ($query === $this->query) {
+            // Do nothing if no change was made.
+            return $this;
+        }
+
         if (strpos($query, '#') !== false) {
             throw new InvalidArgumentException(
                 'Query string must not include a URI fragment'
@@ -475,10 +498,8 @@ class Uri implements UriInterface
         }
 
         $new = clone $this;
-        if ($query !== $this->query) {
-            $new->query = $query;
-            $new->uriString = null;
-        }
+        $new->query = $query;
+        $new->uriString = null;
 
         return $new;
     }
@@ -502,11 +523,14 @@ class Uri implements UriInterface
             $fragment = substr($fragment, 1);
         }
 
-        $new = clone $this;
-        if ($fragment !== $this->fragment) {
-            $new->fragment = $fragment;
-            $new->uriString = null;
+        if ($fragment === $this->fragment) {
+            // Do nothing if no change was made.
+            return $this;
         }
+
+        $new = clone $this;
+        $new->fragment = $fragment;
+        $new->uriString = null;
 
         return $new;
     }
