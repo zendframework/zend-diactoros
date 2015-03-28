@@ -119,13 +119,13 @@ trait MessageTrait
      * and supply your own delimiter when concatenating.
      *
      * @param string $header Case-insensitive header name.
-     * @return string
+     * @return string|null Null is returned if no value exists.
      */
     public function getHeader($header)
     {
         $value = $this->getHeaderLines($header);
-        if (! $value) {
-            return '';
+        if (! $value || empty($value)) {
+            return null;
         }
 
         return implode(',', $value);
