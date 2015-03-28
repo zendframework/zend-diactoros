@@ -19,8 +19,10 @@ use Psr\Http\Message\StreamableInterface;
  * implemented such that they retain the internal state of the current
  * message and return a new instance that contains the changed state.
  */
-class ServerRequest extends Request implements ServerRequestInterface
+class ServerRequest implements ServerRequestInterface
 {
+    use MessageTrait, RequestTrait;
+
     /**
      * @var array
      */
@@ -69,7 +71,7 @@ class ServerRequest extends Request implements ServerRequestInterface
         array $headers = []
     ) {
         $body = $this->getStream($body);
-        parent::__construct($uri, $method, $body, $headers);
+        $this->initialize($uri, $method, $body, $headers);
         $this->serverParams = $serverParams;
         $this->fileParams   = $fileParams;
     }
@@ -337,11 +339,10 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public function getMethod()
     {
-        $method = parent::getMethod();
-        if (empty ($method)) {
+        if (empty($this->method)) {
             return 'GET';
         }
-        return $method;
+        return $this->method;
     }
 
     /**
@@ -358,7 +359,10 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public function withMethod($method)
     {
-        return parent::withMethod(strtoupper($method));
+        $this->validateMethod($method);
+        $new = clone $this;
+        $new->method = $method;
+        return $new;
     }
 
     /**

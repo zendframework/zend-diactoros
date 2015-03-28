@@ -76,7 +76,11 @@ class RequestTest extends TestCase
         $this->assertSame($uri, $request->getUri());
         $this->assertEquals('POST', $request->getMethod());
         $this->assertSame($body, $request->getBody());
-        $this->assertEquals($headers, $request->getHeaders());
+        $testHeaders = $request->getHeaders();
+        foreach ($headers as $key => $value) {
+            $this->assertArrayHasKey($key, $testHeaders);
+            $this->assertEquals($value, $testHeaders[$key]);
+        }
     }
 
     public function invalidRequestUri()
@@ -255,5 +259,94 @@ class RequestTest extends TestCase
         $request = (new Request())->withUri(new Uri('https://example.com/foo/bar'));
         $original = $request->getRequestTarget();
         $newRequest = $request->withUri(new Uri('http://mwop.net/bar/baz'));
+    }
+
+    /**
+     * @group 39
+     */
+    public function testGetHeadersContainsHostHeaderIfUriWithHostIsPresent()
+    {
+        $request = new Request('http://example.com');
+        $headers = $request->getHeaders();
+        $this->assertArrayHasKey('Host', $headers);
+        $this->assertContains('example.com', $headers['Host']);
+    }
+
+    /**
+     * @group 39
+     */
+    public function testGetHeadersContainsNoHostHeaderIfNoUriPresent()
+    {
+        $request = new Request();
+        $headers = $request->getHeaders();
+        $this->assertArrayNotHasKey('Host', $headers);
+    }
+
+    /**
+     * @group 39
+     */
+    public function testGetHeadersContainsNoHostHeaderIfUriDoesNotContainHost()
+    {
+        $request = new Request(new Uri());
+        $headers = $request->getHeaders();
+        $this->assertArrayNotHasKey('Host', $headers);
+    }
+
+    /**
+     * @group 39
+     */
+    public function testGetHostHeaderReturnsUriHostWhenPresent()
+    {
+        $request = new Request('http://example.com');
+        $header = $request->getHeader('host');
+        $this->assertEquals('example.com', $header);
+    }
+
+    /**
+     * @group 39
+     */
+    public function testGetHostHeaderReturnsNullIfNoUriPresent()
+    {
+        $request = new Request();
+        $this->assertNull($request->getHeader('host'));
+    }
+
+    /**
+     * @group 39
+     */
+    public function testGetHostHeaderReturnsNullIfUriDoesNotContainHost()
+    {
+        $request = new Request(new Uri());
+        $this->assertNull($request->getHeader('host'));
+    }
+
+    /**
+     * @group 39
+     */
+    public function testGetHostHeaderLinesReturnsUriHostWhenPresent()
+    {
+        $request = new Request('http://example.com');
+        $header = $request->getHeaderLines('host');
+        $this->assertContains('example.com', $header);
+    }
+
+    /**
+     * @group 39
+     */
+    public function testGetHostHeaderLinesReturnsEmptyArrayIfNoUriPresent()
+    {
+        $request = new Request();
+        $header = $request->getHeaderLines('host');
+        $this->assertSame([], $header);
+    }
+
+    /**
+     * @group 39
+     */
+    public function testGetHostHeaderLinesReturnsEmptyArrayIfUriDoesNotContainHost()
+    {
+        $request = new Request(new Uri());
+        $header = $request->getHeaderLines('host');
+        $this->assertSame([], $header);
     }
 }

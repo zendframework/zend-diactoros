@@ -17,14 +17,14 @@ trait MessageTrait
      *
      * @var array
      */
-    private $headers = [];
+    protected $headers = [];
 
     /**
      * Map of normalized header name to original name used to register header.
      *
      * @var array
      */
-    private $headerNames = [];
+    protected $headerNames = [];
 
     /**
      * @var string
