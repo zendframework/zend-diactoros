@@ -76,6 +76,17 @@ class Uri implements UriInterface
     }
 
     /**
+     * Operations to perform on clone.
+     *
+     * Since cloning usually is for purposes of mutation, we reset the
+     * $uriString property so it will be re-calculated.
+     */
+    public function __clone()
+    {
+        $this->uriString = null;
+    }
+
+    /**
      * Return the string representation of the URI.
      *
      * Concatenates the various segments of the URI, using the appropriate
@@ -296,7 +307,6 @@ class Uri implements UriInterface
 
         $new = clone $this;
         $new->scheme = $scheme;
-        $new->uriString = null;
 
         return $new;
     }
@@ -329,7 +339,6 @@ class Uri implements UriInterface
 
         $new = clone $this;
         $new->userInfo = $info;
-        $new->uriString = null;
 
         return $new;
     }
@@ -355,7 +364,6 @@ class Uri implements UriInterface
 
         $new = clone $this;
         $new->host = $host;
-        $new->uriString = null;
 
         return $new;
     }
@@ -402,7 +410,6 @@ class Uri implements UriInterface
 
         $new = clone $this;
         $new->port = $port;
-        $new->uriString = null;
 
         return $new;
     }
@@ -453,7 +460,6 @@ class Uri implements UriInterface
 
         $new = clone $this;
         $new->path = $path;
-        $new->uriString = null;
 
         return $new;
     }
@@ -499,7 +505,6 @@ class Uri implements UriInterface
 
         $new = clone $this;
         $new->query = $query;
-        $new->uriString = null;
 
         return $new;
     }
@@ -530,7 +535,6 @@ class Uri implements UriInterface
 
         $new = clone $this;
         $new->fragment = $fragment;
-        $new->uriString = null;
 
         return $new;
     }
