@@ -2,7 +2,6 @@
 namespace Phly\Http;
 
 use InvalidArgumentException;
-use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\StreamableInterface;
 
 /**
@@ -14,9 +13,18 @@ use Psr\Http\Message\StreamableInterface;
 trait MessageTrait
 {
     /**
+     * List of all registered headers, as key => array of values.
+     *
      * @var array
      */
     private $headers = [];
+
+    /**
+     * Map of normalized header name to original name used to register header.
+     *
+     * @var array
+     */
+    private $headerNames = [];
 
     /**
      * @var string
@@ -96,7 +104,7 @@ trait MessageTrait
      */
     public function hasHeader($header)
     {
-        return array_key_exists(strtolower($header), $this->headers);
+        return array_key_exists(strtolower($header), $this->headerNames);
     }
 
     /**
@@ -111,16 +119,16 @@ trait MessageTrait
      * and supply your own delimiter when concatenating.
      *
      * @param string $header Case-insensitive header name.
-     * @return string
+     * @return string|null Null is returned if no value exists.
      */
     public function getHeader($header)
     {
-        $header = $this->getHeaderLines($header);
-        if (! $header) {
-            return '';
+        $value = $this->getHeaderLines($header);
+        if (! $value || empty($value)) {
+            return null;
         }
 
-        return implode(',', $header);
+        return implode(',', $value);
     }
 
     /**
@@ -135,9 +143,11 @@ trait MessageTrait
             return [];
         }
 
-        $header = $this->headers[strtolower($header)];
-        $header = is_array($header) ? $header : [$header];
-        return $header;
+        $header = $this->headerNames[strtolower($header)];
+
+        $value = $this->headers[$header];
+        $value = is_array($value) ? $value : [$value];
+        return $value;
     }
 
     /**
@@ -158,8 +168,6 @@ trait MessageTrait
      */
     public function withHeader($header, $value)
     {
-        $header = strtolower($header);
-
         if (is_string($value)) {
             $value = [ $value ];
         }
@@ -170,7 +178,11 @@ trait MessageTrait
             );
         }
 
+        $normalized = strtolower($header);
+
         $new = clone $this;
+
+        $new->headerNames[$normalized] = $header;
         $new->headers[$header] = $value;
         return $new;
     }
@@ -194,8 +206,6 @@ trait MessageTrait
      */
     public function withAddedHeader($header, $value)
     {
-        $header = strtolower($header);
-
         if (is_string($value)) {
             $value = [ $value ];
         }
@@ -209,6 +219,9 @@ trait MessageTrait
         if (! $this->hasHeader($header)) {
             return $this->withHeader($header, $value);
         }
+
+        $normalized = strtolower($header);
+        $header     = $this->headerNames[$normalized];
 
         $new = clone $this;
         $new->headers[$header] = array_merge($this->headers[$header], $value);
@@ -233,8 +246,11 @@ trait MessageTrait
             return $this;
         }
 
+        $normalized = strtolower($header);
+        $original   = $this->headerNames[$normalized];
+
         $new = clone $this;
-        unset($new->headers[strtolower($header)]);
+        unset($new->headers[$original], $new->headerNames[$normalized]);
         return $new;
     }
 
@@ -285,11 +301,11 @@ trait MessageTrait
      * Used by message constructors to allow setting all initial headers at once.
      *
      * @param array $originalHeaders Headers to filter.
-     * @return array Filtered headers.
+     * @return array Filtered headers and names.
      */
     private function filterHeaders(array $originalHeaders)
     {
-        $headers = [];
+        $headerNames = $headers = [];
         foreach ($originalHeaders as $header => $value) {
             if (! is_string($header)) {
                 continue;
@@ -303,10 +319,11 @@ trait MessageTrait
                 $value = [ $value ];
             }
 
-            $headers[strtolower($header)] = $value;
+            $headerNames[strtolower($header)] = $header;
+            $headers[$header] = $value;
         }
 
-        return $headers;
+        return [ $headerNames, $headers ];
     }
 
     /**

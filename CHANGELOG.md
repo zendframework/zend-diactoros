@@ -18,6 +18,8 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
+  [#44](https://github.com/phly/http/pull/44) Retain case sensitivity for
+  header names (when returned via `getHeaders()`.
 - [#45](https://github.com/phly/http/pull/45) Fix port numeric comparison to
   properly accept port integers specified via strings.
 - [#46](https://github.com/phly/http/pull/46)  and

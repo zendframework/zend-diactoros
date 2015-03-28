@@ -118,7 +118,8 @@ class Response implements ResponseInterface
 
         $this->stream     = ($body instanceof StreamableInterface) ? $body : new Stream($body, 'wb+');
         $this->statusCode = $status ? (int) $status : 200;
-        $this->headers    = $this->filterHeaders($headers);
+
+        list($this->headerNames, $this->headers) = $this->filterHeaders($headers);
     }
 
     /**
@@ -133,7 +134,7 @@ class Response implements ResponseInterface
     {
         return $this->statusCode;
     }
-     
+
     /**
      * Gets the response Reason-Phrase, a short textual description of the Status-Code.
      *
