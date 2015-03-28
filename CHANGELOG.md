@@ -18,6 +18,8 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
+- [#42](https://github.com/phly/http/pull/42) Updated `Stream::getSize()` to
+  return the stream size if a resource is composed.
 - [#41](https://github.com/phly/http/pull/41) Fixed examples in README to
   reflect updates in API.
 - [#44](https://github.com/phly/http/pull/44) Retain case sensitivity for

@@ -128,7 +128,12 @@ class Stream implements StreamableInterface
      */
     public function getSize()
     {
-        return null;
+        if (null === $this->resource) {
+            return null;
+        }
+
+        $stats = fstat($this->resource);
+        return $stats['size'];
     }
 
     /**

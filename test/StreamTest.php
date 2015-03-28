@@ -107,8 +107,12 @@ class StreamTest extends TestCase
         $this->assertSame($resource, $detached);
     }
 
-    public function testSizeAlwaysReportsNull()
+    /**
+     * @group 42
+     */
+    public function testSizeReportsNullWhenNoResourcePresent()
     {
+        $this->stream->detach();
         $this->assertNull($this->stream->getSize());
     }
 
@@ -399,5 +403,16 @@ class StreamTest extends TestCase
         $this->stream->attach($resource);
 
         $this->assertNull($this->stream->getMetadata('TOTALLY_MADE_UP'));
+    }
+
+    /**
+     * @group 42
+     */
+    public function testGetSizeReturnsStreamSize()
+    {
+        $resource = fopen(__FILE__, 'r');
+        $expected = fstat($resource);
+        $stream = new Stream($resource);
+        $this->assertEquals($expected['size'], $stream->getSize());
     }
 }
