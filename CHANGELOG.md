@@ -22,6 +22,9 @@ All notable changes to this project will be documented in this file, in reverse 
   header from a request if a URI is composed containing a host. This will be
   true for client-side requests only; server-side will only represent what was
   present in the incoming request.
+- [#40](https://github.com/phly/http/pull/40) Ensure that path, query string,
+  and fragment are each properly encoded, but also prevent against double
+  encoding of values.
 - [#48](https://github.com/phly/http/pull/48) Cache generated URI string after
   first generation.
 - [#42](https://github.com/phly/http/pull/42) Updated `Stream::getSize()` to
