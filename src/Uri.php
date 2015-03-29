@@ -91,13 +91,13 @@ class Uri implements UriInterface
             ));
         }
 
-        if (! empty($uri)) {
-            $this->parseUri($uri);
-        }
-
         $this->urlEncode = function (array $matches) {
             return rawurlencode($matches[0]);
         };
+
+        if (! empty($uri)) {
+            $this->parseUri($uri);
+        }
     }
 
     /**
@@ -569,9 +569,9 @@ class Uri implements UriInterface
         $this->userInfo  = isset($parts['user'])     ? $parts['user']     : '';
         $this->host      = isset($parts['host'])     ? $parts['host']     : '';
         $this->port      = isset($parts['port'])     ? $parts['port']     : null;
-        $this->path      = isset($parts['path'])     ? $parts['path']     : '';
-        $this->query     = isset($parts['query'])    ? $parts['query']    : '';
-        $this->fragment  = isset($parts['fragment']) ? $parts['fragment'] : '';
+        $this->path      = isset($parts['path'])     ? $this->filterPath($parts['path']) : '';
+        $this->query     = isset($parts['query'])    ? $this->filterQuery($parts['query']) : '';
+        $this->fragment  = isset($parts['fragment']) ? $this->filterFragment($parts['fragment']) : '';
 
         if (isset($parts['pass'])) {
             $this->userInfo .= ':' . $parts['pass'];

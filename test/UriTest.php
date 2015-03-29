@@ -420,4 +420,72 @@ class UriTest extends TestCase
         $this->assertAttributeInternalType('null', 'uriString', $test);
         $this->assertAttributeEquals($string, 'uriString', $uri);
     }
+
+    /**
+     * @group 40
+     */
+    public function testPathIsProperlyEncoded()
+    {
+        $uri = (new Uri())->withPath('/foo^bar');
+        $expected = '/foo%5Ebar';
+        $this->assertEquals($expected, $uri->getPath());
+    }
+
+    public function testPathDoesNotBecomeDoubleEncoded()
+    {
+        $uri = (new Uri())->withPath('/foo%5Ebar');
+        $expected = '/foo%5Ebar';
+        $this->assertEquals($expected, $uri->getPath());
+    }
+
+    public function queryStringsForEncoding()
+    {
+        return [
+            'key-only' => ['k^ey', 'k%5Eey'],
+            'key-value' => ['k^ey=valu`', 'k%5Eey=valu%60'],
+            'array-key-only' => ['key[]', 'key%5B%5D'],
+            'array-key-value' => ['key[]=valu`', 'key%5B%5D=valu%60'],
+            'complex' => ['k^ey&key[]=valu`&f<>=`bar', 'k%5Eey&key%5B%5D=valu%60&f%3C%3E=%60bar'],
+        ];
+    }
+
+    /**
+     * @group 40
+     * @dataProvider queryStringsForEncoding
+     */
+    public function testQueryIsProperlyEncoded($query, $expected)
+    {
+        $uri = (new Uri())->withQuery($query);
+        $this->assertEquals($expected, $uri->getQuery());
+    }
+
+    /**
+     * @group 40
+     * @dataProvider queryStringsForEncoding
+     */
+    public function testQueryIsNotDoubleEncoded($query, $expected)
+    {
+        $uri = (new Uri())->withQuery($expected);
+        $this->assertEquals($expected, $uri->getQuery());
+    }
+
+    /**
+     * @group 40
+     */
+    public function testFragmentIsProperlyEncoded()
+    {
+        $uri = (new Uri())->withFragment('/p^th?key^=`bar#b@z');
+        $expected = '/p%5Eth?key%5E=%60bar%23b@z';
+        $this->assertEquals($expected, $uri->getFragment());
+    }
+
+    /**
+     * @group 40
+     */
+    public function testFragmentIsNotDoubleEncoded()
+    {
+        $expected = '/p%5Eth?key%5E=%60bar%23b@z';
+        $uri = (new Uri())->withFragment($expected);
+        $this->assertEquals($expected, $uri->getFragment());
+    }
 }
