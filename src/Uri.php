@@ -17,6 +17,20 @@ use Psr\Http\Message\UriInterface;
 class Uri implements UriInterface
 {
     /**
+     * Sub-delimiters used in query strings and fragments.
+     *
+     * @const string
+     */
+    const CHAR_SUB_DELIMS = '!\$&\'\(\)\*\+,;=';
+
+    /**
+     * Unreserved characters used in paths, query strings, and fragments.
+     *
+     * @const string
+     */
+    const CHAR_UNRESERVED = 'a-zA-Z0-9_\-\.~';
+
+    /**
      * @var string
      */
     private $scheme = '';
@@ -58,6 +72,13 @@ class Uri implements UriInterface
     private $uriString;
 
     /**
+     * Function to urlencode the value returned by a regexp.
+     * 
+     * @var callable
+     */
+    private $urlEncode;
+
+    /**
      * @param string $uri
      * @throws InvalidArgumentException on non-string $uri argument
      */
@@ -73,6 +94,10 @@ class Uri implements UriInterface
         if (! empty($uri)) {
             $this->parseUri($uri);
         }
+
+        $this->urlEncode = function (array $matches) {
+            return rawurlencode($matches[0]);
+        };
     }
 
     /**
@@ -437,11 +462,6 @@ class Uri implements UriInterface
             );
         }
 
-        if ($path === $this->path) {
-            // Do nothing if no change was made.
-            return $this;
-        }
-
         if (strpos($path, '?') !== false) {
             throw new InvalidArgumentException(
                 'Invalid path provided; must not contain a query string'
@@ -454,8 +474,11 @@ class Uri implements UriInterface
             );
         }
 
-        if (! empty($path) && strpos($path, '/') !== 0) {
-            $path = '/' . $path;
+        $path = $this->filterPath($path);
+
+        if ($path === $this->path) {
+            // Do nothing if no change was made.
+            return $this;
         }
 
         $new = clone $this;
@@ -488,19 +511,17 @@ class Uri implements UriInterface
             );
         }
 
-        if ($query === $this->query) {
-            // Do nothing if no change was made.
-            return $this;
-        }
-
         if (strpos($query, '#') !== false) {
             throw new InvalidArgumentException(
                 'Query string must not include a URI fragment'
             );
         }
 
-        if (strpos($query, '?') === 0) {
-            $query = substr($query, 1);
+        $query = $this->filterQuery($query);
+
+        if ($query === $this->query) {
+            // Do nothing if no change was made.
+            return $this;
         }
 
         $new = clone $this;
@@ -524,9 +545,7 @@ class Uri implements UriInterface
      */
     public function withFragment($fragment)
     {
-        if (strpos($fragment, '#') === 0) {
-            $fragment = substr($fragment, 1);
-        }
+        $fragment = $this->filterFragment($fragment);
 
         if ($fragment === $this->fragment) {
             // Do nothing if no change was made.
@@ -623,5 +642,104 @@ class Uri implements UriInterface
         }
 
         return false;
+    }
+
+    /**
+     * Filters the path of a URI to ensure it is properly encoded.
+     *
+     * @param string $path
+     * @return string
+     */
+    private function filterPath($path)
+    {
+        if ($path !== null && (empty($path) || substr($path, 0, 1) !== '/')) {
+            $path = '/' . $path;
+        }
+
+        return preg_replace_callback(
+            '/(?:[^' . self::CHAR_UNRESERVED . ':@&=\+\$,\/;%]+|%(?![A-Fa-f0-9]{2}))/',
+            $this->urlEncode,
+            $path
+        );
+    }
+
+    /**
+     * Filter a query string to ensure it is propertly encoded.
+     * 
+     * Ensures that the values in the query string are properly urlencoded.
+     * 
+     * @param string $query 
+     * @return string
+     */
+    private function filterQuery($query)
+    {
+        if (! empty($query) && strpos($query, '?') === 0) {
+            $query = substr($query, 1);
+        }
+
+        $parts = explode('&', $query);
+        foreach ($parts as $index => $part) {
+            list($key, $value) = $this->splitQueryValue($part);
+            if ($value === null) {
+                $parts[$index] = $this->filterQueryOrFragment($key);
+                continue;
+            }
+            $parts[$index] = sprintf(
+                '%s=%s',
+                $this->filterQueryOrFragment($key),
+                $this->filterQueryOrFragment($value)
+            );
+        }
+
+        return implode('&', $parts);
+    }
+
+    /**
+     * Split a query value into a key/value tuple.
+     * 
+     * @param string $value 
+     * @return array A value with exactly two elements, key and value
+     */
+    private function splitQueryValue($value)
+    {
+        $data = explode('=', $value, 2);
+        if (1 === count($data)) {
+            $data[] = null;
+        }
+        return $data;
+    }
+
+    /**
+     * Filter a fragment value to ensure it is properly encoded.
+     * 
+     * @param null|string $fragment 
+     * @return string
+     */
+    private function filterFragment($fragment)
+    {
+        if (null === $fragment) {
+            $fragment = '';
+        }
+
+        if (! empty($fragment) && strpos($fragment, '#') === 0) {
+            $fragment = substr($fragment, 1);
+        }
+
+        return $this->filterQueryOrFragment($fragment);
+    }
+
+    /**
+     * Filter a query string key or value, or a fragment.
+     *
+     * @param string $value
+     * @return string
+     */
+    private function filterQueryOrFragment($value)
+    {
+        return preg_replace_callback(
+            '/(?:[^' . self::CHAR_UNRESERVED . self::CHAR_SUB_DELIMS . '%:@\/\?]+|%(?![A-Fa-f0-9]{2}))/',
+            $this->urlEncode,
+            $value
+        );
     }
 }
