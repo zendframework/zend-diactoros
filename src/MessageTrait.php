@@ -243,7 +243,7 @@ trait MessageTrait
     public function withoutHeader($header)
     {
         if (! $this->hasHeader($header)) {
-            return $this;
+            return clone $this;
         }
 
         $normalized = strtolower($header);

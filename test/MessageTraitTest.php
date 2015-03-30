@@ -174,7 +174,7 @@ class MessageTraitTest extends TestCase
     {
         $this->assertFalse($this->message->hasHeader('X-Foo'));
         $message = $this->message->withoutHeader('X-Foo');
-        $this->assertSame($this->message, $message);
+        $this->assertNotSame($this->message, $message);
         $this->assertFalse($message->hasHeader('X-Foo'));
     }
 

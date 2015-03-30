@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release..
 
-## X.Y.Z - TBD
+## 0.11.2 - 2015-03-30
 
 ### Added
 
@@ -18,7 +18,9 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#51](https://github.com/phly/http/pull/51) Ensure all `with*()` methods
+  return a **new** instance, as specified (and not `$this`, even when no change
+  is created).
 
 ## 0.11.1 - 2015-03-29
 
