@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release..
 
-## X.Y.Z - TBD
+## 0.11.3 - TBD
 
 ### Added
 
@@ -18,7 +18,9 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#52](https://github.com/phly/http/pull/52) Replace `self::` with `static::`
+  and `@return self` with `@return static` to allow for late static binding
+  with class extensions.
 
 ## 0.11.2 - 2015-03-30
 
