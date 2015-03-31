@@ -88,7 +88,7 @@ class Server
      * @param array $body
      * @param array $cookies
      * @param array $files
-     * @return self
+     * @return static
      */
     public static function createServer(
         callable $callback,
@@ -100,7 +100,7 @@ class Server
     ) {
         $request  = ServerRequestFactory::fromGlobals($server, $query, $body, $cookies, $files);
         $response = new Response();
-        return new self($callback, $request, $response);
+        return new static($callback, $request, $response);
     }
 
     /**
@@ -114,7 +114,7 @@ class Server
      * @param callable $callback
      * @param ServerRequestInterface $request
      * @param null|ResponseInterface $response
-     * @return self
+     * @return static
      */
     public static function createServerFromRequest(
         callable $callback,
@@ -124,7 +124,7 @@ class Server
         if (! $response) {
             $response = new Response();
         }
-        return new self($callback, $request, $response);
+        return new static($callback, $request, $response);
     }
 
     /**
