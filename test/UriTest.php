@@ -276,7 +276,16 @@ class UriTest extends TestCase
     /**
      * @dataProvider invalidSchemes
      */
-    public function testMutatingWithNonWebSchemeRaisesAnException($scheme)
+    public function testConstructWithUnsupportedSchemeRaisesAnException($scheme)
+    {
+        $this->setExpectedException('InvalidArgumentException', 'Unsupported scheme');
+        $uri = new Uri($scheme . '://example.com');
+    }
+
+    /**
+     * @dataProvider invalidSchemes
+     */
+    public function testMutatingWithUnsupportedSchemeRaisesAnException($scheme)
     {
         $uri = new Uri('http://example.com');
         $this->setExpectedException('InvalidArgumentException', 'Unsupported scheme');

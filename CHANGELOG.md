@@ -21,6 +21,9 @@ All notable changes to this project will be documented in this file, in reverse 
 - [#52](https://github.com/phly/http/pull/52) Replace `self::` with `static::`
   and `@return self` with `@return static` to allow for late static binding
   with class extensions.
+- [#55](https://github.com/phly/http/pull/55) Updates `parseUri()` to validate
+  the scheme, ensuring the `Uri` instance cannot be instantiated with an
+  invalid scheme.
 
 ## 0.11.2 - 2015-03-30
 

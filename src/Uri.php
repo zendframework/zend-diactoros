@@ -31,6 +31,14 @@ class Uri implements UriInterface
     const CHAR_UNRESERVED = 'a-zA-Z0-9_\-\.~';
 
     /**
+     * @var int[] Array indexed by valid scheme names to their corresponding ports.
+     */
+    protected $allowedSchemes = [
+        'http'  => 80,
+        'https' => 443,
+    ];
+
+    /**
      * @var string
      */
     private $scheme = '';
@@ -132,7 +140,7 @@ class Uri implements UriInterface
             return $this->uriString;
         }
 
-        $this->uriString = self::createUriString(
+        $this->uriString = static::createUriString(
             $this->scheme,
             $this->getAuthority(),
             $this->getPath(), // Absolute URIs should use a "/" for an empty path
@@ -243,7 +251,9 @@ class Uri implements UriInterface
      */
     public function getPort()
     {
-        return $this->port;
+        return $this->isNonStandardPort($this->scheme, $this->host, $this->port)
+            ? $this->port
+            : null;
     }
 
     /**
@@ -313,21 +323,11 @@ class Uri implements UriInterface
      */
     public function withScheme($scheme)
     {
-        $scheme = strtolower($scheme);
-        if (strpos($scheme, '://')) {
-            $scheme = str_replace('://', '', $scheme);
-        }
+        $scheme = $this->filterScheme($scheme);
 
         if ($scheme === $this->scheme) {
             // Do nothing if no change was made.
             return clone $this;
-        }
-
-        if (! in_array($scheme, ['', 'http', 'https'], true)) {
-            throw new InvalidArgumentException(sprintf(
-                'Unsupported scheme "%s"; must be one of an empty string, "http", or "https"',
-                $scheme
-            ));
         }
 
         $new = clone $this;
@@ -565,7 +565,7 @@ class Uri implements UriInterface
     {
         $parts = parse_url($uri);
 
-        $this->scheme    = isset($parts['scheme'])   ? $parts['scheme']   : '';
+        $this->scheme    = isset($parts['scheme'])   ? $this->filterScheme($parts['scheme']) : '';
         $this->userInfo  = isset($parts['user'])     ? $parts['user']     : '';
         $this->host      = isset($parts['host'])     ? $parts['host']     : '';
         $this->port      = isset($parts['port'])     ? $parts['port']     : null;
@@ -623,7 +623,7 @@ class Uri implements UriInterface
      * @param int $port
      * @return bool
      */
-    private static function isNonStandardPort($scheme, $host, $port)
+    private function isNonStandardPort($scheme, $host, $port)
     {
         if (! $scheme) {
             return true;
@@ -633,15 +633,34 @@ class Uri implements UriInterface
             return false;
         }
 
-        if ($scheme === 'https' && $port !== 443) {
-            return true;
+        return ! isset($this->allowedSchemes[$scheme]) || $port !== $this->allowedSchemes[$scheme];
+    }
+
+    /**
+     * Filters the scheme to ensure it is a valid scheme.
+     *
+     * @param string $scheme Scheme name.
+     *
+     * @return string Filtered scheme.
+     */
+    private function filterScheme($scheme)
+    {
+        $scheme = strtolower($scheme);
+        $scheme = preg_replace('#:(//)?$#', '', $scheme);
+
+        if (empty($scheme)) {
+            return '';
         }
 
-        if ($scheme === 'http' && $port !== 80) {
-            return true;
+        if (! array_key_exists($scheme, $this->allowedSchemes)) {
+            throw new InvalidArgumentException(sprintf(
+                'Unsupported scheme "%s"; must be any empty string or in the set (%s)',
+                $scheme,
+                implode(', ', array_keys($this->allowedSchemes))
+            ));
         }
 
-        return false;
+        return $scheme;
     }
 
     /**
@@ -652,7 +671,10 @@ class Uri implements UriInterface
      */
     private function filterPath($path)
     {
-        if ($path !== null && (empty($path) || substr($path, 0, 1) !== '/')) {
+        if ($path !== null
+            && (empty($path)
+            || substr($path, 0, 1) !== '/')
+        ) {
             $path = '/' . $path;
         }
 
