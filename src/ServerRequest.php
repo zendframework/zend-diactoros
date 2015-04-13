@@ -77,13 +77,7 @@ class ServerRequest implements ServerRequestInterface
     }
 
     /**
-     * Retrieve server parameters.
-     *
-     * Retrieves data related to the incoming request environment,
-     * typically derived from PHP's $_SERVER superglobal. The data IS NOT
-     * REQUIRED to originate from $_SERVER.
-     *
-     * @return array
+     * {@inheritdoc}
      */
     public function getServerParams()
     {
@@ -91,16 +85,7 @@ class ServerRequest implements ServerRequestInterface
     }
 
     /**
-     * Retrieve the upload file metadata.
-     *
-     * This method MUST return file upload metadata in the same structure
-     * as PHP's $_FILES superglobal.
-     *
-     * These values MUST remain immutable over the course of the incoming
-     * request. They SHOULD be injected during instantiation, such as from PHP's
-     * $_FILES superglobal, but MAY be derived from other sources.
-     *
-     * @return array Upload file(s) metadata, if any.
+     * {@inheritdoc}
      */
     public function getFileParams()
     {
@@ -108,14 +93,7 @@ class ServerRequest implements ServerRequestInterface
     }
 
     /**
-     * Retrieve cookies.
-     *
-     * Retrieves cookies sent by the client to the server.
-     *
-     * The data MUST be compatible with the structure of the $_COOKIE
-     * superglobal.
-     *
-     * @return array
+     * {@inheritdoc}
      */
     public function getCookieParams()
     {
@@ -123,18 +101,7 @@ class ServerRequest implements ServerRequestInterface
     }
 
     /**
-     * Create a new instance with the specified cookies.
-     *
-     * The data IS NOT REQUIRED to come from the $_COOKIE superglobal, but MUST
-     * be compatible with the structure of $_COOKIE. Typically, this data will
-     * be injected at instantiation.
-     *
-     * This method MUST be implemented in such a way as to retain the
-     * immutability of the message, and MUST return a new instance that has the
-     * updated cookie values.
-     *
-     * @param array $cookies Array of key/value pairs representing cookies.
-     * @return self
+     * {@inheritdoc}
      */
     public function withCookieParams(array $cookies)
     {
@@ -144,16 +111,7 @@ class ServerRequest implements ServerRequestInterface
     }
 
     /**
-     * Retrieve query string arguments.
-     *
-     * Retrieves the deserialized query string arguments, if any.
-     *
-     * Note: the query params might not be in sync with the URL or server
-     * params. If you need to ensure you are only getting the original
-     * values, you may need to parse the composed URL or the `QUERY_STRING`
-     * composed in the server params.
-     *
-     * @return array
+     * {@inheritdoc}
      */
     public function getQueryParams()
     {
@@ -161,26 +119,7 @@ class ServerRequest implements ServerRequestInterface
     }
 
     /**
-     * Create a new instance with the specified query string arguments.
-     *
-     * These values SHOULD remain immutable over the course of the incoming
-     * request. They MAY be injected during instantiation, such as from PHP's
-     * $_GET superglobal, or MAY be derived from some other value such as the
-     * URI. In cases where the arguments are parsed from the URI, the data
-     * MUST be compatible with what PHP's parse_str() would return for
-     * purposes of how duplicate query parameters are handled, and how nested
-     * sets are handled.
-     *
-     * Setting query string arguments MUST NOT change the URL stored by the
-     * request, nor the values in the server params.
-     *
-     * This method MUST be implemented in such a way as to retain the
-     * immutability of the message, and MUST return a new instance that has the
-     * updated query string arguments.
-     *
-     * @param array $query Array of query string arguments, typically from
-     *     $_GET.
-     * @return self
+     * {@inheritdoc}
      */
     public function withQueryParams(array $query)
     {
@@ -190,18 +129,7 @@ class ServerRequest implements ServerRequestInterface
     }
 
     /**
-     * Retrieve any parameters provided in the request body.
-     *
-     * If the request Content-Type is application/x-www-form-urlencoded and the
-     * request method is POST, this method MUST return the contents of $_POST.
-     *
-     * Otherwise, this method may return any results of deserializing
-     * the request body content; as parsing returns structured content, the
-     * potential types MUST be arrays or objects only. A null value indicates
-     * the absence of body content.
-     *
-     * @return null|array|object The deserialized body parameters, if any.
-     *     These will typically be an array or object.
+     * {@inheritdoc}
      */
     public function getParsedBody()
     {
@@ -209,30 +137,7 @@ class ServerRequest implements ServerRequestInterface
     }
 
     /**
-     * Create a new instance with the specified body parameters.
-     *
-     * These MAY be injected during instantiation.
-     *
-     * If the request Content-Type is application/x-www-form-urlencoded and the
-     * request method is POST, use this method ONLY to inject the contents of
-     * $_POST.
-     *
-     * The data IS NOT REQUIRED to come from $_POST, but MUST be the results of
-     * deserializing the request body content. Deserialization/parsing returns
-     * structured data, and, as such, this method ONLY accepts arrays or objects,
-     * or a null value if nothing was available to parse.
-     *
-     * As an example, if content negotiation determines that the request data
-     * is a JSON payload, this method could be used to create a request
-     * instance with the deserialized parameters.
-     *
-     * This method MUST be implemented in such a way as to retain the
-     * immutability of the message, and MUST return a new instance that has the
-     * updated body parameters.
-     *
-     * @param null|array|object $data The deserialized body data. This will
-     *     typically be in an array or object.
-     * @return self
+     * {@inheritdoc}
      */
     public function withParsedBody($data)
     {
@@ -242,15 +147,7 @@ class ServerRequest implements ServerRequestInterface
     }
 
     /**
-     * Retrieve attributes derived from the request.
-     *
-     * The request "attributes" may be used to allow injection of any
-     * parameters derived from the request: e.g., the results of path
-     * match operations; the results of decrypting cookies; the results of
-     * deserializing non-form-encoded message bodies; etc. Attributes
-     * will be application and request specific, and CAN be mutable.
-     *
-     * @return array Attributes derived from the request.
+     * {@inheritdoc}
      */
     public function getAttributes()
     {
@@ -258,19 +155,7 @@ class ServerRequest implements ServerRequestInterface
     }
 
     /**
-     * Retrieve a single derived request attribute.
-     *
-     * Retrieves a single derived request attribute as described in
-     * getAttributes(). If the attribute has not been previously set, returns
-     * the default value as provided.
-     *
-     * This method obviates the need for a hasAttribute() method, as it allows
-     * specifying a default value to return if the attribute is not found.
-     *
-     * @see getAttributes()
-     * @param string $attribute Attribute name.
-     * @param mixed $default Default value to return if the attribute does not exist.
-     * @return mixed
+     * {@inheritdoc}
      */
     public function getAttribute($attribute, $default = null)
     {
@@ -282,19 +167,7 @@ class ServerRequest implements ServerRequestInterface
     }
 
     /**
-     * Create a new instance with the specified derived request attribute.
-     *
-     * This method allows setting a single derived request attribute as
-     * described in getAttributes().
-     *
-     * This method MUST be implemented in such a way as to retain the
-     * immutability of the message, and MUST return a new instance that has the
-     * updated attribute.
-     *
-     * @see getAttributes()
-     * @param string $attribute The attribute name.
-     * @param mixed $value The value of the attribute.
-     * @return self
+     * {@inheritdoc}
      */
     public function withAttribute($attribute, $value)
     {
@@ -304,19 +177,7 @@ class ServerRequest implements ServerRequestInterface
     }
 
     /**
-     * Create a new instance that removes the specified derived request
-     * attribute.
-     *
-     * This method allows removing a single derived request attribute as
-     * described in getAttributes().
-     *
-     * This method MUST be implemented in such a way as to retain the
-     * immutability of the message, and MUST return a new instance that removes
-     * the attribute.
-     *
-     * @see getAttributes()
-     * @param string $attribute The attribute name.
-     * @return self
+     * {@inheritdoc}
      */
     public function withoutAttribute($attribute)
     {

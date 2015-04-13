@@ -40,14 +40,7 @@ class Stream implements StreamInterface
     }
 
     /**
-     * Reads all data from the stream into a string, from the beginning to end.
-     *
-     * This method MUST attempt to seek to the beginning of the stream before
-     * reading data and read the stream until the end is reached.
-     *
-     * Warning: This could attempt to load a large amount of data into memory.
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function __toString()
     {
@@ -59,9 +52,7 @@ class Stream implements StreamInterface
     }
 
     /**
-     * Closes the stream and any underlying resources.
-     *
-     * @return void
+     * {@inheritdoc}
      */
     public function close()
     {
@@ -74,11 +65,7 @@ class Stream implements StreamInterface
     }
 
     /**
-     * Separates any underlying resources from the stream.
-     *
-     * After the stream has been detached, the stream is in an unusable state.
-     *
-     * @return resource|null
+     * {@inheritdoc}
      */
     public function detach()
     {
@@ -88,14 +75,7 @@ class Stream implements StreamInterface
     }
 
     /**
-     * Attach a new resource to the instance
-     *
-     * @param resource|string $resource Resource to attach, or a string
-     *                                  representing the resource to attach.
-     * @param string $mode If a non-resource is provided, the mode to use
-     *                     when creating the resource.
-     * @throws InvalidArgumentException If a non-resource or non-string is provided,
-     *                                  raises an exception.
+     * {@inheritdoc}
      */
     public function attach($resource, $mode = 'r')
     {
@@ -122,9 +102,7 @@ class Stream implements StreamInterface
     }
 
     /**
-     * Get the size of the stream if known
-     *
-     * @return int|null Returns the size in bytes if known, or null if unknown
+     * {@inheritdoc}
      */
     public function getSize()
     {
@@ -137,9 +115,7 @@ class Stream implements StreamInterface
     }
 
     /**
-     * Returns the current position of the file read/write pointer
-     *
-     * @return int|bool Position of the file pointer or false on error
+     * {@inheritdoc}
      */
     public function tell()
     {
@@ -151,9 +127,7 @@ class Stream implements StreamInterface
     }
 
     /**
-     * Returns true if the stream is at the end of the stream.
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function eof()
     {
@@ -165,9 +139,7 @@ class Stream implements StreamInterface
     }
 
     /**
-     * Returns whether or not the stream is seekable
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function isSeekable()
     {
@@ -180,18 +152,7 @@ class Stream implements StreamInterface
     }
 
     /**
-     * Seek to a position in the stream
-     *
-     * @param int $offset Stream offset
-     * @param int $whence Specifies how the cursor position will be calculated
-     *                    based on the seek offset. Valid values are identical
-     *                    to the built-in PHP $whence values for `fseek()`.
-     *                    SEEK_SET: Set position equal to offset bytes
-     *                    SEEK_CUR: Set position to current location plus offset
-     *                    SEEK_END: Set position to end-of-stream plus offset
-     *
-     * @return bool Returns TRUE on success or FALSE on failure
-     * @link   http://www.php.net/manual/en/function.fseek.php
+     * {@inheritdoc}
      */
     public function seek($offset, $whence = SEEK_SET)
     {
@@ -204,9 +165,7 @@ class Stream implements StreamInterface
     }
 
     /**
-     * Rewind the stream
-     *
-     * @return bool Returns TRUE on success, FALSE on failure
+     * {@inheritdoc}
      */
     public function rewind()
     {
@@ -219,9 +178,7 @@ class Stream implements StreamInterface
     }
 
     /**
-     * Returns whether or not the stream is writable
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function isWritable()
     {
@@ -234,12 +191,7 @@ class Stream implements StreamInterface
     }
 
     /**
-     * Write data to the stream.
-     *
-     * @param string $string The string that is to be written.
-     *
-     * @return int|bool Returns the number of bytes written to the stream on
-     *                  success or FALSE on failure.
+     * {@inheritdoc}
      */
     public function write($string)
     {
@@ -251,9 +203,7 @@ class Stream implements StreamInterface
     }
 
     /**
-     * Returns whether or not the stream is readable
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function isReadable()
     {
@@ -268,15 +218,7 @@ class Stream implements StreamInterface
     }
 
     /**
-     * Read data from the stream
-     *
-     * @param int $length Read up to $length bytes from the object and return
-     *                    them. Fewer than $length bytes may be returned if
-     *                    underlying stream call returns fewer bytes.
-     *
-     * @return string|false Returns the data read from the stream; in the event
-     *                      of an error or inability to read, can return boolean
-     *                      false.
+     * {@inheritdoc}
      */
     public function read($length)
     {
@@ -292,9 +234,7 @@ class Stream implements StreamInterface
     }
 
     /**
-     * Returns the remaining contents in a string, up to maxlength bytes.
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getContents()
     {
@@ -306,10 +246,7 @@ class Stream implements StreamInterface
     }
 
     /**
-     * Retrieve metadata from the underlying stream.
-     *
-     * @see http://php.net/stream_get_meta_data for a description of the expected output.
-     * @return array
+     * {@inheritdoc}
      */
     public function getMetadata($key = null)
     {
