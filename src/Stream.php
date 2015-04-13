@@ -2,12 +2,12 @@
 namespace Phly\Http;
 
 use InvalidArgumentException;
-use Psr\Http\Message\StreamableInterface;
+use Psr\Http\Message\StreamInterface;
 
 /**
  * Implementation of PSR HTTP streams
  */
-class Stream implements StreamableInterface
+class Stream implements StreamInterface
 {
     /**
      * @var resource
@@ -89,8 +89,8 @@ class Stream implements StreamableInterface
 
     /**
      * Attach a new resource to the instance
-     * 
-     * @param resource|string $resource Resource to attach, or a string 
+     *
+     * @param resource|string $resource Resource to attach, or a string
      *                                  representing the resource to attach.
      * @param string $mode If a non-resource is provided, the mode to use
      *                     when creating the resource.
@@ -205,7 +205,7 @@ class Stream implements StreamableInterface
 
     /**
      * Rewind the stream
-     * 
+     *
      * @return bool Returns TRUE on success, FALSE on failure
      */
     public function rewind()
@@ -307,7 +307,7 @@ class Stream implements StreamableInterface
 
     /**
      * Retrieve metadata from the underlying stream.
-     * 
+     *
      * @see http://php.net/stream_get_meta_data for a description of the expected output.
      * @return array
      */

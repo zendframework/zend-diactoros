@@ -3,7 +3,7 @@ namespace Phly\Http;
 
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\StreamableInterface;
+use Psr\Http\Message\StreamInterface;
 
 /**
  * HTTP response encapsulation.
@@ -97,18 +97,18 @@ class Response implements ResponseInterface
     private $statusCode = 200;
 
     /**
-     * @param string|resource|StreamableInterface $stream Stream identifier and/or actual stream resource
+     * @param string|resource|StreamInterface $stream Stream identifier and/or actual stream resource
      * @param int $status Status code for the response, if any.
      * @param array $headers Headers for the response, if any.
      * @throws InvalidArgumentException on any invalid element.
      */
     public function __construct($body = 'php://memory', $status = 200, array $headers = [])
     {
-        if (! is_string($body) && ! is_resource($body) && ! $body instanceof StreamableInterface) {
+        if (! is_string($body) && ! is_resource($body) && ! $body instanceof StreamInterface) {
             throw new InvalidArgumentException(
                 'Stream must be a string stream resource identifier, '
                 . 'an actual stream resource, '
-                . 'or a Psr\Http\Message\StreamableInterface implementation'
+                . 'or a Psr\Http\Message\StreamInterface implementation'
             );
         }
 
@@ -116,7 +116,7 @@ class Response implements ResponseInterface
             $this->validateStatus($status);
         }
 
-        $this->stream     = ($body instanceof StreamableInterface) ? $body : new Stream($body, 'wb+');
+        $this->stream     = ($body instanceof StreamInterface) ? $body : new Stream($body, 'wb+');
         $this->statusCode = $status ? (int) $status : 200;
 
         list($this->headerNames, $this->headers) = $this->filterHeaders($headers);

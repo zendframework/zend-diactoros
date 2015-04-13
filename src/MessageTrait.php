@@ -2,7 +2,7 @@
 namespace Phly\Http;
 
 use InvalidArgumentException;
-use Psr\Http\Message\StreamableInterface;
+use Psr\Http\Message\StreamInterface;
 
 /**
  * Trait implementing the various methods defined in
@@ -32,7 +32,7 @@ trait MessageTrait
     private $protocol = '1.1';
 
     /**
-     * @var StreamableInterface
+     * @var StreamInterface
      */
     private $stream;
 
@@ -257,7 +257,7 @@ trait MessageTrait
     /**
      * Gets the body of the message.
      *
-     * @return StreamableInterface Returns the body as a stream.
+     * @return StreamInterface Returns the body as a stream.
      */
     public function getBody()
     {
@@ -267,17 +267,17 @@ trait MessageTrait
     /**
      * Create a new instance, with the specified message body.
      *
-     * The body MUST be a StreamableInterface object.
+     * The body MUST be a StreamInterface object.
      *
      * This method MUST be implemented in such a way as to retain the
      * immutability of the message, and MUST return a new instance that has the
      * new body stream.
      *
-     * @param StreamableInterface $body Body.
+     * @param StreamInterface $body Body.
      * @return self
      * @throws InvalidArgumentException When the body is not valid.
      */
-    public function withBody(StreamableInterface $body)
+    public function withBody(StreamInterface $body)
     {
         $new = clone $this;
         $new->stream = $body;

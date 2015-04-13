@@ -3,7 +3,7 @@ namespace Phly\Http;
 
 use InvalidArgumentException;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\StreamableInterface;
+use Psr\Http\Message\StreamInterface;
 
 /**
  * Server-side HTTP request
@@ -58,7 +58,7 @@ class ServerRequest implements ServerRequestInterface
      * @param array $fileParams Upload file information; should be in PHP's $_FILES format
      * @param null|string $uri URI for the request, if any.
      * @param null|string $method HTTP method for the request, if any.
-     * @param string|resource|StreamableInterface $body Message body, if any.
+     * @param string|resource|StreamInterface $body Message body, if any.
      * @param array $headers Headers for the message, if any.
      * @throws InvalidArgumentException for any invalid value.
      */
@@ -368,7 +368,7 @@ class ServerRequest implements ServerRequestInterface
     /**
      * Set the body stream
      *
-     * @param string|resource|StreamableInterface $stream
+     * @param string|resource|StreamInterface $stream
      * @return void
      */
     private function getStream($stream)
@@ -377,15 +377,15 @@ class ServerRequest implements ServerRequestInterface
             return new PhpInputStream();
         }
 
-        if (! is_string($stream) && ! is_resource($stream) && ! $stream instanceof StreamableInterface) {
+        if (! is_string($stream) && ! is_resource($stream) && ! $stream instanceof StreamInterface) {
             throw new InvalidArgumentException(
                 'Stream must be a string stream resource identifier, '
                 . 'an actual stream resource, '
-                . 'or a Psr\Http\Message\StreamableInterface implementation'
+                . 'or a Psr\Http\Message\StreamInterface implementation'
             );
         }
 
-        if (! $stream instanceof StreamableInterface) {
+        if (! $stream instanceof StreamInterface) {
             return new Stream($stream, 'r');
         }
 
