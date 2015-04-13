@@ -128,7 +128,7 @@ class StreamTest extends TestCase
         $this->assertEquals(2, $stream->tell());
     }
 
-    public function testTellReturnsFalseIfResourceIsDetached()
+    public function testTellRaisesExceptionIfResourceIsDetached()
     {
         $this->tmpnam = tempnam(sys_get_temp_dir(), 'phly');
         file_put_contents($this->tmpnam, 'FOO BAR');
@@ -137,7 +137,8 @@ class StreamTest extends TestCase
 
         fseek($resource, 2);
         $stream->detach();
-        $this->assertFalse($stream->tell());
+        $this->setExpectedException('RuntimeException', 'No resource');
+        $stream->tell();
     }
 
     public function testEofReportsFalseWhenNotAtEndOfStream()
@@ -185,7 +186,7 @@ class StreamTest extends TestCase
         $this->assertTrue($stream->isSeekable());
     }
 
-    public function testIsSeekableReturnsFalseForNonSeekableStreams()
+    public function testIsSeekableRaisesExceptionForNonSeekableStreams()
     {
         $this->markTestIncomplete('Do not know how to create a non-seekable stream');
     }
@@ -221,15 +222,15 @@ class StreamTest extends TestCase
         $this->assertEquals(0, $stream->tell());
     }
 
-    public function testSeekReturnsFalseWhenStreamIsDetached()
+    public function testSeekRaisesExceptionWhenStreamIsDetached()
     {
         $this->tmpnam = tempnam(sys_get_temp_dir(), 'phly');
         file_put_contents($this->tmpnam, 'FOO BAR');
         $resource = fopen($this->tmpnam, 'wb+');
         $stream = new Stream($resource);
         $stream->detach();
-        $this->assertFalse($stream->seek(2));
-        $this->assertEquals(0, ftell($resource));
+        $this->setExpectedException('RuntimeException', 'No resource');
+        $stream->seek(2);
     }
 
     public function testIsWritableReturnsFalseWhenStreamIsDetached()
@@ -242,14 +243,15 @@ class StreamTest extends TestCase
         $this->assertFalse($stream->isWritable());
     }
 
-    public function testWriteReturnsFalseWhenStreamIsDetached()
+    public function testWriteRaisesExceptionWhenStreamIsDetached()
     {
         $this->tmpnam = tempnam(sys_get_temp_dir(), 'phly');
         file_put_contents($this->tmpnam, 'FOO BAR');
         $resource = fopen($this->tmpnam, 'wb+');
         $stream = new Stream($resource);
         $stream->detach();
-        $this->assertFalse($stream->write('bar'));
+        $this->setExpectedException('RuntimeException', 'No resource');
+        $stream->write('bar');
     }
 
     public function testIsReadableReturnsFalseWhenStreamIsDetached()
@@ -262,14 +264,15 @@ class StreamTest extends TestCase
         $this->assertFalse($stream->isReadable());
     }
 
-    public function testReadReturnsEmptyStringWhenStreamIsDetached()
+    public function testReadRaisesExceptionWhenStreamIsDetached()
     {
         $this->tmpnam = tempnam(sys_get_temp_dir(), 'phly');
         file_put_contents($this->tmpnam, 'FOO BAR');
         $resource = fopen($this->tmpnam, 'r');
         $stream = new Stream($resource);
         $stream->detach();
-        $this->assertEquals('', $stream->read(4096));
+        $this->setExpectedException('RuntimeException', 'No resource');
+        $stream->read(4096);
     }
 
     public function testReadReturnsEmptyStringWhenAtEndOfFile()

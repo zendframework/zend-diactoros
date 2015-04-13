@@ -2,6 +2,7 @@
 namespace Phly\Http;
 
 use InvalidArgumentException;
+use RuntimeException;
 use Psr\Http\Message\StreamInterface;
 
 /**
@@ -48,7 +49,12 @@ class Stream implements StreamInterface
             return '';
         }
 
-        return stream_get_contents($this->resource, -1, 0);
+        try {
+            $this->rewind();
+            return $this->getContents();
+        } catch (RuntimeException $e) {
+            return '';
+        }
     }
 
     /**
@@ -120,10 +126,15 @@ class Stream implements StreamInterface
     public function tell()
     {
         if (! $this->resource) {
-            return false;
+            throw new RuntimeException('No resource available; cannot tell position');
         }
 
-        return ftell($this->resource);
+        $result = ftell($this->resource);
+        if (! is_int($result)) {
+            throw new RuntimeException('Error occurred during tell operation');
+        }
+
+        return $result;
     }
 
     /**
@@ -156,12 +167,21 @@ class Stream implements StreamInterface
      */
     public function seek($offset, $whence = SEEK_SET)
     {
-        if (! $this->resource || ! $this->isSeekable()) {
-            return false;
+        if (! $this->resource) {
+            throw new RuntimeException('No resource available; cannot seek position');
+        }
+        
+        if (! $this->isSeekable()) {
+            throw new RuntimeException('Stream is not seekable');
         }
 
         $result = fseek($this->resource, $offset, $whence);
-        return (0 === $result);
+
+        if (0 !== $result) {
+            throw new RuntimeException('Error seeking within stream');
+        }
+
+        return true;
     }
 
     /**
@@ -169,12 +189,7 @@ class Stream implements StreamInterface
      */
     public function rewind()
     {
-        if (! $this->isSeekable()) {
-            return false;
-        }
-
-        $result = fseek($this->resource, 0);
-        return (0 === $result);
+        return $this->seek(0);
     }
 
     /**
@@ -196,10 +211,15 @@ class Stream implements StreamInterface
     public function write($string)
     {
         if (! $this->resource) {
-            return false;
+            throw new RuntimeException('No resource available; cannot write');
         }
 
-        return fwrite($this->resource, $string);
+        $result = fwrite($this->resource, $string);
+
+        if (false === $result) {
+            throw new RuntimeException('Error writing to stream');
+        }
+        return $result;
     }
 
     /**
@@ -223,14 +243,20 @@ class Stream implements StreamInterface
     public function read($length)
     {
         if (! $this->resource || ! $this->isReadable()) {
-            return false;
+            throw new RuntimeException('No resource available; cannot write');
         }
 
-        if ($this->eof()) {
-            return '';
+        if (! $this->isReadable()) {
+            throw new RuntimeException('Stream is not readable');
         }
 
-        return fread($this->resource, $length);
+        $result = fread($this->resource, $length);
+
+        if (false === $result) {
+            throw new RuntimeException('Error reading stream');
+        }
+
+        return $result;
     }
 
     /**
@@ -242,7 +268,11 @@ class Stream implements StreamInterface
             return '';
         }
 
-        return stream_get_contents($this->resource);
+        $result = stream_get_contents($this->resource);
+        if (false === $result) {
+            throw new RuntimeException('Error reading from stream');
+        }
+        return $result;
     }
 
     /**
