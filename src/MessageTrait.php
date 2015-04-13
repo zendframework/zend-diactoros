@@ -123,12 +123,15 @@ trait MessageTrait
      */
     public function getHeader($header)
     {
-        $value = $this->getHeaderLines($header);
-        if (! $value || empty($value)) {
-            return null;
+        if (! $this->hasHeader($header)) {
+            return [];
         }
 
-        return implode(',', $value);
+        $header = $this->headerNames[strtolower($header)];
+
+        $value = $this->headers[$header];
+        $value = is_array($value) ? $value : [$value];
+        return $value;
     }
 
     /**
@@ -153,15 +156,12 @@ trait MessageTrait
      */
     public function getHeaderLine($header)
     {
-        if (! $this->hasHeader($header)) {
-            return [];
+        $value = $this->getHeader($header);
+        if (empty($value)) {
+            return null;
         }
 
-        $header = $this->headerNames[strtolower($header)];
-
-        $value = $this->headers[$header];
-        $value = is_array($value) ? $value : [$value];
-        return $value;
+        return implode(',', $value);
     }
 
     /**

@@ -62,13 +62,4 @@ class Request implements RequestInterface
         $value = is_array($value) ? $value : [$value];
         return $value;
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getHeaderLine($header)
-    {
-        $value = $this->getHeader($header);
-        return (implode(', ', $value));
-    }
 }
