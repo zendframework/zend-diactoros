@@ -123,6 +123,10 @@ trait RequestTrait
             $target .= '?' . $this->uri->getQuery();
         }
 
+        if (empty($target)) {
+            $target = '/';
+        }
+
         return $target;
     }
 

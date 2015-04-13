@@ -299,54 +299,52 @@ class RequestTest extends TestCase
     {
         $request = new Request('http://example.com');
         $header = $request->getHeader('host');
-        $this->assertEquals('example.com', $header);
+        $this->assertEquals(array('example.com'), $header);
     }
 
     /**
      * @group 39
      */
-    public function testGetHostHeaderReturnsNullIfNoUriPresent()
+    public function testGetHostHeaderReturnsEmptyArrayIfNoUriPresent()
     {
         $request = new Request();
-        $this->assertNull($request->getHeader('host'));
+        $this->assertSame([], $request->getHeader('host'));
     }
 
     /**
      * @group 39
      */
-    public function testGetHostHeaderReturnsNullIfUriDoesNotContainHost()
+    public function testGetHostHeaderReturnsEmptyArrayIfUriDoesNotContainHost()
     {
         $request = new Request(new Uri());
-        $this->assertNull($request->getHeader('host'));
+        $this->assertSame([], $request->getHeader('host'));
     }
 
     /**
      * @group 39
      */
-    public function testGetHostHeaderLinesReturnsUriHostWhenPresent()
+    public function testGetHostHeaderLineReturnsUriHostWhenPresent()
     {
         $request = new Request('http://example.com');
-        $header = $request->getHeaderLines('host');
+        $header = $request->getHeaderLine('host');
         $this->assertContains('example.com', $header);
     }
 
     /**
      * @group 39
      */
-    public function testGetHostHeaderLinesReturnsEmptyArrayIfNoUriPresent()
+    public function testGetHostHeaderLineReturnsNullIfNoUriPresent()
     {
         $request = new Request();
-        $header = $request->getHeaderLines('host');
-        $this->assertSame([], $header);
+        $this->assertNull($request->getHeaderLine('host'));
     }
 
     /**
      * @group 39
      */
-    public function testGetHostHeaderLinesReturnsEmptyArrayIfUriDoesNotContainHost()
+    public function testGetHostHeaderLineReturnsNullIfUriDoesNotContainHost()
     {
         $request = new Request(new Uri());
-        $header = $request->getHeaderLines('host');
-        $this->assertSame([], $header);
+        $this->assertNull($request->getHeaderLine('host'));
     }
 }
