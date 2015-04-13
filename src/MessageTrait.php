@@ -49,13 +49,13 @@ trait MessageTrait
     }
 
     /**
-     * Create a new instance with the specified HTTP protocol version.
+     * Return an instance with the specified HTTP protocol version.
      *
      * The version string MUST contain only the HTTP version number (e.g.,
      * "1.1", "1.0").
      *
      * This method MUST be implemented in such a way as to retain the
-     * immutability of the message, and MUST return a new instance that has the
+     * immutability of the message, and MUST return an instance that has the
      * new protocol version.
      *
      * @param string $version HTTP protocol version
@@ -108,18 +108,18 @@ trait MessageTrait
     }
 
     /**
-     * Retrieve a header by the given case-insensitive name, as a string.
+     * Retrieves a message header value by the given case-insensitive name.
      *
-     * This method returns all of the header values of the given
-     * case-insensitive header name as a string concatenated together using
-     * a comma.
+     * This method returns an array of all the header values of the given
+     * case-insensitive header name.
      *
-     * NOTE: Not all header values may be appropriately represented using
-     * comma concatenation. For such headers, use getHeaderLines() instead
-     * and supply your own delimiter when concatenating.
+     * If the header does not appear in the message, this method MUST return an
+     * empty array.
      *
-     * @param string $header Case-insensitive header name.
-     * @return string|null Null is returned if no value exists.
+     * @param string $name Case-insensitive header field name.
+     * @return string[] An array of string values as provided for the given
+     *    header. If the header does not appear in the message, this method MUST
+     *    return an empty array.
      */
     public function getHeader($header)
     {
@@ -132,12 +132,26 @@ trait MessageTrait
     }
 
     /**
-     * Retrieves a header by the given case-insensitive name as an array of strings.
+     * Retrieves the line for a single header, with the header values as a
+     * comma-separated string.
      *
-     * @param string $header Case-insensitive header name.
-     * @return string[]
+     * This method returns all of the header values of the given
+     * case-insensitive header name as a string concatenated together using
+     * a comma.
+     *
+     * NOTE: Not all header values may be appropriately represented using
+     * comma concatenation. For such headers, use getHeader() instead
+     * and supply your own delimiter when concatenating.
+     *
+     * If the header does not appear in the message, this method MUST return
+     * a null value.
+     *
+     * @param string $name Case-insensitive header field name.
+     * @return string|null A string of values as provided for the given header
+     *    concatenated together using a comma. If the header does not appear in
+     *    the message, this method MUST return a null value.
      */
-    public function getHeaderLines($header)
+    public function getHeaderLine($header)
     {
         if (! $this->hasHeader($header)) {
             return [];
@@ -151,20 +165,20 @@ trait MessageTrait
     }
 
     /**
-     * Create a new instance with the provided header, replacing any existing
+     * Return an instance with the provided header, replacing any existing
      * values of any headers with the same case-insensitive name.
      *
-     * The header name is case-insensitive. The header values MUST be a string
-     * or an array of strings.
+     * While header names are case-insensitive, the casing of the header will
+     * be preserved by this function, and returned from getHeaders().
      *
      * This method MUST be implemented in such a way as to retain the
-     * immutability of the message, and MUST return a new instance that has the
+     * immutability of the message, and MUST return an instance that has the
      * new and/or updated header and value.
      *
-     * @param string $header Header name
+     * @param string $name Case-insensitive header field name.
      * @param string|string[] $value Header value(s).
      * @return self
-     * @throws InvalidArgumentException for invalid header names or values.
+     * @throws \InvalidArgumentException for invalid header names or values.
      */
     public function withHeader($header, $value)
     {
@@ -188,7 +202,7 @@ trait MessageTrait
     }
 
     /**
-     * Creates a new instance, with the specified header appended with the
+     * Return an instance with the specified header appended with the
      * given value.
      *
      * Existing values for the specified header will be maintained. The new
@@ -196,13 +210,13 @@ trait MessageTrait
      * exist previously, it will be added.
      *
      * This method MUST be implemented in such a way as to retain the
-     * immutability of the message, and MUST return a new instance that has the
+     * immutability of the message, and MUST return an instance that has the
      * new header and/or value.
      *
-     * @param string $header Header name to add
+     * @param string $name Case-insensitive header field name to add.
      * @param string|string[] $value Header value(s).
      * @return self
-     * @throws InvalidArgumentException for invalid header names or values.
+     * @throws \InvalidArgumentException for invalid header names or values.
      */
     public function withAddedHeader($header, $value)
     {
@@ -229,15 +243,15 @@ trait MessageTrait
     }
 
     /**
-     * Creates a new instance, without the specified header.
+     * Return an instance without the specified header.
      *
      * Header resolution MUST be done without case-sensitivity.
      *
      * This method MUST be implemented in such a way as to retain the
-     * immutability of the message, and MUST return a new instance that removes
+     * immutability of the message, and MUST return an instance that removes
      * the named header.
      *
-     * @param string $header HTTP header to remove
+     * @param string $name Case-insensitive header field name to remove.
      * @return self
      */
     public function withoutHeader($header)
@@ -265,7 +279,7 @@ trait MessageTrait
     }
 
     /**
-     * Create a new instance, with the specified message body.
+     * Return an instance with the specified message body.
      *
      * The body MUST be a StreamInterface object.
      *
@@ -275,7 +289,7 @@ trait MessageTrait
      *
      * @param StreamInterface $body Body.
      * @return self
-     * @throws InvalidArgumentException When the body is not valid.
+     * @throws \InvalidArgumentException When the body is not valid.
      */
     public function withBody(StreamInterface $body)
     {

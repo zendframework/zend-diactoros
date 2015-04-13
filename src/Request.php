@@ -27,20 +27,7 @@ class Request implements RequestInterface
     }
 
     /**
-     * Extends MessageInterface::getHeaders() to provide request-specific
-     * behavior.
-     *
-     * Retrieves all message headers.
-     *
-     * This method acts exactly like MessageInterface::getHeaders(), with one
-     * behavioral change: if the Host header has not been previously set, the
-     * method MUST attempt to pull the host segment of the composed URI, if
-     * present.
-     *
-     * @see MessageInterface::getHeaders()
-     * @see UriInterface::getHost()
-     * @return array Returns an associative array of the message's headers. Each
-     *     key MUST be a header name, and each value MUST be an array of strings.
+     * {@inheritdoc}
      */
     public function getHeaders()
     {
@@ -55,22 +42,9 @@ class Request implements RequestInterface
     }
 
     /**
-     * Extends MessageInterface::getHeaderLines() to provide request-specific
-     * behavior.
-     *
-     * Retrieves a header by the given case-insensitive name as an array of strings.
-     *
-     * This method acts exactly like MessageInterface::getHeaderLines(), with
-     * one behavioral change: if the Host header is requested, but has
-     * not been previously set, the method MUST attempt to pull the host
-     * segment of the composed URI, if present.
-     *
-     * @see MessageInterface::getHeaderLines()
-     * @see UriInterface::getHost()
-     * @param string $name Case-insensitive header field name.
-     * @return string[]
+     * {@inheritdoc}
      */
-    public function getHeaderLines($header)
+    public function getHeader($header)
     {
         if (! $this->hasHeader($header)) {
             if (strtolower($header) === 'host'
@@ -87,5 +61,14 @@ class Request implements RequestInterface
         $value = $this->headers[$header];
         $value = is_array($value) ? $value : [$value];
         return $value;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getHeaderLine($header)
+    {
+        $value = $this->getHeader($header);
+        return (implode(', ', $value));
     }
 }
