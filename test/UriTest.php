@@ -208,29 +208,29 @@ class UriTest extends TestCase
         $this->assertEquals($url, (string) $uri);
     }
 
-    public function testSettingEmptyPathOnAbsoluteUriIsEquivalentToSettingRootPath()
+    public function testSettingEmptyPathOnAbsoluteUriReturnsAnEmptyPath()
     {
         $uri = new Uri('http://example.com/foo');
         $new = $uri->withPath('');
-        $this->assertEquals('/', $new->getPath());
+        $this->assertEquals('', $new->getPath());
     }
 
-    public function testStringRepresentationOfAbsoluteUriWithNoPathNormalizesPath()
+    public function testStringRepresentationOfAbsoluteUriWithNoPathSetsAnEmptyPath()
     {
         $uri = new Uri('http://example.com');
-        $this->assertEquals('http://example.com/', (string) $uri);
+        $this->assertEquals('http://example.com', (string) $uri);
     }
 
-    public function testEmptyPathOnOriginFormIsEquivalentToRootPath()
+    public function testEmptyPathOnOriginFormRemainsAnEmptyPath()
     {
         $uri = new Uri('?foo=bar');
-        $this->assertEquals('/', $uri->getPath());
+        $this->assertEquals('', $uri->getPath());
     }
 
-    public function testStringRepresentationOfOriginFormWithNoPathNormalizesPath()
+    public function testStringRepresentationOfOriginFormWithNoPathRetainsEmptyPath()
     {
         $uri = new Uri('?foo=bar');
-        $this->assertEquals('/?foo=bar', (string) $uri);
+        $this->assertEquals('?foo=bar', (string) $uri);
     }
 
     public function invalidConstructorUris()
@@ -292,11 +292,18 @@ class UriTest extends TestCase
         $uri->withScheme($scheme);
     }
 
-    public function testPathIsPrefixedWithSlashIfSetWithoutOne()
+    public function testPathIsNotPrefixedWithSlashIfSetWithoutOne()
     {
         $uri = new Uri('http://example.com');
         $new = $uri->withPath('foo/bar');
-        $this->assertEquals('/foo/bar', $new->getPath());
+        $this->assertEquals('foo/bar', $new->getPath());
+    }
+
+    public function testPathNotSlashPrefixedIsEmittedWithSlashDelimiterWhenUriIsCastToString()
+    {
+        $uri = new Uri('http://example.com');
+        $new = $uri->withPath('foo/bar');
+        $this->assertEquals('http://example.com/foo/bar', $new->__toString());
     }
 
     public function testStripsQueryPrefixIfPresent()
