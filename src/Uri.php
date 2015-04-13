@@ -80,13 +80,6 @@ class Uri implements UriInterface
     private $uriString;
 
     /**
-     * Function to urlencode the value returned by a regexp.
-     * 
-     * @var callable
-     */
-    private $urlEncode;
-
-    /**
      * @param string $uri
      * @throws InvalidArgumentException on non-string $uri argument
      */
@@ -98,10 +91,6 @@ class Uri implements UriInterface
                 (is_object($uri) ? get_class($uri) : gettype($uri))
             ));
         }
-
-        $this->urlEncode = function (array $matches) {
-            return rawurlencode($matches[0]);
-        };
 
         if (! empty($uri)) {
             $this->parseUri($uri);
@@ -680,7 +669,7 @@ class Uri implements UriInterface
 
         return preg_replace_callback(
             '/(?:[^' . self::CHAR_UNRESERVED . ':@&=\+\$,\/;%]+|%(?![A-Fa-f0-9]{2}))/',
-            $this->urlEncode,
+            [$this, 'urlEncodeChar'],
             $path
         );
     }
@@ -760,8 +749,19 @@ class Uri implements UriInterface
     {
         return preg_replace_callback(
             '/(?:[^' . self::CHAR_UNRESERVED . self::CHAR_SUB_DELIMS . '%:@\/\?]+|%(?![A-Fa-f0-9]{2}))/',
-            $this->urlEncode,
+            [$this, 'urlEncodeChar'],
             $value
         );
+    }
+
+    /**
+     * URL encode a character returned by a regex.
+     *
+     * @param array $matches
+     * @return string
+     */
+    private function urlEncodeChar(array $matches)
+    {
+        return rawurlencode($matches[0]);
     }
 }

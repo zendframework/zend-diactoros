@@ -24,6 +24,8 @@ All notable changes to this project will be documented in this file, in reverse 
 - [#55](https://github.com/phly/http/pull/55) Updates `parseUri()` to validate
   the scheme, ensuring the `Uri` instance cannot be instantiated with an
   invalid scheme.
+- [#54](https://github.com/phly/http/pull/54) Internal restructuring to allow
+  serialization of a `Uri` instance.
 
 ## 0.11.2 - 2015-03-30
 
