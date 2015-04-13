@@ -347,4 +347,39 @@ class RequestTest extends TestCase
         $request = new Request(new Uri());
         $this->assertNull($request->getHeaderLine('host'));
     }
+
+    public function testPassingPreserveHostFlagWhenUpdatingUriDoesNotUpdateHostHeader()
+    {
+        $request = (new Request())
+            ->withAddedHeader('Host', 'example.com');
+
+        $uri = (new Uri())->withHost('www.example.com');
+        $new = $request->withUri($uri, true);
+
+        $this->assertEquals('example.com', $new->getHeaderLine('Host'));
+    }
+
+    public function testNotPassingPreserveHostFlagWhenUpdatingUriWithoutHostDoesNotUpdateHostHeader()
+    {
+        $request = (new Request())
+            ->withAddedHeader('Host', 'example.com');
+
+        $uri = new Uri();
+        $new = $request->withUri($uri);
+
+        $this->assertEquals('example.com', $new->getHeaderLine('Host'));
+    }
+
+    public function testHostHeaderUpdatesToUriHostAndPortWhenPreserveHostDisabledAndNonStandardPort()
+    {
+        $request = (new Request())
+            ->withAddedHeader('Host', 'example.com');
+
+        $uri = (new Uri())
+            ->withHost('www.example.com')
+            ->withPort(10081);
+        $new = $request->withUri($uri);
+
+        $this->assertEquals('www.example.com:10081', $new->getHeaderLine('Host'));
+    }
 }

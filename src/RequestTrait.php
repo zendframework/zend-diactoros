@@ -237,6 +237,23 @@ trait RequestTrait
     {
         $new = clone $this;
         $new->uri = $uri;
+
+        if ($preserveHost) {
+            return $new;
+        }
+
+        if (! $uri->getHost()) {
+            return $new;
+        }
+
+        $host = $uri->getHost();
+        if ($uri->getPort()) {
+            $host .= ':' . $uri->getPort();
+        }
+
+        $new->headerNames['host'] = 'Host';
+        $new->headers['Host'] = array($host);
+
         return $new;
     }
 
