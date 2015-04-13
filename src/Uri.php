@@ -669,7 +669,7 @@ class Uri implements UriInterface
 
         return preg_replace_callback(
             '/(?:[^' . self::CHAR_UNRESERVED . ':@&=\+\$,\/;%]+|%(?![A-Fa-f0-9]{2}))/',
-            [$this, 'encodeUrl'],
+            [$this, 'urlEncodeChar'],
             $path
         );
     }
@@ -749,17 +749,18 @@ class Uri implements UriInterface
     {
         return preg_replace_callback(
             '/(?:[^' . self::CHAR_UNRESERVED . self::CHAR_SUB_DELIMS . '%:@\/\?]+|%(?![A-Fa-f0-9]{2}))/',
-            [$this, 'encodeUrl'],
+            [$this, 'urlEncodeChar'],
             $value
         );
     }
 
     /**
-     * Function to urlencode the value returned by a regexp.
+     * URL encode a character returned by a regex.
+     *
      * @param array $matches
      * @return string
      */
-    private function encodeUrl(array $matches)
+    private function urlEncodeChar(array $matches)
     {
         return rawurlencode($matches[0]);
     }
