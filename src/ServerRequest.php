@@ -4,6 +4,7 @@ namespace Phly\Http;
 use InvalidArgumentException;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
+use Psr\Http\Message\UploadedFileInterface;
 
 /**
  * Server-side HTTP request
@@ -36,11 +37,6 @@ class ServerRequest implements ServerRequestInterface
     /**
      * @var array
      */
-    private $fileParams;
-
-    /**
-     * @var array
-     */
     private $parsedBody;
 
     /**
@@ -54,8 +50,13 @@ class ServerRequest implements ServerRequestInterface
     private $serverParams;
 
     /**
+     * @var array
+     */
+    private $uploadedFiles;
+
+    /**
      * @param array $serverParams Server parameters, typically from $_SERVER
-     * @param array $fileParams Upload file information; should be in PHP's $_FILES format
+     * @param array $uploadedFiles Upload file information, a tree of UploadedFiles
      * @param null|string $uri URI for the request, if any.
      * @param null|string $method HTTP method for the request, if any.
      * @param string|resource|StreamInterface $body Message body, if any.
@@ -64,16 +65,18 @@ class ServerRequest implements ServerRequestInterface
      */
     public function __construct(
         array $serverParams = [],
-        array $fileParams = [],
+        array $uploadedFiles = [],
         $uri = null,
         $method = null,
         $body = 'php://input',
         array $headers = []
     ) {
+        $this->validateUploadedFiles($uploadedFiles);
+
         $body = $this->getStream($body);
         $this->initialize($uri, $method, $body, $headers);
-        $this->serverParams = $serverParams;
-        $this->fileParams   = $fileParams;
+        $this->serverParams  = $serverParams;
+        $this->uploadedFiles = $uploadedFiles;
     }
 
     /**
@@ -87,9 +90,20 @@ class ServerRequest implements ServerRequestInterface
     /**
      * {@inheritdoc}
      */
-    public function getFileParams()
+    public function getUploadedFiles()
     {
-        return $this->fileParams;
+        return $this->uploadedFiles;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function withUploadedFiles(array $uploadedFiles)
+    {
+        $this->validateUploadedFiles($uploadedFiles);
+        $new = clone $this;
+        $new->uploadedFiles = $uploadedFiles;
+        return $new;
     }
 
     /**
@@ -251,5 +265,25 @@ class ServerRequest implements ServerRequestInterface
         }
 
         return $stream;
+    }
+
+    /**
+     * Recursively validate the structure in an uploaded files array.
+     *
+     * @param array $uploadedFiles
+     * @throws InvalidArgumentException if any leaf is not an UploadedFileInterface instance.
+     */
+    private function validateUploadedFiles(array $uploadedFiles)
+    {
+        foreach ($uploadedFiles as $file) {
+            if (is_array($file)) {
+                $this->validateUploadedFiles($file);
+                continue;
+            }
+
+            if (! $file instanceof UploadedFileInterface) {
+                throw new InvalidArgumentException('Invalid leaf in uploaded files structure');
+            }
+        }
     }
 }

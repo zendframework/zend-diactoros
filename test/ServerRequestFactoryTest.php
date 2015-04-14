@@ -3,6 +3,7 @@ namespace PhlyTest\Http;
 
 use Phly\Http\ServerRequest;
 use Phly\Http\ServerRequestFactory;
+use Phly\Http\UploadedFile;
 use Phly\Http\Uri;
 use PHPUnit_Framework_TestCase as TestCase;
 use ReflectionProperty;
@@ -345,14 +346,23 @@ class ServerRequestFactoryTest extends TestCase
         $cookies['cookies'] = true;
         $query['query']     = true;
         $body['body']       = true;
-        $files['files']     = true;
+        $files              = [ 'files' => [
+            'tmp_name' => 'php://temp',
+            'size'     => 0,
+            'error'    => 0,
+            'name'     => 'foo.bar',
+            'type'     => 'text/plain',
+        ]];
+        $expectedFiles = [
+            'files' => new UploadedFile('php://temp', 0, 0, 'foo.bar', 'text/plain')
+        ];
 
         $request = ServerRequestFactory::fromGlobals($server, $query, $body, $cookies, $files);
         $this->assertInstanceOf('Phly\Http\ServerRequest', $request);
         $this->assertEquals($cookies, $request->getCookieParams());
         $this->assertEquals($query, $request->getQueryParams());
         $this->assertEquals($body, $request->getParsedBody());
-        $this->assertEquals($files, $request->getFileParams());
+        $this->assertEquals($expectedFiles, $request->getUploadedFiles());
         $this->assertEmpty($request->getAttributes());
     }
 
