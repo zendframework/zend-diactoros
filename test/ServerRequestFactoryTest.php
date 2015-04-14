@@ -171,7 +171,7 @@ class ServerRequestFactoryTest extends TestCase
     public function testMarshalHostAndPortReturnsEmptyValuesIfNoHostHeaderAndNoServerName()
     {
         $request = new ServerRequest();
-        $request = $request->withUri(new Uri('http://example.com/'));
+        $request = $request->withUri(new Uri());
 
         $accumulator = (object) ['host' => '', 'port' => null];
         ServerRequestFactory::marshalHostAndPort($accumulator, [], $request);
@@ -196,7 +196,7 @@ class ServerRequestFactoryTest extends TestCase
     public function testMarshalHostAndPortReturnsServerPortForPortWhenPresentWithServerName()
     {
         $request = new ServerRequest();
-        $request = $request->withUri(new Uri('http://example.com/'));
+        $request = $request->withUri(new Uri());
 
         $server  = [
             'SERVER_NAME' => 'example.com',
@@ -225,7 +225,7 @@ class ServerRequestFactoryTest extends TestCase
     public function testMarshalHostAndPortReturnsServerAddrForHostIfPresentAndHostIsIpv6Address()
     {
         $request = new ServerRequest();
-        $request = $request->withUri(new Uri('http://example.com/'));
+        $request = $request->withUri(new Uri());
 
         $server  = [
             'SERVER_ADDR' => 'FE80::0202:B3FF:FE1E:8329',
@@ -241,7 +241,7 @@ class ServerRequestFactoryTest extends TestCase
     public function testMarshalHostAndPortWillDetectPortInIpv6StyleHost()
     {
         $request = new ServerRequest();
-        $request = $request->withUri(new Uri('http://example.com/'));
+        $request = $request->withUri(new Uri());
 
         $server  = [
             'SERVER_ADDR' => 'FE80::0202:B3FF:FE1E:8329',
