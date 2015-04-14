@@ -32,7 +32,13 @@ class Stream implements StreamInterface
         if (is_resource($stream)) {
             $this->resource = $stream;
         } elseif (is_string($stream)) {
+            set_error_handler(function ($errno, $errstr) {
+                throw new InvalidArgumentException(
+                    'Invalid file provided for stream; must be a valid path with valid permissions'
+                );
+            }, E_WARNING);
             $this->resource = fopen($stream, $mode);
+            restore_error_handler();
         } else {
             throw new InvalidArgumentException(
                 'Invalid stream provided; must be a string stream identifier or resource'
