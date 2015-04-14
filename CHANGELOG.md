@@ -2,6 +2,74 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release..
 
+## 0.12.0 - 2015-04-14
+
+This release is BACKWARDS IN-COMPATIBLE with previous releases. This is in large
+part due to massive changes between psr/http-message 0.9 and 0.10, which
+include:
+
+- Renaming `Psr\Http\Message\StreamableInterface` to
+  `Psr\Http\Message\StreamInterface`. This will not affect most consumers, but
+  it *does* change the signature of the `getBody()` and `withBody()` methods of
+  both requests and responses.
+- `Psr\Http\Message\UriInterface` now allows empty paths and relative paths,
+  which changes the behavior of `Uri::getPath()`.
+- `Psr\Http\Message\MessageInterface` renamed one method and changed the
+  behavior of another method with regard to headers:
+  - `getHeader($name)` now returns an array of values.
+  - `getHeaderLines($name)` was renamed to `getHeaderLine($name)`, and now
+    returns a string or `null`.
+- `Psr\Http\Message\StreamInterface` now uses exceptions for reporting error
+  conditions instead of multiple return values.
+- `Psr\Http\Message\RequestInterface::withUri()` defines an additional, optional
+  parameter, `$preserveHost`; when `true`, the message MUST NOT change the value
+  of the `Host` header; when `false`, it MUST change the value to correspond
+  with the value in the URI.
+- `Psr\Http\Message\ServerRequestInterface` renames `getFileUploads()` to
+  `getUploadedFiles()`, and adds a mutator method, `withFileUploads()`. The
+  structure of this property MUST be a tree with each leaf an instance of a new
+  interface, `Psr\Http\Message\UploadedFileInterface`.
+
+Due to the above changes, a number of changes were made to phly/http.
+
+### Added
+
+- `Phly\Http\UploadedFile`, which is an implementation of
+  `Psr\Http\Message\UploadedFileInterface`, and provides metadata around an
+  uploaded file, as well as behavior for retrieving a
+  `Psr\Http\Http\StreamInterface`  representing the upload and for moving the
+  file to its target destination in an SAPI-agnostic way.
+- `Phly\Http\ServerRequestFactory::normalizeFiles()`, which will normalize an
+  array of files to a tree of `Phly\Http\UploadedFile` instances, including
+  normalization of upload file arrays.
+- `Phly\Http\ServerRequest::getUploadedFiles()`, for returning the normalized
+  uploaded files tree.
+- `Phly\Http\ServerRequest::withUploadedFiles()`, for returning a new instance
+  containing the uploaded files.
+- `Phly\Http\Uri::getHeaderLine($name)`, which returns the comma-concatenated
+  values for the given header.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- `Phly\Http\ServerRequest::getFileParams()`, which was replaced with the
+  `getUploadedFiles()` method.
+- `Phly\Http\Uri::getHeaderLines()`, which was renamed to `getHeaderLine()`,
+  with different behavior.
+
+### Fixed
+
+- `Phly\Http\Uri::withPath()` now defines and accepts the `$preserveHost`
+  argument, as outlined in this version's overview summary.
+- `Phly\Http\Uri::getHeader()` now returns an array of values associated with
+  the header; an empty array is returned if the header is not defined.
+- `Phly\Http\Stream` now raises `InvalidArgumentException` and
+  `RuntimeException` when unable to perform work, instead of overloading the
+  return value.
+
 ## 0.11.3 - 2015-04-13
 
 ### Added

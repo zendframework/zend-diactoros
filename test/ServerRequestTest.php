@@ -2,6 +2,7 @@
 namespace PhlyTest\Http;
 
 use Phly\Http\ServerRequest;
+use Phly\Http\UploadedFile;
 use Phly\Http\Uri;
 use PHPUnit_Framework_TestCase as TestCase;
 use ReflectionProperty;
@@ -44,9 +45,9 @@ class ServerRequestTest extends TestCase
         $this->assertEquals($value, $request->getCookieParams());
     }
 
-    public function testFileParamsAreEmptyByDefault()
+    public function testUploadedFilesAreEmptyByDefault()
     {
-        $this->assertEmpty($this->request->getFileParams());
+        $this->assertEmpty($this->request->getUploadedFiles());
     }
 
     public function testParsedBodyIsEmptyByDefault()
@@ -90,13 +91,16 @@ class ServerRequestTest extends TestCase
 
     public function testUsesProvidedConstructorArguments()
     {
-        $server = $files = [
+        $server = [
             'foo' => 'bar',
             'baz' => 'bat',
         ];
 
         $server['server'] = true;
-        $files['files']   = true;
+
+        $files = [
+            'files' => new UploadedFile('php://temp', 0, 0),
+        ];
 
         $uri = new Uri('http://example.com');
         $method = 'POST';
@@ -114,7 +118,7 @@ class ServerRequestTest extends TestCase
         );
 
         $this->assertEquals($server, $request->getServerParams());
-        $this->assertEquals($files, $request->getFileParams());
+        $this->assertEquals($files, $request->getUploadedFiles());
 
         $this->assertSame($uri, $request->getUri());
         $this->assertEquals($method, $request->getMethod());

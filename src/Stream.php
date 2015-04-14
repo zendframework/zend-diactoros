@@ -2,12 +2,13 @@
 namespace Phly\Http;
 
 use InvalidArgumentException;
-use Psr\Http\Message\StreamableInterface;
+use RuntimeException;
+use Psr\Http\Message\StreamInterface;
 
 /**
  * Implementation of PSR HTTP streams
  */
-class Stream implements StreamableInterface
+class Stream implements StreamInterface
 {
     /**
      * @var resource
@@ -31,7 +32,13 @@ class Stream implements StreamableInterface
         if (is_resource($stream)) {
             $this->resource = $stream;
         } elseif (is_string($stream)) {
+            set_error_handler(function ($errno, $errstr) {
+                throw new InvalidArgumentException(
+                    'Invalid file provided for stream; must be a valid path with valid permissions'
+                );
+            }, E_WARNING);
             $this->resource = fopen($stream, $mode);
+            restore_error_handler();
         } else {
             throw new InvalidArgumentException(
                 'Invalid stream provided; must be a string stream identifier or resource'
@@ -40,14 +47,7 @@ class Stream implements StreamableInterface
     }
 
     /**
-     * Reads all data from the stream into a string, from the beginning to end.
-     *
-     * This method MUST attempt to seek to the beginning of the stream before
-     * reading data and read the stream until the end is reached.
-     *
-     * Warning: This could attempt to load a large amount of data into memory.
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function __toString()
     {
@@ -55,13 +55,16 @@ class Stream implements StreamableInterface
             return '';
         }
 
-        return stream_get_contents($this->resource, -1, 0);
+        try {
+            $this->rewind();
+            return $this->getContents();
+        } catch (RuntimeException $e) {
+            return '';
+        }
     }
 
     /**
-     * Closes the stream and any underlying resources.
-     *
-     * @return void
+     * {@inheritdoc}
      */
     public function close()
     {
@@ -74,11 +77,7 @@ class Stream implements StreamableInterface
     }
 
     /**
-     * Separates any underlying resources from the stream.
-     *
-     * After the stream has been detached, the stream is in an unusable state.
-     *
-     * @return resource|null
+     * {@inheritdoc}
      */
     public function detach()
     {
@@ -88,14 +87,7 @@ class Stream implements StreamableInterface
     }
 
     /**
-     * Attach a new resource to the instance
-     * 
-     * @param resource|string $resource Resource to attach, or a string 
-     *                                  representing the resource to attach.
-     * @param string $mode If a non-resource is provided, the mode to use
-     *                     when creating the resource.
-     * @throws InvalidArgumentException If a non-resource or non-string is provided,
-     *                                  raises an exception.
+     * {@inheritdoc}
      */
     public function attach($resource, $mode = 'r')
     {
@@ -122,9 +114,7 @@ class Stream implements StreamableInterface
     }
 
     /**
-     * Get the size of the stream if known
-     *
-     * @return int|null Returns the size in bytes if known, or null if unknown
+     * {@inheritdoc}
      */
     public function getSize()
     {
@@ -137,23 +127,24 @@ class Stream implements StreamableInterface
     }
 
     /**
-     * Returns the current position of the file read/write pointer
-     *
-     * @return int|bool Position of the file pointer or false on error
+     * {@inheritdoc}
      */
     public function tell()
     {
         if (! $this->resource) {
-            return false;
+            throw new RuntimeException('No resource available; cannot tell position');
         }
 
-        return ftell($this->resource);
+        $result = ftell($this->resource);
+        if (! is_int($result)) {
+            throw new RuntimeException('Error occurred during tell operation');
+        }
+
+        return $result;
     }
 
     /**
-     * Returns true if the stream is at the end of the stream.
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function eof()
     {
@@ -165,9 +156,7 @@ class Stream implements StreamableInterface
     }
 
     /**
-     * Returns whether or not the stream is seekable
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function isSeekable()
     {
@@ -180,48 +169,37 @@ class Stream implements StreamableInterface
     }
 
     /**
-     * Seek to a position in the stream
-     *
-     * @param int $offset Stream offset
-     * @param int $whence Specifies how the cursor position will be calculated
-     *                    based on the seek offset. Valid values are identical
-     *                    to the built-in PHP $whence values for `fseek()`.
-     *                    SEEK_SET: Set position equal to offset bytes
-     *                    SEEK_CUR: Set position to current location plus offset
-     *                    SEEK_END: Set position to end-of-stream plus offset
-     *
-     * @return bool Returns TRUE on success or FALSE on failure
-     * @link   http://www.php.net/manual/en/function.fseek.php
+     * {@inheritdoc}
      */
     public function seek($offset, $whence = SEEK_SET)
     {
-        if (! $this->resource || ! $this->isSeekable()) {
-            return false;
+        if (! $this->resource) {
+            throw new RuntimeException('No resource available; cannot seek position');
+        }
+        
+        if (! $this->isSeekable()) {
+            throw new RuntimeException('Stream is not seekable');
         }
 
         $result = fseek($this->resource, $offset, $whence);
-        return (0 === $result);
+
+        if (0 !== $result) {
+            throw new RuntimeException('Error seeking within stream');
+        }
+
+        return true;
     }
 
     /**
-     * Rewind the stream
-     * 
-     * @return bool Returns TRUE on success, FALSE on failure
+     * {@inheritdoc}
      */
     public function rewind()
     {
-        if (! $this->isSeekable()) {
-            return false;
-        }
-
-        $result = fseek($this->resource, 0);
-        return (0 === $result);
+        return $this->seek(0);
     }
 
     /**
-     * Returns whether or not the stream is writable
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function isWritable()
     {
@@ -234,26 +212,24 @@ class Stream implements StreamableInterface
     }
 
     /**
-     * Write data to the stream.
-     *
-     * @param string $string The string that is to be written.
-     *
-     * @return int|bool Returns the number of bytes written to the stream on
-     *                  success or FALSE on failure.
+     * {@inheritdoc}
      */
     public function write($string)
     {
         if (! $this->resource) {
-            return false;
+            throw new RuntimeException('No resource available; cannot write');
         }
 
-        return fwrite($this->resource, $string);
+        $result = fwrite($this->resource, $string);
+
+        if (false === $result) {
+            throw new RuntimeException('Error writing to stream');
+        }
+        return $result;
     }
 
     /**
-     * Returns whether or not the stream is readable
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function isReadable()
     {
@@ -268,33 +244,29 @@ class Stream implements StreamableInterface
     }
 
     /**
-     * Read data from the stream
-     *
-     * @param int $length Read up to $length bytes from the object and return
-     *                    them. Fewer than $length bytes may be returned if
-     *                    underlying stream call returns fewer bytes.
-     *
-     * @return string|false Returns the data read from the stream; in the event
-     *                      of an error or inability to read, can return boolean
-     *                      false.
+     * {@inheritdoc}
      */
     public function read($length)
     {
         if (! $this->resource || ! $this->isReadable()) {
-            return false;
+            throw new RuntimeException('No resource available; cannot write');
         }
 
-        if ($this->eof()) {
-            return '';
+        if (! $this->isReadable()) {
+            throw new RuntimeException('Stream is not readable');
         }
 
-        return fread($this->resource, $length);
+        $result = fread($this->resource, $length);
+
+        if (false === $result) {
+            throw new RuntimeException('Error reading stream');
+        }
+
+        return $result;
     }
 
     /**
-     * Returns the remaining contents in a string, up to maxlength bytes.
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getContents()
     {
@@ -302,14 +274,15 @@ class Stream implements StreamableInterface
             return '';
         }
 
-        return stream_get_contents($this->resource);
+        $result = stream_get_contents($this->resource);
+        if (false === $result) {
+            throw new RuntimeException('Error reading from stream');
+        }
+        return $result;
     }
 
     /**
-     * Retrieve metadata from the underlying stream.
-     * 
-     * @see http://php.net/stream_get_meta_data for a description of the expected output.
-     * @return array
+     * {@inheritdoc}
      */
     public function getMetadata($key = null)
     {

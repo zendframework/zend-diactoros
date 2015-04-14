@@ -1,8 +1,10 @@
 <?php
 namespace Phly\Http;
 
+use InvalidArgumentException;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\MessageInterface;
+use Psr\Http\Message\UploadedFileInterface;
 use stdClass;
 
 /**
@@ -38,6 +40,7 @@ abstract class ServerRequestFactory
      * @param array $cookies $_COOKIE superglobal
      * @param array $files $_FILES superglobal
      * @return ServerRequest
+     * @throws InvalidArgumentException for invalid file values
      */
     public static function fromGlobals(
         array $server = null,
@@ -46,14 +49,14 @@ abstract class ServerRequestFactory
         array $cookies = null,
         array $files = null
     ) {
-        $server  = self::normalizeServer($server ?: $_SERVER);
-        $files   = $files   ?: $_FILES;
-        $headers = self::marshalHeaders($server);
+        $server  = static::normalizeServer($server ?: $_SERVER);
+        $files   = static::normalizeFiles($files ?: $_FILES);
+        $headers = static::marshalHeaders($server);
         $request = new ServerRequest(
             $server,
             $files,
-            self::marshalUriFromServer($server, $headers),
-            self::get('REQUEST_METHOD', $server, 'GET'),
+            static::marshalUriFromServer($server, $headers),
+            static::get('REQUEST_METHOD', $server, 'GET'),
             'php://input',
             $headers
         );
@@ -138,6 +141,40 @@ abstract class ServerRequestFactory
         }
 
         return $server;
+    }
+
+    /**
+     * Normalize uploaded files
+     *
+     * Transforms each value into an UploadedFileInterface instance, and ensures
+     * that nested arrays are normalized.
+     *
+     * @param array $files
+     * @return array
+     * @throws InvalidArgumentException for unrecognized values
+     */
+    public static function normalizeFiles(array $files)
+    {
+        $normalized = [];
+        foreach ($files as $key => $value) {
+            if ($value instanceof UploadedFileInterface) {
+                $normalized[$key] = $value;
+                continue;
+            }
+
+            if (is_array($value) && isset($value['tmp_name'])) {
+                $normalized[$key] = self::createUploadedFileFromSpec($value);
+                continue;
+            }
+
+            if (is_array($value)) {
+                $normalized[$key] = self::normalizeFiles($value);
+                continue;
+            }
+
+            throw new InvalidArgumentException('Invalid value in files specification');
+        }
+        return $normalized;
     }
 
     /**
@@ -384,5 +421,54 @@ abstract class ServerRequestFactory
             // Unset the port so the default port can be used
             $accumulator->port = null;
         }
+    }
+
+    /**
+     * Create and return an UploadedFile instance from a $_FILES specification.
+     *
+     * If the specification represents an array of values, this method will
+     * delegate to normalizeNestedFileSpec() and return that return value.
+     *
+     * @param array $value $_FILES struct
+     * @return array|UploadedFileInterface
+     */
+    private static function createUploadedFileFromSpec(array $value)
+    {
+        if (is_array($value['tmp_name'])) {
+            return self::normalizeNestedFileSpec($value);
+        }
+
+        return new UploadedFile(
+            $value['tmp_name'],
+            $value['size'],
+            $value['error'],
+            $value['name'],
+            $value['type']
+        );
+    }
+
+    /**
+     * Normalize an array of file specifications.
+     *
+     * Loops through all nested files and returns a normalized array of
+     * UploadedFileInterface instances.
+     * 
+     * @param array $files 
+     * @return UploadedFileInterface[]
+     */
+    private static function normalizeNestedFileSpec(array $files)
+    {
+        $files = [];
+        foreach (array_keys($files['tmp_name']) as $key) {
+            $spec = [
+                'tmp_name' => $files['tmp_name'][$key],
+                'size'     => $files['size'][$key],
+                'error'    => $files['error'][$key],
+                'name'     => $files['name'][$key],
+                'type'     => $files['type'][$key],
+            ];
+            $files[$key] = self::createUploadedFileFromSpec($spec);
+        }
+        return $files;
     }
 }

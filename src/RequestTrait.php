@@ -3,7 +3,7 @@ namespace Phly\Http;
 
 use InvalidArgumentException;
 use RuntimeException;
-use Psr\Http\Message\StreamableInterface;
+use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
 
 /**
@@ -59,7 +59,7 @@ trait RequestTrait
      *
      * @param null|string $uri URI for the request, if any.
      * @param null|string $method HTTP method for the request, if any.
-     * @param string|resource|StreamableInterface $body Message body, if any.
+     * @param string|resource|StreamInterface $body Message body, if any.
      * @param array $headers Headers for the message, if any.
      * @throws InvalidArgumentException for any invalid value.
      */
@@ -73,11 +73,11 @@ trait RequestTrait
 
         $this->validateMethod($method);
 
-        if (! is_string($body) && ! is_resource($body) && ! $body instanceof StreamableInterface) {
+        if (! is_string($body) && ! is_resource($body) && ! $body instanceof StreamInterface) {
             throw new InvalidArgumentException(
                 'Body must be a string stream resource identifier, '
                 . 'an actual stream resource, '
-                . 'or a Psr\Http\Message\StreamableInterface implementation'
+                . 'or a Psr\Http\Message\StreamInterface implementation'
             );
         }
 
@@ -87,7 +87,7 @@ trait RequestTrait
 
         $this->method = $method;
         $this->uri    = $uri;
-        $this->stream = ($body instanceof StreamableInterface) ? $body : new Stream($body, 'r');
+        $this->stream = ($body instanceof StreamInterface) ? $body : new Stream($body, 'r');
 
         list($this->headerNames, $this->headers) = $this->filterHeaders($headers);
     }
@@ -121,6 +121,10 @@ trait RequestTrait
         $target = $this->uri->getPath();
         if ($this->uri->getQuery()) {
             $target .= '?' . $this->uri->getQuery();
+        }
+
+        if (empty($target)) {
+            $target = '/';
         }
 
         return $target;
@@ -168,14 +172,14 @@ trait RequestTrait
     }
 
     /**
-     * Create a new instance with the provided HTTP method.
+     * Return an instance with the provided HTTP method.
      *
      * While HTTP method names are typically all uppercase characters, HTTP
      * method names are case-sensitive and thus implementations SHOULD NOT
      * modify the given string.
      *
      * This method MUST be implemented in such a way as to retain the
-     * immutability of the message, and MUST return a new instance that has the
+     * immutability of the message, and MUST return an instance that has the
      * changed request method.
      *
      * @param string $method Case-insensitive method.
@@ -205,20 +209,51 @@ trait RequestTrait
     }
 
     /**
-     * Create a new instance with the provided URI.
+     * Returns an instance with the provided URI.
+     *
+     * This method will update the Host header of the returned request by
+     * default if the URI contains a host component. If the URI does not
+     * contain a host component, any pre-existing Host header will be carried
+     * over to the returned request.
+     *
+     * You can opt-in to preserving the original state of the Host header by
+     * setting `$preserveHost` to `true`. When `$preserveHost` is set to
+     * `true`, the returned request will not update the Host header of the
+     * returned message -- even if the message contains no Host header. This
+     * means that a call to `getHeader('Host')` on the original request MUST
+     * equal the return value of a call to `getHeader('Host')` on the returned
+     * request.
      *
      * This method MUST be implemented in such a way as to retain the
-     * immutability of the message, and MUST return a new instance that has the
+     * immutability of the message, and MUST return an instance that has the
      * new UriInterface instance.
      *
      * @link http://tools.ietf.org/html/rfc3986#section-4.3
      * @param UriInterface $uri New request URI to use.
+     * @param bool $preserveHost Preserve the original state of the Host header.
      * @return self
      */
-    public function withUri(UriInterface $uri)
+    public function withUri(UriInterface $uri, $preserveHost = false)
     {
         $new = clone $this;
         $new->uri = $uri;
+
+        if ($preserveHost) {
+            return $new;
+        }
+
+        if (! $uri->getHost()) {
+            return $new;
+        }
+
+        $host = $uri->getHost();
+        if ($uri->getPort()) {
+            $host .= ':' . $uri->getPort();
+        }
+
+        $new->headerNames['host'] = 'Host';
+        $new->headers['Host'] = array($host);
+
         return $new;
     }
 

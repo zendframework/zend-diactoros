@@ -3,7 +3,7 @@ namespace Phly\Http;
 
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\StreamableInterface;
+use Psr\Http\Message\StreamInterface;
 
 /**
  * HTTP response encapsulation.
@@ -97,18 +97,18 @@ class Response implements ResponseInterface
     private $statusCode = 200;
 
     /**
-     * @param string|resource|StreamableInterface $stream Stream identifier and/or actual stream resource
+     * @param string|resource|StreamInterface $stream Stream identifier and/or actual stream resource
      * @param int $status Status code for the response, if any.
      * @param array $headers Headers for the response, if any.
      * @throws InvalidArgumentException on any invalid element.
      */
     public function __construct($body = 'php://memory', $status = 200, array $headers = [])
     {
-        if (! is_string($body) && ! is_resource($body) && ! $body instanceof StreamableInterface) {
+        if (! is_string($body) && ! is_resource($body) && ! $body instanceof StreamInterface) {
             throw new InvalidArgumentException(
                 'Stream must be a string stream resource identifier, '
                 . 'an actual stream resource, '
-                . 'or a Psr\Http\Message\StreamableInterface implementation'
+                . 'or a Psr\Http\Message\StreamInterface implementation'
             );
         }
 
@@ -116,19 +116,14 @@ class Response implements ResponseInterface
             $this->validateStatus($status);
         }
 
-        $this->stream     = ($body instanceof StreamableInterface) ? $body : new Stream($body, 'wb+');
+        $this->stream     = ($body instanceof StreamInterface) ? $body : new Stream($body, 'wb+');
         $this->statusCode = $status ? (int) $status : 200;
 
         list($this->headerNames, $this->headers) = $this->filterHeaders($headers);
     }
 
     /**
-     * Gets the response Status-Code.
-     *
-     * The Status-Code is a 3-digit integer result code of the server's attempt
-     * to understand and satisfy the request.
-     *
-     * @return integer Status code.
+     * {@inheritdoc}
      */
     public function getStatusCode()
     {
@@ -136,17 +131,7 @@ class Response implements ResponseInterface
     }
 
     /**
-     * Gets the response Reason-Phrase, a short textual description of the Status-Code.
-     *
-     * Because a Reason-Phrase is not a required element in a response
-     * Status-Line, the Reason-Phrase value MAY be null. Implementations MAY
-     * choose to return the default RFC 7231 recommended reason phrase (or those
-     * listed in the IANA HTTP Status Code Registry) for the response's
-     * Status-Code.
-     *
-     * @link http://tools.ietf.org/html/rfc7231#section-6
-     * @link http://www.iana.org/assignments/http-status-codes/http-status-codes.xhtml
-     * @return string|null Reason phrase, or null if unknown.
+     * {@inheritdoc}
      */
     public function getReasonPhrase()
     {
@@ -160,25 +145,7 @@ class Response implements ResponseInterface
     }
 
     /**
-     * Create a new instance with the specified status code, and optionally
-     * reason phrase, for the response.
-     *
-     * If no Reason-Phrase is specified, implementations MAY choose to default
-     * to the RFC 7231 or IANA recommended reason phrase for the response's
-     * Status-Code.
-     *
-     * This method MUST be implemented in such a way as to retain the
-     * immutability of the message, and MUST return a new instance that has the
-     * updated status and reason phrase.
-     *
-     * @link http://tools.ietf.org/html/rfc7231#section-6
-     * @link http://www.iana.org/assignments/http-status-codes/http-status-codes.xhtml
-     * @param integer $code The 3-digit integer result code to set.
-     * @param null|string $reasonPhrase The reason phrase to use with the
-     *     provided status code; if none is provided, implementations MAY
-     *     use the defaults as suggested in the HTTP specification.
-     * @return self
-     * @throws InvalidArgumentException For invalid status code arguments.
+     * {@inheritdoc}
      */
     public function withStatus($code, $reasonPhrase = null)
     {

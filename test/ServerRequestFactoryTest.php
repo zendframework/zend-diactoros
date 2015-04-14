@@ -3,6 +3,7 @@ namespace PhlyTest\Http;
 
 use Phly\Http\ServerRequest;
 use Phly\Http\ServerRequestFactory;
+use Phly\Http\UploadedFile;
 use Phly\Http\Uri;
 use PHPUnit_Framework_TestCase as TestCase;
 use ReflectionProperty;
@@ -170,7 +171,7 @@ class ServerRequestFactoryTest extends TestCase
     public function testMarshalHostAndPortReturnsEmptyValuesIfNoHostHeaderAndNoServerName()
     {
         $request = new ServerRequest();
-        $request = $request->withUri(new Uri('http://example.com/'));
+        $request = $request->withUri(new Uri());
 
         $accumulator = (object) ['host' => '', 'port' => null];
         ServerRequestFactory::marshalHostAndPort($accumulator, [], $request);
@@ -195,7 +196,7 @@ class ServerRequestFactoryTest extends TestCase
     public function testMarshalHostAndPortReturnsServerPortForPortWhenPresentWithServerName()
     {
         $request = new ServerRequest();
-        $request = $request->withUri(new Uri('http://example.com/'));
+        $request = $request->withUri(new Uri());
 
         $server  = [
             'SERVER_NAME' => 'example.com',
@@ -224,7 +225,7 @@ class ServerRequestFactoryTest extends TestCase
     public function testMarshalHostAndPortReturnsServerAddrForHostIfPresentAndHostIsIpv6Address()
     {
         $request = new ServerRequest();
-        $request = $request->withUri(new Uri('http://example.com/'));
+        $request = $request->withUri(new Uri());
 
         $server  = [
             'SERVER_ADDR' => 'FE80::0202:B3FF:FE1E:8329',
@@ -240,7 +241,7 @@ class ServerRequestFactoryTest extends TestCase
     public function testMarshalHostAndPortWillDetectPortInIpv6StyleHost()
     {
         $request = new ServerRequest();
-        $request = $request->withUri(new Uri('http://example.com/'));
+        $request = $request->withUri(new Uri());
 
         $server  = [
             'SERVER_ADDR' => 'FE80::0202:B3FF:FE1E:8329',
@@ -345,14 +346,23 @@ class ServerRequestFactoryTest extends TestCase
         $cookies['cookies'] = true;
         $query['query']     = true;
         $body['body']       = true;
-        $files['files']     = true;
+        $files              = [ 'files' => [
+            'tmp_name' => 'php://temp',
+            'size'     => 0,
+            'error'    => 0,
+            'name'     => 'foo.bar',
+            'type'     => 'text/plain',
+        ]];
+        $expectedFiles = [
+            'files' => new UploadedFile('php://temp', 0, 0, 'foo.bar', 'text/plain')
+        ];
 
         $request = ServerRequestFactory::fromGlobals($server, $query, $body, $cookies, $files);
         $this->assertInstanceOf('Phly\Http\ServerRequest', $request);
         $this->assertEquals($cookies, $request->getCookieParams());
         $this->assertEquals($query, $request->getQueryParams());
         $this->assertEquals($body, $request->getParsedBody());
-        $this->assertEquals($files, $request->getFileParams());
+        $this->assertEquals($expectedFiles, $request->getUploadedFiles());
         $this->assertEmpty($request->getAttributes());
     }
 

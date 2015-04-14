@@ -17,7 +17,7 @@ class Request implements RequestInterface
     /**
      * @param null|string $uri URI for the request, if any.
      * @param null|string $method HTTP method for the request, if any.
-     * @param string|resource|StreamableInterface $body Message body, if any.
+     * @param string|resource|StreamInterface $body Message body, if any.
      * @param array $headers Headers for the message, if any.
      * @throws InvalidArgumentException for any invalid value.
      */
@@ -27,20 +27,7 @@ class Request implements RequestInterface
     }
 
     /**
-     * Extends MessageInterface::getHeaders() to provide request-specific
-     * behavior.
-     *
-     * Retrieves all message headers.
-     *
-     * This method acts exactly like MessageInterface::getHeaders(), with one
-     * behavioral change: if the Host header has not been previously set, the
-     * method MUST attempt to pull the host segment of the composed URI, if
-     * present.
-     *
-     * @see MessageInterface::getHeaders()
-     * @see UriInterface::getHost()
-     * @return array Returns an associative array of the message's headers. Each
-     *     key MUST be a header name, and each value MUST be an array of strings.
+     * {@inheritdoc}
      */
     public function getHeaders()
     {
@@ -55,22 +42,9 @@ class Request implements RequestInterface
     }
 
     /**
-     * Extends MessageInterface::getHeaderLines() to provide request-specific
-     * behavior.
-     *
-     * Retrieves a header by the given case-insensitive name as an array of strings.
-     *
-     * This method acts exactly like MessageInterface::getHeaderLines(), with
-     * one behavioral change: if the Host header is requested, but has
-     * not been previously set, the method MUST attempt to pull the host
-     * segment of the composed URI, if present.
-     *
-     * @see MessageInterface::getHeaderLines()
-     * @see UriInterface::getHost()
-     * @param string $name Case-insensitive header field name.
-     * @return string[]
+     * {@inheritdoc}
      */
-    public function getHeaderLines($header)
+    public function getHeader($header)
     {
         if (! $this->hasHeader($header)) {
             if (strtolower($header) === 'host'
