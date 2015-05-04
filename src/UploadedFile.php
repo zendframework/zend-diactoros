@@ -111,20 +111,20 @@ class UploadedFile implements UploadedFileInterface
      *
      * @see http://php.net/is_uploaded_file
      * @see http://php.net/move_uploaded_file
-     * @param string $path Path to which to move the uploaded file.
+     * @param string $targetPath Path to which to move the uploaded file.
      * @throws \InvalidArgumentException if the $path specified is invalid.
      * @throws \RuntimeException on any error during the move operation, or on
      *     the second or subsequent call to the method.
      */
-    public function move($path)
+    public function moveTo($targetPath)
     {
-        if (! is_string($path)) {
+        if (! is_string($targetPath)) {
             throw new InvalidArgumentException(
                 'Invalid path provided for move operation; must be a string'
             );
         }
 
-        if (empty($path)) {
+        if (empty($targetPath)) {
             throw new InvalidArgumentException(
                 'Invalid path provided for move operation; must be a non-empty string'
             );
@@ -138,11 +138,11 @@ class UploadedFile implements UploadedFileInterface
         switch (true) {
             case (empty($sapi) || 0 === strpos($sapi, 'cli') || ! $this->file):
                 // Non-SAPI environment, or no filename present
-                $this->writeFile($path);
+                $this->writeFile($targetPath);
                 break;
             default:
                 // SAPI environment, with file present
-                if (false === move_uploaded_file($this->file, $path)) {
+                if (false === move_uploaded_file($this->file, $targetPath)) {
                     throw new RuntimeException('Error occurred while moving uploaded file');
                 }
                 break;

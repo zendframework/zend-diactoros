@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release..
 
+## 0.13.0 - 2015-05-04
+
+This release is BACKWARDS IN-COMPATIBLE with previous releases. 
+
+psr/http-message 0.11.0 renames the method
+`Psr\Http\UploadedFileInterface::move()` to `moveTo()`, which presents a
+backwards compatibility break.
+
+### Added
+
+- `Phly\Http\UploadedFile::moveTo()`, which allows moving an uploaded file
+  to a given path as represented by a valid PHP stream/filename.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- `Phly\Http\UploadedFile::move()`, which was replaced with the
+  `moveTo()` method.
+
+### Fixed
+
+- `Phly\Http\Response::getReasonPhrase()` now *always* returns a string, even in
+  cases where the reason phrase is undefined (in which case it will be an
+  empty string).
+- `Phly\Http\Response::withStatus()` now defines the default value of the
+  `$reasonPhrase` argument as an empty string.
+
 ## 0.12.0 - 2015-04-14
 
 This release is BACKWARDS IN-COMPATIBLE with previous releases. This is in large

@@ -141,4 +141,11 @@ class ResponseTest extends TestCase
         $response = new Response('php://memory', null, $headers);
         $this->assertEquals($expected, $response->getHeaders());
     }
+
+    public function testReasonPhraseCanBeEmpty()
+    {
+        $response = $this->response->withStatus(599);
+        $this->assertInternalType('string', $response->getReasonPhrase());
+        $this->assertEmpty($response->getReasonPhrase());
+    }
 }

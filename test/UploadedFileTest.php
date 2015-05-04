@@ -156,7 +156,7 @@ class UploadedFileTest extends TestCase
         $upload = new UploadedFile($stream, 0, UPLOAD_ERR_OK);
 
         $this->tmpFile = $to = tempnam(sys_get_temp_dir(), 'phly');
-        $upload->move($to);
+        $upload->moveTo($to);
         $this->assertTrue(file_exists($to));
         $contents = file_get_contents($to);
         $this->assertEquals($stream->__toString(), $contents);
@@ -187,7 +187,7 @@ class UploadedFileTest extends TestCase
 
         $this->tmpFile = $path;
         $this->setExpectedException('InvalidArgumentException', 'path');
-        $upload->move($path);
+        $upload->moveTo($path);
     }
 
     public function testMoveCannotBeCalledMoreThanOnce()
@@ -197,11 +197,11 @@ class UploadedFileTest extends TestCase
         $upload = new UploadedFile($stream, 0, UPLOAD_ERR_OK);
 
         $this->tmpFile = $to = tempnam(sys_get_temp_dir(), 'phly');
-        $upload->move($to);
+        $upload->moveTo($to);
         $this->assertTrue(file_exists($to));
 
         $this->setExpectedException('RuntimeException', 'moved');
-        $upload->move($to);
+        $upload->moveTo($to);
     }
 
     public function testCannotRetrieveStreamAfterMove()
@@ -211,7 +211,7 @@ class UploadedFileTest extends TestCase
         $upload = new UploadedFile($stream, 0, UPLOAD_ERR_OK);
 
         $this->tmpFile = $to = tempnam(sys_get_temp_dir(), 'phly');
-        $upload->move($to);
+        $upload->moveTo($to);
         $this->assertTrue(file_exists($to));
 
         $this->setExpectedException('RuntimeException', 'moved');
