@@ -87,9 +87,9 @@ class Response implements ResponseInterface
     );
 
     /**
-     * @var null|string
+     * @var string
      */
-    private $reasonPhrase;
+    private $reasonPhrase = '';
 
     /**
      * @var int
@@ -147,7 +147,7 @@ class Response implements ResponseInterface
     /**
      * {@inheritdoc}
      */
-    public function withStatus($code, $reasonPhrase = null)
+    public function withStatus($code, $reasonPhrase = '')
     {
         $this->validateStatus($code);
         $new = clone $this;
