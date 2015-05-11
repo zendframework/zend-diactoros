@@ -387,7 +387,7 @@ class Uri implements UriInterface
 
         if (false === $parts) {
             throw new \InvalidArgumentException(
-                'The source URI is not valid'
+                'The source URI string appears to be malformed'
             );
         }
 
