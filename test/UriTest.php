@@ -255,6 +255,12 @@ class UriTest extends TestCase
         new Uri($uri);
     }
 
+    public function testConstructorRaisesExceptionForSeriouslyMalformedURI($uri)
+    {
+        $this->setExpectedException('InvalidArgumentException');
+        new Uri('http:///www.php-fig.org/');
+    }
+
     public function testMutatingSchemeStripsOffDelimiter()
     {
         $uri = new Uri('http://example.com');
