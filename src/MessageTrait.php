@@ -192,6 +192,9 @@ trait MessageTrait
             );
         }
 
+        self::assertValidHeaderName($header);
+        self::assertValidHeaderValue($value);
+
         $normalized = strtolower($header);
 
         $new = clone $this;
@@ -229,6 +232,9 @@ trait MessageTrait
                 'Invalid header value; must be a string or array of strings'
             );
         }
+
+        self::assertValidHeaderName($header);
+        self::assertValidHeaderValue($value);
 
         if (! $this->hasHeader($header)) {
             return $this->withHeader($header, $value);
@@ -355,5 +361,31 @@ trait MessageTrait
             return false;
         }
         return $carry;
+    }
+
+    /**
+     * Assert that the provided header name is valid.
+     * 
+     * @see http://tools.ietf.org/html/rfc7230#section-3.2
+     * @param string $name 
+     * @throws InvalidArgumentException
+     */
+    private static function assertValidHeaderName($name)
+    {
+        if (! preg_match('/^[a-zA-Z0-9\'`#$%&*+.^_|~!-]+$/', $name)) {
+            throw new InvalidArgumentException('Invalid header name');
+        }
+    }
+
+    /**
+     * Assert that the provided header values are valid.
+     * 
+     * @see http://tools.ietf.org/html/rfc7230#section-3.2
+     * @param string[] $values
+     * @throws InvalidArgumentException
+     */
+    private static function assertValidHeaderValue(array $values)
+    {
+        array_walk($values, __NAMESPACE__ . '\HeaderSecurity::assertValid');
     }
 }
