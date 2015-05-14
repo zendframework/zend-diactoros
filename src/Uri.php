@@ -385,6 +385,12 @@ class Uri implements UriInterface
     {
         $parts = parse_url($uri);
 
+        if (false === $parts) {
+            throw new \InvalidArgumentException(
+                'The source URI string appears to be malformed'
+            );
+        }
+
         $this->scheme    = isset($parts['scheme'])   ? $this->filterScheme($parts['scheme']) : '';
         $this->userInfo  = isset($parts['user'])     ? $parts['user']     : '';
         $this->host      = isset($parts['host'])     ? $parts['host']     : '';
