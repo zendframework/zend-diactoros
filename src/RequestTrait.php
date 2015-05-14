@@ -89,7 +89,9 @@ trait RequestTrait
         $this->uri    = $uri;
         $this->stream = ($body instanceof StreamInterface) ? $body : new Stream($body, 'r');
 
-        list($this->headerNames, $this->headers) = $this->filterHeaders($headers);
+        list($this->headerNames, $headers) = $this->filterHeaders($headers);
+        $this->assertHeaders($headers);
+        $this->headers = $headers;
     }
 
     /**
@@ -296,5 +298,19 @@ trait RequestTrait
         $host  = $this->uri->getHost();
         $host .= $this->uri->getPort() ? ':' . $this->uri->getPort() : '';
         return $host;
+    }
+
+    /**
+     * Ensure header names and values are valid.
+     * 
+     * @param array $headers 
+     * @throws InvalidArgumentException
+     */
+    private function assertHeaders(array $headers)
+    {
+        foreach ($headers as $name => $headerValues) {
+            HeaderSecurity::assertValidName($name);
+            array_walk($headerValues, __NAMESPACE__ . '\HeaderSecurity::assertValid');
+        }
     }
 }

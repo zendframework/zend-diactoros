@@ -133,4 +133,18 @@ final class HeaderSecurity
             throw new InvalidArgumentException('Invalid header value');
         }
     }
+    
+    /**
+     * Assert whether or not a header name is valid.
+     * 
+     * @see http://tools.ietf.org/html/rfc7230#section-3.2
+     * @param mixed $name 
+     * @throws InvalidArgumentException
+     */
+    public static function assertValidName($name)
+    {
+        if (! preg_match('/^[a-zA-Z0-9\'`#$%&*+.^_|~!-]+$/', $name)) {
+            throw new InvalidArgumentException('Invalid header name');
+        }
+    }
 }
