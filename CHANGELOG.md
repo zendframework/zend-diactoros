@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release..
 
+## 0.13.1 - TBD
+
+This release contains the following security fix:
+
+- [Zend Framework ZF2015-04](http://framework.zend.com/security/advisory/ZF2015-04)
+  detailed HTTP Response Splitting vectors that are possible via HTTP headers,
+  when unfiltered input containing multiple CRLF (`\r\n`) sequences are present.
+  This release contains a patch for the issue, based on the one used in Zend
+  Framework 2.
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#63](https://github.com/phly/http/pull/63) patches CRLF message splitting
+  vectors in the request and response implementations. It adds a new class,
+  `Phly\Http\HeaderSecurity`, which can be used to validate or filter header
+  values, and which is used internally to assert valid header values.
+
 ## 0.13.0 - 2015-05-04
 
 This release is BACKWARDS IN-COMPATIBLE with previous releases. 
