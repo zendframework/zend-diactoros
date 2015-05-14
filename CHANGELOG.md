@@ -26,6 +26,8 @@ This release contains the following security fix:
 
 ### Fixed
 
+- [#59](https://github.com/phly/http/pull/59) corrects the exception message
+  thrown from `Stream::read()` to use the verbiage "read" instead of "write".
 - [#63](https://github.com/phly/http/pull/63) patches CRLF message splitting
   vectors in the request and response implementations. It adds a new class,
   `Phly\Http\HeaderSecurity`, which can be used to validate or filter header
