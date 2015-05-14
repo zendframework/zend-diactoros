@@ -148,4 +148,32 @@ class ResponseTest extends TestCase
         $this->assertInternalType('string', $response->getReasonPhrase());
         $this->assertEmpty($response->getReasonPhrase());
     }
+
+    public function headersWithInjectionVectors()
+    {
+        return [
+            'name-with-cr'           => ["X-Foo\r-Bar", 'value'],
+            'name-with-lf'           => ["X-Foo\n-Bar", 'value'],
+            'name-with-crlf'         => ["X-Foo\r\n-Bar", 'value'],
+            'name-with-2crlf'        => ["X-Foo\r\n\r\n-Bar", 'value'],
+            'value-with-cr'          => ['X-Foo-Bar', "value\rinjection"],
+            'value-with-lf'          => ['X-Foo-Bar', "value\ninjection"],
+            'value-with-crlf'        => ['X-Foo-Bar', "value\r\ninjection"],
+            'value-with-2crlf'       => ['X-Foo-Bar', "value\r\n\r\ninjection"],
+            'array-value-with-cr'    => ['X-Foo-Bar', ["value\rinjection"]],
+            'array-value-with-lf'    => ['X-Foo-Bar', ["value\ninjection"]],
+            'array-value-with-crlf'  => ['X-Foo-Bar', ["value\r\ninjection"]],
+            'array-value-with-2crlf' => ['X-Foo-Bar', ["value\r\n\r\ninjection"]],
+        ];
+    }
+
+    /**
+     * @group ZF2015-04
+     * @dataProvider headersWithInjectionVectors
+     */
+    public function testConstructorRaisesExceptionForHeadersWithCRLFVectors($name, $value)
+    {
+        $this->setExpectedException('InvalidArgumentException');
+        $request = new Response('php://memory', 200, [$name =>  $value]);
+    }
 }

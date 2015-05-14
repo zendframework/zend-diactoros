@@ -119,7 +119,9 @@ class Response implements ResponseInterface
         $this->stream     = ($body instanceof StreamInterface) ? $body : new Stream($body, 'wb+');
         $this->statusCode = $status ? (int) $status : 200;
 
-        list($this->headerNames, $this->headers) = $this->filterHeaders($headers);
+        list($this->headerNames, $headers) = $this->filterHeaders($headers);
+        $this->assertHeaders($headers);
+        $this->headers = $headers;
     }
 
     /**
@@ -173,6 +175,20 @@ class Response implements ResponseInterface
                 'Invalid status code "%s"; must be an integer between 100 and 599, inclusive',
                 (is_scalar($code) ? $code : gettype($code))
             ));
+        }
+    }
+
+    /**
+     * Ensure header names and values are valid.
+     * 
+     * @param array $headers 
+     * @throws InvalidArgumentException
+     */
+    private function assertHeaders(array $headers)
+    {
+        foreach ($headers as $name => $headerValues) {
+            HeaderSecurity::assertValidName($name);
+            array_walk($headerValues, __NAMESPACE__ . '\HeaderSecurity::assertValid');
         }
     }
 }
