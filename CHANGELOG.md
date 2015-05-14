@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release..
 
-## 0.13.1 - TBD
+## 0.13.1 - 2015-05-14
 
 This release contains the following security fix:
 
