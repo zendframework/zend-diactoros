@@ -194,4 +194,54 @@ class MessageTraitTest extends TestCase
     {
         $this->assertNull($this->message->getHeaderLine('X-Foo-Bar'));
     }
+
+    public function headersWithInjectionVectors()
+    {
+        return [
+            'name-with-cr'           => ["X-Foo\r-Bar", 'value'],
+            'name-with-lf'           => ["X-Foo\n-Bar", 'value'],
+            'name-with-crlf'         => ["X-Foo\r\n-Bar", 'value'],
+            'name-with-2crlf'        => ["X-Foo\r\n\r\n-Bar", 'value'],
+            'value-with-cr'          => ['X-Foo-Bar', "value\rinjection"],
+            'value-with-lf'          => ['X-Foo-Bar', "value\ninjection"],
+            'value-with-crlf'        => ['X-Foo-Bar', "value\r\ninjection"],
+            'value-with-2crlf'       => ['X-Foo-Bar', "value\r\n\r\ninjection"],
+            'array-value-with-cr'    => ['X-Foo-Bar', ["value\rinjection"]],
+            'array-value-with-lf'    => ['X-Foo-Bar', ["value\ninjection"]],
+            'array-value-with-crlf'  => ['X-Foo-Bar', ["value\r\ninjection"]],
+            'array-value-with-2crlf' => ['X-Foo-Bar', ["value\r\n\r\ninjection"]],
+        ];
+    }
+
+    /**
+     * @dataProvider headersWithInjectionVectors
+     * @group ZF2015-04
+     */
+    public function testDoesNotAllowCRLFInjectionWhenCallingWithHeader($name, $value)
+    {
+        $this->setExpectedException('InvalidArgumentException');
+        $this->message->withHeader($name, $value);
+    }
+
+    /**
+     * @dataProvider headersWithInjectionVectors
+     * @group ZF2015-04
+     */
+    public function testDoesNotAllowCRLFInjectionWhenCallingWithAddedHeader($name, $value)
+    {
+        $this->setExpectedException('InvalidArgumentException');
+        $this->message->withAddedHeader($name, $value);
+    }
+
+    public function testWithHeaderAllowsHeaderContinuations()
+    {
+        $message = $this->message->withHeader('X-Foo-Bar', "value,\r\n second value");
+        $this->assertEquals("value,\r\n second value", $message->getHeaderLine('X-Foo-Bar'));
+    }
+
+    public function testWithAddedHeaderAllowsHeaderContinuations()
+    {
+        $message = $this->message->withAddedHeader('X-Foo-Bar', "value,\r\n second value");
+        $this->assertEquals("value,\r\n second value", $message->getHeaderLine('X-Foo-Bar'));
+    }
 }
