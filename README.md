@@ -1,11 +1,13 @@
-phly/http
-=========
+zend-diactoros
+==============
 
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/phly/http/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/phly/http/?branch=master)
-[![Code Coverage](https://scrutinizer-ci.com/g/phly/http/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/phly/http/?branch=master)
-[![Scrutinizer Build Status](https://scrutinizer-ci.com/g/phly/http/badges/build.png?b=master)](https://scrutinizer-ci.com/g/phly/http/build-status/master)
+[![Build Status](https://secure.travis-ci.org/zendframework/zend-diactoros.svg?branch=master)](https://secure.travis-ci.org/zendframework/zend-diactoros)
 
-`phly/http` is a PHP package containing implementations of the [accepted PSR-7 HTTP message interfaces](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-7-http-message.md), as well as a "server" implementation similar to [node's http.Server](http://nodejs.org/api/http.html).
+> Diactoros: an epithet for Hermes, meaning literally, "the messenger."
+
+This package supercedes and replaces [phly/http](https://github.com/phly/http).
+
+`zend-diactoros` is a PHP package containing implementations of the [accepted PSR-7 HTTP message interfaces](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-7-http-message.md), as well as a "server" implementation similar to [node's http.Server](http://nodejs.org/api/http.html).
 
 This package exists:
 
@@ -19,12 +21,12 @@ Installation and Requirements
 Install this library using composer:
 
 ```console
-$ composer require phly/http
+$ composer require zendframework/zend-diactoros
 ```
 
-`phly/http` has the following dependencies (which are managed by Composer):
+`zend-diactoros` has the following dependencies (which are managed by Composer):
 
-- `psr/http-message`, which defines interfaces for HTTP messages, including requests and responses. `phly/http` provides implementations of each of these.
+- `psr/http-message`, which defines interfaces for HTTP messages, including requests and responses. `zend-diactoros` provides implementations of each of these.
 
 Usage
 -----
@@ -41,14 +43,14 @@ A client will _send_ a request, and _return_ a response. As a developer, you wil
 
 ```php
 // Create a request
-$request = (new Phly\Http\Request())
-    ->withUri(new Phly\Http\Uri('http://example.com'))
+$request = (new Zend\Diactoros\Request())
+    ->withUri(new Zend\Diactoros\Uri('http://example.com'))
     ->withMethod('PATCH')
     ->withAddedHeader('Authorization', 'Bearer ' . $token)
     ->withAddedHeader('Content-Type', 'application/json');
 
 // OR:
-$request = new Phly\Http\Request(
+$request = new Zend\Diactoros\Request(
     'http://example.com',
     'PATCH',
     'php://memory',
@@ -76,7 +78,7 @@ foreach ($response->getHeaders() as $header => $values) {
 printf("Message:\n%s\n", $response->getBody());
 ```
 
-(Note: phly/http does NOT ship with a client implementation; the above is just an illustration of a possible implementation.)
+(Note: `zend-diactoros` does NOT ship with a client implementation; the above is just an illustration of a possible implementation.)
 
 ### Server-Side Applications
 
@@ -84,7 +86,7 @@ Server-side applications will need to marshal the incoming request based on supe
 
 #### Marshaling an incoming request
 
-PHP contains a plethora of information about the incoming request, and keeps that information in a variety of locations. `Phly\Http\ServerRequestFactory::fromGlobals()` can simplify marshaling that information into a request instance.
+PHP contains a plethora of information about the incoming request, and keeps that information in a variety of locations. `Zend\Diactoros\ServerRequestFactory::fromGlobals()` can simplify marshaling that information into a request instance.
 
 You can call the factory method with or without the following arguments, in the following order:
 
@@ -94,10 +96,10 @@ You can call the factory method with or without the following arguments, in the 
 - `$cookies`, typically `$_COOKIE`
 - `$files`, typically `$_FILES`
 
-The method will then return a `Phly\Http\ServerRequest` instance. If any argument is omitted, the associated superglobal will be used.
+The method will then return a `Zend\Diactoros\ServerRequest` instance. If any argument is omitted, the associated superglobal will be used.
 
 ```php
-$request = Phly\Http\ServerRequestFactory::fromGlobals(
+$request = Zend\Diactoros\ServerRequestFactory::fromGlobals(
   $_SERVER,
   $_GET,
   $_POST,
@@ -111,7 +113,7 @@ $request = Phly\Http\ServerRequestFactory::fromGlobals(
 Use the response object to add headers and provide content for the response.  Writing to the body does not create a state change in the response, so it can be done without capturing the return value. Manipulating headers does, however.
 
 ```php
-$response = new Phly\Http\Response();
+$response = new Zend\Diactoros\Response();
 
 // Write to the response body:
 $response->getBody()->write("some content\n");
@@ -128,13 +130,13 @@ $response = $response
 
 #### "Serving" an application
 
-`Phly\Http\Server` mimics a portion of the API of node's `http.Server` class. It invokes a callback, passing it an `ServerRequest`, an `Response`, and optionally a callback to use for incomplete/unhandled requests.
+`Zend\Diactoros\Server` mimics a portion of the API of node's `http.Server` class. It invokes a callback, passing it an `ServerRequest`, an `Response`, and optionally a callback to use for incomplete/unhandled requests.
 
 You can create a server in one of three ways:
 
 ```php
 // Direct instantiation, with a callback handler, request, and response
-$server = new Phly\Http\Server(
+$server = new Zend\Diactoros\Server(
     function ($request, $response, $done) {
         $response->getBody()->write("Hello world!");
     },
@@ -143,7 +145,7 @@ $server = new Phly\Http\Server(
 );
 
 // Using the createServer factory, providing it with the various superglobals:
-$server = Phly\Http\Server::createServer(
+$server = Zend\Diactoros\Server::createServer(
     function ($request, $response, $done) {
         $response->getBody()->write("Hello world!");
     },
@@ -155,7 +157,7 @@ $server = Phly\Http\Server::createServer(
 );
 
 // Using the createServerFromRequest factory, and providing it a request:
-$server = Phly\Http\Server::createServerfromRequest(
+$server = Zend\Diactoros\Server::createServerfromRequest(
   function ($request, $response, $done) {
       $response->getBody()->write("Hello world!");
   },
@@ -195,7 +197,7 @@ API
 
 ### Request Message
 
-`Phly\Http\Request` implements `Psr\Http\Message\RequestInterface`, and is intended for client-side requests. It includes the following methods:
+`Zend\Diactoros\Request` implements `Psr\Http\Message\RequestInterface`, and is intended for client-side requests. It includes the following methods:
 
 ```php
 class Request
@@ -215,7 +217,7 @@ Requests are immutable. Any methods that would change state -- those prefixed wi
 
 ### ServerRequest Message
 
-For server-side applications, `Phly\Http\ServerRequest` implements `Psr\Http\Message\ServerRequestInterface`, which provides access to the elements of an HTTP request, as well as uniform access to the various elements of incoming data. The methods included are:
+For server-side applications, `Zend\Diactoros\ServerRequest` implements `Psr\Http\Message\ServerRequestInterface`, which provides access to the elements of an HTTP request, as well as uniform access to the various elements of incoming data. The methods included are:
 
 ```php
 class ServerRequest
@@ -237,7 +239,7 @@ The `ServerRequest` is immutable. Any methods that would change state -- those p
 
 ### Response Message
 
-`Phly\Http\Response` provides an implementation of `Psr\Http\Message\ResponseInterface`, an object to be used to aggregate response information for both HTTP clients and server-side applications, including headers and message body content. It includes the following:
+`Zend\Diactoros\Response` provides an implementation of `Psr\Http\Message\ResponseInterface`, an object to be used to aggregate response information for both HTTP clients and server-side applications, including headers and message body content. It includes the following:
 
 ```php
 class Response
@@ -256,7 +258,7 @@ Like the `Request` and `ServerRequest`, responses are immutable. Any methods tha
 
 #### ServerRequestFactory
 
-This static class can be used to marshal a `ServerRequest` instance from the PHP environment. The primary entry point is `Phly\Http\ServerRequestFactory::fromGlobals(array $server, array $query, array $body, array $cookies, array $files)`. This method will create a new `ServerRequest` instance with the data provided. Examples of usage are:
+This static class can be used to marshal a `ServerRequest` instance from the PHP environment. The primary entry point is `Zend\Diactoros\ServerRequestFactory::fromGlobals(array $server, array $query, array $body, array $cookies, array $files)`. This method will create a new `ServerRequest` instance with the data provided. Examples of usage are:
 
 ```php
 // Returns new ServerRequest instance, using values from superglobals:
@@ -277,7 +279,7 @@ $request = RequestFactory::fromGlobals(
 
 ### URI
 
-`Phly\Http\Uri` is an implementation of `Psr\Http\Message\UriInterface`, and models and validates URIs. It implements `__toString()`, allowing it to be represented as a string and `echo()`'d directly. The following methods are pertinent:
+`Zend\Diactoros\Uri` is an implementation of `Psr\Http\Message\UriInterface`, and models and validates URIs. It implements `__toString()`, allowing it to be represented as a string and `echo()`'d directly. The following methods are pertinent:
 
 ```php
 class Uri
@@ -292,7 +294,7 @@ Like the various message objects, URIs are immutable. Any methods that would cha
 
 ### Stream
 
-`Phly\Http\Stream` is an implementation of `Psr\Http\Message\StreamInterface`, and provides a number of facilities around manipulating the composed PHP stream resource. The constructor accepts a stream, which may be either:
+`Zend\Diactoros\Stream` is an implementation of `Psr\Http\Message\StreamInterface`, and provides a number of facilities around manipulating the composed PHP stream resource. The constructor accepts a stream, which may be either:
 
 - a stream identifier; e.g., `php://input`, a filename, etc.
 - a PHP stream resource
@@ -305,13 +307,13 @@ In most cases, you will not interact with the Stream object directly.
 
 ### UploadedFile
 
-`Phly\Http\UploadedFile` is an implementation of `Psr\Http\Message\UploadedFileInterface`, and provides abstraction around a single uploaded file, including behavior for interacting with it as a stream or moving it to a filesystem location.
+`Zend\Diactoros\UploadedFile` is an implementation of `Psr\Http\Message\UploadedFileInterface`, and provides abstraction around a single uploaded file, including behavior for interacting with it as a stream or moving it to a filesystem location.
 
 In most cases, you will only use the methods defined in the `UploadedFileInterface`.
 
 ### Server
 
-`Phly\Http\Server` represents a server capable of executing a callback. It has four methods:
+`Zend\Diactoros\Server` represents a server capable of executing a callback. It has four methods:
 
 ```php
 class Server
@@ -345,11 +347,11 @@ You can create an instance of the `Server` using any of the constructor, `create
 
 ## Emitting responses
 
-If you are using a non-SAPI PHP implementation and wish to use the `Server` class, or if you do not want to use the `Server` implementation but want to emit a response, this package provides an interface, `Phly\Http\Response\EmitterInterface`, defining a method `emit()` for emitting the response. A single implementation is currently available, `Phly\Http\Response\SapiEmitter`, which will use the native PHP functions `header()` and `echo` in order to emit the response. If you are using a non-SAPI implementation, you will need to create your own `EmitterInterface` implementation.
+If you are using a non-SAPI PHP implementation and wish to use the `Server` class, or if you do not want to use the `Server` implementation but want to emit a response, this package provides an interface, `Zend\Diactoros\Response\EmitterInterface`, defining a method `emit()` for emitting the response. A single implementation is currently available, `Zend\Diactoros\Response\SapiEmitter`, which will use the native PHP functions `header()` and `echo` in order to emit the response. If you are using a non-SAPI implementation, you will need to create your own `EmitterInterface` implementation.
 
 ## Serialization
 
-At times, it's useful to either create a string representation of a message (serialization), or to cast a string or stream message to an object (deserialization). This package provides features for this in `Phly\Http\Request\Serializer` and `Phly\Http\Response\Serializer`; each provides the following static methods:
+At times, it's useful to either create a string representation of a message (serialization), or to cast a string or stream message to an object (deserialization). This package provides features for this in `Zend\Diactoros\Request\Serializer` and `Zend\Diactoros\Response\Serializer`; each provides the following static methods:
 
 - `fromString($message)` will create either a `Request` or `Response` instance (based on the serializer used) from the string message.
 - `fromStream(Psr\Http\Message\StreamInterface $stream)` will create either a `Request` or `Response` instance (based on the serializer used) from the provided stream.

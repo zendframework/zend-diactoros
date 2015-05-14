@@ -1,14 +1,21 @@
 <?php
-namespace Phly\Http;
+/**
+ * Zend Framework (http://framework.zend.com/)
+ *
+ * @see       http://github.com/zendframework/zend-diactoros for the canonical source repository
+ * @copyright Copyright (c) 2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
+ */
+
+namespace Zend\Diactoros;
 
 use InvalidArgumentException;
 use Psr\Http\Message\StreamInterface;
 
 /**
- * Trait implementing the various methods defined in
- * \Psr\Http\Message\MessageInterface.
+ * Trait implementing the various methods defined in MessageInterface.
  *
- * @link https://github.com/php-fig/http-message/tree/master/src/MessageInterface.php
+ * @see https://github.com/php-fig/http-message/tree/master/src/MessageInterface.php
  */
 trait MessageTrait
 {

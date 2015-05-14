@@ -1,22 +1,17 @@
 {
-  "name": "phly/http",
+  "name": "zendframework/zend-diactoros",
   "description": "PSR HTTP Message implementations",
   "type": "library",
   "license": "BSD-2-Clause",
   "keywords": [
-    "http"
+    "http",
+    "psr",
+    "psr-7"
   ],
-  "homepage": "https://github.com/phly/http",
-  "authors": [
-    {
-      "name": "Matthew Weier O'Phinney",
-      "email": "matthew@weierophinney.net",
-      "homepage": "http://mwop.net"
-    }
-  ],
+  "homepage": "https://github.com/zendframework/zend-diactoros",
   "support": {
-    "issues": "https://github.com/phly/http/issues",
-    "source": "https://github.com/phly/http"
+    "issues": "https://github.com/zendframework/zend-diactoros/issues",
+    "source": "https://github.com/zendframework/zend-diactoros"
   },
   "extra": {
     "branch-alias": {
@@ -25,7 +20,7 @@
     }
   },
   "require": {
-    "php": ">=5.4.8",
+    "php": ">=5.5",
     "psr/http-message": "~1.0"
   },
   "require-dev": {
@@ -37,12 +32,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Phly\\Http\\": "src/"
+      "Zend\\Diactoros\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "PhlyTest\\Http\\": "test/"
+      "ZendTest\\Diactoros\\": "test/"
     },
     "files": [
       "test/TestAsset/Functions.php",

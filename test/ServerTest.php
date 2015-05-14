@@ -1,9 +1,17 @@
 <?php
-namespace PhlyTest\Http;
+/**
+ * Zend Framework (http://framework.zend.com/)
+ *
+ * @see       http://github.com/zendframework/zend-diactoros for the canonical source repository
+ * @copyright Copyright (c) 2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
+ */
 
-use Phly\Http\HeaderStack; // test asset
-use Phly\Http\Server;
+namespace Zend\Diactoros;
+
 use PHPUnit_Framework_TestCase as TestCase;
+use Zend\Diactoros\HeaderStack; // test asset
+use Zend\Diactoros\Server;
 
 class ServerTest extends TestCase
 {
@@ -34,7 +42,7 @@ class ServerTest extends TestCase
             $this->request,
             $this->response
         );
-        $this->assertInstanceOf('Phly\Http\Server', $server);
+        $this->assertInstanceOf('Zend\Diactoros\Server', $server);
         $this->assertSame($this->callback, $server->callback);
         $this->assertSame($this->request, $server->request);
         $this->assertSame($this->response, $server->response);
@@ -46,10 +54,10 @@ class ServerTest extends TestCase
             $this->callback,
             $this->request
         );
-        $this->assertInstanceOf('Phly\Http\Server', $server);
+        $this->assertInstanceOf('Zend\Diactoros\Server', $server);
         $this->assertSame($this->callback, $server->callback);
         $this->assertSame($this->request, $server->request);
-        $this->assertInstanceOf('Phly\Http\Response', $server->response);
+        $this->assertInstanceOf('Zend\Diactoros\Response', $server->response);
     }
 
     public function testCannotAccessArbitraryProperties()
@@ -74,16 +82,16 @@ class ServerTest extends TestCase
             'QUERY_STRING' => 'bar=baz',
         ];
         $server = Server::createServer($this->callback, $server, [], [], [], []);
-        $this->assertInstanceOf('Phly\Http\Server', $server);
+        $this->assertInstanceOf('Zend\Diactoros\Server', $server);
         $this->assertSame($this->callback, $server->callback);
 
-        $this->assertInstanceOf('Phly\Http\ServerRequest', $server->request);
+        $this->assertInstanceOf('Zend\Diactoros\ServerRequest', $server->request);
         $request = $server->request;
         $this->assertEquals('POST', $request->getMethod());
         $this->assertEquals('/foo/bar', $request->getUri()->getPath());
         $this->assertTrue($request->hasHeader('Accept'));
 
-        $this->assertInstanceOf('Phly\Http\Response', $server->response);
+        $this->assertInstanceOf('Zend\Diactoros\Response', $server->response);
     }
 
     public function testListenInvokesCallbackAndSendsResponse()

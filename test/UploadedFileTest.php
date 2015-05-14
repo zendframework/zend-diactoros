@@ -1,10 +1,18 @@
 <?php
-namespace PhlyTest\Http;
+/**
+ * Zend Framework (http://framework.zend.com/)
+ *
+ * @see       http://github.com/zendframework/zend-diactoros for the canonical source repository
+ * @copyright Copyright (c) 2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
+ */
 
-use Phly\Http\Stream;
-use Phly\Http\UploadedFile;
+namespace Zend\Diactoros;
+
 use PHPUnit_Framework_TestCase as TestCase;
 use ReflectionProperty;
+use Zend\Diactoros\Stream;
+use Zend\Diactoros\UploadedFile;
 
 class UploadedFileTest extends TestCase
 {
@@ -141,7 +149,7 @@ class UploadedFileTest extends TestCase
 
     public function testGetStreamReturnsStreamForFile()
     {
-        $this->tmpFile = $stream = tempnam(sys_get_temp_dir(), 'phly');
+        $this->tmpFile = $stream = tempnam(sys_get_temp_dir(), 'diac');
         $upload = new UploadedFile($stream, 0, UPLOAD_ERR_OK);
         $uploadStream = $upload->getStream();
         $r = new ReflectionProperty($uploadStream, 'stream');
@@ -155,7 +163,7 @@ class UploadedFileTest extends TestCase
         $stream->write('Foo bar!');
         $upload = new UploadedFile($stream, 0, UPLOAD_ERR_OK);
 
-        $this->tmpFile = $to = tempnam(sys_get_temp_dir(), 'phly');
+        $this->tmpFile = $to = tempnam(sys_get_temp_dir(), 'diac');
         $upload->moveTo($to);
         $this->assertTrue(file_exists($to));
         $contents = file_get_contents($to);
@@ -196,7 +204,7 @@ class UploadedFileTest extends TestCase
         $stream->write('Foo bar!');
         $upload = new UploadedFile($stream, 0, UPLOAD_ERR_OK);
 
-        $this->tmpFile = $to = tempnam(sys_get_temp_dir(), 'phly');
+        $this->tmpFile = $to = tempnam(sys_get_temp_dir(), 'diac');
         $upload->moveTo($to);
         $this->assertTrue(file_exists($to));
 
@@ -210,7 +218,7 @@ class UploadedFileTest extends TestCase
         $stream->write('Foo bar!');
         $upload = new UploadedFile($stream, 0, UPLOAD_ERR_OK);
 
-        $this->tmpFile = $to = tempnam(sys_get_temp_dir(), 'phly');
+        $this->tmpFile = $to = tempnam(sys_get_temp_dir(), 'diac');
         $upload->moveTo($to);
         $this->assertTrue(file_exists($to));
 

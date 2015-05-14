@@ -1,13 +1,21 @@
 <?php
-namespace Phly\Http\Response;
+/**
+ * Zend Framework (http://framework.zend.com/)
+ *
+ * @see       http://github.com/zendframework/zend-diactoros for the canonical source repository
+ * @copyright Copyright (c) 2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
+ */
+
+namespace Zend\Diactoros\Response;
 
 use InvalidArgumentException;
-use Phly\Http\AbstractSerializer;
-use Phly\Http\Response;
-use Phly\Http\Stream;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use UnexpectedValueException;
+use Zend\Diactoros\AbstractSerializer;
+use Zend\Diactoros\Response;
+use Zend\Diactoros\Stream;
 
 final class Serializer extends AbstractSerializer
 {

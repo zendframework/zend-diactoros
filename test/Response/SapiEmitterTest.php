@@ -1,12 +1,20 @@
 <?php
-namespace PhlyTest\Http\Response;
+/**
+ * Zend Framework (http://framework.zend.com/)
+ *
+ * @see       http://github.com/zendframework/zend-diactoros for the canonical source repository
+ * @copyright Copyright (c) 2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
+ */
 
-use Phly\Http\HeaderStack;  // test asset
-use Phly\Http\Response;
-use Phly\Http\Response\SapiEmitter;
-use Phly\Http\SapiResponse; // test asset
-use Phly\Http\Stream;
+namespace ZendTest\Diactoros\Response;
+
 use PHPUnit_Framework_TestCase as TestCase;
+use Zend\Diactoros\HeaderStack;  // test asset
+use Zend\Diactoros\Response;
+use Zend\Diactoros\Response\SapiEmitter;
+use Zend\Diactoros\SapiResponse; // test asset
+use Zend\Diactoros\Stream;
 
 class SapiEmitterTest extends TestCase
 {

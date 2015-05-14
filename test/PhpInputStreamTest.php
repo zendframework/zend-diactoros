@@ -1,8 +1,16 @@
 <?php
-namespace PhlyTest\Http;
+/**
+ * Zend Framework (http://framework.zend.com/)
+ *
+ * @see       http://github.com/zendframework/zend-diactoros for the canonical source repository
+ * @copyright Copyright (c) 2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
+ */
 
-use Phly\Http\PhpInputStream;
+namespace Zend\Diactoros;
+
 use PHPUnit_Framework_TestCase as TestCase;
+use Zend\Diactoros\PhpInputStream;
 
 class PhpInputStreamTest extends TestCase
 {

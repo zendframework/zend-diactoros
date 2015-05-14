@@ -1,9 +1,17 @@
 <?php
-namespace PhlyTest\Http;
+/**
+ * Zend Framework (http://framework.zend.com/)
+ *
+ * @see       http://github.com/zendframework/zend-diactoros for the canonical source repository
+ * @copyright Copyright (c) 2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
+ */
 
-use Phly\Http\Stream;
+namespace Zend\Diactoros;
+
 use PHPUnit_Framework_TestCase as TestCase;
 use ReflectionProperty;
+use Zend\Diactoros\Stream;
 
 class StreamTest extends TestCase
 {
@@ -24,19 +32,19 @@ class StreamTest extends TestCase
 
     public function testCanInstantiateWithStreamIdentifier()
     {
-        $this->assertInstanceOf('Phly\Http\Stream', $this->stream);
+        $this->assertInstanceOf('Zend\Diactoros\Stream', $this->stream);
     }
 
     public function testCanInstantiteWithStreamResource()
     {
         $resource = fopen('php://memory', 'wb+');
         $stream   = new Stream($resource);
-        $this->assertInstanceOf('Phly\Http\Stream', $stream);
+        $this->assertInstanceOf('Zend\Diactoros\Stream', $stream);
     }
 
     public function testIsReadableReturnsFalseIfStreamIsNotReadable()
     {
-        $this->tmpnam = tempnam(sys_get_temp_dir(), 'phly');
+        $this->tmpnam = tempnam(sys_get_temp_dir(), 'diac');
         $stream = new Stream($this->tmpnam, 'w');
         $this->assertFalse($stream->isReadable());
     }
@@ -69,7 +77,7 @@ class StreamTest extends TestCase
 
     public function testStringSerializationReturnsEmptyStringWhenStreamIsNotReadable()
     {
-        $this->tmpnam = tempnam(sys_get_temp_dir(), 'phly');
+        $this->tmpnam = tempnam(sys_get_temp_dir(), 'diac');
         file_put_contents($this->tmpnam, 'FOO BAR');
         $stream = new Stream($this->tmpnam, 'w');
 
@@ -78,7 +86,7 @@ class StreamTest extends TestCase
 
     public function testCloseClosesResource()
     {
-        $this->tmpnam = tempnam(sys_get_temp_dir(), 'phly');
+        $this->tmpnam = tempnam(sys_get_temp_dir(), 'diac');
         $resource = fopen($this->tmpnam, 'wb+');
         $stream = new Stream($resource);
         $stream->close();
@@ -87,7 +95,7 @@ class StreamTest extends TestCase
 
     public function testCloseUnsetsResource()
     {
-        $this->tmpnam = tempnam(sys_get_temp_dir(), 'phly');
+        $this->tmpnam = tempnam(sys_get_temp_dir(), 'diac');
         $resource = fopen($this->tmpnam, 'wb+');
         $stream = new Stream($resource);
         $stream->close();
@@ -97,7 +105,7 @@ class StreamTest extends TestCase
 
     public function testCloseDoesNothingAfterDetach()
     {
-        $this->tmpnam = tempnam(sys_get_temp_dir(), 'phly');
+        $this->tmpnam = tempnam(sys_get_temp_dir(), 'diac');
         $resource = fopen($this->tmpnam, 'wb+');
         $stream = new Stream($resource);
         $detached = $stream->detach();
@@ -118,7 +126,7 @@ class StreamTest extends TestCase
 
     public function testTellReportsCurrentPositionInResource()
     {
-        $this->tmpnam = tempnam(sys_get_temp_dir(), 'phly');
+        $this->tmpnam = tempnam(sys_get_temp_dir(), 'diac');
         file_put_contents($this->tmpnam, 'FOO BAR');
         $resource = fopen($this->tmpnam, 'wb+');
         $stream = new Stream($resource);
@@ -130,7 +138,7 @@ class StreamTest extends TestCase
 
     public function testTellRaisesExceptionIfResourceIsDetached()
     {
-        $this->tmpnam = tempnam(sys_get_temp_dir(), 'phly');
+        $this->tmpnam = tempnam(sys_get_temp_dir(), 'diac');
         file_put_contents($this->tmpnam, 'FOO BAR');
         $resource = fopen($this->tmpnam, 'wb+');
         $stream = new Stream($resource);
@@ -143,7 +151,7 @@ class StreamTest extends TestCase
 
     public function testEofReportsFalseWhenNotAtEndOfStream()
     {
-        $this->tmpnam = tempnam(sys_get_temp_dir(), 'phly');
+        $this->tmpnam = tempnam(sys_get_temp_dir(), 'diac');
         file_put_contents($this->tmpnam, 'FOO BAR');
         $resource = fopen($this->tmpnam, 'wb+');
         $stream = new Stream($resource);
@@ -154,7 +162,7 @@ class StreamTest extends TestCase
 
     public function testEofReportsTrueWhenAtEndOfStream()
     {
-        $this->tmpnam = tempnam(sys_get_temp_dir(), 'phly');
+        $this->tmpnam = tempnam(sys_get_temp_dir(), 'diac');
         file_put_contents($this->tmpnam, 'FOO BAR');
         $resource = fopen($this->tmpnam, 'wb+');
         $stream = new Stream($resource);
@@ -167,7 +175,7 @@ class StreamTest extends TestCase
 
     public function testEofReportsTrueWhenStreamIsDetached()
     {
-        $this->tmpnam = tempnam(sys_get_temp_dir(), 'phly');
+        $this->tmpnam = tempnam(sys_get_temp_dir(), 'diac');
         file_put_contents($this->tmpnam, 'FOO BAR');
         $resource = fopen($this->tmpnam, 'wb+');
         $stream = new Stream($resource);
@@ -179,7 +187,7 @@ class StreamTest extends TestCase
 
     public function testIsSeekableReturnsTrueForReadableStreams()
     {
-        $this->tmpnam = tempnam(sys_get_temp_dir(), 'phly');
+        $this->tmpnam = tempnam(sys_get_temp_dir(), 'diac');
         file_put_contents($this->tmpnam, 'FOO BAR');
         $resource = fopen($this->tmpnam, 'wb+');
         $stream = new Stream($resource);
@@ -188,7 +196,7 @@ class StreamTest extends TestCase
 
     public function testIsSeekableReturnsFalseForDetachedStreams()
     {
-        $this->tmpnam = tempnam(sys_get_temp_dir(), 'phly');
+        $this->tmpnam = tempnam(sys_get_temp_dir(), 'diac');
         file_put_contents($this->tmpnam, 'FOO BAR');
         $resource = fopen($this->tmpnam, 'wb+');
         $stream = new Stream($resource);
@@ -198,7 +206,7 @@ class StreamTest extends TestCase
 
     public function testSeekAdvancesToGivenOffsetOfStream()
     {
-        $this->tmpnam = tempnam(sys_get_temp_dir(), 'phly');
+        $this->tmpnam = tempnam(sys_get_temp_dir(), 'diac');
         file_put_contents($this->tmpnam, 'FOO BAR');
         $resource = fopen($this->tmpnam, 'wb+');
         $stream = new Stream($resource);
@@ -208,7 +216,7 @@ class StreamTest extends TestCase
 
     public function testRewindResetsToStartOfStream()
     {
-        $this->tmpnam = tempnam(sys_get_temp_dir(), 'phly');
+        $this->tmpnam = tempnam(sys_get_temp_dir(), 'diac');
         file_put_contents($this->tmpnam, 'FOO BAR');
         $resource = fopen($this->tmpnam, 'wb+');
         $stream = new Stream($resource);
@@ -219,7 +227,7 @@ class StreamTest extends TestCase
 
     public function testSeekRaisesExceptionWhenStreamIsDetached()
     {
-        $this->tmpnam = tempnam(sys_get_temp_dir(), 'phly');
+        $this->tmpnam = tempnam(sys_get_temp_dir(), 'diac');
         file_put_contents($this->tmpnam, 'FOO BAR');
         $resource = fopen($this->tmpnam, 'wb+');
         $stream = new Stream($resource);
@@ -230,7 +238,7 @@ class StreamTest extends TestCase
 
     public function testIsWritableReturnsFalseWhenStreamIsDetached()
     {
-        $this->tmpnam = tempnam(sys_get_temp_dir(), 'phly');
+        $this->tmpnam = tempnam(sys_get_temp_dir(), 'diac');
         file_put_contents($this->tmpnam, 'FOO BAR');
         $resource = fopen($this->tmpnam, 'wb+');
         $stream = new Stream($resource);
@@ -240,7 +248,7 @@ class StreamTest extends TestCase
 
     public function testWriteRaisesExceptionWhenStreamIsDetached()
     {
-        $this->tmpnam = tempnam(sys_get_temp_dir(), 'phly');
+        $this->tmpnam = tempnam(sys_get_temp_dir(), 'diac');
         file_put_contents($this->tmpnam, 'FOO BAR');
         $resource = fopen($this->tmpnam, 'wb+');
         $stream = new Stream($resource);
@@ -251,7 +259,7 @@ class StreamTest extends TestCase
 
     public function testIsReadableReturnsFalseWhenStreamIsDetached()
     {
-        $this->tmpnam = tempnam(sys_get_temp_dir(), 'phly');
+        $this->tmpnam = tempnam(sys_get_temp_dir(), 'diac');
         file_put_contents($this->tmpnam, 'FOO BAR');
         $resource = fopen($this->tmpnam, 'wb+');
         $stream = new Stream($resource);
@@ -261,7 +269,7 @@ class StreamTest extends TestCase
 
     public function testReadRaisesExceptionWhenStreamIsDetached()
     {
-        $this->tmpnam = tempnam(sys_get_temp_dir(), 'phly');
+        $this->tmpnam = tempnam(sys_get_temp_dir(), 'diac');
         file_put_contents($this->tmpnam, 'FOO BAR');
         $resource = fopen($this->tmpnam, 'r');
         $stream = new Stream($resource);
@@ -272,7 +280,7 @@ class StreamTest extends TestCase
 
     public function testReadReturnsEmptyStringWhenAtEndOfFile()
     {
-        $this->tmpnam = tempnam(sys_get_temp_dir(), 'phly');
+        $this->tmpnam = tempnam(sys_get_temp_dir(), 'diac');
         file_put_contents($this->tmpnam, 'FOO BAR');
         $resource = fopen($this->tmpnam, 'r');
         $stream = new Stream($resource);
@@ -284,7 +292,7 @@ class StreamTest extends TestCase
 
     public function testGetContentsReturnsEmptyStringIfStreamIsNotReadable()
     {
-        $this->tmpnam = tempnam(sys_get_temp_dir(), 'phly');
+        $this->tmpnam = tempnam(sys_get_temp_dir(), 'diac');
         file_put_contents($this->tmpnam, 'FOO BAR');
         $resource = fopen($this->tmpnam, 'w');
         $stream = new Stream($resource);
@@ -293,7 +301,7 @@ class StreamTest extends TestCase
 
     public function invalidResources()
     {
-        $this->tmpnam = tempnam(sys_get_temp_dir(), 'PHLY');
+        $this->tmpnam = tempnam(sys_get_temp_dir(), 'diac');
         return [
             'null' => [ null ],
             'false' => [ false ],
@@ -317,7 +325,7 @@ class StreamTest extends TestCase
 
     public function testAttachWithResourceAttachesResource()
     {
-        $this->tmpnam = tempnam(sys_get_temp_dir(), 'PHLY');
+        $this->tmpnam = tempnam(sys_get_temp_dir(), 'diac');
         $resource = fopen($this->tmpnam, 'r+');
         $this->stream->attach($resource);
 
@@ -329,7 +337,7 @@ class StreamTest extends TestCase
 
     public function testAttachWithStringRepresentingResourceCreatesAndAttachesResource()
     {
-        $this->tmpnam = tempnam(sys_get_temp_dir(), 'PHLY');
+        $this->tmpnam = tempnam(sys_get_temp_dir(), 'diac');
         $this->stream->attach($this->tmpnam);
 
         $resource = fopen($this->tmpnam, 'r+');
@@ -342,7 +350,7 @@ class StreamTest extends TestCase
 
     public function testGetContentsShouldGetFullStreamContents()
     {
-        $this->tmpnam = tempnam(sys_get_temp_dir(), 'PHLY');
+        $this->tmpnam = tempnam(sys_get_temp_dir(), 'diac');
         $resource = fopen($this->tmpnam, 'r+');
         $this->stream->attach($resource);
 
@@ -356,7 +364,7 @@ class StreamTest extends TestCase
 
     public function testGetContentsShouldReturnStreamContentsFromCurrentPointer()
     {
-        $this->tmpnam = tempnam(sys_get_temp_dir(), 'PHLY');
+        $this->tmpnam = tempnam(sys_get_temp_dir(), 'diac');
         $resource = fopen($this->tmpnam, 'r+');
         $this->stream->attach($resource);
 
@@ -370,7 +378,7 @@ class StreamTest extends TestCase
 
     public function testGetMetadataReturnsAllMetadataWhenNoKeyPresent()
     {
-        $this->tmpnam = tempnam(sys_get_temp_dir(), 'PHLY');
+        $this->tmpnam = tempnam(sys_get_temp_dir(), 'diac');
         $resource = fopen($this->tmpnam, 'r+');
         $this->stream->attach($resource);
 
@@ -382,7 +390,7 @@ class StreamTest extends TestCase
 
     public function testGetMetadataReturnsDataForSpecifiedKey()
     {
-        $this->tmpnam = tempnam(sys_get_temp_dir(), 'PHLY');
+        $this->tmpnam = tempnam(sys_get_temp_dir(), 'diac');
         $resource = fopen($this->tmpnam, 'r+');
         $this->stream->attach($resource);
 
@@ -396,7 +404,7 @@ class StreamTest extends TestCase
 
     public function testGetMetadataReturnsNullIfNoDataExistsForKey()
     {
-        $this->tmpnam = tempnam(sys_get_temp_dir(), 'PHLY');
+        $this->tmpnam = tempnam(sys_get_temp_dir(), 'diac');
         $resource = fopen($this->tmpnam, 'r+');
         $this->stream->attach($resource);
 

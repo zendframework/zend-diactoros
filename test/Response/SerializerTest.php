@@ -1,10 +1,18 @@
 <?php
-namespace PhlyTest\Http\Response;
+/**
+ * Zend Framework (http://framework.zend.com/)
+ *
+ * @see       http://github.com/zendframework/zend-diactoros for the canonical source repository
+ * @copyright Copyright (c) 2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
+ */
 
-use Phly\Http\Response;
-use Phly\Http\Response\Serializer;
-use Phly\Http\Stream;
+namespace ZendTest\Diactoros\Response;
+
 use PHPUnit_Framework_TestCase as TestCase;
+use Zend\Diactoros\Response;
+use Zend\Diactoros\Response\Serializer;
+use Zend\Diactoros\Stream;
 
 class SerializerTest extends TestCase
 {
@@ -52,7 +60,7 @@ class SerializerTest extends TestCase
         $response = Serializer::fromString($text);
 
         $this->assertInstanceOf('Psr\Http\Message\ResponseInterface', $response);
-        $this->assertInstanceOf('Phly\Http\Response', $response);
+        $this->assertInstanceOf('Zend\Diactoros\Response', $response);
 
         $this->assertEquals('1.0', $response->getProtocolVersion());
         $this->assertEquals(200, $response->getStatusCode());
@@ -73,7 +81,7 @@ class SerializerTest extends TestCase
         $response = Serializer::fromString($text);
 
         $this->assertInstanceOf('Psr\Http\Message\ResponseInterface', $response);
-        $this->assertInstanceOf('Phly\Http\Response', $response);
+        $this->assertInstanceOf('Zend\Diactoros\Response', $response);
 
         $this->assertTrue($response->hasHeader('X-Foo-Bar'));
         $values = $response->getHeader('X-Foo-Bar');
@@ -96,7 +104,7 @@ class SerializerTest extends TestCase
         $response = Serializer::fromString($text);
 
         $this->assertInstanceOf('Psr\Http\Message\ResponseInterface', $response);
-        $this->assertInstanceOf('Phly\Http\Response', $response);
+        $this->assertInstanceOf('Zend\Diactoros\Response', $response);
 
         $this->assertTrue($response->hasHeader('X-Foo-Bar'));
         $this->assertEquals('Baz;Bat', $response->getHeaderLine('X-Foo-Bar'));
@@ -108,7 +116,7 @@ class SerializerTest extends TestCase
         $response = Serializer::fromString($text);
 
         $this->assertInstanceOf('Psr\Http\Message\ResponseInterface', $response);
-        $this->assertInstanceOf('Phly\Http\Response', $response);
+        $this->assertInstanceOf('Zend\Diactoros\Response', $response);
 
         $this->assertTrue($response->hasHeader('X-Foo-Bar'));
         $this->assertEquals('Baz', $response->getHeaderLine('X-Foo-Bar'));
@@ -123,7 +131,7 @@ class SerializerTest extends TestCase
         $response = Serializer::fromString($text);
 
         $this->assertInstanceOf('Psr\Http\Message\ResponseInterface', $response);
-        $this->assertInstanceOf('Phly\Http\Response', $response);
+        $this->assertInstanceOf('Zend\Diactoros\Response', $response);
 
         $this->assertEmpty($response->getHeaders());
         $body = $response->getBody()->getContents();
@@ -136,7 +144,7 @@ class SerializerTest extends TestCase
         $response = Serializer::fromString($text);
 
         $this->assertInstanceOf('Psr\Http\Message\ResponseInterface', $response);
-        $this->assertInstanceOf('Phly\Http\Response', $response);
+        $this->assertInstanceOf('Zend\Diactoros\Response', $response);
 
         $this->assertEmpty($response->getHeaders());
         $body = $response->getBody()->getContents();

@@ -1,5 +1,7 @@
 <?php
 /**
+ * Zend Framework (http://framework.zend.com/)
+ *
  * This file exists to allow overriding the various output-related functions
  * in order to test what happens during the `Response\SapiEmitter::emit()` cycle.
  *
@@ -10,11 +12,15 @@
  * - header(): we want to aggregate calls to this function.
  *
  * It pushes headers into the HeaderStack class defined in Functions.php.
+ *
+ * @see       http://github.com/zendframework/zend-diactoros for the canonical source repository
+ * @copyright Copyright (c) 2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
-namespace Phly\Http\Response;
+namespace Zend\Diactoros\Response;
 
-use Phly\Http\HeaderStack;
+use Zend\Diactoros\HeaderStack;
 
 /**
  * Have headers been sent?

@@ -1,11 +1,19 @@
 <?php
-namespace PhlyTest\Http\Request;
+/**
+ * Zend Framework (http://framework.zend.com/)
+ *
+ * @see       http://github.com/zendframework/zend-diactoros for the canonical source repository
+ * @copyright Copyright (c) 2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
+ */
 
-use Phly\Http\Request;
-use Phly\Http\Request\Serializer;
-use Phly\Http\Stream;
-use Phly\Http\Uri;
+namespace ZendTest\Diactoros\Request;
+
 use PHPUnit_Framework_TestCase as TestCase;
+use Zend\Diactoros\Request;
+use Zend\Diactoros\Request\Serializer;
+use Zend\Diactoros\Stream;
+use Zend\Diactoros\Uri;
 
 class SerializerTest extends TestCase
 {
@@ -205,7 +213,7 @@ class SerializerTest extends TestCase
         $request = Serializer::fromString($text);
 
         $this->assertInstanceOf('Psr\Http\Message\RequestInterface', $request);
-        $this->assertInstanceOf('Phly\Http\Request', $request);
+        $this->assertInstanceOf('Zend\Diactoros\Request', $request);
 
         $this->assertTrue($request->hasHeader('X-Foo-Bar'));
         $values = $request->getHeader('X-Foo-Bar');
@@ -228,7 +236,7 @@ class SerializerTest extends TestCase
         $request = Serializer::fromString($text);
 
         $this->assertInstanceOf('Psr\Http\Message\RequestInterface', $request);
-        $this->assertInstanceOf('Phly\Http\Request', $request);
+        $this->assertInstanceOf('Zend\Diactoros\Request', $request);
 
         $this->assertTrue($request->hasHeader('X-Foo-Bar'));
         $this->assertEquals('Baz;Bat', $request->getHeaderLine('X-Foo-Bar'));

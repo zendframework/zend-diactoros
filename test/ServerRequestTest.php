@@ -1,11 +1,19 @@
 <?php
-namespace PhlyTest\Http;
+/**
+ * Zend Framework (http://framework.zend.com/)
+ *
+ * @see       http://github.com/zendframework/zend-diactoros for the canonical source repository
+ * @copyright Copyright (c) 2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
+ */
 
-use Phly\Http\ServerRequest;
-use Phly\Http\UploadedFile;
-use Phly\Http\Uri;
+namespace Zend\Diactoros;
+
 use PHPUnit_Framework_TestCase as TestCase;
 use ReflectionProperty;
+use Zend\Diactoros\ServerRequest;
+use Zend\Diactoros\UploadedFile;
+use Zend\Diactoros\Uri;
 
 class ServerRequestTest extends TestCase
 {
