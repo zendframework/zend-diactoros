@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release..
 
+## 0.13.2 - 2015-05-14
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Updated the `psr/http-message` dependency to look for `^0.11`, allowing it to
+  pick up bugfix releases.
+
 ## 0.13.1 - 2015-05-14
 
 This release contains the following security fix:
