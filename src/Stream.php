@@ -248,8 +248,8 @@ class Stream implements StreamInterface
      */
     public function read($length)
     {
-        if (! $this->resource || ! $this->isReadable()) {
-            throw new RuntimeException('No resource available; cannot write');
+        if (! $this->resource) {
+            throw new RuntimeException('No resource available; cannot read');
         }
 
         if (! $this->isReadable()) {
