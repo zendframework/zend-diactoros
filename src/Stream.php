@@ -86,9 +86,6 @@ class Stream implements StreamInterface
         return $resource;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function attach($resource, $mode = 'r')
     {
         $error = null;
