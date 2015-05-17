@@ -32,6 +32,9 @@
     "phpunit/PHPUnit": "3.7.*",
     "squizlabs/php_codesniffer": "1.5.*"
   },
+  "provide": {
+    "psr/http-message-implementation": "0.11"
+  },
   "autoload": {
     "psr-4": {
       "Phly\\Http\\": "src/"
