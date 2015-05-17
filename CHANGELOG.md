@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release..
 
+## 0.13.3 - TBD
+
+### Added
+
+- [#65](https://github.com/phly/http/pull/65) adds a "provides" section to
+  the `composer.json`, with the package `psr/http-message-implementation`,
+  which indicates a virtual package. Packages may list the virtual package as a
+  dependency, and this package, or any other PSR-7 implementation,  will then
+  fulfill it.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
 ## 0.13.2 - 2015-05-14
 
 ### Added
