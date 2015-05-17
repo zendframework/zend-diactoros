@@ -45,7 +45,8 @@
       "PhlyTest\\Http\\": "test/"
     },
     "files": [
-      "test/TestAsset/Functions.php"
+      "test/TestAsset/Functions.php",
+      "test/TestAsset/SapiResponse.php"
     ]
   }
 }

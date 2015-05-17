@@ -27,6 +27,13 @@ class Server
     private $callback;
 
     /**
+     * Response emitter to use; by default, uses Response\SapiEmitter.
+     *
+     * @var Response\EmitterInterface
+     */
+    private $emitter;
+
+    /**
      * @var ServerRequestInterface
      */
     private $request;
@@ -68,6 +75,16 @@ class Server
             throw new OutOfBoundsException('Cannot retrieve arbitrary properties from server');
         }
         return $this->{$name};
+    }
+
+    /**
+     * Set alternate response emitter to use.
+     *
+     * @param Response\EmitterInterface $emitter
+     */
+    public function setEmitter(Response\EmitterInterface $emitter)
+    {
+        $this->emitter = $emitter;
     }
 
     /**
@@ -148,84 +165,22 @@ class Server
         if (! $response instanceof ResponseInterface) {
             $response = $this->response;
         }
-        $this->send($response);
+        $this->getEmitter()->emit($response);
     }
 
     /**
-     * Send the response
+     * Retrieve the current response emitter.
      *
-     * If headers have not yet been sent, they will be.
-     *
-     * If any output buffering remains active, it will be flushed.
-     *
-     * Finally, the response body will be emitted.
-     *
-     * @param ResponseInterface $response
+     * If none has been registered, lazy-loads a Response\SapiEmitter.
+     * 
+     * @return Response\EmitterInterface
      */
-    private function send(ResponseInterface $response)
+    private function getEmitter()
     {
-        if (! headers_sent()) {
-            $this->sendHeaders($response);
+        if (! $this->emitter) {
+            $this->emitter = new Response\SapiEmitter();
         }
 
-        while (ob_get_level() >= $this->bufferLevel) {
-            ob_end_flush();
-        }
-
-        $this->bufferLevel = null;
-
-        echo $response->getBody();
-    }
-
-    /**
-     * Send response headers
-     *
-     * Sends the response status/reason, followed by all headers;
-     * header names are filtered to be word-cased.
-     *
-     * @param ResponseInterface $response
-     */
-    private function sendHeaders(ResponseInterface $response)
-    {
-        if ($response->getReasonPhrase()) {
-            header(sprintf(
-                'HTTP/%s %d %s',
-                $response->getProtocolVersion(),
-                $response->getStatusCode(),
-                $response->getReasonPhrase()
-            ));
-        } else {
-            header(sprintf(
-                'HTTP/%s %d',
-                $response->getProtocolVersion(),
-                $response->getStatusCode()
-            ));
-        }
-
-        foreach ($response->getHeaders() as $header => $values) {
-            $name  = $this->filterHeader($header);
-            $first = true;
-            foreach ($values as $value) {
-                header(sprintf(
-                    '%s: %s',
-                    $name,
-                    $value
-                ), $first);
-                $first = false;
-            }
-        }
-    }
-
-    /**
-     * Filter a header name to wordcase
-     *
-     * @param string $header
-     * @return string
-     */
-    private function filterHeader($header)
-    {
-        $filtered = str_replace('-', ' ', $header);
-        $filtered = ucwords($filtered);
-        return str_replace(' ', '-', $filtered);
+        return $this->emitter;
     }
 }
