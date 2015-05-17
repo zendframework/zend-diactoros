@@ -22,7 +22,8 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#66](https://github.com/phly/http/pull/66) updates the `Stream::attach()`
+  method docblock; the method is not inherited, so needed full documentation.
 
 ## 0.13.2 - 2015-05-14
 

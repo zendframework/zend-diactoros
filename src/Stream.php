@@ -87,7 +87,13 @@ class Stream implements StreamInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Attach a new stream/resource to the instance.
+     * 
+     * @param string|resource $resource 
+     * @param string $mode 
+     * @throws InvalidArgumentException for stream identifier that cannot be
+     *     cast to a resource
+     * @throws InvalidArgumentException for non-resource stream
      */
     public function attach($resource, $mode = 'r')
     {
