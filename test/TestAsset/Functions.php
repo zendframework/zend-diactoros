@@ -15,7 +15,6 @@
 
 namespace Phly\Http;
 
-
 /**
  * Store output artifacts
  */

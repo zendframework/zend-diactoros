@@ -290,7 +290,7 @@ trait RequestTrait
 
     /**
      * Retrieve the host from the URI instance
-     * 
+     *
      * @return string
      */
     private function getHostFromUri()
@@ -302,8 +302,8 @@ trait RequestTrait
 
     /**
      * Ensure header names and values are valid.
-     * 
-     * @param array $headers 
+     *
+     * @param array $headers
      * @throws InvalidArgumentException
      */
     private function assertHeaders(array $headers)

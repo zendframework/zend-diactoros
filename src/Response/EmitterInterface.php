@@ -17,8 +17,8 @@ interface EmitterInterface
      *
      * Implementations MAY raise exceptions if they are unable to emit the
      * response; e.g., if headers have already been sent.
-     * 
-     * @param ResponseInterface $response 
+     *
+     * @param ResponseInterface $response
      */
     public function emit(ResponseInterface $response);
 }

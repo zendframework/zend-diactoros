@@ -1,7 +1,6 @@
 <?php
 namespace Phly\Http;
 
-
 /**
  * Caching version of php://input
  */

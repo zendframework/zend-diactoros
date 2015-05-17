@@ -193,8 +193,8 @@ class UploadedFile implements UploadedFileInterface
 
     /**
      * Write internal stream to given path
-     * 
-     * @param string $path 
+     *
+     * @param string $path
      */
     private function writeFile($path)
     {

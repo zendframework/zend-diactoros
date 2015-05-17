@@ -11,8 +11,8 @@ class SapiEmitter implements EmitterInterface
      *
      * Emits the status line and headers via the header() function, and the
      * body content via the output buffer.
-     * 
-     * @param ResponseInterface $response 
+     *
+     * @param ResponseInterface $response
      * @param null|int $maxBufferLevel Maximum output buffering level to unwrap.
      */
     public function emit(ResponseInterface $response, $maxBufferLevel = null)
@@ -29,10 +29,10 @@ class SapiEmitter implements EmitterInterface
     /**
      * Emit the status line.
      *
-     * Emits the status line using the protocol version and status code from 
+     * Emits the status line using the protocol version and status code from
      * the response; if a reason phrase is availble, it, too, is emitted.
-     * 
-     * @param ResponseInterface $response 
+     *
+     * @param ResponseInterface $response
      */
     private function emitStatusLine(ResponseInterface $response)
     {
@@ -52,8 +52,8 @@ class SapiEmitter implements EmitterInterface
      * is an array with multiple values, ensures that each is sent
      * in such a way as to create aggregate headers (instead of replace
      * the previous).
-     * 
-     * @param ResponseInterface $response 
+     *
+     * @param ResponseInterface $response
      */
     private function emitHeaders(ResponseInterface $response)
     {
@@ -76,8 +76,8 @@ class SapiEmitter implements EmitterInterface
      *
      * Loops through the output buffer, flushing each, before emitting
      * the response body using `echo()`.
-     * 
-     * @param ResponseInterface $response 
+     *
+     * @param ResponseInterface $response
      */
     private function emitBody(ResponseInterface $response, $maxBufferLevel)
     {

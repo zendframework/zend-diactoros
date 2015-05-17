@@ -88,9 +88,9 @@ class Stream implements StreamInterface
 
     /**
      * Attach a new stream/resource to the instance.
-     * 
-     * @param string|resource $resource 
-     * @param string $mode 
+     *
+     * @param string|resource $resource
+     * @param string $mode
      * @throws InvalidArgumentException for stream identifier that cannot be
      *     cast to a resource
      * @throws InvalidArgumentException for non-resource stream

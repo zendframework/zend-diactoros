@@ -172,7 +172,7 @@ class Server
      * Retrieve the current response emitter.
      *
      * If none has been registered, lazy-loads a Response\SapiEmitter.
-     * 
+     *
      * @return Response\EmitterInterface
      */
     private function getEmitter()
