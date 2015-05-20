@@ -26,14 +26,14 @@
   },
   "require": {
     "php": ">=5.4.8",
-    "psr/http-message": "^0.11"
+    "psr/http-message": "~1.0"
   },
   "require-dev": {
     "phpunit/PHPUnit": "3.7.*",
     "squizlabs/php_codesniffer": "1.5.*"
   },
   "provide": {
-    "psr/http-message-implementation": "^0.11"
+    "psr/http-message-implementation": "~1.0.0"
   },
   "autoload": {
     "psr-4": {

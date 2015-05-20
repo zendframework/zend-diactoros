@@ -24,6 +24,8 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - [#66](https://github.com/phly/http/pull/66) updates the `Stream::attach()`
   method docblock; the method is not inherited, so needed full documentation.
+- [#68](https://github.com/phly/http/pull/68) updates the `psr/http-message`
+  requirement to `~1.0`, as PSR-7 is now accepted!
 
 ## 0.13.2 - 2015-05-14
 
