@@ -2,6 +2,39 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release..
 
+## 0.14.0 - TBD
+
+### Added
+
+- [#67](https://github.com/phly/http/pull/67) adds two new feature:
+  - Response emitters. `Phly\Http\Response\EmitterInterface` defines the
+    contract for emitters, with the single method `emit()`. A single
+    concrete emitter is provided, `Phly\Http\Response\SapiEmitter`.
+    `Phly\Http\Server` now composes an emitter, using the `SapiEmitter` by
+    default.
+  - Serializers. `Phly\Http\Request\Serializer` and
+    `Phly\Http\Response\Serializer` provide the following static methods:
+    - `fromString($message)` will parse the given message string and return the
+      appropriate message instance.
+    - `fromStream(Psr\Http\Message\StreamInterface $stream)` will parse the
+      given message stream and return the appropriate message instance.
+    - `toString(Psr\Http\Message\RequestInterface|Psr\Http\MessageResponseInterface $message)`
+      will return a string representation of the given message instance.
+- A `CONTRIBUTING.md` file was added.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Documentation was updated to ensure all components of the package are
+  documented. Documentation that duplicates PSR-7 was removed.
+
 ## 0.13.3 - 2015-05-20
 
 ### Added
