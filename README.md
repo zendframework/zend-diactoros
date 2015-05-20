@@ -26,13 +26,6 @@ $ composer require phly/http
 
 - `psr/http-message`, which defines interfaces for HTTP messages, including requests and responses. `phly/http` provides implementations of each of these.
 
-Contributing
-------------
-
-- Please write unit tests for any features or bug reports you have.
-- Please run unit tests before opening a pull request. You can do so using `./vendor/bin/phpunit`.
-- Please run CodeSniffer before opening a pull request, and correct any issues. Use the following to run it: `./vendor/bin/phpcs --standard=PSR2 --ignore=test/Bootstrap.php src test`.
-
 Usage
 -----
 
@@ -213,23 +206,8 @@ class Request
         $body = 'php://memory',
         array $headers = []
     );
-    public function getRequestTarget();
-    public function getMethod();
-    public function getUri();
-    public function getProtocolVersion();
-    public function getBody();
-    public function hasHeader($header);
-    public function getHeader($header);
-    public function getHeaderLines($header);
-    public function getHeaders();
-    public function withRequestTarget($requestTarget);
-    public function withMethod($method);
-    public function withUri(Psr\Http\Message\UriInterface $uri);
-    public function withProtocolVersion($version);
-    public function withHeader($header, $value);
-    public function withAddedHeader($header, $value);
-    public function withoutHeader($header);
-    public function withBody(Psr\Http\Message\StreamableInterface $body);
+
+    // See psr/http-message's RequestInterface for other methods
 }
 ```
 
@@ -250,41 +228,12 @@ class ServerRequest
         $body = 'php://input',
         array $headers = []
     );
-    public function getRequestTarget();
-    public function getMethod();
-    public function getUri();
-    public function getProtocolVersion();
-    public function hasHeader($header);
-    public function getHeader($header);
-    public function getHeaderLines($header);
-    public function getHeaders();
-    public function getCookieParams();
-    public function getQueryParams();
-    public function getBody();
-    public function getParsedBody();
-    public function getAttribute($attribute, $default = NULL);
-    public function getAttributes();
-    public function getServerParams();
-    public function getFileParams();
-    public function hasHeader($header);
 
-    public function withRequestTarget($requestTarget);
-    public function withMethod($method);
-    public function withUri(Psr\Http\Message\UriInterface $uri);
-    public function withProtocolVersion($version);
-    public function withHeader($header, $value);
-    public function withAddedHeader($header, $value);
-    public function withoutHeader($header);
-    public function withCookieParams(array $cookies);
-    public function withQueryParams(array $query);
-    public function withBody(Psr\Http\Message\StreamableInterface $stream);
-    public function withParsedBody(array $params);
-    public function withAttribute($attribute, $value);
-    public function withoutAttribute($attribute);
+    // See psr/http-message's ServerRequestInterface for other methods.
 }
 ```
 
-The `ServerRequest` is immutable. Any methods that would change state -- those prefixed with `with` and `without` -- all return a new instance with the changes requested. Two input sources, server and file parameters, are considered completely immutable, however, as they cannot be recalculated, and, rather, are the sources for other values.
+The `ServerRequest` is immutable. Any methods that would change state -- those prefixed with `with` and `without` -- all return a new instance with the changes requested. Server parameters are considered completely immutable, however, as they cannot be recalculated, and, rather, is a source for other values.
 
 ### Response Message
 
@@ -298,20 +247,8 @@ class Response
         $statusCode = 200,
         array $headers = []
     );
-    public function getProtocolVersion();
-    public function getStatusCode();
-    public function getReasonPhrase();
-    public function getHeader($header);
-    public function getHeaderLines($header);
-    public function getHeaders();
-    public function getBody();
-    public function hasHeader($header);
-    public function withProtocolVersion($version);
-    public function withStatus($code, $reasonPhrase = NULL);
-    public function withHeader($header, $value);
-    public function withAddedHeader($header, $value);
-    public function withoutHeader($header);
-    public function withBody(Psr\Http\Message\StreamableInterface $body);
+
+    // See psr/http-message's ResponseInterface for other methods
 }
 ```
 
@@ -346,22 +283,8 @@ $request = RequestFactory::fromGlobals(
 class Uri
 {
     public function __construct($uri = '');
-    public function getScheme();
-    public function getAuthority();
-    public function getUserInfo();
-    public function getHost();
-    public function getPort();
-    public function getPath();
-    public function getQuery();
-    public function getFragment();
-    public function withScheme($scheme);
-    public function withUserInfo($user, $password = null);
-    public function withHost($host);
-    public function withPort($port);
-    public function withPath($path);
-    public function withQuery($query);
-    public function withFragment($fragment);
-    public function __toString();
+
+    // See psr/http-message's UriInterface for other methods.
 }
 ```
 
@@ -369,7 +292,7 @@ Like the various message objects, URIs are immutable. Any methods that would cha
 
 ### Stream
 
-`Phly\Http\Stream` is an implementation of `Psr\Http\Message\StreamableInterface`, and provides a number of facilities around manipulating the composed PHP stream resource. The constructor accepts a stream, which may be either:
+`Phly\Http\Stream` is an implementation of `Psr\Http\Message\StreamInterface`, and provides a number of facilities around manipulating the composed PHP stream resource. The constructor accepts a stream, which may be either:
 
 - a stream identifier; e.g., `php://input`, a filename, etc.
 - a PHP stream resource
@@ -379,6 +302,12 @@ If a stream identifier is provided, an optional second parameter may be provided
 `ServerRequest` objects by default use a `php://input` stream set to read-only; `Response` objects by default use a `php://memory` with a mode of `wb+`, allowing binary read/write access.
 
 In most cases, you will not interact with the Stream object directly.
+
+### UploadedFile
+
+`Phly\Http\UploadedFile` is an implementation of `Psr\Http\Message\UploadedFileInterface`, and provides abstraction around a single uploaded file, including behavior for interacting with it as a stream or moving it to a filesystem location.
+
+In most cases, you will only use the methods defined in the `UploadedFileInterface`.
 
 ### Server
 
@@ -405,6 +334,7 @@ class Server
         Psr\Http\Message\ServerRequestInterface $request,
         Psr\Http\Message\ResponseInterface $response = null
     );
+    public function setEmitter(Response\EmitterInterface $emitter);
     public function listen(callable $finalHandler = null);
 }
 ```
@@ -412,3 +342,17 @@ class Server
 You can create an instance of the `Server` using any of the constructor, `createServer()`, or `createServerFromRequest()` methods. If you wish to use the default request and response implementations, `createServer($middleware, $_SERVER, $_GET, $_POST, $_COOKIE, $_FILES)` is the recommended option, as this method will also marshal the `ServerRequest` object based on the PHP request environment.  If you wish to use your own implementations, pass them to the constructor or `createServerFromRequest()` method (the latter will create a default `Response` instance if you omit it).
 
 `listen()` executes the callback. If a `$finalHandler` is provided, it will be passed as the third argument to the `$callback` registered with the server.
+
+## Emitting responses
+
+If you are using a non-SAPI PHP implementation and wish to use the `Server` class, or if you do not want to use the `Server` implementation but want to emit a response, this package provides an interface, `Phly\Http\Response\EmitterInterface`, defining a method `emit()` for emitting the response. A single implementation is currently available, `Phly\Http\Response\SapiEmitter`, which will use the native PHP functions `header()` and `echo` in order to emit the response. If you are using a non-SAPI implementation, you will need to create your own `EmitterInterface` implementation.
+
+## Serialization
+
+At times, it's useful to either create a string representation of a message (serialization), or to cast a string or stream message to an object (deserialization). This package provides features for this in `Phly\Http\Request\Serializer` and `Phly\Http\Response\Serializer`; each provides the following static methods:
+
+- `fromString($message)` will create either a `Request` or `Response` instance (based on the serializer used) from the string message.
+- `fromStream(Psr\Http\Message\StreamInterface $stream)` will create either a `Request` or `Response` instance (based on the serializer used) from the provided stream.
+- `toString(Psr\Http\Message\RequestInterface|Psr\Http\Message\ResponseInterface $message)` will create either a string from the provided message.
+
+The deserialization methods (`from*()`) will raise exceptions if errors occur while parsing the message. The serialization methods (`toString()`) will raise exceptions if required data for serialization is not present in the message instance.

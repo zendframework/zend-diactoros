@@ -30,7 +30,7 @@
   },
   "require-dev": {
     "phpunit/PHPUnit": "3.7.*",
-    "squizlabs/php_codesniffer": "1.5.*"
+    "squizlabs/php_codesniffer": "~2.0"
   },
   "provide": {
     "psr/http-message-implementation": "~1.0.0"
