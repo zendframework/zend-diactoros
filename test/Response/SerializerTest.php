@@ -176,4 +176,33 @@ class SerializerTest extends TestCase
         $this->setExpectedException('UnexpectedValueException', $exceptionMessage);
         $response = Serializer::fromString($message);
     }
+
+    public function testFromStreamThrowsExceptionWhenStreamIsNotReadable()
+    {
+        $this->setExpectedException('InvalidArgumentException');
+        $stream = $this
+            ->getMockBuilder('Psr\Http\Message\StreamInterface')
+            ->getMock();
+
+        $stream->expects($this->once())->method('isReadable')
+            ->will($this->returnValue(false));
+
+        Serializer::fromStream($stream);
+    }
+
+    public function testFromStreamThrowsExceptionWhenStreamIsNotSeekable()
+    {
+        $this->setExpectedException('InvalidArgumentException');
+        $stream = $this
+            ->getMockBuilder('Psr\Http\Message\StreamInterface')
+            ->getMock();
+
+        $stream->expects($this->once())->method('isReadable')
+            ->will($this->returnValue(true));
+
+        $stream->expects($this->once())->method('isSeekable')
+            ->will($this->returnValue(false));
+
+        Serializer::fromStream($stream);
+    }
 }
