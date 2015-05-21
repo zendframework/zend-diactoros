@@ -14,14 +14,6 @@ use Psr\Http\Message\ResponseInterface;
 class Server
 {
     /**
-     * Level of output buffering at start of listen cycle; never flush more
-     * than this.
-     *
-     * @var int
-     */
-    private $bufferLevel;
-
-    /**
      * @var callable
      */
     private $callback;
@@ -159,13 +151,15 @@ class Server
     public function listen(callable $finalHandler = null)
     {
         $callback = $this->callback;
+
         ob_start();
-        $this->bufferLevel = ob_get_level();
+        $bufferLevel = ob_get_level();
+
         $response = $callback($this->request, $this->response, $finalHandler);
         if (! $response instanceof ResponseInterface) {
             $response = $this->response;
         }
-        $this->getEmitter()->emit($response);
+        $this->getEmitter()->emit($response, $bufferLevel);
     }
 
     /**

@@ -105,6 +105,7 @@ class ServerTest extends TestCase
 
         $this->expectOutputString('FOOBAR');
         $server->listen();
+        ob_end_flush();
 
         $this->assertContains('HTTP/1.1 200 OK', HeaderStack::stack());
         $this->assertContains('Content-Type: text/plain', HeaderStack::stack());
@@ -130,6 +131,7 @@ class ServerTest extends TestCase
 
         $this->expectOutputString('FOOBAR');
         $server->listen();
+        ob_end_flush();
 
         $this->assertContains('HTTP/1.1 299', HeaderStack::stack());
         $this->assertContains('Content-Type: text/plain', HeaderStack::stack());
@@ -154,6 +156,7 @@ class ServerTest extends TestCase
 
         $this->expectOutputString('100%');
         $server->listen();
+        ob_end_flush();
 
         $this->assertContains('HTTP/1.1 200 OK', HeaderStack::stack());
         $this->assertContains('Content-Type: text/plain', HeaderStack::stack());
@@ -182,6 +185,7 @@ class ServerTest extends TestCase
         $server = Server::createServer($callback, $server, [], [], [], []);
 
         $server->listen();
+        ob_end_flush();
 
         $this->assertContains('HTTP/1.1 200 OK', HeaderStack::stack());
         $this->assertContains('Content-Type: text/plain', HeaderStack::stack());
@@ -248,6 +252,7 @@ class ServerTest extends TestCase
             $this->response
         );
         $server->listen($final);
+        ob_end_flush();
         $this->assertTrue($invoked);
     }
 }
