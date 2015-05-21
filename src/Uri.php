@@ -510,10 +510,10 @@ class Uri implements UriInterface
 
     /**
      * Filter a query string to ensure it is propertly encoded.
-     * 
+     *
      * Ensures that the values in the query string are properly urlencoded.
-     * 
-     * @param string $query 
+     *
+     * @param string $query
      * @return string
      */
     private function filterQuery($query)
@@ -541,8 +541,8 @@ class Uri implements UriInterface
 
     /**
      * Split a query value into a key/value tuple.
-     * 
-     * @param string $value 
+     *
+     * @param string $value
      * @return array A value with exactly two elements, key and value
      */
     private function splitQueryValue($value)
@@ -556,8 +556,8 @@ class Uri implements UriInterface
 
     /**
      * Filter a fragment value to ensure it is properly encoded.
-     * 
-     * @param null|string $fragment 
+     *
+     * @param null|string $fragment
      * @return string
      */
     private function filterFragment($fragment)

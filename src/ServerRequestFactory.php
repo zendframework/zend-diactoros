@@ -19,7 +19,7 @@ abstract class ServerRequestFactory
 {
     /**
      * Function to use to get apache request headers; present only to simplify mocking.
-     * 
+     *
      * @var callable
      */
     private static $apacheRequestHeaders = 'apache_request_headers';
@@ -452,8 +452,8 @@ abstract class ServerRequestFactory
      *
      * Loops through all nested files and returns a normalized array of
      * UploadedFileInterface instances.
-     * 
-     * @param array $files 
+     *
+     * @param array $files
      * @return UploadedFileInterface[]
      */
     private static function normalizeNestedFileSpec(array $files)

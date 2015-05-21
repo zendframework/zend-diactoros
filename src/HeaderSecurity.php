@@ -136,9 +136,9 @@ final class HeaderSecurity
     
     /**
      * Assert whether or not a header name is valid.
-     * 
+     *
      * @see http://tools.ietf.org/html/rfc7230#section-3.2
-     * @param mixed $name 
+     * @param mixed $name
      * @throws InvalidArgumentException
      */
     public static function assertValidName($name)

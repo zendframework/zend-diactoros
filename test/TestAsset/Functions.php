@@ -8,15 +8,12 @@
  * - headers_sent(): we want to always return false so that headers will be
  *   emitted, and we can test to see their values.
  * - header(): we want to aggregate calls to this function.
- * - printf(): we want to aggregate calls to this function as well; we cannot
- *   do the same with echo as it's a language construct, not a function.
  *
- * The Output class then aggregates that information for us, and the test
+ * The HeaderStack class then aggregates that information for us, and the test
  * harness resets the values pre and post test.
  */
 
 namespace Phly\Http;
-
 
 /**
  * Store output artifacts

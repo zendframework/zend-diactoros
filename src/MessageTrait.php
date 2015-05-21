@@ -365,7 +365,7 @@ trait MessageTrait
 
     /**
      * Assert that the provided header values are valid.
-     * 
+     *
      * @see http://tools.ietf.org/html/rfc7230#section-3.2
      * @param string[] $values
      * @throws InvalidArgumentException

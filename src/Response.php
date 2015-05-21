@@ -180,8 +180,8 @@ class Response implements ResponseInterface
 
     /**
      * Ensure header names and values are valid.
-     * 
-     * @param array $headers 
+     *
+     * @param array $headers
      * @throws InvalidArgumentException
      */
     private function assertHeaders(array $headers)
