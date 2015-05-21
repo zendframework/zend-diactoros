@@ -1,26 +1,37 @@
+sudo: false
+
 language: php
 
-php:
-  - 5.4
-  - 5.5
-  - 5.6
-  - hhvm
-
 matrix:
+  fast_finish: true
+  include:
+    - php: 5.4
+    - php: 5.5
+    - php: 5.6
+      env:
+        - EXECUTE_COVERAGE=true
+        - EXECUTE_CS_CHECK=true
+    - php: 7
+    - php: hhvm 
   allow_failures:
+    - php: 7
     - php: hhvm
+
+before_install:
+  - if [[ $EXECUTE_COVERAGE != 'true' ]]; then phpenv config-rm xdebug.ini || return 0 ; fi
 
 before_script:
   - composer self-update
   - composer install --dev --prefer-source
 
 script:
-  - ./vendor/bin/phpunit --coverage-clover=coverage.clover
-  - ./vendor/bin/phpcs --standard=PSR2 --ignore=test/Bootstrap.php src test
+  - if [[ $EXECUTE_COVERAGE == 'true' ]]; then ./vendor/bin/phpunit --coverage-clover=coverage.clover ; fi
+  - if [[ $EXECUTE_COVERAGE != 'true' ]]; then ./vendor/bin/phpunit ; fi
+  - if [[ $EXECUTE_CS_CHECK == 'true' ]]; then ./vendor/bin/phpcs --standard=PSR2 --ignore=test/Bootstrap.php src test ; fi
 
 after_script:
-  - wget https://scrutinizer-ci.com/ocular.phar
-  - php ocular.phar code-coverage:upload --format=php-clover ./test/coverage.clover
+  - if [[ $EXECUTE_COVERAGE == 'true' ]]; then wget https://scrutinizer-ci.com/ocular.phar ; fi
+  - if [[ $EXECUTE_COVERAGE == 'true' ]]; then php ocular.phar code-coverage:upload --format=php-clover ./test/coverage.clover ; fi
 
 notifications:
   email: true
