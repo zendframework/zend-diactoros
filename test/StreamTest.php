@@ -186,11 +186,6 @@ class StreamTest extends TestCase
         $this->assertTrue($stream->isSeekable());
     }
 
-    public function testIsSeekableRaisesExceptionForNonSeekableStreams()
-    {
-        $this->markTestIncomplete('Do not know how to create a non-seekable stream');
-    }
-
     public function testIsSeekableReturnsFalseForDetachedStreams()
     {
         $this->tmpnam = tempnam(sys_get_temp_dir(), 'phly');
