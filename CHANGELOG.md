@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release..
 
+## 0.14.1 - TBD
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#74](https://github.com/phly/http/pull/74) updates PHPUnit to >= 4.6.
+- [#75](https://github.com/phly/http/pull/75) updates the `Server` tests to
+  flush output after calls to `listen()` so that PHPUnit will see the output.
+  Additionally, it modifies `Server` to pass the current output buffer level
+  to the emitter.
+
 ## 0.14.0 - 2015-05-21
 
 ### Added
