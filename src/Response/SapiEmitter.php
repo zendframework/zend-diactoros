@@ -86,6 +86,7 @@ class SapiEmitter implements EmitterInterface
      * the response body using `echo()`.
      *
      * @param ResponseInterface $response
+     * @param int $maxBufferLevel
      */
     private function emitBody(ResponseInterface $response, $maxBufferLevel)
     {

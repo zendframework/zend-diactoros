@@ -43,7 +43,7 @@ final class Serializer extends AbstractSerializer
      */
     public static function fromStream(StreamInterface $stream)
     {
-        if (! $stream->isReadable() || ! $stream->isSeekable()) {
+        if (!$stream->isReadable() || !$stream->isSeekable()) {
             throw new InvalidArgumentException('Message stream must be both readable and seekable');
         }
 
@@ -70,10 +70,10 @@ final class Serializer extends AbstractSerializer
         $body         = (string) $response->getBody();
         $format       = 'HTTP/%s %d%s%s%s';
 
-        if (! empty($headers)) {
+        if (!empty($headers)) {
             $headers = "\r\n" . $headers;
         }
-        if (! empty($body)) {
+        if (!empty($body)) {
             $headers .= "\r\n\r\n";
         }
 
@@ -98,7 +98,7 @@ final class Serializer extends AbstractSerializer
     {
         $line = self::getLine($stream);
 
-        if (! preg_match(
+        if (!preg_match(
             '#^HTTP/(?P<version>[1-9]\d*\.\d) (?P<status>[1-5]\d{2})(\s+(?P<reason>.+))?$#',
             $line,
             $matches

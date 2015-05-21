@@ -27,7 +27,7 @@ class Request implements RequestInterface
      * @param null|string $method HTTP method for the request, if any.
      * @param string|resource|StreamInterface $body Message body, if any.
      * @param array $headers Headers for the message, if any.
-     * @throws InvalidArgumentException for any invalid value.
+     * @throws \InvalidArgumentException for any invalid value.
      */
     public function __construct($uri = null, $method = null, $body = 'php://memory', array $headers = [])
     {
@@ -40,9 +40,7 @@ class Request implements RequestInterface
     public function getHeaders()
     {
         $headers = $this->headers;
-        if (! $this->hasHeader('host')
-            && ($this->uri && $this->uri->getHost())
-        ) {
+        if (!$this->hasHeader('host') && ($this->uri && $this->uri->getHost())) {
             $headers['Host'] = [$this->getHostFromUri()];
         }
 
@@ -54,10 +52,8 @@ class Request implements RequestInterface
      */
     public function getHeader($header)
     {
-        if (! $this->hasHeader($header)) {
-            if (strtolower($header) === 'host'
-                && ($this->uri && $this->uri->getHost())
-            ) {
+        if (!$this->hasHeader($header)) {
+            if (strtolower($header) === 'host' && ($this->uri && $this->uri->getHost())) {
                 return [$this->getHostFromUri()];
             }
 
@@ -65,9 +61,9 @@ class Request implements RequestInterface
         }
 
         $header = $this->headerNames[strtolower($header)];
+        $value  = $this->headers[$header];
+        $value  = is_array($value) ? $value : [$value];
 
-        $value = $this->headers[$header];
-        $value = is_array($value) ? $value : [$value];
         return $value;
     }
 }

@@ -125,15 +125,14 @@ abstract class ServerRequestFactory
      *
      * Pre-processes and returns the $_SERVER superglobal.
      *
+     * @param  array $server
      * @return array
      */
     public static function normalizeServer(array $server)
     {
         // This seems to be the only way to get the Authorization header on Apache
         $apacheRequestHeaders = self::$apacheRequestHeaders;
-        if (isset($server['HTTP_AUTHORIZATION'])
-            || ! is_callable($apacheRequestHeaders)
-        ) {
+        if (isset($server['HTTP_AUTHORIZATION']) || !is_callable($apacheRequestHeaders)) {
             return $server;
         }
 
@@ -227,7 +226,6 @@ abstract class ServerRequestFactory
      * @param array $server
      * @param MessageInterface $request
      * @return Uri
-     * @deprecated as of 0.7.0; use marshalUriFromServer() instead.
      */
     public static function marshalUri(array $server, MessageInterface $request)
     {
@@ -262,9 +260,9 @@ abstract class ServerRequestFactory
         self::marshalHostAndPortFromHeaders($accumulator, $server, $headers);
         $host = $accumulator->host;
         $port = $accumulator->port;
-        if (! empty($host)) {
+        if (!empty($host)) {
             $uri = $uri->withHost($host);
-            if (! empty($port)) {
+            if (!empty($port)) {
                 $uri = $uri->withPort($port);
             }
         }
@@ -275,6 +273,7 @@ abstract class ServerRequestFactory
 
         // URI query
         $query = '';
+
         if (isset($server['QUERY_STRING'])) {
             $query = ltrim($server['QUERY_STRING'], '?');
         }
@@ -287,7 +286,8 @@ abstract class ServerRequestFactory
     /**
      * Marshal the host and port from HTTP headers and/or the PHP environment
      *
-     * @param array $server
+     * @param stdClass         $accumulator
+     * @param array            $server
      * @param MessageInterface $request
      * @return array Array with two members, host and port, at indices 0 and 1, respectively
      * @deprecated as of 0.7.0; use marshalHostAndPortFromHeaders() instead.
@@ -300,17 +300,19 @@ abstract class ServerRequestFactory
     /**
      * Marshal the host and port from HTTP headers and/or the PHP environment
      *
-     * @param array $server
-     * @param array $headers
-     * @return array Array with two members, host and port, at indices 0 and 1, respectively
+     * @param stdClass $accumulator
+     * @param array    $server
+     * @param array    $headers
+     * @return void
      */
     public static function marshalHostAndPortFromHeaders(stdClass $accumulator, array $server, array $headers)
     {
         if (self::getHeader('host', $headers, false)) {
-            return self::marshalHostAndPortFromHeader($accumulator, self::getHeader('host', $headers));
+            self::marshalHostAndPortFromHeader($accumulator, self::getHeader('host', $headers));
+            return;
         }
 
-        if (! isset($server['SERVER_NAME'])) {
+        if (!isset($server['SERVER_NAME'])) {
             return;
         }
 
@@ -319,7 +321,7 @@ abstract class ServerRequestFactory
             $accumulator->port = (int) $server['SERVER_PORT'];
         }
 
-        if (! isset($server['SERVER_ADDR']) || ! preg_match('/^\[[0-9a-fA-F\:]+\]$/', $accumulator->host)) {
+        if (!isset($server['SERVER_ADDR']) || !preg_match('/^\[[0-9a-fA-F\:]+\]$/', $accumulator->host)) {
             return;
         }
 
@@ -347,7 +349,8 @@ abstract class ServerRequestFactory
         // (double slash problem).
         $iisUrlRewritten = self::get('IIS_WasUrlRewritten', $server);
         $unencodedUrl    = self::get('UNENCODED_URL', $server, '');
-        if ('1' == $iisUrlRewritten && ! empty($unencodedUrl)) {
+
+        if ('1' == $iisUrlRewritten && !empty($unencodedUrl)) {
             return $unencodedUrl;
         }
 
@@ -381,13 +384,14 @@ abstract class ServerRequestFactory
      * Strip the query string from a path
      *
      * @param mixed $path
-     * @return void
+     * @return string
      */
     public static function stripQueryString($path)
     {
         if (($qpos = strpos($path, '?')) !== false) {
             return substr($path, 0, $qpos);
         }
+
         return $path;
     }
 
@@ -424,7 +428,7 @@ abstract class ServerRequestFactory
     {
         $accumulator->host = '[' . $server['SERVER_ADDR'] . ']';
         $accumulator->port = $accumulator->port ?: 80;
-        if ($accumulator->port . ']' == substr($accumulator->host, strrpos($accumulator->host, ':')+1)) {
+        if ($accumulator->port . ']' === substr($accumulator->host, strrpos($accumulator->host, ':') + 1)) {
             // The last digit of the IPv6-Address has been taken as port
             // Unset the port so the default port can be used
             $accumulator->port = null;
@@ -464,9 +468,8 @@ abstract class ServerRequestFactory
      * @param array $files
      * @return UploadedFileInterface[]
      */
-    private static function normalizeNestedFileSpec(array $files)
+    private static function normalizeNestedFileSpec(array $files = [])
     {
-        $files = [];
         foreach (array_keys($files['tmp_name']) as $key) {
             $spec = [
                 'tmp_name' => $files['tmp_name'][$key],
@@ -477,6 +480,7 @@ abstract class ServerRequestFactory
             ];
             $files[$key] = self::createUploadedFileFromSpec($spec);
         }
+
         return $files;
     }
 }

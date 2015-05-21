@@ -112,7 +112,7 @@ class Response implements ResponseInterface
      */
     public function __construct($body = 'php://memory', $status = 200, array $headers = [])
     {
-        if (! is_string($body) && ! is_resource($body) && ! $body instanceof StreamInterface) {
+        if (!is_string($body) && !is_resource($body) && !$body instanceof StreamInterface) {
             throw new InvalidArgumentException(
                 'Stream must be a string stream resource identifier, '
                 . 'an actual stream resource, '
@@ -145,9 +145,7 @@ class Response implements ResponseInterface
      */
     public function getReasonPhrase()
     {
-        if (! $this->reasonPhrase
-            && isset($this->phrases[$this->statusCode])
-        ) {
+        if (!$this->reasonPhrase && isset($this->phrases[$this->statusCode])) {
             $this->reasonPhrase = $this->phrases[$this->statusCode];
         }
 
@@ -160,7 +158,7 @@ class Response implements ResponseInterface
     public function withStatus($code, $reasonPhrase = '')
     {
         $this->validateStatus($code);
-        $new = clone $this;
+        $new               = clone $this;
         $new->statusCode   = (int) $code;
         $new->reasonPhrase = $reasonPhrase;
         return $new;
@@ -174,7 +172,7 @@ class Response implements ResponseInterface
      */
     private function validateStatus($code)
     {
-        if (! is_numeric($code)
+        if (!is_numeric($code)
             || is_float($code)
             || $code < 100
             || $code >= 600
