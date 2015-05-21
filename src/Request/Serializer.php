@@ -1,6 +1,7 @@
 <?php
 namespace Phly\Http\Request;
 
+use InvalidArgumentException;
 use Phly\Http\AbstractSerializer;
 use Phly\Http\Request;
 use Phly\Http\Stream;
@@ -43,7 +44,7 @@ final class Serializer extends AbstractSerializer
      */
     public static function fromStream(StreamInterface $stream)
     {
-        if (! $stream->isReadable() && ! $stream->isSeekable()) {
+        if (! $stream->isReadable() || ! $stream->isSeekable()) {
             throw new InvalidArgumentException('Message stream must be both readable and seekable');
         }
 

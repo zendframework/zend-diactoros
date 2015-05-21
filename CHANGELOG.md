@@ -18,6 +18,8 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
+- [#72](https://github.com/phly/http/pull/72) ensures that streams used to
+  serialize request/response instances are both readable *and* seekable.
 - [#74](https://github.com/phly/http/pull/74) updates PHPUnit to >= 4.6.
 - [#75](https://github.com/phly/http/pull/75) updates the `Server` tests to
   flush output after calls to `listen()` so that PHPUnit will see the output.
