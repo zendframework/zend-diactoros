@@ -99,11 +99,11 @@ class ServerRequestTest extends TestCase
 
     public function provideMethods()
     {
-        return array(
-            array('POST', 'POST'),
-            array('GET', 'GET'),
-            array(null, 'GET'),
-        );
+        return [
+            ['POST', 'POST'],
+            ['GET', 'GET'],
+            [null, 'GET'],
+        ];
     }
 
     /**
