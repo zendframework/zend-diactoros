@@ -80,10 +80,10 @@ final class Serializer extends AbstractSerializer
         $body    = (string) $request->getBody();
         $format  = '%s %s HTTP/%s%s%s';
 
-        if (! empty($headers)) {
+        if (!empty($headers)) {
             $headers = "\r\n" . $headers;
         }
-        if (! empty($body)) {
+        if (!empty($body)) {
             $headers .= "\r\n\r\n";
         }
 
@@ -111,7 +111,7 @@ final class Serializer extends AbstractSerializer
     {
         $requestLine = self::getLine($stream);
 
-        if (! preg_match(
+        if (!preg_match(
             '#^(?P<method>[!\#$%&\'*+.^_`|~a-zA-Z0-9-]+) (?P<target>[^\s]+) HTTP/(?P<version>[1-9]\d*\.\d+)$#',
             $requestLine,
             $matches

@@ -71,7 +71,7 @@ class Server
      */
     public function __get($name)
     {
-        if (! property_exists($this, $name)) {
+        if (!property_exists($this, $name)) {
             throw new OutOfBoundsException('Cannot retrieve arbitrary properties from server');
         }
         return $this->{$name};
@@ -138,7 +138,7 @@ class Server
         ServerRequestInterface $request,
         ResponseInterface $response = null
     ) {
-        if (! $response) {
+        if (!$response) {
             $response = new Response();
         }
         return new static($callback, $request, $response);
@@ -164,7 +164,7 @@ class Server
         $bufferLevel = ob_get_level();
 
         $response = $callback($this->request, $this->response, $finalHandler);
-        if (! $response instanceof ResponseInterface) {
+        if (!$response instanceof ResponseInterface) {
             $response = $this->response;
         }
         $this->getEmitter()->emit($response, $bufferLevel);
@@ -179,7 +179,7 @@ class Server
      */
     private function getEmitter()
     {
-        if (! $this->emitter) {
+        if (!$this->emitter) {
             $this->emitter = new Response\SapiEmitter();
         }
 

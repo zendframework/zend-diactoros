@@ -93,14 +93,14 @@ class Uri implements UriInterface
      */
     public function __construct($uri = '')
     {
-        if (! is_string($uri)) {
+        if (!is_string($uri)) {
             throw new InvalidArgumentException(sprintf(
                 'URI passed to constructor must be a string; received "%s"',
                 (is_object($uri) ? get_class($uri) : gettype($uri))
             ));
         }
 
-        if (! empty($uri)) {
+        if (!empty($uri)) {
             $this->parseUri($uri);
         }
     }
@@ -154,7 +154,7 @@ class Uri implements UriInterface
         }
 
         $authority = $this->host;
-        if (! empty($this->userInfo)) {
+        if (!empty($this->userInfo)) {
             $authority = $this->userInfo . '@' . $authority;
         }
 
@@ -248,7 +248,7 @@ class Uri implements UriInterface
             return clone $this;
         }
 
-        $new = clone $this;
+        $new           = clone $this;
         $new->userInfo = $info;
 
         return $new;
@@ -264,7 +264,7 @@ class Uri implements UriInterface
             return clone $this;
         }
 
-        $new = clone $this;
+        $new       = clone $this;
         $new->host = $host;
 
         return $new;
@@ -275,7 +275,7 @@ class Uri implements UriInterface
      */
     public function withPort($port)
     {
-        if (! (is_integer($port) || (is_string($port) && is_numeric($port)))) {
+        if (!is_numeric($port)) {
             throw new InvalidArgumentException(sprintf(
                 'Invalid port "%s" specified; must be an integer or integer string',
                 (is_object($port) ? get_class($port) : gettype($port))
@@ -296,7 +296,7 @@ class Uri implements UriInterface
             ));
         }
 
-        $new = clone $this;
+        $new       = clone $this;
         $new->port = $port;
 
         return $new;
@@ -307,7 +307,7 @@ class Uri implements UriInterface
      */
     public function withPath($path)
     {
-        if (! is_string($path)) {
+        if (!is_string($path)) {
             throw new InvalidArgumentException(
                 'Invalid path provided; must be a string'
             );
@@ -332,7 +332,7 @@ class Uri implements UriInterface
             return clone $this;
         }
 
-        $new = clone $this;
+        $new       = clone $this;
         $new->path = $path;
 
         return $new;
@@ -343,7 +343,7 @@ class Uri implements UriInterface
      */
     public function withQuery($query)
     {
-        if (! is_string($query)) {
+        if (!is_string($query)) {
             throw new InvalidArgumentException(
                 'Query string must be a string'
             );
@@ -362,7 +362,7 @@ class Uri implements UriInterface
             return clone $this;
         }
 
-        $new = clone $this;
+        $new        = clone $this;
         $new->query = $query;
 
         return $new;
@@ -380,7 +380,7 @@ class Uri implements UriInterface
             return clone $this;
         }
 
-        $new = clone $this;
+        $new           = clone $this;
         $new->fragment = $fragment;
 
         return $new;
@@ -388,6 +388,8 @@ class Uri implements UriInterface
 
     /**
      * Parse a URI into its parts, and set the properties
+     *
+     * @param string $uri
      */
     private function parseUri($uri)
     {
@@ -426,11 +428,11 @@ class Uri implements UriInterface
     {
         $uri = '';
 
-        if (! empty($scheme)) {
+        if (!empty($scheme)) {
             $uri .= sprintf('%s://', $scheme);
         }
 
-        if (! empty($authority)) {
+        if (!empty($authority)) {
             $uri .= $authority;
         }
 
@@ -463,15 +465,15 @@ class Uri implements UriInterface
      */
     private function isNonStandardPort($scheme, $host, $port)
     {
-        if (! $scheme) {
+        if (!$scheme) {
             return true;
         }
 
-        if (! $host || ! $port) {
+        if (!$host || !$port) {
             return false;
         }
 
-        return ! isset($this->allowedSchemes[$scheme]) || $port !== $this->allowedSchemes[$scheme];
+        return !isset($this->allowedSchemes[$scheme]) || $port !== $this->allowedSchemes[$scheme];
     }
 
     /**
@@ -490,7 +492,7 @@ class Uri implements UriInterface
             return '';
         }
 
-        if (! array_key_exists($scheme, $this->allowedSchemes)) {
+        if (!array_key_exists($scheme, $this->allowedSchemes)) {
             throw new InvalidArgumentException(sprintf(
                 'Unsupported scheme "%s"; must be any empty string or in the set (%s)',
                 $scheme,
@@ -526,17 +528,19 @@ class Uri implements UriInterface
      */
     private function filterQuery($query)
     {
-        if (! empty($query) && strpos($query, '?') === 0) {
+        if (!empty($query) && strpos($query, '?') === 0) {
             $query = substr($query, 1);
         }
 
         $parts = explode('&', $query);
         foreach ($parts as $index => $part) {
             list($key, $value) = $this->splitQueryValue($part);
+
             if ($value === null) {
                 $parts[$index] = $this->filterQueryOrFragment($key);
                 continue;
             }
+
             $parts[$index] = sprintf(
                 '%s=%s',
                 $this->filterQueryOrFragment($key),
@@ -556,9 +560,11 @@ class Uri implements UriInterface
     private function splitQueryValue($value)
     {
         $data = explode('=', $value, 2);
+
         if (1 === count($data)) {
             $data[] = null;
         }
+
         return $data;
     }
 
@@ -574,7 +580,7 @@ class Uri implements UriInterface
             $fragment = '';
         }
 
-        if (! empty($fragment) && strpos($fragment, '#') === 0) {
+        if (!empty($fragment) && strpos($fragment, '#') === 0) {
             $fragment = substr($fragment, 1);
         }
 

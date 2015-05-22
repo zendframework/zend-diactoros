@@ -73,7 +73,7 @@ trait RequestTrait
      */
     private function initialize($uri = null, $method = null, $body = 'php://memory', array $headers = [])
     {
-        if (! $uri instanceof UriInterface && ! is_string($uri) && null !== $uri) {
+        if (!$uri instanceof UriInterface && !is_string($uri) && null !== $uri) {
             throw new InvalidArgumentException(
                 'Invalid URI provided; must be null, a string, or a Psr\Http\Message\UriInterface instance'
             );
@@ -81,7 +81,7 @@ trait RequestTrait
 
         $this->validateMethod($method);
 
-        if (! is_string($body) && ! is_resource($body) && ! $body instanceof StreamInterface) {
+        if (!is_string($body) && !is_resource($body) && !$body instanceof StreamInterface) {
             throw new InvalidArgumentException(
                 'Body must be a string stream resource identifier, '
                 . 'an actual stream resource, '
@@ -124,7 +124,7 @@ trait RequestTrait
             return $this->requestTarget;
         }
 
-        if (! $this->uri) {
+        if (!$this->uri) {
             return '/';
         }
 
@@ -166,7 +166,7 @@ trait RequestTrait
             );
         }
 
-        $new = clone $this;
+        $new                = clone $this;
         $new->requestTarget = $requestTarget;
         return $new;
     }
@@ -199,7 +199,7 @@ trait RequestTrait
     public function withMethod($method)
     {
         $this->validateMethod($method);
-        $new = clone $this;
+        $new         = clone $this;
         $new->method = $method;
         return $new;
     }
@@ -245,14 +245,14 @@ trait RequestTrait
      */
     public function withUri(UriInterface $uri, $preserveHost = false)
     {
-        $new = clone $this;
+        $new      = clone $this;
         $new->uri = $uri;
 
         if ($preserveHost) {
             return $new;
         }
 
-        if (! $uri->getHost()) {
+        if (!$uri->getHost()) {
             return $new;
         }
 
@@ -272,14 +272,15 @@ trait RequestTrait
      *
      * @param null|string $method
      * @throws InvalidArgumentException on invalid HTTP method.
+     * @return void
      */
     private function validateMethod($method)
     {
         if (null === $method) {
-            return true;
+            return;
         }
 
-        if (! is_string($method)) {
+        if (!is_string($method)) {
             throw new InvalidArgumentException(sprintf(
                 'Unsupported HTTP method; must be a string, received %s',
                 (is_object($method) ? get_class($method) : gettype($method))
@@ -288,7 +289,7 @@ trait RequestTrait
 
         $method = strtoupper($method);
 
-        if (! in_array($method, $this->validMethods, true)) {
+        if (!in_array($method, $this->validMethods, true)) {
             throw new InvalidArgumentException(sprintf(
                 'Unsupported HTTP method "%s" provided',
                 $method

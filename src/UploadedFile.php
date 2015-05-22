@@ -60,40 +60,42 @@ class UploadedFile implements UploadedFileInterface
             $this->stream = new Stream($streamOrFile);
         }
 
-        if (! $this->file && ! $this->stream) {
-            if (! $streamOrFile instanceof StreamInterface) {
+        if (!$this->file && !$this->stream) {
+            if (!$streamOrFile instanceof StreamInterface) {
                 throw new InvalidArgumentException('Invalid stream or file provided for UploadedFile');
             }
+
             $this->stream = $streamOrFile;
         }
 
-        if (! is_int($size)) {
+        if (!is_int($size)) {
             throw new InvalidArgumentException('Invalid size provided for UploadedFile; must be an int');
         }
+
         $this->size = $size;
 
-        if (! is_int($errorStatus)
-            || 0 > $errorStatus
-            || 8 < $errorStatus
-        ) {
+        if (!is_int($errorStatus) || 0 > $errorStatus || 8 < $errorStatus) {
             throw new InvalidArgumentException(
                 'Invalid error status for UploadedFile; must be an UPLOAD_ERR_* constant'
             );
         }
+
         $this->error = $errorStatus;
 
-        if (null !== $clientFilename && ! is_string($clientFilename)) {
+        if (null !== $clientFilename && !is_string($clientFilename)) {
             throw new InvalidArgumentException(
                 'Invalid client filename provided for UploadedFile; must be null or a string'
             );
         }
+
         $this->clientFilename = $clientFilename;
 
-        if (null !== $clientMediaType && ! is_string($clientMediaType)) {
+        if (null !== $clientMediaType && !is_string($clientMediaType)) {
             throw new InvalidArgumentException(
                 'Invalid client media type provided for UploadedFile; must be null or a string'
             );
         }
+
         $this->clientMediaType = $clientMediaType;
     }
 
@@ -111,6 +113,7 @@ class UploadedFile implements UploadedFileInterface
         }
 
         $this->stream = new Stream($this->file);
+
         return $this->stream;
     }
 
@@ -126,7 +129,7 @@ class UploadedFile implements UploadedFileInterface
      */
     public function moveTo($targetPath)
     {
-        if (! is_string($targetPath)) {
+        if (!is_string($targetPath)) {
             throw new InvalidArgumentException(
                 'Invalid path provided for move operation; must be a string'
             );
@@ -212,7 +215,8 @@ class UploadedFile implements UploadedFileInterface
         }
 
         $this->stream->rewind();
-        while (! $this->stream->eof()) {
+
+        while (!$this->stream->eof()) {
             fwrite($handle, $this->stream->read(4096));
         }
 

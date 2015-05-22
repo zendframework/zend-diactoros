@@ -181,7 +181,7 @@ class ServerRequest implements ServerRequestInterface
      */
     public function getAttribute($attribute, $default = null)
     {
-        if (! array_key_exists($attribute, $this->attributes)) {
+        if (!array_key_exists($attribute, $this->attributes)) {
             return $default;
         }
 
@@ -252,7 +252,7 @@ class ServerRequest implements ServerRequestInterface
      * Set the body stream
      *
      * @param string|resource|StreamInterface $stream
-     * @return void
+     * @return StreamInterface
      */
     private function getStream($stream)
     {
@@ -260,7 +260,7 @@ class ServerRequest implements ServerRequestInterface
             return new PhpInputStream();
         }
 
-        if (! is_string($stream) && ! is_resource($stream) && ! $stream instanceof StreamInterface) {
+        if (!is_string($stream) && !is_resource($stream) && !$stream instanceof StreamInterface) {
             throw new InvalidArgumentException(
                 'Stream must be a string stream resource identifier, '
                 . 'an actual stream resource, '
@@ -268,7 +268,7 @@ class ServerRequest implements ServerRequestInterface
             );
         }
 
-        if (! $stream instanceof StreamInterface) {
+        if (!$stream instanceof StreamInterface) {
             return new Stream($stream, 'r');
         }
 
@@ -289,7 +289,7 @@ class ServerRequest implements ServerRequestInterface
                 continue;
             }
 
-            if (! $file instanceof UploadedFileInterface) {
+            if (!$file instanceof UploadedFileInterface) {
                 throw new InvalidArgumentException('Invalid leaf in uploaded files structure');
             }
         }

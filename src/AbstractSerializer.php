@@ -38,7 +38,7 @@ abstract class AbstractSerializer
     {
         $line    = '';
         $crFound = false;
-        while (! $stream->eof()) {
+        while (!$stream->eof()) {
             $char = $stream->read(1);
 
             if ($crFound && $char === self::LF) {
@@ -52,7 +52,7 @@ abstract class AbstractSerializer
             }
 
             // LF in isolation
-            if (! $crFound && $char === self::LF) {
+            if (!$crFound && $char === self::LF) {
                 throw new UnexpectedValueException('Unexpected line feed detected');
             }
 
@@ -94,28 +94,28 @@ abstract class AbstractSerializer
         while ($line = self::getLine($stream)) {
             if (preg_match(';^(?P<name>[!#$%&\'*+.^_`\|~0-9a-zA-Z-]+):(?P<value>.*)$;', $line, $matches)) {
                 $currentHeader = $matches['name'];
-                if (! isset($headers[$currentHeader])) {
+                if (!isset($headers[$currentHeader])) {
                     $headers[$currentHeader] = [];
                 }
                 $headers[$currentHeader][] = ltrim($matches['value']);
                 continue;
             }
 
-            if (! $currentHeader) {
+            if (!$currentHeader) {
                 throw new UnexpectedValueException('Invalid header detected');
             }
 
-            if (! preg_match('#^[ \t]#', $line)) {
+            if (!preg_match('#^[ \t]#', $line)) {
                 throw new UnexpectedValueException('Invalid header continuation');
             }
 
             // Append continuation to last header value found
-            $value = array_pop($headers[$currentHeader]);
+            $value                     = array_pop($headers[$currentHeader]);
             $headers[$currentHeader][] = $value . ltrim($line);
         }
 
         $body = new Stream('php://temp', 'wb+');
-        if (! $stream->eof()) {
+        if (!$stream->eof()) {
             while ($data = $stream->read(4096)) {
                 $body->write($data);
             }
