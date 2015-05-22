@@ -35,7 +35,7 @@ class ServerRequest implements ServerRequestInterface
     /**
      * @var array
      */
-    private $attributes;
+    private $attributes = [];
 
     /**
      * @var array

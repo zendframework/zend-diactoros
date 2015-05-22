@@ -76,6 +76,10 @@ class ServerRequestTest extends TestCase
         $this->assertEmpty($this->request->getAttributes());
     }
 
+    public function testSingleAttributesWhenEmptyByDefault()
+    {
+        $this->assertEmpty($this->request->getAttribute('does-not-exist'));
+    }
     /**
      * @depends testAttributesAreEmptyByDefault
      */

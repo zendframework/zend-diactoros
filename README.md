@@ -3,7 +3,7 @@ zend-diactoros
 
 [![Build Status](https://secure.travis-ci.org/zendframework/zend-diactoros.svg?branch=master)](https://secure.travis-ci.org/zendframework/zend-diactoros)
 
-> Diactoros: an epithet for Hermes, meaning literally, "the messenger."
+> Diactoros: an epithet for Hermes, meaning literally, "the messenger".
 
 This package supercedes and replaces [phly/http](https://github.com/phly/http).
 
