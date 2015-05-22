@@ -125,6 +125,7 @@ abstract class ServerRequestFactory
      *
      * Pre-processes and returns the $_SERVER superglobal.
      *
+     * @param array $server
      * @return array
      */
     public static function normalizeServer(array $server)
@@ -287,6 +288,7 @@ abstract class ServerRequestFactory
     /**
      * Marshal the host and port from HTTP headers and/or the PHP environment
      *
+     * @param stdClass $accumulator
      * @param array $server
      * @param MessageInterface $request
      * @return array Array with two members, host and port, at indices 0 and 1, respectively
@@ -300,14 +302,15 @@ abstract class ServerRequestFactory
     /**
      * Marshal the host and port from HTTP headers and/or the PHP environment
      *
+     * @param stdClass $accumulator
      * @param array $server
      * @param array $headers
-     * @return array Array with two members, host and port, at indices 0 and 1, respectively
      */
     public static function marshalHostAndPortFromHeaders(stdClass $accumulator, array $server, array $headers)
     {
         if (self::getHeader('host', $headers, false)) {
-            return self::marshalHostAndPortFromHeader($accumulator, self::getHeader('host', $headers));
+            self::marshalHostAndPortFromHeader($accumulator, self::getHeader('host', $headers));
+            return;
         }
 
         if (! isset($server['SERVER_NAME'])) {
@@ -381,7 +384,7 @@ abstract class ServerRequestFactory
      * Strip the query string from a path
      *
      * @param mixed $path
-     * @return void
+     * @return string
      */
     public static function stripQueryString($path)
     {
@@ -424,7 +427,7 @@ abstract class ServerRequestFactory
     {
         $accumulator->host = '[' . $server['SERVER_ADDR'] . ']';
         $accumulator->port = $accumulator->port ?: 80;
-        if ($accumulator->port . ']' == substr($accumulator->host, strrpos($accumulator->host, ':')+1)) {
+        if ($accumulator->port . ']' === substr($accumulator->host, strrpos($accumulator->host, ':') + 1)) {
             // The last digit of the IPv6-Address has been taken as port
             // Unset the port so the default port can be used
             $accumulator->port = null;
@@ -464,9 +467,8 @@ abstract class ServerRequestFactory
      * @param array $files
      * @return UploadedFileInterface[]
      */
-    private static function normalizeNestedFileSpec(array $files)
+    private static function normalizeNestedFileSpec(array $files = [])
     {
-        $files = [];
         foreach (array_keys($files['tmp_name']) as $key) {
             $spec = [
                 'tmp_name' => $files['tmp_name'][$key],
