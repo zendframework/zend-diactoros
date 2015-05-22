@@ -276,7 +276,7 @@ trait RequestTrait
     private function validateMethod($method)
     {
         if (null === $method) {
-            return true;
+            return;
         }
 
         if (! is_string($method)) {

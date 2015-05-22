@@ -123,7 +123,7 @@ trait MessageTrait
      * If the header does not appear in the message, this method MUST return an
      * empty array.
      *
-     * @param string $name Case-insensitive header field name.
+     * @param string $header Case-insensitive header field name.
      * @return string[] An array of string values as provided for the given
      *    header. If the header does not appear in the message, this method MUST
      *    return an empty array.
@@ -135,9 +135,9 @@ trait MessageTrait
         }
 
         $header = $this->headerNames[strtolower($header)];
+        $value  = $this->headers[$header];
+        $value  = is_array($value) ? $value : [$value];
 
-        $value = $this->headers[$header];
-        $value = is_array($value) ? $value : [$value];
         return $value;
     }
 
@@ -156,7 +156,7 @@ trait MessageTrait
      * If the header does not appear in the message, this method MUST return
      * a null value.
      *
-     * @param string $name Case-insensitive header field name.
+     * @param string $header Case-insensitive header field name.
      * @return string|null A string of values as provided for the given header
      *    concatenated together using a comma. If the header does not appear in
      *    the message, this method MUST return a null value.
@@ -182,7 +182,7 @@ trait MessageTrait
      * immutability of the message, and MUST return an instance that has the
      * new and/or updated header and value.
      *
-     * @param string $name Case-insensitive header field name.
+     * @param string $header Case-insensitive header field name.
      * @param string|string[] $value Header value(s).
      * @return self
      * @throws \InvalidArgumentException for invalid header names or values.
@@ -190,7 +190,7 @@ trait MessageTrait
     public function withHeader($header, $value)
     {
         if (is_string($value)) {
-            $value = [ $value ];
+            $value = [$value];
         }
 
         if (! is_array($value) || ! $this->arrayContainsOnlyStrings($value)) {
@@ -205,9 +205,9 @@ trait MessageTrait
         $normalized = strtolower($header);
 
         $new = clone $this;
-
         $new->headerNames[$normalized] = $header;
-        $new->headers[$header] = $value;
+        $new->headers[$header]         = $value;
+
         return $new;
     }
 
@@ -223,7 +223,7 @@ trait MessageTrait
      * immutability of the message, and MUST return an instance that has the
      * new header and/or value.
      *
-     * @param string $name Case-insensitive header field name to add.
+     * @param string $header Case-insensitive header field name to add.
      * @param string|string[] $value Header value(s).
      * @return self
      * @throws \InvalidArgumentException for invalid header names or values.
@@ -264,7 +264,7 @@ trait MessageTrait
      * immutability of the message, and MUST return an instance that removes
      * the named header.
      *
-     * @param string $name Case-insensitive header field name to remove.
+     * @param string $header Case-insensitive header field name to remove.
      * @return self
      */
     public function withoutHeader($header)
@@ -319,7 +319,7 @@ trait MessageTrait
      */
     private function arrayContainsOnlyStrings(array $array)
     {
-        return array_reduce($array, [ __CLASS__, 'filterStringValue'], true);
+        return array_reduce($array, [__CLASS__, 'filterStringValue'], true);
     }
 
     /**
@@ -350,7 +350,7 @@ trait MessageTrait
             $headers[$header] = $value;
         }
 
-        return [ $headerNames, $headers ];
+        return [$headerNames, $headers];
     }
 
     /**

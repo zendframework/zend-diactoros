@@ -252,7 +252,7 @@ class ServerRequest implements ServerRequestInterface
      * Set the body stream
      *
      * @param string|resource|StreamInterface $stream
-     * @return void
+     * @return StreamInterface
      */
     private function getStream($stream)
     {
