@@ -101,7 +101,19 @@ class ServerRequestTest extends TestCase
         $this->assertNull($new->getAttribute('foo', null));
     }
 
-    public function testUsesProvidedConstructorArguments()
+    public function provideMethods()
+    {
+        return [
+            ['POST', 'POST'],
+            ['GET', 'GET'],
+            [null, 'GET'],
+        ];
+    }
+
+    /**
+     * @dataProvider provideMethods
+     */
+    public function testUsesProvidedConstructorArguments($parameterMethod, $methodReturned)
     {
         $server = [
             'foo' => 'bar',
@@ -115,7 +127,6 @@ class ServerRequestTest extends TestCase
         ];
 
         $uri = new Uri('http://example.com');
-        $method = 'POST';
         $headers = [
             'host' => ['example.com'],
         ];
@@ -124,7 +135,7 @@ class ServerRequestTest extends TestCase
             $server,
             $files,
             $uri,
-            $method,
+            $parameterMethod,
             'php://memory',
             $headers
         );
@@ -133,7 +144,7 @@ class ServerRequestTest extends TestCase
         $this->assertEquals($files, $request->getUploadedFiles());
 
         $this->assertSame($uri, $request->getUri());
-        $this->assertEquals($method, $request->getMethod());
+        $this->assertEquals($methodReturned, $request->getMethod());
         $this->assertEquals($headers, $request->getHeaders());
 
         $body = $request->getBody();
