@@ -16,7 +16,7 @@ class RelativeStream implements StreamInterface
     /**
      * @var StreamInterface
      */
-    private $decodatedStream;
+    private $decoratedStream;
 
     /**
      * @var int
@@ -31,7 +31,7 @@ class RelativeStream implements StreamInterface
      */
     public function __construct(StreamInterface $decodatedStream, $offset)
     {
-        $this->decodatedStream = $decodatedStream;
+        $this->decoratedStream = $decodatedStream;
         $this->offset = $offset;
     }
 
@@ -49,7 +49,7 @@ class RelativeStream implements StreamInterface
      */
     public function close()
     {
-        $this->decodatedStream->close();
+        $this->decoratedStream->close();
     }
 
     /**
@@ -57,7 +57,7 @@ class RelativeStream implements StreamInterface
      */
     public function detach()
     {
-        return $this->decodatedStream->detach();
+        return $this->decoratedStream->detach();
     }
 
     /**
@@ -65,7 +65,7 @@ class RelativeStream implements StreamInterface
      */
     public function getSize()
     {
-        return $this->decodatedStream->getSize() - $this->offset;
+        return $this->decoratedStream->getSize() - $this->offset;
     }
 
     /**
@@ -73,7 +73,7 @@ class RelativeStream implements StreamInterface
      */
     public function tell()
     {
-        return $this->decodatedStream->tell() - $this->offset;
+        return $this->decoratedStream->tell() - $this->offset;
     }
 
     /**
@@ -81,7 +81,7 @@ class RelativeStream implements StreamInterface
      */
     public function eof()
     {
-        return $this->decodatedStream->eof();
+        return $this->decoratedStream->eof();
     }
 
     /**
@@ -89,7 +89,7 @@ class RelativeStream implements StreamInterface
      */
     public function isSeekable()
     {
-        return $this->decodatedStream->isSeekable();
+        return $this->decoratedStream->isSeekable();
     }
 
     /**
@@ -104,7 +104,7 @@ class RelativeStream implements StreamInterface
             default:
                 $basePos = 0;
         }
-        return $this->decodatedStream->seek($offset + $basePos, $whence);
+        return $this->decoratedStream->seek($offset + $basePos, $whence);
     }
 
     /**
@@ -120,7 +120,7 @@ class RelativeStream implements StreamInterface
      */
     public function isWritable()
     {
-        return $this->decodatedStream->isWritable();
+        return $this->decoratedStream->isWritable();
     }
 
     /**
@@ -128,7 +128,7 @@ class RelativeStream implements StreamInterface
      */
     public function write($string)
     {
-        return $this->decodatedStream->write($string);
+        return $this->decoratedStream->write($string);
     }
 
     /**
@@ -136,7 +136,7 @@ class RelativeStream implements StreamInterface
      */
     public function isReadable()
     {
-        return $this->decodatedStream->isReadable();
+        return $this->decoratedStream->isReadable();
     }
 
     /**
@@ -144,7 +144,7 @@ class RelativeStream implements StreamInterface
      */
     public function read($length)
     {
-        return $this->decodatedStream->read($length);
+        return $this->decoratedStream->read($length);
     }
 
     /**
@@ -152,7 +152,7 @@ class RelativeStream implements StreamInterface
      */
     public function getContents()
     {
-        return $this->decodatedStream->getContents();
+        return $this->decoratedStream->getContents();
     }
 
     /**
@@ -160,6 +160,6 @@ class RelativeStream implements StreamInterface
      */
     public function getMetadata($key = null)
     {
-        return $this->decodatedStream->getMetadata($key);
+        return $this->decoratedStream->getMetadata($key);
     }
 }
