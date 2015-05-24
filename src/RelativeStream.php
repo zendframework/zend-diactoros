@@ -27,7 +27,7 @@ class RelativeStream implements StreamInterface
      * Class constructor
      *
      * @param StreamInterface $decodatedStream
-     * @param $offset
+     * @param int $offset
      */
     public function __construct(StreamInterface $decodatedStream, $offset)
     {

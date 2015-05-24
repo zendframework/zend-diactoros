@@ -87,4 +87,58 @@ class RelativeStreamTest extends TestCase
         $ret = $stream->isReadable();
         $this->assertEquals(false, $ret);
     }
+
+    public function testSeek()
+    {
+        $decorated = $this->prophesize(Stream::class);
+        $decorated->seek(126, SEEK_SET)->shouldBeCalled()->willReturn(0);
+        $stream = new RelativeStream($decorated->reveal(), 100);
+        $ret = $stream->seek(26);
+        $this->assertEquals(0, $ret);
+    }
+
+    public function testRewind()
+    {
+        $decorated = $this->prophesize(Stream::class);
+        $decorated->seek(100, SEEK_SET)->shouldBeCalled()->willReturn(0);
+        $stream = new RelativeStream($decorated->reveal(), 100);
+        $ret = $stream->rewind();
+        $this->assertEquals(0, $ret);
+    }
+
+    public function testWrite()
+    {
+        $decorated = $this->prophesize(Stream::class);
+        $decorated->write("foobaz")->shouldBeCalled()->willReturn(6);
+        $stream = new RelativeStream($decorated->reveal(), 100);
+        $ret = $stream->write("foobaz");
+        $this->assertEquals(6, $ret);
+    }
+
+    public function testRead()
+    {
+        $decorated = $this->prophesize(Stream::class);
+        $decorated->read(3)->shouldBeCalled()->willReturn("foo");
+        $stream = new RelativeStream($decorated->reveal(), 100);
+        $ret = $stream->read(3);
+        $this->assertEquals("foo", $ret);
+    }
+
+    public function testGetContents()
+    {
+        $decorated = $this->prophesize(Stream::class);
+        $decorated->getContents()->shouldBeCalled()->willReturn("foo");
+        $stream = new RelativeStream($decorated->reveal(), 100);
+        $ret = $stream->getContents();
+        $this->assertEquals("foo", $ret);
+    }
+
+    public function testGetMetadata()
+    {
+        $decorated = $this->prophesize(Stream::class);
+        $decorated->getMetadata("bar")->shouldBeCalled()->willReturn("foo");
+        $stream = new RelativeStream($decorated->reveal(), 100);
+        $ret = $stream->getMetadata("bar");
+        $this->assertEquals("foo", $ret);
+    }
 }
