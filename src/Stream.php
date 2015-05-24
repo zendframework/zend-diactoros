@@ -222,7 +222,9 @@ class Stream implements StreamInterface
         }
 
         $meta = stream_get_meta_data($this->resource);
-        return is_writable($meta['uri']);
+        $mode = $meta['mode'];
+
+        return (strstr($mode, 'w') || strstr($mode, '+'));
     }
 
     /**
@@ -232,6 +234,10 @@ class Stream implements StreamInterface
     {
         if (! $this->resource) {
             throw new RuntimeException('No resource available; cannot write');
+        }
+
+        if (! $this->isWritable()) {
+            throw new RuntimeException('Stream is not writable');
         }
 
         $result = fwrite($this->resource, $string);

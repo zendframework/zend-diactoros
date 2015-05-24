@@ -246,6 +246,12 @@ class StreamTest extends TestCase
         $this->assertFalse($stream->isWritable());
     }
 
+    public function testIsWritableReturnsTrueForWritableMemoryStream()
+    {
+        $stream = new Stream("php://temp", "r+b");
+        $this->assertTrue($stream->isWritable());
+    }
+
     public function testWriteRaisesExceptionWhenStreamIsDetached()
     {
         $this->tmpnam = tempnam(sys_get_temp_dir(), 'diac');
@@ -254,6 +260,13 @@ class StreamTest extends TestCase
         $stream = new Stream($resource);
         $stream->detach();
         $this->setExpectedException('RuntimeException', 'No resource');
+        $stream->write('bar');
+    }
+
+    public function testWriteRaisesExceptionWhenStreamIsNotWritable()
+    {
+        $stream = new Stream('php://memory', 'r');
+        $this->setExpectedException('RuntimeException', 'Stream is not writable');
         $stream->write('bar');
     }
 
