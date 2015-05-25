@@ -297,7 +297,7 @@ class Stream implements StreamInterface
     public function getContents()
     {
         if (! $this->isReadable()) {
-            return '';
+            throw new RuntimeException('Stream is not readable');
         }
 
         $result = stream_get_contents($this->resource);
