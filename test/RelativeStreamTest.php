@@ -14,7 +14,7 @@ use Zend\Diactoros\RelativeStream;
 use Zend\Diactoros\Stream;
 
 /**
- * @covers RelativeStream
+ * @covers \Zend\Diactoros\RelativeStream
  */
 class RelativeStreamTest extends TestCase
 {
