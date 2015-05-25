@@ -224,7 +224,13 @@ class Stream implements StreamInterface
         $meta = stream_get_meta_data($this->resource);
         $mode = $meta['mode'];
 
-        return (strstr($mode, 'w') || strstr($mode, '+'));
+        return (
+            strstr($mode, 'x')
+            || strstr($mode, 'w')
+            || strstr($mode, 'c')
+            || strstr($mode, 'a')
+            || strstr($mode, '+')
+        );
     }
 
     /**
