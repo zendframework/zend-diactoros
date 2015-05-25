@@ -11,7 +11,7 @@ This package supercedes and replaces [phly/http](https://github.com/phly/http).
 
 This package exists:
 
-- to provide a proof-of-concept of the proposed PSR HTTP message interfaces with relation to server-side applications.
+- to provide a proof-of-concept of the accepted PSR HTTP message interfaces with relation to server-side applications.
 - to provide a node-like paradigm for PHP front controllers.
 - to provide a common methodology for marshaling a request from the server environment.
 
@@ -63,7 +63,7 @@ $request = new Zend\Diactoros\Request(
 // If you want to set a non-origin-form request target, set the
 // request-target explicitly:
 $request = $request->withRequestTarget((string) $uri);       // absolute-form
-$request = $request->withRequestTarget($uri->getAuthority(); // authority-form
+$request = $request->withRequestTarget($uri->getAuthority()); // authority-form
 $request = $request->withRequestTarget('*');                 // asterisk-form
 
 // Once you have the instance:
