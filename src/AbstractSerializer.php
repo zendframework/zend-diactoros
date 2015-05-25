@@ -114,9 +114,8 @@ abstract class AbstractSerializer
             $headers[$currentHeader][] = $value . ltrim($line);
         }
 
-        $body = new RelativeStream($stream, $stream->tell());
-
-        return [$headers, $body];
+        // use RelativeStream to avoid copying initial stream into memory
+        return [$headers, new RelativeStream($stream, $stream->tell())];
     }
 
     /**

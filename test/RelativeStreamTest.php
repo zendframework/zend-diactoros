@@ -13,6 +13,9 @@ use PHPUnit_Framework_TestCase as TestCase;
 use Zend\Diactoros\RelativeStream;
 use Zend\Diactoros\Stream;
 
+/**
+ * @covers RelativeStream
+ */
 class RelativeStreamTest extends TestCase
 {
     public function testToString()
