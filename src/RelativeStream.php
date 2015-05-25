@@ -11,6 +11,13 @@ namespace Zend\Diactoros;
 
 use Psr\Http\Message\StreamInterface;
 
+/**
+ * Class RelativeStream
+ *
+ * Wrapper for default Stream class, representing subpart (starting from given offset) of initial stream.
+ * It can be used to avoid copying full stream, conserving memory.
+ * @example see Zend\Diactoros\AbstractSerializer::splitStream()
+ */
 class RelativeStream implements StreamInterface
 {
     /**
@@ -26,13 +33,13 @@ class RelativeStream implements StreamInterface
     /**
      * Class constructor
      *
-     * @param StreamInterface $decodatedStream
+     * @param StreamInterface $decoratedStream
      * @param int $offset
      */
-    public function __construct(StreamInterface $decodatedStream, $offset)
+    public function __construct(StreamInterface $decoratedStream, $offset)
     {
-        $this->decoratedStream = $decodatedStream;
-        $this->offset = $offset;
+        $this->decoratedStream = $decoratedStream;
+        $this->offset = (int)$offset;
     }
 
     /**
@@ -97,14 +104,10 @@ class RelativeStream implements StreamInterface
      */
     public function seek($offset, $whence = SEEK_SET)
     {
-        switch ($whence) {
-            case SEEK_SET:
-                $basePos = $this->offset;
-                break;
-            default:
-                $basePos = 0;
+        if ($whence == SEEK_SET) {
+            return $this->decoratedStream->seek($offset + $this->offset, $whence);
         }
-        return $this->decoratedStream->seek($offset + $basePos, $whence);
+        return $this->decoratedStream->seek($offset, $whence);
     }
 
     /**
