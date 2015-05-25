@@ -1,7 +1,10 @@
 zend-diactoros
 ==============
 
-[![Build Status](https://secure.travis-ci.org/zendframework/zend-diactoros.svg?branch=master)](https://secure.travis-ci.org/zendframework/zend-diactoros)
+| [Master][Master] | [Develop][Develop] |
+|:----------------:|:----------:|
+| [![Build status][Master image]][Master] | [![Build status][Develop image]][Develop] |
+| [![Coverage Status][Master coverage image]][Master coverage] | [![Coverage Status][Develop coverage image]][Develop coverage] |
 
 > Diactoros: an epithet for Hermes, meaning literally, "the messenger".
 
@@ -358,3 +361,13 @@ At times, it's useful to either create a string representation of a message (ser
 - `toString(Psr\Http\Message\RequestInterface|Psr\Http\Message\ResponseInterface $message)` will create either a string from the provided message.
 
 The deserialization methods (`from*()`) will raise exceptions if errors occur while parsing the message. The serialization methods (`toString()`) will raise exceptions if required data for serialization is not present in the message instance.
+
+
+  [Master]: https://travis-ci.org/zendframework/zend-diactoros
+  [Master image]: https://secure.travis-ci.org/zendframework/zend-diactoros.svg?branch=master
+  [Master coverage image]: https://img.shields.io/coveralls/zendframework/zend-diactoros/master.svg
+  [Master coverage]: https://coveralls.io/r/zendframework/zend-diactoros?branch=master
+  [Develop]: https://github.com/zendframeowork/zend-diactoros/tree/develop
+  [Develop image]:  https://secure.travis-ci.org/zendframework/zend-diactoros.svg?branch=develop
+  [Develop coverage image]: https://coveralls.io/repos/zendframework/zend-diactoros/badge.svg?branch=develop
+  [Develop coverage]: https://coveralls.io/r/zendframework/zend-diactoros?branch=develop
