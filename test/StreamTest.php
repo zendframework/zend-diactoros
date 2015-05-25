@@ -303,13 +303,14 @@ class StreamTest extends TestCase
         $this->assertEquals('', $stream->read(4096));
     }
 
-    public function testGetContentsReturnsEmptyStringIfStreamIsNotReadable()
+    public function testGetContentsRisesExceptionIfStreamIsNotReadable()
     {
         $this->tmpnam = tempnam(sys_get_temp_dir(), 'diac');
         file_put_contents($this->tmpnam, 'FOO BAR');
         $resource = fopen($this->tmpnam, 'w');
         $stream = new Stream($resource);
-        $this->assertEquals('', $stream->getContents());
+        $this->setExpectedException('RuntimeException');
+        $stream->getContents();
     }
 
     public function invalidResources()
