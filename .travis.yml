@@ -24,13 +24,13 @@ before_script:
   - composer install --dev --prefer-source
 
 script:
-  - if [[ $EXECUTE_COVERAGE == 'true' ]]; then ./vendor/bin/phpunit --coverage-clover=coverage.clover ; fi
+  - if [[ $EXECUTE_COVERAGE == 'true' ]]; then ./vendor/bin/phpunit --coverage-clover clover.xml ; fi
   - if [[ $EXECUTE_COVERAGE != 'true' ]]; then ./vendor/bin/phpunit ; fi
   - if [[ $EXECUTE_CS_CHECK == 'true' ]]; then ./vendor/bin/phpcs --standard=PSR2 src test ; fi
 
 after_script:
-  - if [[ $EXECUTE_COVERAGE == 'true' ]]; then wget https://scrutinizer-ci.com/ocular.phar ; fi
-  - if [[ $EXECUTE_COVERAGE == 'true' ]]; then php ocular.phar code-coverage:upload --format=php-clover ./test/coverage.clover ; fi
+  - if [[ $EXECUTE_COVERAGE == 'true' ]]; then composer require satooshi/php-coveralls:dev-master ; fi
+  - if [[ $EXECUTE_COVERAGE == 'true' ]]; then ./vendor/bin/coveralls ; fi
 
 notifications:
   email: true
