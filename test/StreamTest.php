@@ -252,6 +252,105 @@ class StreamTest extends TestCase
         $this->assertTrue($stream->isWritable());
     }
 
+    public function provideDataForIsWritable()
+    {
+        return [
+            ['a',   true,  true],
+            ['a+',  true,  true],
+            ['a+b', true,  true],
+            ['ab',  true,  true],
+            ['c',   true,  true],
+            ['c+',  true,  true],
+            ['c+b', true,  true],
+            ['cb',  true,  true],
+            ['r',   true,  false],
+            ['r+',  true,  true],
+            ['r+b', true,  true],
+            ['rb',  true,  false],
+            ['rw',  true,  true],
+            ['w',   true,  true],
+            ['w+',  true,  true],
+            ['w+b', true,  true],
+            ['wb',  true,  true],
+            ['x',   false, true],
+            ['x+',  false, true],
+            ['x+b', false, true],
+            ['xb',  false, true],
+        ];
+    }
+
+    private function findNonExistentTempName()
+    {
+        while (true) {
+            $tmpnam = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'diac' . uniqid();
+            if (!file_exists(sys_get_temp_dir() . $tmpnam)) {
+                break;
+            }
+        }
+        return $tmpnam;
+    }
+
+    /**
+     * @dataProvider provideDataForIsWritable
+     */
+    public function testIsWritableReturnsCorrectFlagForMode($mode, $fileShouldExist, $flag)
+    {
+        if ($fileShouldExist) {
+            $this->tmpnam = tempnam(sys_get_temp_dir(), 'diac');
+            file_put_contents($this->tmpnam, 'FOO BAR');
+        } else {
+            // "x" modes REQUIRE that file doesn't exist, so we need to find random file name
+            $this->tmpnam = $this->findNonExistentTempName();
+        }
+        $resource = fopen($this->tmpnam, $mode);
+        $stream = new Stream($resource);
+        $this->assertEquals($flag, $stream->isWritable());
+    }
+
+    public function provideDataForIsReadable()
+    {
+        return [
+            ['a',   true,  false],
+            ['a+',  true,  true],
+            ['a+b', true,  true],
+            ['ab',  true,  false],
+            ['c',   true,  false],
+            ['c+',  true,  true],
+            ['c+b', true,  true],
+            ['cb',  true,  false],
+            ['r',   true,  true],
+            ['r+',  true,  true],
+            ['r+b', true,  true],
+            ['rb',  true,  true],
+            ['rw',  true,  true],
+            ['w',   true,  false],
+            ['w+',  true,  true],
+            ['w+b', true,  true],
+            ['wb',  true,  false],
+            ['x',   false, false],
+            ['x+',  false, true],
+            ['x+b', false, true],
+            ['xb',  false, false],
+        ];
+    }
+
+    /**
+     * @dataProvider provideDataForIsReadable
+     */
+    public function testIsReadableReturnsCorrectFlagForMode($mode, $fileShouldExist, $flag)
+    {
+        if ($fileShouldExist) {
+            $this->tmpnam = tempnam(sys_get_temp_dir(), 'diac');
+            file_put_contents($this->tmpnam, 'FOO BAR');
+        } else {
+            // "x" modes REQUIRE that file doesn't exist, so we need to find random file name
+            $this->tmpnam = $this->findNonExistentTempName();
+        }
+        $resource = fopen($this->tmpnam, $mode);
+        $stream = new Stream($resource);
+        $this->assertEquals($flag, $stream->isReadable());
+    }
+
     public function testWriteRaisesExceptionWhenStreamIsDetached()
     {
         $this->tmpnam = tempnam(sys_get_temp_dir(), 'diac');
