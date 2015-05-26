@@ -18,7 +18,7 @@ use Psr\Http\Message\StreamInterface;
  * It can be used to avoid copying full stream, conserving memory.
  * @example see Zend\Diactoros\AbstractSerializer::splitStream()
  */
-class RelativeStream implements StreamInterface
+final class RelativeStream implements StreamInterface
 {
     /**
      * @var StreamInterface
