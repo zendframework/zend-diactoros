@@ -16,6 +16,10 @@ matrix:
     - php: 7
     - php: hhvm
 
+notifications:
+  irc: "irc.freenode.org#zftalk.dev"
+  email: false
+
 before_install:
   - if [[ $EXECUTE_COVERAGE != 'true' ]]; then phpenv config-rm xdebug.ini || return 0 ; fi
 
@@ -31,6 +35,3 @@ script:
 after_script:
   - if [[ $EXECUTE_COVERAGE == 'true' ]]; then composer require satooshi/php-coveralls:dev-master ; fi
   - if [[ $EXECUTE_COVERAGE == 'true' ]]; then ./vendor/bin/coveralls ; fi
-
-notifications:
-  email: true
