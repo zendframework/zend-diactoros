@@ -10,6 +10,7 @@
 namespace ZendTest\Diactoros\Request;
 
 use PHPUnit_Framework_TestCase as TestCase;
+use Zend\Diactoros\RelativeStream;
 use Zend\Diactoros\Request;
 use Zend\Diactoros\Request\Serializer;
 use Zend\Diactoros\Stream;
@@ -296,5 +297,33 @@ class SerializerTest extends TestCase
             ->will($this->returnValue(false));
 
         Serializer::fromStream($stream);
+    }
+
+    public function testFromStreamStopsReadingAfterScanningHeader()
+    {
+        $headers = "POST /foo HTTP/1.0\r\nContent-Type: text/plain\r\nX-Foo-Bar: Baz;\r\n Bat\r\n\r\n";
+        $payload = $headers . "Content!";
+
+        $stream = $this
+            ->getMockBuilder('Psr\Http\Message\StreamInterface')
+            ->getMock();
+
+        $stream->expects($this->once())->method('isReadable')
+            ->will($this->returnValue(true));
+
+        $stream->expects($this->once())->method('isSeekable')
+            ->will($this->returnValue(true));
+
+        // assert that full request body is not read, and returned as RelativeStream instead
+        $stream->expects($this->exactly(strlen($headers)))
+            ->method('read')
+            ->with(1)
+            ->will($this->returnCallback(function () use ($payload) {
+                static $i = 0;
+                return $payload[$i++];
+            }));
+
+        $stream = Serializer::fromStream($stream);
+        $this->assertInstanceOf(RelativeStream::class, $stream->getBody());
     }
 }
