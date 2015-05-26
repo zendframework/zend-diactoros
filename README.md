@@ -1,10 +1,12 @@
 zend-diactoros
 ==============
 
-| [Master][Master] | [Develop][Develop] |
-|:----------------:|:----------:|
-| [![Build status][Master image]][Master] | [![Build status][Develop image]][Develop] |
-| [![Coverage Status][Master coverage image]][Master coverage] | [![Coverage Status][Develop coverage image]][Develop coverage] |
+Master:
+[![Build status][Master image]][Master]
+[![Coverage Status][Master coverage image]][Master coverage]
+Develop:
+[![Build status][Develop image]][Develop]
+[![Coverage Status][Develop coverage image]][Develop coverage]
 
 > Diactoros: an epithet for Hermes, meaning literally, "the messenger".
 
