@@ -19,9 +19,8 @@ matrix:
 before_install:
   - if [[ $EXECUTE_COVERAGE != 'true' ]]; then phpenv config-rm xdebug.ini || return 0 ; fi
 
-before_script:
-  - composer self-update
-  - composer install --dev --prefer-source
+install:
+  - composer install
 
 script:
   - if [[ $EXECUTE_COVERAGE == 'true' ]]; then ./vendor/bin/phpunit --coverage-clover=coverage.clover ; fi
