@@ -318,7 +318,7 @@ class SerializerTest extends TestCase
         $stream->expects($this->exactly(strlen($headers)))
             ->method('read')
             ->with(1)
-            ->will($this->returnCallback(function() use ($payload) {
+            ->will($this->returnCallback(function () use ($payload) {
                 static $i = 0;
                 return $payload[$i++];
             }));
