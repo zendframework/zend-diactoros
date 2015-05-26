@@ -114,15 +114,8 @@ abstract class AbstractSerializer
             $headers[$currentHeader][] = $value . ltrim($line);
         }
 
-        $body = new Stream('php://temp', 'wb+');
-        if (! $stream->eof()) {
-            while ($data = $stream->read(4096)) {
-                $body->write($data);
-            }
-            $body->rewind();
-        }
-
-        return [$headers, $body];
+        // use RelativeStream to avoid copying initial stream into memory
+        return [$headers, new RelativeStream($stream, $stream->tell())];
     }
 
     /**
