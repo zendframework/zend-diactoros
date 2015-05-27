@@ -3,7 +3,7 @@ Installation and Requirements
 
 Install this library using composer:
 
-```console
+```bash
 $ composer require zendframework/zend-diactoros
 ```
 
