@@ -194,7 +194,7 @@ abstract class ServerRequestFactory
      */
     public static function marshalHeaders(array $server)
     {
-        $headers = array();
+        $headers = [];
         foreach ($server as $key => $value) {
             if (strpos($key, 'HTTP_COOKIE') === 0) {
                 // Cookies are handled using the $_COOKIE superglobal

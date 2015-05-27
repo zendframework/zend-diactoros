@@ -262,7 +262,7 @@ trait RequestTrait
         }
 
         $new->headerNames['host'] = 'Host';
-        $new->headers['Host'] = array($host);
+        $new->headers['Host'] = [$host];
 
         return $new;
     }
