@@ -3,13 +3,18 @@ Usage
 
 Usage will differ based on whether you are writing an HTTP client, or a server-side application.
 
-For HTTP client purposes, you will create and populate a `Request` instance, and the client should return a `Response` instance.
+For HTTP client purposes, you will create and populate a `Request` instance, and the client should
+return a `Response` instance.
 
-For server-side applications, you will create a `ServerRequest` instance, and populate and return a `Response` instance.
+For server-side applications, you will create a `ServerRequest` instance, and populate and return a
+`Response` instance.
 
 ## HTTP Clients
 
-A client will _send_ a request, and _return_ a response. As a developer, you will _create_ and _populate_ the request, and then _introspect_ the response.  Both requests and responses are immutable; if you make changes -- e.g., by calling setter methods -- you must capture the return value, as it is a new instance.
+A client will _send_ a request, and _return_ a response. As a developer, you will _create_ and
+_populate_ the request, and then _introspect_ the response.  Both requests and responses are
+immutable; if you make changes -- e.g., by calling setter methods -- you must capture the return
+value, as it is a new instance.
 
 ```php
 // Create a request
@@ -43,20 +48,24 @@ $response = $client->send($request);
 printf("Response status: %d (%s)\n", $response->getStatusCode(), $response->getReasonPhrase());
 printf("Headers:\n");
 foreach ($response->getHeaders() as $header => $values) {
-  printf("    %s: %s\n", $header, implode(', ', $values));
+    printf("    %s: %s\n", $header, implode(', ', $values));
 }
 printf("Message:\n%s\n", $response->getBody());
 ```
 
-(Note: `zend-diactoros` does NOT ship with a client implementation; the above is just an illustration of a possible implementation.)
+(Note: `zend-diactoros` does NOT ship with a client implementation; the above is just an
+illustration of a possible implementation.)
 
 ## Server-Side Applications
 
-Server-side applications will need to marshal the incoming request based on superglobals, and will then populate and send a response.
+Server-side applications will need to marshal the incoming request based on superglobals, and will
+then populate and send a response.
 
 ### Marshaling an incoming request
 
-PHP contains a plethora of information about the incoming request, and keeps that information in a variety of locations. `Zend\Diactoros\ServerRequestFactory::fromGlobals()` can simplify marshaling that information into a request instance.
+PHP contains a plethora of information about the incoming request, and keeps that information in a
+variety of locations. `Zend\Diactoros\ServerRequestFactory::fromGlobals()` can simplify marshaling
+that information into a request instance.
 
 You can call the factory method with or without the following arguments, in the following order:
 
@@ -66,21 +75,24 @@ You can call the factory method with or without the following arguments, in the 
 - `$cookies`, typically `$_COOKIE`
 - `$files`, typically `$_FILES`
 
-The method will then return a `Zend\Diactoros\ServerRequest` instance. If any argument is omitted, the associated superglobal will be used.
+The method will then return a `Zend\Diactoros\ServerRequest` instance. If any argument is omitted,
+the associated superglobal will be used.
 
 ```php
 $request = Zend\Diactoros\ServerRequestFactory::fromGlobals(
-  $_SERVER,
-  $_GET,
-  $_POST,
-  $_COOKIE,
-  $_FILES
+    $_SERVER,
+    $_GET,
+    $_POST,
+    $_COOKIE,
+    $_FILES
 );
 ```
 
 ### Manipulating the response
 
-Use the response object to add headers and provide content for the response.  Writing to the body does not create a state change in the response, so it can be done without capturing the return value. Manipulating headers does, however.
+Use the response object to add headers and provide content for the response.  Writing to the body
+does not create a state change in the response, so it can be done without capturing the return
+value. Manipulating headers does, however.
 
 ```php
 $response = new Zend\Diactoros\Response();
@@ -100,7 +112,9 @@ $response = $response
 
 ### "Serving" an application
 
-`Zend\Diactoros\Server` mimics a portion of the API of node's `http.Server` class. It invokes a callback, passing it an `ServerRequest`, an `Response`, and optionally a callback to use for incomplete/unhandled requests.
+`Zend\Diactoros\Server` mimics a portion of the API of node's `http.Server` class. It invokes a
+callback, passing it an `ServerRequest`, an `Response`, and optionally a callback to use for
+incomplete/unhandled requests.
 
 You can create a server in one of three ways:
 
@@ -147,7 +161,8 @@ Once you have your server instance, you must instruct it to listen:
 $server->listen();
 ```
 
-At this time, you can optionally provide a callback to `listen()`; this will be passed to the handler as the third argument (`$done`):
+At this time, you can optionally provide a callback to `listen()`; this will be passed to the
+handler as the third argument (`$done`):
 
 ```php
 $server->listen(function ($request, $response, $error = null) {
@@ -158,6 +173,5 @@ $server->listen(function ($request, $response, $error = null) {
 });
 ```
 
-Typically, the `listen` callback will be an error handler, and can expect to
-receive the request, response, and error as its arguments (though the error may
-be null).
+Typically, the `listen` callback will be an error handler, and can expect to receive the request,
+response, and error as its arguments (though the error may be null).

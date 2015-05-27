@@ -11,6 +11,4 @@ $views->set('toc', __DIR__ . '/toc.php');
 <html lang="en">
 <?php echo $this->render('head'); ?>
 <?php echo $this->render('body'); ?>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/highlight.min.js"></script>
-    <script>hljs.initHighlightingOnLoad();</script>
 </html>
