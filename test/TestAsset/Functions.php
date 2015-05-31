@@ -29,14 +29,14 @@ class HeaderStack
     /**
      * @var array
      */
-    private static $data = array();
+    private static $data = [];
 
     /**
      * Reset state
      */
     public static function reset()
     {
-        self::$data = array();
+        self::$data = [];
     }
 
     /**

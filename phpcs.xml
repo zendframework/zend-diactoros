@@ -8,6 +8,7 @@
 
     <!-- inherit rules from: -->
     <rule ref="PSR2"/>
+    <rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
 
 
     <!-- Paths to check -->
