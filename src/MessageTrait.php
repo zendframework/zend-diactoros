@@ -66,7 +66,7 @@ trait MessageTrait
      * new protocol version.
      *
      * @param string $version HTTP protocol version
-     * @return self
+     * @return static
      */
     public function withProtocolVersion($version)
     {
@@ -184,7 +184,7 @@ trait MessageTrait
      *
      * @param string $header Case-insensitive header field name.
      * @param string|string[] $value Header value(s).
-     * @return self
+     * @return static
      * @throws \InvalidArgumentException for invalid header names or values.
      */
     public function withHeader($header, $value)
@@ -225,7 +225,7 @@ trait MessageTrait
      *
      * @param string $header Case-insensitive header field name to add.
      * @param string|string[] $value Header value(s).
-     * @return self
+     * @return static
      * @throws \InvalidArgumentException for invalid header names or values.
      */
     public function withAddedHeader($header, $value)
@@ -265,7 +265,7 @@ trait MessageTrait
      * the named header.
      *
      * @param string $header Case-insensitive header field name to remove.
-     * @return self
+     * @return static
      */
     public function withoutHeader($header)
     {
@@ -301,7 +301,7 @@ trait MessageTrait
      * new body stream.
      *
      * @param StreamInterface $body Body.
-     * @return self
+     * @return static
      * @throws \InvalidArgumentException When the body is not valid.
      */
     public function withBody(StreamInterface $body)
