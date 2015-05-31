@@ -31,7 +31,7 @@ $ composer require zendframework/zend-diactoros
 
 `zend-diactoros` has the following dependencies (which are managed by Composer):
 
-- `psr/http-message`, which defines interfaces for HTTP messages, including requests and responses. `zend-diactoros` provides implementations of each of these.
+- [`psr/http-message`](https://github.com/php-fig/http-message), which defines interfaces for HTTP messages, including requests and responses. `zend-diactoros` provides implementations of each of these.
 
 Usage
 -----
