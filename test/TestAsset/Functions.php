@@ -19,7 +19,7 @@
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
-namespace Zend\Diactoros;
+namespace ZendTest\Diactoros\TestAsset;
 
 /**
  * Store output artifacts
