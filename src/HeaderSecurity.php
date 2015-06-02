@@ -140,7 +140,7 @@ final class HeaderSecurity
             throw new InvalidArgumentException('Invalid header value');
         }
     }
-    
+
     /**
      * Assert whether or not a header name is valid.
      *
