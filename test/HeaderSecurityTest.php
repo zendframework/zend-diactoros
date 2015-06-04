@@ -54,22 +54,22 @@ class HeaderSecurityTest extends TestCase
 
     public function validateValues()
     {
-        return array(
-            array("This is a\n test", 'assertFalse'),
-            array("This is a\r test", 'assertFalse'),
-            array("This is a\n\r test", 'assertFalse'),
-            array("This is a\r\n  test", 'assertTrue'),
-            array("This is a \r\ntest", 'assertFalse'),
-            array("This is a \r\n\n test", 'assertFalse'),
-            array("This is a\n\n test", 'assertFalse'),
-            array("This is a\r\r test", 'assertFalse'),
-            array("This is a \r\r\n test", 'assertFalse'),
-            array("This is a \r\n\r\ntest", 'assertFalse'),
-            array("This is a \r\n\n\r\n test", 'assertFalse'),
-            array("This is a \xFF test", 'assertFalse'),
-            array("This is a \x7F test", 'assertFalse'),
-            array("This is a \x7E test", 'assertTrue'),
-        );
+        return [
+            ["This is a\n test", 'assertFalse'],
+            ["This is a\r test", 'assertFalse'],
+            ["This is a\n\r test", 'assertFalse'],
+            ["This is a\r\n  test", 'assertTrue'],
+            ["This is a \r\ntest", 'assertFalse'],
+            ["This is a \r\n\n test", 'assertFalse'],
+            ["This is a\n\n test", 'assertFalse'],
+            ["This is a\r\r test", 'assertFalse'],
+            ["This is a \r\r\n test", 'assertFalse'],
+            ["This is a \r\n\r\ntest", 'assertFalse'],
+            ["This is a \r\n\n\r\n test", 'assertFalse'],
+            ["This is a \xFF test", 'assertFalse'],
+            ["This is a \x7F test", 'assertFalse'],
+            ["This is a \x7E test", 'assertTrue'],
+        ];
     }
 
     /**
