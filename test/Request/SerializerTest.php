@@ -324,6 +324,6 @@ class SerializerTest extends TestCase
             }));
 
         $stream = Serializer::fromStream($stream);
-        $this->assertInstanceOf(RelativeStream::class, $stream->getBody());
+        $this->assertInstanceOf('Zend\Diactoros\RelativeStream', $stream->getBody());
     }
 }
