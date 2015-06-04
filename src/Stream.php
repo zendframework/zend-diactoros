@@ -190,7 +190,7 @@ class Stream implements StreamInterface
         if (! $this->resource) {
             throw new RuntimeException('No resource available; cannot seek position');
         }
-        
+
         if (! $this->isSeekable()) {
             throw new RuntimeException('Stream is not seekable');
         }

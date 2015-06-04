@@ -29,7 +29,7 @@ class Response implements ResponseInterface
      *
      * @var array
      */
-    private $phrases = array(
+    private $phrases = [
         // INFORMATIONAL CODES
         100 => 'Continue',
         101 => 'Switching Protocols',
@@ -92,7 +92,7 @@ class Response implements ResponseInterface
         507 => 'Insufficient Storage',
         508 => 'Loop Detected',
         511 => 'Network Authentication Required',
-    );
+    ];
 
     /**
      * @var string
