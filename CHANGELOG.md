@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 1.0.2 - 2015-06-04
+
+### Added
+
+- [#27](https://github.com/zendframework/zend-diactoros/pull/27) adds phonetic
+  pronunciation of "Diactoros" to the README file.
+- [#36](https://github.com/zendframework/zend-diactoros/pull/36) adds property
+  annotations to the class-level docblock of `Zend\Diactoros\RequestTrait` to
+  ensure properties inherited from the `MessageTrait` are inherited by
+  implementations.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#41](https://github.com/zendframework/zend-diactoros/pull/41) fixes the
+  namespace for test files to begin with `ZendTest` instead of `Zend`.
+- [#46](https://github.com/zendframework/zend-diactoros/pull/46) ensures that
+  the cookie and query params for the `ServerRequest` implementation are
+  initialized as arrays.
+- [#47](https://github.com/zendframework/zend-diactoros/pull/47) modifies the
+  internal logic in `HeaderSecurity::isValid()` to use a regular expression
+  instead of character-by-character comparisons, improving performance.
+
 ## 1.0.1 - 2015-05-26
 
 ### Added
