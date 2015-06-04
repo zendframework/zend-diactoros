@@ -307,7 +307,7 @@ class RequestTest extends TestCase
     {
         $request = new Request('http://example.com');
         $header = $request->getHeader('host');
-        $this->assertEquals(array('example.com'), $header);
+        $this->assertEquals(['example.com'], $header);
     }
 
     /**
