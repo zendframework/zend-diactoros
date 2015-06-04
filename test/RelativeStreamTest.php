@@ -20,7 +20,7 @@ class RelativeStreamTest extends TestCase
 {
     public function testToString()
     {
-        $decorated = $this->prophesize(Stream::class);
+        $decorated = $this->prophesize('Zend\Diactoros\Stream');
         $decorated->seek(100, SEEK_SET)->shouldBeCalled();
         $decorated->getContents()->shouldBeCalled()->willReturn('foobarbaz');
 
@@ -31,7 +31,7 @@ class RelativeStreamTest extends TestCase
 
     public function testClose()
     {
-        $decorated = $this->prophesize(Stream::class);
+        $decorated = $this->prophesize('Zend\Diactoros\Stream');
         $decorated->close()->shouldBeCalled();
         $stream = new RelativeStream($decorated->reveal(), 100);
         $stream->close();
@@ -39,7 +39,7 @@ class RelativeStreamTest extends TestCase
 
     public function testDetach()
     {
-        $decorated = $this->prophesize(Stream::class);
+        $decorated = $this->prophesize('Zend\Diactoros\Stream');
         $decorated->detach()->shouldBeCalled()->willReturn(250);
         $stream = new RelativeStream($decorated->reveal(), 100);
         $ret = $stream->detach();
@@ -48,7 +48,7 @@ class RelativeStreamTest extends TestCase
 
     public function testGetSize()
     {
-        $decorated = $this->prophesize(Stream::class);
+        $decorated = $this->prophesize('Zend\Diactoros\Stream');
         $decorated->getSize()->shouldBeCalled()->willReturn(250);
         $stream = new RelativeStream($decorated->reveal(), 100);
         $ret = $stream->getSize();
@@ -57,7 +57,7 @@ class RelativeStreamTest extends TestCase
 
     public function testTell()
     {
-        $decorated = $this->prophesize(Stream::class);
+        $decorated = $this->prophesize('Zend\Diactoros\Stream');
         $decorated->tell()->shouldBeCalled()->willReturn(188);
         $stream = new RelativeStream($decorated->reveal(), 100);
         $ret = $stream->tell();
@@ -66,7 +66,7 @@ class RelativeStreamTest extends TestCase
 
     public function testIsSeekable()
     {
-        $decorated = $this->prophesize(Stream::class);
+        $decorated = $this->prophesize('Zend\Diactoros\Stream');
         $decorated->isSeekable()->shouldBeCalled()->willReturn(true);
         $stream = new RelativeStream($decorated->reveal(), 100);
         $ret = $stream->isSeekable();
@@ -75,7 +75,7 @@ class RelativeStreamTest extends TestCase
 
     public function testIsWritable()
     {
-        $decorated = $this->prophesize(Stream::class);
+        $decorated = $this->prophesize('Zend\Diactoros\Stream');
         $decorated->isWritable()->shouldBeCalled()->willReturn(true);
         $stream = new RelativeStream($decorated->reveal(), 100);
         $ret = $stream->isWritable();
@@ -84,7 +84,7 @@ class RelativeStreamTest extends TestCase
 
     public function testIsReadable()
     {
-        $decorated = $this->prophesize(Stream::class);
+        $decorated = $this->prophesize('Zend\Diactoros\Stream');
         $decorated->isReadable()->shouldBeCalled()->willReturn(false);
         $stream = new RelativeStream($decorated->reveal(), 100);
         $ret = $stream->isReadable();
@@ -93,7 +93,7 @@ class RelativeStreamTest extends TestCase
 
     public function testSeek()
     {
-        $decorated = $this->prophesize(Stream::class);
+        $decorated = $this->prophesize('Zend\Diactoros\Stream');
         $decorated->seek(126, SEEK_SET)->shouldBeCalled()->willReturn(0);
         $stream = new RelativeStream($decorated->reveal(), 100);
         $ret = $stream->seek(26);
@@ -102,7 +102,7 @@ class RelativeStreamTest extends TestCase
 
     public function testRewind()
     {
-        $decorated = $this->prophesize(Stream::class);
+        $decorated = $this->prophesize('Zend\Diactoros\Stream');
         $decorated->seek(100, SEEK_SET)->shouldBeCalled()->willReturn(0);
         $stream = new RelativeStream($decorated->reveal(), 100);
         $ret = $stream->rewind();
@@ -111,7 +111,7 @@ class RelativeStreamTest extends TestCase
 
     public function testWrite()
     {
-        $decorated = $this->prophesize(Stream::class);
+        $decorated = $this->prophesize('Zend\Diactoros\Stream');
         $decorated->write("foobaz")->shouldBeCalled()->willReturn(6);
         $stream = new RelativeStream($decorated->reveal(), 100);
         $ret = $stream->write("foobaz");
@@ -120,7 +120,7 @@ class RelativeStreamTest extends TestCase
 
     public function testRead()
     {
-        $decorated = $this->prophesize(Stream::class);
+        $decorated = $this->prophesize('Zend\Diactoros\Stream');
         $decorated->read(3)->shouldBeCalled()->willReturn("foo");
         $stream = new RelativeStream($decorated->reveal(), 100);
         $ret = $stream->read(3);
@@ -129,7 +129,7 @@ class RelativeStreamTest extends TestCase
 
     public function testGetContents()
     {
-        $decorated = $this->prophesize(Stream::class);
+        $decorated = $this->prophesize('Zend\Diactoros\Stream');
         $decorated->getContents()->shouldBeCalled()->willReturn("foo");
         $stream = new RelativeStream($decorated->reveal(), 100);
         $ret = $stream->getContents();
@@ -138,7 +138,7 @@ class RelativeStreamTest extends TestCase
 
     public function testGetMetadata()
     {
-        $decorated = $this->prophesize(Stream::class);
+        $decorated = $this->prophesize('Zend\Diactoros\Stream');
         $decorated->getMetadata("bar")->shouldBeCalled()->willReturn("foo");
         $stream = new RelativeStream($decorated->reveal(), 100);
         $ret = $stream->getMetadata("bar");
