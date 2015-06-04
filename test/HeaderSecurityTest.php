@@ -65,7 +65,10 @@ class HeaderSecurityTest extends TestCase
             ["This is a\r\r test", 'assertFalse'],
             ["This is a \r\r\n test", 'assertFalse'],
             ["This is a \r\n\r\ntest", 'assertFalse'],
-            ["This is a \r\n\n\r\n test", 'assertFalse']
+            ["This is a \r\n\n\r\n test", 'assertFalse'],
+            ["This is a \xFF test", 'assertFalse'],
+            ["This is a \x7F test", 'assertFalse'],
+            ["This is a \x7E test", 'assertTrue'],
         ];
     }
 
