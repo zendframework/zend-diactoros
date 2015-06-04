@@ -106,23 +106,15 @@ final class HeaderSecurity
             return false;
         }
 
-        $length = strlen($value);
-        for ($i = 0; $i < $length; $i += 1) {
-            $ascii = ord($value[$i]);
-
-            // Non-visible, non-whitespace characters
-            // 9 === horizontal tab
-            // 10 === line feed
-            // 13 === carriage return
-            // 32-126, 128-254 === visible
-            // 127 === DEL
-            // 255 === null byte
-            if (($ascii < 32 && ! in_array($ascii, [9, 10, 13], true))
-                || $ascii === 127
-                || $ascii > 254
-            ) {
-                return false;
-            }
+        // Non-visible, non-whitespace characters
+        // 9 === horizontal tab
+        // 10 === line feed
+        // 13 === carriage return
+        // 32-126, 128-254 === visible
+        // 127 === DEL (disallowed)
+        // 255 === null byte (disallowed)
+        if (preg_match('/[^\x09\x0a\x0d\x20-\x7E\x80-\xFE]/', $value)) {
+            return false;
         }
 
         return true;
