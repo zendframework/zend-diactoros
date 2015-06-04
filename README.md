@@ -8,7 +8,7 @@ Develop:
 [![Build status][Develop image]][Develop]
 [![Coverage Status][Develop coverage image]][Develop coverage]
 
-> Diactoros: an epithet for Hermes, meaning literally, "the messenger."
+> Diactoros (pronunciation: `/dɪʌktɒrɒs/`): an epithet for Hermes, meaning literally, "the messenger."
 
 This package supercedes and replaces [phly/http](https://github.com/phly/http).
 
