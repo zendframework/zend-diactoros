@@ -22,6 +22,26 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - Nothing.
 
+## 1.0.3 - 2015-06-04
+
+### Added
+
+- [#48](https://github.com/zendframework/zend-diactoros/pull/48) drops the
+  minimum supported PHP version to 5.4, to allow an easier upgrade path for
+  Symfony 2.7 users, and potential Drupal 8 usage.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
 ## 1.0.2 - 2015-06-04
 
 ### Added
