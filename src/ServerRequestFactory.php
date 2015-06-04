@@ -226,19 +226,6 @@ abstract class ServerRequestFactory
      * Marshal the URI from the $_SERVER array and headers
      *
      * @param array $server
-     * @param MessageInterface $request
-     * @return Uri
-     * @deprecated as of 0.7.0; use marshalUriFromServer() instead.
-     */
-    public static function marshalUri(array $server, MessageInterface $request)
-    {
-        return self::marshalUriFromServer($server, $request->getHeaders());
-    }
-
-    /**
-     * Marshal the URI from the $_SERVER array and headers
-     *
-     * @param array $server
      * @param array $headers
      * @return Uri
      */
@@ -283,20 +270,6 @@ abstract class ServerRequestFactory
         return $uri
             ->withPath($path)
             ->withQuery($query);
-    }
-
-    /**
-     * Marshal the host and port from HTTP headers and/or the PHP environment
-     *
-     * @param stdClass $accumulator
-     * @param array $server
-     * @param MessageInterface $request
-     * @return array Array with two members, host and port, at indices 0 and 1, respectively
-     * @deprecated as of 0.7.0; use marshalHostAndPortFromHeaders() instead.
-     */
-    public static function marshalHostAndPort(stdClass $accumulator, array $server, MessageInterface $request)
-    {
-        return self::marshalHostAndPortFromHeaders($accumulator, $server, $request->getHeaders());
     }
 
     /**
