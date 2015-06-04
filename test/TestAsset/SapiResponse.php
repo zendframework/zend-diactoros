@@ -20,7 +20,7 @@
 
 namespace Zend\Diactoros\Response;
 
-use Zend\Diactoros\HeaderStack;
+use ZendTest\Diactoros\TestAsset\HeaderStack;
 
 /**
  * Have headers been sent?
