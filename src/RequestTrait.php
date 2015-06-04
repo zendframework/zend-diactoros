@@ -10,7 +10,6 @@
 namespace Zend\Diactoros;
 
 use InvalidArgumentException;
-use RuntimeException;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
 
