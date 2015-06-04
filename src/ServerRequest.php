@@ -40,17 +40,17 @@ class ServerRequest implements ServerRequestInterface
     /**
      * @var array
      */
-    private $cookieParams;
+    private $cookieParams = [];
 
     /**
-     * @var array
+     * @var null|array|object
      */
     private $parsedBody;
 
     /**
      * @var array
      */
-    private $queryParams;
+    private $queryParams = [];
 
     /**
      * @var array

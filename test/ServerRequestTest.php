@@ -153,4 +153,33 @@ class ServerRequestTest extends TestCase
         $stream = $r->getValue($body);
         $this->assertEquals('php://memory', $stream);
     }
+
+    /**
+     * @group 46
+     */
+    public function testCookieParamsAreAnEmptyArrayAtInitialization()
+    {
+        $request = new ServerRequest();
+        $this->assertInternalType('array', $request->getCookieParams());
+        $this->assertCount(0, $request->getCookieParams());
+    }
+
+    /**
+     * @group 46
+     */
+    public function testQueryParamsAreAnEmptyArrayAtInitialization()
+    {
+        $request = new ServerRequest();
+        $this->assertInternalType('array', $request->getQueryParams());
+        $this->assertCount(0, $request->getQueryParams());
+    }
+
+    /**
+     * @group 46
+     */
+    public function testParsedBodyIsNullAtInitialization()
+    {
+        $request = new ServerRequest();
+        $this->assertNull($request->getParsedBody());
+    }
 }
