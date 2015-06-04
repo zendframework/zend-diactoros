@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 1.1.0 - TBD
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- [#43](https://github.com/zendframework/zend-diactoros/pull/43) removed both
+  `ServerRequestFactory::marshalUri()` and `ServerRequestFactory::marshalHostAndPort()`,
+  which were deprecated prior to the 1.0 release.
+
+### Fixed
+
+- Nothing.
+
 ## 1.0.1 - 2015-05-26
 
 ### Added
