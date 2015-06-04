@@ -7,11 +7,11 @@
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
-namespace Zend\Diactoros;
+namespace ZendTest\Diactoros;
 
 use PHPUnit_Framework_TestCase as TestCase;
-use Zend\Diactoros\HeaderStack; // test asset
 use Zend\Diactoros\Server;
+use ZendTest\Diactoros\TestAsset\HeaderStack;
 
 class ServerTest extends TestCase
 {
