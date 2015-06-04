@@ -158,7 +158,7 @@ class UploadedFile implements UploadedFileInterface
 
         $this->moved = true;
     }
-    
+
     /**
      * {@inheritdoc}
      *
@@ -168,7 +168,7 @@ class UploadedFile implements UploadedFileInterface
     {
         return $this->size;
     }
-    
+
     /**
      * {@inheritdoc}
      *
@@ -179,7 +179,7 @@ class UploadedFile implements UploadedFileInterface
     {
         return $this->error;
     }
-    
+
     /**
      * {@inheritdoc}
      *
@@ -190,7 +190,7 @@ class UploadedFile implements UploadedFileInterface
     {
         return $this->clientFilename;
     }
-    
+
     /**
      * {@inheritdoc}
      */
