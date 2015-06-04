@@ -10,6 +10,7 @@
 namespace Zend\Diactoros;
 
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\StreamInterface;
 
 /**
  * HTTP Request encapsulation
