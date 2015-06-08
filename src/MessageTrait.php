@@ -142,8 +142,7 @@ trait MessageTrait
     }
 
     /**
-     * Retrieves the line for a single header, with the header values as a
-     * comma-separated string.
+     * Retrieves a comma-separated string of the values for a single header.
      *
      * This method returns all of the header values of the given
      * case-insensitive header name as a string concatenated together using
@@ -154,18 +153,18 @@ trait MessageTrait
      * and supply your own delimiter when concatenating.
      *
      * If the header does not appear in the message, this method MUST return
-     * a null value.
+     * an empty string.
      *
-     * @param string $header Case-insensitive header field name.
-     * @return string|null A string of values as provided for the given header
+     * @param string $name Case-insensitive header field name.
+     * @return string A string of values as provided for the given header
      *    concatenated together using a comma. If the header does not appear in
-     *    the message, this method MUST return a null value.
+     *    the message, this method MUST return an empty string.
      */
-    public function getHeaderLine($header)
+    public function getHeaderLine($name)
     {
-        $value = $this->getHeader($header);
+        $value = $this->getHeader($name);
         if (empty($value)) {
-            return null;
+            return '';
         }
 
         return implode(',', $value);
