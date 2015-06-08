@@ -24,6 +24,7 @@
     "psr/http-message": "~1.0"
   },
   "require-dev": {
+    "maks3w/psr7-assertions": "dev-master",
     "phpunit/PHPUnit": "~4.6",
     "squizlabs/php_codesniffer": "^2.3.1"
   },

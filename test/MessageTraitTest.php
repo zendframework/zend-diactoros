@@ -10,61 +10,22 @@
 namespace ZendTest\Diactoros;
 
 use PHPUnit_Framework_TestCase as TestCase;
+use Psr\Http\Message\MessageInterface;
 use Zend\Diactoros\Request;
-use Zend\Diactoros\Stream;
 
 class MessageTraitTest extends TestCase
 {
+    /** @var MessageInterface */
+    protected $message;
+
     public function setUp()
     {
-        $this->stream  = new Stream('php://memory', 'wb+');
-        $this->message = new Request(null, null, $this->stream);
+        $this->message = new Request(null, null, $this->getMock('Psr\Http\Message\StreamInterface'));
     }
 
     public function testProtocolHasAcceptableDefault()
     {
         $this->assertEquals('1.1', $this->message->getProtocolVersion());
-    }
-
-    public function testProtocolMutatorReturnsCloneWithChanges()
-    {
-        $message = $this->message->withProtocolVersion('1.0');
-        $this->assertNotSame($this->message, $message);
-        $this->assertEquals('1.0', $message->getProtocolVersion());
-    }
-
-    public function testUsesStreamProvidedInConstructorAsBody()
-    {
-        $this->assertSame($this->stream, $this->message->getBody());
-    }
-
-    public function testBodyMutatorReturnsCloneWithChanges()
-    {
-        $stream  = new Stream('php://memory', 'wb+');
-        $message = $this->message->withBody($stream);
-        $this->assertNotSame($this->message, $message);
-        $this->assertSame($stream, $message->getBody());
-    }
-
-    public function testGetHeaderReturnsHeaderValueAsArray()
-    {
-        $message = $this->message->withHeader('X-Foo', ['Foo', 'Bar']);
-        $this->assertNotSame($this->message, $message);
-        $this->assertEquals(['Foo', 'Bar'], $message->getHeader('X-Foo'));
-    }
-
-    public function testGetHeaderLineReturnsHeaderValueAsCommaConcatenatedString()
-    {
-        $message = $this->message->withHeader('X-Foo', ['Foo', 'Bar']);
-        $this->assertNotSame($this->message, $message);
-        $this->assertEquals('Foo,Bar', $message->getHeaderLine('X-Foo'));
-    }
-
-    public function testGetHeadersKeepsHeaderCaseSensitivity()
-    {
-        $message = $this->message->withHeader('X-Foo', ['Foo', 'Bar']);
-        $this->assertNotSame($this->message, $message);
-        $this->assertEquals([ 'X-Foo' => [ 'Foo', 'Bar' ] ], $message->getHeaders());
     }
 
     public function testGetHeadersReturnsCaseWithWhichHeaderFirstRegistered()
@@ -76,18 +37,6 @@ class MessageTraitTest extends TestCase
         $this->assertEquals([ 'X-Foo' => [ 'Foo', 'Bar' ] ], $message->getHeaders());
     }
 
-    public function testHasHeaderReturnsFalseIfHeaderIsNotPresent()
-    {
-        $this->assertFalse($this->message->hasHeader('X-Foo'));
-    }
-
-    public function testHasHeaderReturnsTrueIfHeaderIsPresent()
-    {
-        $message = $this->message->withHeader('X-Foo', 'Foo');
-        $this->assertNotSame($this->message, $message);
-        $this->assertTrue($message->hasHeader('X-Foo'));
-    }
-
     public function testAddHeaderAppendsToExistingHeader()
     {
         $message  = $this->message->withHeader('X-Foo', 'Foo');
@@ -95,17 +44,6 @@ class MessageTraitTest extends TestCase
         $message2 = $message->withAddedHeader('X-Foo', 'Bar');
         $this->assertNotSame($message, $message2);
         $this->assertEquals('Foo,Bar', $message2->getHeaderLine('X-Foo'));
-    }
-
-    public function testCanRemoveHeaders()
-    {
-        $message = $this->message->withHeader('X-Foo', 'Foo');
-        $this->assertNotSame($this->message, $message);
-        $this->assertTrue($message->hasHeader('x-foo'));
-        $message2 = $message->withoutHeader('x-foo');
-        $this->assertNotSame($this->message, $message2);
-        $this->assertNotSame($message, $message2);
-        $this->assertFalse($message2->hasHeader('X-Foo'));
     }
 
     public function testHeaderRemovalIsCaseInsensitive()
@@ -186,21 +124,9 @@ class MessageTraitTest extends TestCase
         $this->assertFalse($message->hasHeader('X-Foo'));
     }
 
-    public function testHeadersInitialization()
-    {
-        $headers = ['X-Foo' => ['bar']];
-        $this->message = new Request(null, null, $this->stream, $headers);
-        $this->assertSame($headers, $this->message->getHeaders());
-    }
-
     public function testGetHeaderReturnsAnEmptyArrayWhenHeaderDoesNotExist()
     {
         $this->assertSame([], $this->message->getHeader('X-Foo-Bar'));
-    }
-
-    public function testGetHeaderLineReturnsNullWhenHeaderDoesNotExist()
-    {
-        $this->assertEmpty($this->message->getHeaderLine('X-Foo-Bar'));
     }
 
     public function headersWithInjectionVectors()

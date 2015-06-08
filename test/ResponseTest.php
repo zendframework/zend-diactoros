@@ -9,27 +9,31 @@
 
 namespace ZendTest\Diactoros;
 
+use Maks3w\Psr7Assertions\PhpUnit\ResponseInterfaceTestsTrait;
 use PHPUnit_Framework_TestCase as TestCase;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Stream;
 
 class ResponseTest extends TestCase
 {
+    use ResponseInterfaceTestsTrait;
+
+    /** @var Response */
+    protected $response;
+
     public function setUp()
     {
         $this->response = new Response();
     }
 
+    protected function createDefaultResponse()
+    {
+        return $this->response;
+    }
+
     public function testStatusCodeIs200ByDefault()
     {
         $this->assertEquals(200, $this->response->getStatusCode());
-    }
-
-    public function testStatusCodeMutatorReturnsCloneWithChanges()
-    {
-        $response = $this->response->withStatus(400);
-        $this->assertNotSame($this->response, $response);
-        $this->assertEquals(400, $response->getStatusCode());
     }
 
     public function invalidStatusCodes()
@@ -58,12 +62,6 @@ class ResponseTest extends TestCase
     {
         $response = $this->response->withStatus(422);
         $this->assertEquals('Unprocessable Entity', $response->getReasonPhrase());
-    }
-
-    public function testCanSetCustomReasonPhrase()
-    {
-        $response = $this->response->withStatus(422, 'Foo Bar!');
-        $this->assertEquals('Foo Bar!', $response->getReasonPhrase());
     }
 
     public function testConstructorRaisesExceptionForInvalidStream()
@@ -148,13 +146,6 @@ class ResponseTest extends TestCase
         ];
         $response = new Response('php://memory', null, $headers);
         $this->assertEquals($expected, $response->getHeaders());
-    }
-
-    public function testReasonPhraseCanBeEmpty()
-    {
-        $response = $this->response->withStatus(599);
-        $this->assertInternalType('string', $response->getReasonPhrase());
-        $this->assertEmpty($response->getReasonPhrase());
     }
 
     public function headersWithInjectionVectors()

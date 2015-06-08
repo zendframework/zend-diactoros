@@ -9,6 +9,7 @@
 
 namespace ZendTest\Diactoros;
 
+use Maks3w\Psr7Assertions\PhpUnit\RequestInterfaceTestsTrait;
 use PHPUnit_Framework_TestCase as TestCase;
 use Zend\Diactoros\Request;
 use Zend\Diactoros\Stream;
@@ -16,26 +17,19 @@ use Zend\Diactoros\Uri;
 
 class RequestTest extends TestCase
 {
+    use RequestInterfaceTestsTrait;
+
+    /** @var Request */
+    protected $request;
+
     public function setUp()
     {
         $this->request = new Request();
     }
 
-    public function testMethodIsNullByDefault()
+    protected function createDefaultRequest()
     {
-        $this->assertNull($this->request->getMethod());
-    }
-
-    public function testMethodMutatorReturnsCloneWithChangedMethod()
-    {
-        $request = $this->request->withMethod('GET');
-        $this->assertNotSame($this->request, $request);
-        $this->assertEquals('GET', $request->getMethod());
-    }
-
-    public function testUriIsNullByDefault()
-    {
-        $this->assertNull($this->request->getUri());
+        return $this->request;
     }
 
     public function testConstructorRaisesExceptionForInvalidStream()
