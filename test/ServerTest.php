@@ -33,12 +33,8 @@ class ServerTest extends TestCase
         $this->callback   = function ($req, $res, $done) {
             //  Intentionally empty
         };
-        $this->request = $this
-            ->getMockBuilder('Psr\Http\Message\ServerRequestInterface')
-            ->getMock();
-        $this->response = $this
-            ->getMockBuilder('Psr\Http\Message\ResponseInterface')
-            ->getMock();
+        $this->request = $this->getMock('Psr\Http\Message\ServerRequestInterface');
+        $this->response = $this->getMock('Psr\Http\Message\ResponseInterface');
     }
 
     public function tearDown()
