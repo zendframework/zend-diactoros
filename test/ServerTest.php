@@ -140,7 +140,7 @@ class ServerTest extends TestCase
             'QUERY_STRING' => 'bar=baz',
         ];
 
-        $callback = function ($req, $res) {
+        $callback = function (ServerRequestInterface $req, ResponseInterface $res) {
             $res = $res->withStatus(299);
             $res = $res->withAddedHeader('Content-Type', 'text/plain');
             $res->getBody()->write('FOOBAR');
@@ -166,7 +166,7 @@ class ServerTest extends TestCase
             'QUERY_STRING' => 'bar=baz',
         ];
 
-        $callback = function ($req, $res) {
+        $callback = function (ServerRequestInterface $req, ResponseInterface $res) {
             $res = $res->withAddedHeader('Content-Type', 'text/plain');
             $res->getBody()->write('100%');
             return $res;
@@ -189,7 +189,7 @@ class ServerTest extends TestCase
             'REQUEST_URI' => '/foo/bar',
         ];
 
-        $callback = function ($req, $res) {
+        $callback = function (ServerRequestInterface $req, ResponseInterface $res) {
             $res = $res->withAddedHeader('Content-Type', 'text/plain');
             $res = $res->withAddedHeader(
                 'Set-Cookie',
