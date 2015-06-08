@@ -14,6 +14,12 @@ use Zend\Diactoros\PhpInputStream;
 
 class PhpInputStreamTest extends TestCase
 {
+    /** @var string */
+    protected $file;
+
+    /** @var PhpInputStream */
+    protected $stream;
+
     public function setUp()
     {
         $this->file = __DIR__ . '/TestAsset/php-input-stream.txt';

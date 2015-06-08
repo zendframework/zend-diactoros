@@ -10,11 +10,22 @@
 namespace ZendTest\Diactoros;
 
 use PHPUnit_Framework_TestCase as TestCase;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Server;
 use ZendTest\Diactoros\TestAsset\HeaderStack;
 
 class ServerTest extends TestCase
 {
+    /** @var Callable */
+    protected $callback;
+
+    /** @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject */
+    protected $request;
+
+    /** @var ResponseInterface|\PHPUnit_Framework_MockObject_MockObject */
+    protected $response;
+
     public function setUp()
     {
         HeaderStack::reset();

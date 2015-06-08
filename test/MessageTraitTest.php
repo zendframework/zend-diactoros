@@ -15,6 +15,9 @@ use Zend\Diactoros\Stream;
 
 class MessageTraitTest extends TestCase
 {
+    /** @var MessageInterface */
+    protected $message;
+
     public function setUp()
     {
         $this->stream  = new Stream('php://memory', 'wb+');
