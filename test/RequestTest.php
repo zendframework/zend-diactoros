@@ -344,7 +344,7 @@ class RequestTest extends TestCase
     public function testGetHostHeaderLineReturnsNullIfNoUriPresent()
     {
         $request = new Request();
-        $this->assertNull($request->getHeaderLine('host'));
+        $this->assertEmpty($request->getHeaderLine('host'));
     }
 
     /**
@@ -353,7 +353,7 @@ class RequestTest extends TestCase
     public function testGetHostHeaderLineReturnsNullIfUriDoesNotContainHost()
     {
         $request = new Request(new Uri());
-        $this->assertNull($request->getHeaderLine('host'));
+        $this->assertEmpty($request->getHeaderLine('host'));
     }
 
     public function testPassingPreserveHostFlagWhenUpdatingUriDoesNotUpdateHostHeader()
