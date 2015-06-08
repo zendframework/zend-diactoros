@@ -36,11 +36,6 @@ class MessageTraitTest extends TestCase
         $this->assertEquals('1.0', $message->getProtocolVersion());
     }
 
-    public function testUsesStreamProvidedInConstructorAsBody()
-    {
-        $this->assertSame($this->stream, $this->message->getBody());
-    }
-
     public function testBodyMutatorReturnsCloneWithChanges()
     {
         $stream  = new Stream('php://memory', 'wb+');
