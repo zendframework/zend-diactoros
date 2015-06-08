@@ -10,8 +10,8 @@
 namespace ZendTest\Diactoros;
 
 use PHPUnit_Framework_TestCase as TestCase;
+use Psr\Http\Message\MessageInterface;
 use Zend\Diactoros\Request;
-use Zend\Diactoros\Stream;
 
 class MessageTraitTest extends TestCase
 {
@@ -20,8 +20,7 @@ class MessageTraitTest extends TestCase
 
     public function setUp()
     {
-        $this->stream  = new Stream('php://memory', 'wb+');
-        $this->message = new Request(null, null, $this->stream);
+        $this->message = new Request(null, null, $this->getMock('Psr\Http\Message\StreamInterface'));
     }
 
     public function testProtocolHasAcceptableDefault()
@@ -38,7 +37,7 @@ class MessageTraitTest extends TestCase
 
     public function testBodyMutatorReturnsCloneWithChanges()
     {
-        $stream  = new Stream('php://memory', 'wb+');
+        $stream  = $this->getMock('Psr\Http\Message\StreamInterface');
         $message = $this->message->withBody($stream);
         $this->assertNotSame($this->message, $message);
         $this->assertSame($stream, $message->getBody());
