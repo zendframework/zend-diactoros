@@ -184,4 +184,18 @@ class ResponseTest extends TestCase
         $this->setExpectedException('InvalidArgumentException');
         $request = new Response('php://memory', 200, [$name =>  $value]);
     }
+
+    public function testShortConstructor()
+    {
+        $body = 'Uh oh not found';
+        $status = 404;
+        $headers = [
+            'x-custom' => [ 'foo-bar' ],
+        ];
+
+        $response = Response::fromString($body, $status, $headers);
+        $this->assertSame($body, $response->getBody()->__toString());
+        $this->assertEquals(404, $response->getStatusCode());
+        $this->assertEquals($headers, $response->getHeaders());
+    }
 }
