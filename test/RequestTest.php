@@ -47,19 +47,6 @@ class RequestTest extends TestCase
         new Request(['TOTALLY INVALID']);
     }
 
-    public function invalidUrls()
-    {
-        return [
-            'null'   => [null],
-            'true'   => [true],
-            'false'  => [false],
-            'int'    => [1],
-            'float'  => [1.1],
-            'array'  => [['foo']],
-            'object' => [(object) ['foo']],
-        ];
-    }
-
     public function testWithUriReturnsNewInstanceWithNewUri()
     {
         $request = $this->request->withUri(new Uri('https://example.com:10082/foo/bar?baz=bat'));
