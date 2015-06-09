@@ -133,22 +133,6 @@ class Response implements ResponseInterface
     }
 
     /**
-     * Create a response with the given body text.
-     *
-     * @param string $body The response body, as a string.
-     * @param int $status Status code for the response, if any.
-     * @param array $headers Headers for the response, if any.
-     * @return static
-     */
-    public static function fromString($body, $status = 200, array $headers = [])
-    {
-        $response = new static('php://memory', $status, $headers);
-        $response->getBody()->write($body);
-
-        return $response;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function getStatusCode()
