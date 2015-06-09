@@ -27,7 +27,7 @@ class HtmlResponse extends Response implements ResponseInterface
      */
     public function __construct($html, $status = 200, array $headers = [])
     {
-        parent::__construct('php://memory', $status, $headers);
+        parent::__construct('php://temp', $status, $headers);
         $this->getBody()->write($html);
     }
 }
