@@ -22,7 +22,7 @@ Documentation is [in the doc tree](doc/), and can be compiled using
 [bookdown](http://bookdown.io):
 
 ```console
-$ ./vendor/bin/bookdown doc/book/bookdown.json
+$ ./vendor/bin/bookdown doc/bookdown.json
 $ php -S 0.0.0.0:8080 -t doc/html/ # then browse to http://localhost:8080/
 ```
 
