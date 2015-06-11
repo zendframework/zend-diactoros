@@ -1,4 +1,4 @@
-## Serialization
+# Serialization
 
 At times, it's useful to either create a string representation of a message (serialization), or to
 cast a string or stream message to an object (deserialization). This package provides features for

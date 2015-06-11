@@ -1,5 +1,4 @@
-zend-diactoros: HTTP Messages
-=============================
+# zend-diactoros: HTTP Messages
 
 `zend-diactoros` is a PHP package containing implementations of the [accepted PSR-7 HTTP message
 interfaces](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-7-http-message.md), as

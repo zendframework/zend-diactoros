@@ -1,5 +1,4 @@
-zend-diactoros
-==============
+# zend-diactoros
 
 Master:
 [![Build status][Master image]][Master]

@@ -1,5 +1,4 @@
-Emitting responses
-==================
+# Emitting responses
 
 If you are using a non-SAPI PHP implementation and wish to use the `Server` class, or if you do not
 want to use the `Server` implementation but want to emit a response, this package provides an

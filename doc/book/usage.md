@@ -1,5 +1,4 @@
-Usage
-=====
+# Usage
 
 Usage will differ based on whether you are writing an HTTP client, or a server-side application.
 
