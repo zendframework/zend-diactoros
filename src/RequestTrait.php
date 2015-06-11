@@ -26,6 +26,7 @@ use Psr\Http\Message\UriInterface;
  * @property array $headers
  * @property array $headerNames
  * @property StreamInterface $stream
+ * @method bool hasHeader(string $header)
  */
 trait RequestTrait
 {
@@ -251,7 +252,7 @@ trait RequestTrait
         $new = clone $this;
         $new->uri = $uri;
 
-        if ($preserveHost) {
+        if ($preserveHost && $this->hasHeader('Host')) {
             return $new;
         }
 
