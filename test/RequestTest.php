@@ -24,12 +24,12 @@ class RequestTest extends TestCase
 
     public function setUp()
     {
-        $this->request = new Request();
+        $this->request = $this->createDefaultRequest();
     }
 
     protected function createDefaultRequest()
     {
-        return $this->request;
+        return new Request();
     }
 
     public function testConstructorRaisesExceptionForInvalidStream()

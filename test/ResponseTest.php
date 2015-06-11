@@ -23,12 +23,12 @@ class ResponseTest extends TestCase
 
     public function setUp()
     {
-        $this->response = new Response();
+        $this->response = $this->createDefaultResponse();
     }
 
     protected function createDefaultResponse()
     {
-        return $this->response;
+        return new Response();
     }
 
     public function testStatusCodeIs200ByDefault()

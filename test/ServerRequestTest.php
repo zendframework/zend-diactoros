@@ -25,12 +25,12 @@ class ServerRequestTest extends TestCase
 
     public function setUp()
     {
-        $this->request = new ServerRequest();
+        $this->request = $this->createDefaultServerRequest();
     }
 
     protected function createDefaultServerRequest()
     {
-        return $this->request;
+        return new ServerRequest();
     }
 
     public function testServerParamsAreEmptyByDefault()
