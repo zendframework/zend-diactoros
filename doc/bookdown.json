@@ -8,6 +8,5 @@
     "book/serialization.md",
     "book/api.md"
   ],
-  "target": "./html",
-  "template": "./templates/main.php"
+  "target": "./html"
 }
