@@ -24,7 +24,7 @@ class StringResponseTest extends TestCase
 
         $response = StringResponse::html($body, $status, $headers);
         $this->assertInstanceOf('Zend\Diactoros\Response', $response);
-        $this->assertSame($body, $response->getBody()->__toString());
+        $this->assertSame($body, (string) $response->getBody());
         $this->assertEquals(404, $response->getStatusCode());
         $this->assertEquals(['foo-bar'], $response->getHeader('x-custom'));
         $this->assertEquals('text/html', $response->getHeaderLine('content-type'));
@@ -35,17 +35,52 @@ class StringResponseTest extends TestCase
         $data = [
             'nested' => [
                 'json' => [
-                    'tree'
-                ]
-            ]
+                    'tree',
+                ],
+            ],
         ];
         $json = '{"nested":{"json":["tree"]}}';
 
         $response = StringResponse::json($data);
         $this->assertInstanceOf('Zend\Diactoros\Response', $response);
-        $this->assertSame($json, $response->getBody()->__toString());
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('application/json', $response->getHeaderLine('content-type'));
+        $this->assertSame($json, (string) $response->getBody());
+    }
+
+    public function testNullValuePassedToJsonRendersEmptyJSONObject()
+    {
+        $response = StringResponse::json(null);
+        $this->assertInstanceOf('Zend\Diactoros\Response', $response);
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals('application/json', $response->getHeaderLine('content-type'));
+        $this->assertSame('{}', (string) $response->getBody());
+    }
+
+    public function scalarValuesForJSON()
+    {
+        return [
+            'false'        => [false],
+            'true'         => [true],
+            'zero'         => [0],
+            'int'          => [1],
+            'zero-float'   => [0.0],
+            'float'        => [1.1],
+            'empty-string' => [''],
+            'string'       => ['string'],
+        ];
+    }
+
+    /**
+     * @dataProvider scalarValuesForJSON
+     */
+    public function testScalarValuePassedToJsonRendersValueWithinJSONArray($value)
+    {
+        $response = StringResponse::json($value);
+        $this->assertInstanceOf('Zend\Diactoros\Response', $response);
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals('application/json', $response->getHeaderLine('content-type'));
+        $this->assertSame(json_encode([$value], JSON_UNESCAPED_SLASHES), (string) $response->getBody());
     }
 
     public function testContentTypeCanBeOverwritten()
@@ -54,7 +89,7 @@ class StringResponseTest extends TestCase
         $json = '{}';
 
         $response = StringResponse::json($data, 200, ['content-type' => 'foo/json']);
-        $this->assertSame($json, $response->getBody()->__toString());
+        $this->assertSame($json, (string) $response->getBody());
         $this->assertEquals('foo/json', $response->getHeaderLine('content-type'));
     }
 }
