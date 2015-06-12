@@ -33,7 +33,7 @@ trait RequestTrait
     /**
      * @var string
      */
-    private $method;
+    private $method = '';
 
     /**
      * The request-target, if it has been provided or calculated.
@@ -97,7 +97,7 @@ trait RequestTrait
             $uri = new Uri($uri);
         }
 
-        $this->method = $method;
+        $this->method = $method ?: '';
         $this->uri    = $uri;
         $this->stream = ($body instanceof StreamInterface) ? $body : new Stream($body, 'r');
 
