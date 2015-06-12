@@ -9,6 +9,7 @@
 
 namespace Zend\Diactoros\Response;
 
+use ArrayObject;
 use Zend\Diactoros\Response;
 
 /**
@@ -42,7 +43,7 @@ final class StringResponse
     public static function json($data, $status = 200, array $headers = [])
     {
         if ($data === null) {
-            $data = new \ArrayObject();
+            $data = new ArrayObject();
         }
 
         $json = json_encode($data, JSON_UNESCAPED_SLASHES);
