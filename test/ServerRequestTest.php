@@ -17,6 +17,11 @@ use Zend\Diactoros\Uri;
 
 class ServerRequestTest extends TestCase
 {
+    /**
+     * @var ServerRequest
+     */
+    protected $request;
+
     public function setUp()
     {
         $this->request = new ServerRequest();

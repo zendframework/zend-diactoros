@@ -16,6 +16,11 @@ use Zend\Diactoros\Uri;
 
 class RequestTest extends TestCase
 {
+    /**
+     * @var Request
+     */
+    protected $request;
+
     public function setUp()
     {
         $this->request = new Request();
@@ -42,19 +47,6 @@ class RequestTest extends TestCase
     {
         $this->setExpectedException('InvalidArgumentException');
         new Request(['TOTALLY INVALID']);
-    }
-
-    public function invalidUrls()
-    {
-        return [
-            'null'   => [null],
-            'true'   => [true],
-            'false'  => [false],
-            'int'    => [1],
-            'float'  => [1.1],
-            'array'  => [['foo']],
-            'object' => [(object) ['foo']],
-        ];
     }
 
     public function testWithUriReturnsNewInstanceWithNewUri()
