@@ -448,4 +448,11 @@ class UriTest extends TestCase
         $uri = (new Uri())->withFragment($expected);
         $this->assertEquals($expected, $uri->getFragment());
     }
+
+    public function testProperlyTrimsLeadingSlashesToPreventXSS()
+    {
+        $url = 'http://example.org//zend.com';
+        $uri = new Uri($url);
+        $this->assertEquals('http://example.org/zend.com', (string) $uri);
+    }
 }
