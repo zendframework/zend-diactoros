@@ -10,11 +10,22 @@
 namespace ZendTest\Diactoros;
 
 use PHPUnit_Framework_TestCase as TestCase;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Server;
 use ZendTest\Diactoros\TestAsset\HeaderStack;
 
 class ServerTest extends TestCase
 {
+    /** @var Callable */
+    protected $callback;
+
+    /** @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject */
+    protected $request;
+
+    /** @var ResponseInterface|\PHPUnit_Framework_MockObject_MockObject */
+    protected $response;
+
     public function setUp()
     {
         HeaderStack::reset();
@@ -22,12 +33,8 @@ class ServerTest extends TestCase
         $this->callback   = function ($req, $res, $done) {
             //  Intentionally empty
         };
-        $this->request = $this
-            ->getMockBuilder('Psr\Http\Message\ServerRequestInterface')
-            ->getMock();
-        $this->response = $this
-            ->getMockBuilder('Psr\Http\Message\ResponseInterface')
-            ->getMock();
+        $this->request = $this->getMock('Psr\Http\Message\ServerRequestInterface');
+        $this->response = $this->getMock('Psr\Http\Message\ResponseInterface');
     }
 
     public function tearDown()
@@ -129,7 +136,7 @@ class ServerTest extends TestCase
             'QUERY_STRING' => 'bar=baz',
         ];
 
-        $callback = function ($req, $res) {
+        $callback = function (ServerRequestInterface $req, ResponseInterface $res) {
             $res = $res->withStatus(299);
             $res = $res->withAddedHeader('Content-Type', 'text/plain');
             $res->getBody()->write('FOOBAR');
@@ -155,7 +162,7 @@ class ServerTest extends TestCase
             'QUERY_STRING' => 'bar=baz',
         ];
 
-        $callback = function ($req, $res) {
+        $callback = function (ServerRequestInterface $req, ResponseInterface $res) {
             $res = $res->withAddedHeader('Content-Type', 'text/plain');
             $res->getBody()->write('100%');
             return $res;
@@ -178,7 +185,7 @@ class ServerTest extends TestCase
             'REQUEST_URI' => '/foo/bar',
         ];
 
-        $callback = function ($req, $res) {
+        $callback = function (ServerRequestInterface $req, ResponseInterface $res) {
             $res = $res->withAddedHeader('Content-Type', 'text/plain');
             $res = $res->withAddedHeader(
                 'Set-Cookie',
