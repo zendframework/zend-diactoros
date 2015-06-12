@@ -25,8 +25,7 @@
   },
   "require-dev": {
     "phpunit/PHPUnit": "~4.6",
-    "squizlabs/php_codesniffer": "^2.3.1",
-    "bookdown/bookdown": "^0.4.0"
+    "squizlabs/php_codesniffer": "^2.3.1"
   },
   "provide": {
     "psr/http-message-implementation": "~1.0.0"
