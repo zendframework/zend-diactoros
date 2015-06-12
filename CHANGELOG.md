@@ -6,7 +6,11 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- Nothing.
+- [#52](https://github.com/zendframework/zend-diactoros/pull/52) adds
+  `Zend\Diactoros\Response\StringResponse`, a factory class for generating
+  HTML or JSON responses. It contains the static methods:
+  - `html($html, $status = 200, array $headers = [])`
+  - `json($data, $status = 200, array $headers = [])`
 
 ### Deprecated
 
