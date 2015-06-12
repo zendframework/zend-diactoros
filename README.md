@@ -31,11 +31,11 @@ $ php -S 0.0.0.0:8080 -t doc/html/ # then browse to http://localhost:8080/
 > You can install bookdown globally using `composer global require bookdown/bookdown`. If you do
 > this, make sure that `$HOME/.composer/vendor/bin` is on your `$PATH`.
 
--  [Master]: https://travis-ci.org/zendframework/zend-diactoros
--  [Master image]: https://secure.travis-ci.org/zendframework/zend-diactoros.svg?branch=master
--  [Master coverage image]: https://img.shields.io/coveralls/zendframework/zend-diactoros/master.svg
--  [Master coverage]: https://coveralls.io/r/zendframework/zend-diactoros?branch=master
--  [Develop]: https://github.com/zendframeowork/zend-diactoros/tree/develop
--  [Develop image]:  https://secure.travis-ci.org/zendframework/zend-diactoros.svg?branch=develop
--  [Develop coverage image]: https://coveralls.io/repos/zendframework/zend-diactoros/badge.svg?branch=develop
--  [Develop coverage]: https://coveralls.io/r/zendframework/zend-diactoros?branch=develop
+  [Master]: https://travis-ci.org/zendframework/zend-diactoros
+  [Master image]: https://secure.travis-ci.org/zendframework/zend-diactoros.svg?branch=master
+  [Master coverage image]: https://img.shields.io/coveralls/zendframework/zend-diactoros/master.svg
+  [Master coverage]: https://coveralls.io/r/zendframework/zend-diactoros?branch=master
+  [Develop]: https://github.com/zendframeowork/zend-diactoros/tree/develop
+  [Develop image]:  https://secure.travis-ci.org/zendframework/zend-diactoros.svg?branch=develop
+  [Develop coverage image]: https://coveralls.io/repos/zendframework/zend-diactoros/badge.svg?branch=develop
+  [Develop coverage]: https://coveralls.io/r/zendframework/zend-diactoros?branch=develop
