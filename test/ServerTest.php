@@ -17,13 +17,19 @@ use ZendTest\Diactoros\TestAsset\HeaderStack;
 
 class ServerTest extends TestCase
 {
-    /** @var Callable */
+    /**
+     * @var Callable
+     */
     protected $callback;
 
-    /** @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject */
+    /**
+     * @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject
+     */
     protected $request;
 
-    /** @var ResponseInterface|\PHPUnit_Framework_MockObject_MockObject */
+    /**
+     * @var ResponseInterface|\PHPUnit_Framework_MockObject_MockObject
+     */
     protected $response;
 
     public function setUp()

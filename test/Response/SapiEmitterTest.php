@@ -17,7 +17,9 @@ use ZendTest\Diactoros\TestAsset\HeaderStack;
 
 class SapiEmitterTest extends TestCase
 {
-    /** @var SapiEmitter */
+    /**
+     * @var SapiEmitter
+     */
     protected $emitter;
 
     public function setUp()

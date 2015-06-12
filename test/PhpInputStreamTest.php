@@ -14,10 +14,14 @@ use Zend\Diactoros\PhpInputStream;
 
 class PhpInputStreamTest extends TestCase
 {
-    /** @var string */
+    /**
+     * @var string
+     */
     protected $file;
 
-    /** @var PhpInputStream */
+    /**
+     * @var PhpInputStream
+     */
     protected $stream;
 
     public function setUp()

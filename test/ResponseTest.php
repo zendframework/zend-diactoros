@@ -15,7 +15,9 @@ use Zend\Diactoros\Stream;
 
 class ResponseTest extends TestCase
 {
-    /** @var Response */
+    /**
+     * @var Response
+    */
     protected $response;
 
     public function setUp()

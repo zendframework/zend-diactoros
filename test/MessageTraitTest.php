@@ -15,7 +15,9 @@ use Zend\Diactoros\Request;
 
 class MessageTraitTest extends TestCase
 {
-    /** @var MessageInterface */
+    /**
+     * @var MessageInterface
+     */
     protected $message;
 
     public function setUp()
@@ -33,6 +35,13 @@ class MessageTraitTest extends TestCase
         $message = $this->message->withProtocolVersion('1.0');
         $this->assertNotSame($this->message, $message);
         $this->assertEquals('1.0', $message->getProtocolVersion());
+    }
+
+    public function testUsesStreamProvidedInConstructorAsBody()
+    {
+        $stream  = $this->getMock('Psr\Http\Message\StreamInterface');
+        $message = new Request(null, null, $stream);
+        $this->assertSame($stream, $message->getBody());
     }
 
     public function testBodyMutatorReturnsCloneWithChanges()
@@ -181,6 +190,13 @@ class MessageTraitTest extends TestCase
         $message = $this->message->withoutHeader('X-Foo');
         $this->assertNotSame($this->message, $message);
         $this->assertFalse($message->hasHeader('X-Foo'));
+    }
+
+    public function testHeadersInitialization()
+    {
+        $headers = ['X-Foo' => ['bar']];
+        $message = new Request(null, null, 'php://temp', $headers);
+        $this->assertSame($headers, $message->getHeaders());
     }
 
     public function testGetHeaderReturnsAnEmptyArrayWhenHeaderDoesNotExist()
