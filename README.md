@@ -14,12 +14,11 @@ This package supercedes and replaces [phly/http](https://github.com/phly/http).
 `zend-diactoros` is a PHP package containing implementations of the [accepted PSR-7 HTTP message interfaces](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-7-http-message.md), as well as a "server" implementation similar to [node's http.Server](http://nodejs.org/api/http.html).
 
 * File issues at https://github.com/zendframework/zend-diactoros/issues
-* Issues patches to https://github.com/zendframework/zend-diactoros/pulls
+* Issue patches to https://github.com/zendframework/zend-diactoros/pulls
 
 ## Documentation
 
-Documentation is [in the doc tree](doc/), and can be compiled using
-[bookdown](http://bookdown.io):
+Documentation is [in the doc tree](doc/), and can be compiled using [bookdown](http://bookdown.io):
 
 ```console
 $ bookdown doc/bookdown.json
