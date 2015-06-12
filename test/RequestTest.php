@@ -9,6 +9,7 @@
 
 namespace ZendTest\Diactoros;
 
+use Maks3w\Psr7Assertions\PhpUnit\RequestInterfaceTestsTrait;
 use PHPUnit_Framework_TestCase as TestCase;
 use Zend\Diactoros\Request;
 use Zend\Diactoros\Stream;
@@ -16,26 +17,19 @@ use Zend\Diactoros\Uri;
 
 class RequestTest extends TestCase
 {
+    use RequestInterfaceTestsTrait;
+
+    /** @var Request */
+    protected $request;
+
     public function setUp()
     {
-        $this->request = new Request();
+        $this->request = $this->createDefaultRequest();
     }
 
-    public function testMethodIsNullByDefault()
+    protected function createDefaultRequest()
     {
-        $this->assertNull($this->request->getMethod());
-    }
-
-    public function testMethodMutatorReturnsCloneWithChangedMethod()
-    {
-        $request = $this->request->withMethod('GET');
-        $this->assertNotSame($this->request, $request);
-        $this->assertEquals('GET', $request->getMethod());
-    }
-
-    public function testUriIsNullByDefault()
-    {
-        $this->assertNull($this->request->getUri());
+        return new Request();
     }
 
     public function testConstructorRaisesExceptionForInvalidStream()
@@ -267,128 +261,6 @@ class RequestTest extends TestCase
         $request = (new Request())->withUri(new Uri('https://example.com/foo/bar'));
         $original = $request->getRequestTarget();
         $newRequest = $request->withUri(new Uri('http://mwop.net/bar/baz'));
-    }
-
-    /**
-     * @group 39
-     */
-    public function testGetHeadersContainsHostHeaderIfUriWithHostIsPresent()
-    {
-        $request = new Request('http://example.com');
-        $headers = $request->getHeaders();
-        $this->assertArrayHasKey('Host', $headers);
-        $this->assertContains('example.com', $headers['Host']);
-    }
-
-    /**
-     * @group 39
-     */
-    public function testGetHeadersContainsNoHostHeaderIfNoUriPresent()
-    {
-        $request = new Request();
-        $headers = $request->getHeaders();
-        $this->assertArrayNotHasKey('Host', $headers);
-    }
-
-    /**
-     * @group 39
-     */
-    public function testGetHeadersContainsNoHostHeaderIfUriDoesNotContainHost()
-    {
-        $request = new Request(new Uri());
-        $headers = $request->getHeaders();
-        $this->assertArrayNotHasKey('Host', $headers);
-    }
-
-    /**
-     * @group 39
-     */
-    public function testGetHostHeaderReturnsUriHostWhenPresent()
-    {
-        $request = new Request('http://example.com');
-        $header = $request->getHeader('host');
-        $this->assertEquals(['example.com'], $header);
-    }
-
-    /**
-     * @group 39
-     */
-    public function testGetHostHeaderReturnsEmptyArrayIfNoUriPresent()
-    {
-        $request = new Request();
-        $this->assertSame([], $request->getHeader('host'));
-    }
-
-    /**
-     * @group 39
-     */
-    public function testGetHostHeaderReturnsEmptyArrayIfUriDoesNotContainHost()
-    {
-        $request = new Request(new Uri());
-        $this->assertSame([], $request->getHeader('host'));
-    }
-
-    /**
-     * @group 39
-     */
-    public function testGetHostHeaderLineReturnsUriHostWhenPresent()
-    {
-        $request = new Request('http://example.com');
-        $header = $request->getHeaderLine('host');
-        $this->assertContains('example.com', $header);
-    }
-
-    /**
-     * @group 39
-     */
-    public function testGetHostHeaderLineReturnsNullIfNoUriPresent()
-    {
-        $request = new Request();
-        $this->assertNull($request->getHeaderLine('host'));
-    }
-
-    /**
-     * @group 39
-     */
-    public function testGetHostHeaderLineReturnsNullIfUriDoesNotContainHost()
-    {
-        $request = new Request(new Uri());
-        $this->assertNull($request->getHeaderLine('host'));
-    }
-
-    public function testPassingPreserveHostFlagWhenUpdatingUriDoesNotUpdateHostHeader()
-    {
-        $request = (new Request())
-            ->withAddedHeader('Host', 'example.com');
-
-        $uri = (new Uri())->withHost('www.example.com');
-        $new = $request->withUri($uri, true);
-
-        $this->assertEquals('example.com', $new->getHeaderLine('Host'));
-    }
-
-    public function testNotPassingPreserveHostFlagWhenUpdatingUriWithoutHostDoesNotUpdateHostHeader()
-    {
-        $request = (new Request())
-            ->withAddedHeader('Host', 'example.com');
-
-        $uri = new Uri();
-        $new = $request->withUri($uri);
-
-        $this->assertEquals('example.com', $new->getHeaderLine('Host'));
-    }
-
-    public function testHostHeaderUpdatesToUriHostAndPortWhenPreserveHostDisabledAndNonStandardPort()
-    {
-        $request = (new Request())
-            ->withAddedHeader('Host', 'example.com');
-
-        $uri = (new Uri())
-            ->withHost('www.example.com')
-            ->withPort(10081);
-        $new = $request->withUri($uri);
-
-        $this->assertEquals('www.example.com:10081', $new->getHeaderLine('Host'));
     }
 
     public function headersWithInjectionVectors()

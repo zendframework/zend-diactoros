@@ -9,6 +9,7 @@
 
 namespace ZendTest\Diactoros;
 
+use Maks3w\Psr7Assertions\PhpUnit\ServerRequestInterfaceTestsTrait;
 use PHPUnit_Framework_TestCase as TestCase;
 use ReflectionProperty;
 use Zend\Diactoros\ServerRequest;
@@ -17,9 +18,19 @@ use Zend\Diactoros\Uri;
 
 class ServerRequestTest extends TestCase
 {
+    use ServerRequestInterfaceTestsTrait;
+
+    /** @var ServerRequest */
+    protected $request;
+
     public function setUp()
     {
-        $this->request = new ServerRequest();
+        $this->request = $this->createDefaultServerRequest();
+    }
+
+    protected function createDefaultServerRequest()
+    {
+        return new ServerRequest();
     }
 
     public function testServerParamsAreEmptyByDefault()
@@ -32,25 +43,9 @@ class ServerRequestTest extends TestCase
         $this->assertEmpty($this->request->getQueryParams());
     }
 
-    public function testQueryParamsMutatorReturnsCloneWithChanges()
-    {
-        $value = ['foo' => 'bar'];
-        $request = $this->request->withQueryParams($value);
-        $this->assertNotSame($this->request, $request);
-        $this->assertEquals($value, $request->getQueryParams());
-    }
-
     public function testCookiesAreEmptyByDefault()
     {
         $this->assertEmpty($this->request->getCookieParams());
-    }
-
-    public function testCookiesMutatorReturnsCloneWithChanges()
-    {
-        $value = ['foo' => 'bar'];
-        $request = $this->request->withCookieParams($value);
-        $this->assertNotSame($this->request, $request);
-        $this->assertEquals($value, $request->getCookieParams());
     }
 
     public function testUploadedFilesAreEmptyByDefault()
@@ -79,26 +74,6 @@ class ServerRequestTest extends TestCase
     public function testSingleAttributesWhenEmptyByDefault()
     {
         $this->assertEmpty($this->request->getAttribute('does-not-exist'));
-    }
-    /**
-     * @depends testAttributesAreEmptyByDefault
-     */
-    public function testAttributeMutatorReturnsCloneWithChanges()
-    {
-        $request = $this->request->withAttribute('foo', 'bar');
-        $this->assertNotSame($this->request, $request);
-        $this->assertEquals('bar', $request->getAttribute('foo'));
-        return $request;
-    }
-
-    /**
-     * @depends testAttributeMutatorReturnsCloneWithChanges
-     */
-    public function testRemovingAttributeReturnsCloneWithoutAttribute($request)
-    {
-        $new = $request->withoutAttribute('foo');
-        $this->assertNotSame($request, $new);
-        $this->assertNull($new->getAttribute('foo', null));
     }
 
     public function provideMethods()
@@ -172,14 +147,5 @@ class ServerRequestTest extends TestCase
         $request = new ServerRequest();
         $this->assertInternalType('array', $request->getQueryParams());
         $this->assertCount(0, $request->getQueryParams());
-    }
-
-    /**
-     * @group 46
-     */
-    public function testParsedBodyIsNullAtInitialization()
-    {
-        $request = new ServerRequest();
-        $this->assertNull($request->getParsedBody());
     }
 }
