@@ -198,9 +198,9 @@ class MessageTraitTest extends TestCase
         $this->assertSame([], $this->message->getHeader('X-Foo-Bar'));
     }
 
-    public function testGetHeaderLineReturnsNullWhenHeaderDoesNotExist()
+    public function testGetHeaderLineReturnsEmptyStringWhenHeaderDoesNotExist()
     {
-        $this->assertNull($this->message->getHeaderLine('X-Foo-Bar'));
+        $this->assertEmpty($this->message->getHeaderLine('X-Foo-Bar'));
     }
 
     public function headersWithInjectionVectors()
