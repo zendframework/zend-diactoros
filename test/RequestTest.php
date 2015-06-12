@@ -341,19 +341,19 @@ class RequestTest extends TestCase
     /**
      * @group 39
      */
-    public function testGetHostHeaderLineReturnsNullIfNoUriPresent()
+    public function testGetHostHeaderLineReturnsEmptyStringIfNoUriPresent()
     {
         $request = new Request();
-        $this->assertNull($request->getHeaderLine('host'));
+        $this->assertEmpty($request->getHeaderLine('host'));
     }
 
     /**
      * @group 39
      */
-    public function testGetHostHeaderLineReturnsNullIfUriDoesNotContainHost()
+    public function testGetHostHeaderLineReturnsEmptyStringIfUriDoesNotContainHost()
     {
         $request = new Request(new Uri());
-        $this->assertNull($request->getHeaderLine('host'));
+        $this->assertEmpty($request->getHeaderLine('host'));
     }
 
     public function testPassingPreserveHostFlagWhenUpdatingUriDoesNotUpdateHostHeader()

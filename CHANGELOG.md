@@ -45,7 +45,9 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#51](https://github.com/zendframework/zend-diactoros/pull/51) fixes
+  `MessageTrait::getHeaderLine()` to return an empty string instead of `null` if
+  the header is undefined (which is the behavior specified in PSR-7).
 
 ## 1.0.3 - 2015-06-04
 
