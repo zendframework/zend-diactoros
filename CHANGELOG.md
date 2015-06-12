@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 1.0.4 - TBD
+
+### Added
+
+- [#25](https://github.com/zendframework/zend-diactoros/pull/25) adds
+  documentation. Documentation is written in markdown, and can be converted to
+  HTML using [bookdown](http://bookdown.io). New features now MUST include
+  documentation for acceptance.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
 ## 1.0.3 - 2015-06-04
 
 ### Added
