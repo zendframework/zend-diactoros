@@ -158,7 +158,7 @@ trait RequestTrait
      * @link http://tools.ietf.org/html/rfc7230#section-2.7 (for the various
      *     request-target forms allowed in request messages)
      * @param mixed $requestTarget
-     * @return self
+     * @return static
      * @throws InvalidArgumentException if the request target is invalid.
      */
     public function withRequestTarget($requestTarget)
@@ -196,7 +196,7 @@ trait RequestTrait
      * changed request method.
      *
      * @param string $method Case-insensitive method.
-     * @return self
+     * @return static
      * @throws InvalidArgumentException for invalid HTTP methods.
      */
     public function withMethod($method)
@@ -244,7 +244,7 @@ trait RequestTrait
      * @link http://tools.ietf.org/html/rfc3986#section-4.3
      * @param UriInterface $uri New request URI to use.
      * @param bool $preserveHost Preserve the original state of the Host header.
-     * @return self
+     * @return static
      */
     public function withUri(UriInterface $uri, $preserveHost = false)
     {
