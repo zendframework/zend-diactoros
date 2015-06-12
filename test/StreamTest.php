@@ -17,6 +17,11 @@ class StreamTest extends TestCase
 {
     public $tmpnam;
 
+    /**
+     * @var Stream
+     */
+    protected $stream;
+
     public function setUp()
     {
         $this->tmpnam = null;
