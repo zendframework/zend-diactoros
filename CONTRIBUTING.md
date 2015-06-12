@@ -34,6 +34,15 @@ to upgrade and/or update in order to protect their applications.
 
 For sensitive email communications, please use [our PGP key](http://framework.zend.com/zf-security-pgp-key.asc).
 
+## Documentation
+
+Documentation is in [GitHub Flavored Markdown](https://help.github.com/articles/github-flavored-markdown/),
+and rendered using [bookdown](http://bookdown.io). Please read and follow the [general documentation
+guidelines](https://github.com/zendframework/documentation/blob/master/CONTRIBUTING.md) when
+providing documentation.
+
+All new features **must** include documentation before they may be accepted and merged.
+
 ## RUNNING TESTS
 
 To run tests:
