@@ -108,7 +108,7 @@ class ResponseTest extends TestCase
         $response = new Response('php://memory', null, $headers);
         $this->assertEquals($expected, $response->getHeaders());
     }
-    
+
     public function headersWithInjectionVectors()
     {
         return [
