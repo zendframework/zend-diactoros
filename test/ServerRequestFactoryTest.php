@@ -425,9 +425,9 @@ class ServerRequestFactoryTest extends TestCase
             'name'     => ['file' => 'foo.bar'],
             'type'     => ['file' => 'text/plain'],
         ]];
-        
+
         $normalizedFiles = ServerRequestFactory::normalizeFiles($files);
-        
-        $this->assertCount(1, $normalizedFiles['fooFiles']);       
+
+        $this->assertCount(1, $normalizedFiles['fooFiles']);
     }
 }
