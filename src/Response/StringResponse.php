@@ -97,7 +97,7 @@ final class StringResponse
         $response = new Response('php://temp', $status, $headers);
         $response->getBody()->write($body);
 
-        if ($response->hasHeader('content-type') || $contentType === null) {
+        if ($contentType === null || $response->hasHeader('content-type')) {
             return $response;
         }
 
