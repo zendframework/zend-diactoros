@@ -61,6 +61,18 @@ final class StringResponse
     }
 
     /**
+     * Create an empty response with the given status code.
+     *
+     * @param int $status Status code for the response, if any.
+     * @param array $headers Headers for the response, if any.
+     * @return Response
+     */
+    public static function empty($status = 200, array $headers = [])
+    {
+        return static::createResponse('', $status, $headers);
+    }
+
+    /**
      * This class is non-instantiable.
      */
     private function __construct()
@@ -71,7 +83,7 @@ final class StringResponse
      * Create a Response from the provided information.
      *
      * Creates a Response using a php://temp stream, and writes the provided
-     * body to the stream; if non content-type header was provided, the given
+     * body to the stream; if no content-type header was provided, any given
      * $contentType is injected for it.
      *
      * @param string $body
@@ -80,12 +92,12 @@ final class StringResponse
      * @param string $contentType
      * @return Response
      */
-    private static function createResponse($body, $status, array $headers, $contentType)
+    private static function createResponse($body, $status, array $headers, $contentType = null)
     {
         $response = new Response('php://temp', $status, $headers);
         $response->getBody()->write($body);
 
-        if ($response->hasHeader('content-type')) {
+        if ($response->hasHeader('content-type') || $contentType === null) {
             return $response;
         }
 
