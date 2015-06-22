@@ -469,6 +469,7 @@ abstract class ServerRequestFactory
      */
     private static function normalizeNestedFileSpec(array $files = [])
     {
+        $normalizedFiles = [];
         foreach (array_keys($files['tmp_name']) as $key) {
             $spec = [
                 'tmp_name' => $files['tmp_name'][$key],
@@ -477,8 +478,8 @@ abstract class ServerRequestFactory
                 'name'     => $files['name'][$key],
                 'type'     => $files['type'][$key],
             ];
-            $files[$key] = self::createUploadedFileFromSpec($spec);
+            $normalizedFiles[$key] = self::createUploadedFileFromSpec($spec);
         }
-        return $files;
+        return $normalizedFiles;
     }
 }
