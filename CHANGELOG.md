@@ -24,6 +24,9 @@ All notable changes to this project will be documented in this file, in reverse 
 - [#51](https://github.com/zendframework/zend-diactoros/pull/51) fixes
   `MessageTrait::getHeaderLine()` to return an empty string instead of `null` if
   the header is undefined (which is the behavior specified in PSR-7).
+- [#57](https://github.com/zendframework/zend-diactoros/pull/57) fixes the
+  behavior of how the `ServerRequestFactory` marshals upload files when they are
+  represented as a nested associative array.
 
 ## 1.0.3 - 2015-06-04
 
