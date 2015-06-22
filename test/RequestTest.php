@@ -26,9 +26,9 @@ class RequestTest extends TestCase
         $this->request = new Request();
     }
 
-    public function testMethodIsNullByDefault()
+    public function testMethodIsEmptyByDefault()
     {
-        $this->assertNull($this->request->getMethod());
+        $this->assertSame('', $this->request->getMethod());
     }
 
     public function testMethodMutatorReturnsCloneWithChangedMethod()
@@ -38,9 +38,18 @@ class RequestTest extends TestCase
         $this->assertEquals('GET', $request->getMethod());
     }
 
-    public function testUriIsNullByDefault()
+    public function testReturnsUnpopulatedUriByDefault()
     {
-        $this->assertNull($this->request->getUri());
+        $uri = $this->request->getUri();
+        $this->assertInstanceOf('Psr\Http\Message\UriInterface', $uri);
+        $this->assertInstanceOf('Zend\Diactoros\Uri', $uri);
+        $this->assertEmpty($uri->getScheme());
+        $this->assertEmpty($uri->getUserInfo());
+        $this->assertEmpty($uri->getHost());
+        $this->assertNull($uri->getPort());
+        $this->assertEmpty($uri->getPath());
+        $this->assertEmpty($uri->getQuery());
+        $this->assertEmpty($uri->getFragment());
     }
 
     public function testConstructorRaisesExceptionForInvalidStream()
