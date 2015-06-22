@@ -27,6 +27,18 @@ All notable changes to this project will be documented in this file, in reverse 
 - [#57](https://github.com/zendframework/zend-diactoros/pull/57) fixes the
   behavior of how the `ServerRequestFactory` marshals upload files when they are
   represented as a nested associative array.
+- [#49](https://github.com/zendframework/zend-diactoros/pull/49) provides several 
+  fixes that ensure that Diactoros complies with the PSR-7 specification:
+  - `MessageInterface::getHeaderLine()` MUST return a string (that string CAN be
+    empty). Previously, Diactoros would return `null`.
+  - If no `Host` header is set, the `$preserveHost` flag MUST be ignored when
+    calling `withUri()` (previously, Diactoros would not set the `Host` header
+    if `$preserveHost` was `true`, but no `Host` header was present).
+  - The request method MUST be a string; it CAN be empty. Previously, Diactoros
+    would return `null`.
+  - The request MUST return a `UriInterface` instance from `getUri()`; that
+    instance CAN be empty. Previously, Diactoros would return `null`; now it
+    lazy-instantiates an empty `Uri` instance on initialization.
 
 ## 1.0.3 - 2015-06-04
 

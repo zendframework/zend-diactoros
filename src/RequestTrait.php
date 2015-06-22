@@ -26,13 +26,14 @@ use Psr\Http\Message\UriInterface;
  * @property array $headers
  * @property array $headerNames
  * @property StreamInterface $stream
+ * @method bool hasHeader(string $header)
  */
 trait RequestTrait
 {
     /**
      * @var string
      */
-    private $method;
+    private $method = '';
 
     /**
      * The request-target, if it has been provided or calculated.
@@ -96,8 +97,8 @@ trait RequestTrait
             $uri = new Uri($uri);
         }
 
-        $this->method = $method;
-        $this->uri    = $uri;
+        $this->method = $method ?: '';
+        $this->uri    = $uri ?: new Uri();
         $this->stream = ($body instanceof StreamInterface) ? $body : new Stream($body, 'r');
 
         list($this->headerNames, $headers) = $this->filterHeaders($headers);
@@ -251,7 +252,7 @@ trait RequestTrait
         $new = clone $this;
         $new->uri = $uri;
 
-        if ($preserveHost) {
+        if ($preserveHost && $this->hasHeader('Host')) {
             return $new;
         }
 
