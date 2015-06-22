@@ -416,7 +416,11 @@ class ServerRequestFactoryTest extends TestCase
         $this->assertEquals($expected, $server);
     }
 
-    public function testNormalizeFilesReturnsOnlyActualFilesWhenOriginalFilesContainsNestedArrays()
+    /**
+     * @group 57
+     * @group 56
+     */
+    public function testNormalizeFilesReturnsOnlyActualFilesWhenOriginalFilesContainsNestedAssociativeArrays()
     {
         $files = [ 'fooFiles' => [
             'tmp_name' => ['file' => 'php://temp'],
