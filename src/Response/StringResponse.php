@@ -71,7 +71,7 @@ final class StringResponse
      * Create a Response from the provided information.
      *
      * Creates a Response using a php://temp stream, and writes the provided
-     * body to the stream; if non content-type header was provided, the given
+     * body to the stream; if no content-type header was provided, the given
      * $contentType is injected for it.
      *
      * @param string $body
@@ -85,7 +85,7 @@ final class StringResponse
         $response = new Response('php://temp', $status, $headers);
         $response->getBody()->write($body);
 
-        if ($response->hasHeader('content-type')) {
+        if (empty($contentType) || $response->hasHeader('content-type')) {
             return $response;
         }
 
