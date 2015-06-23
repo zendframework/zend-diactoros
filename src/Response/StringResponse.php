@@ -67,7 +67,7 @@ final class StringResponse
      * @param array $headers Headers for the response, if any.
      * @return Response
      */
-    public static function blank($status = 200, array $headers = [])
+    public static function noContent($status = 204, array $headers = [])
     {
         return static::createResponse('', $status, $headers);
     }
