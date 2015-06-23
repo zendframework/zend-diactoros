@@ -26,7 +26,27 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - Nothing.
 
-## 1.0.4 - TBD
+## 1.0.4 - 2015-06-23
+
+This is a security release.
+
+A patch has been applied to `Zend\Diactoros\Uri::filterPath()` that ensures that
+paths can only begin with a single leading slash. This prevents the following
+potential security issues:
+
+- XSS vectors. If the URI path is used for links or form targets, this prevents
+  cases where the first segment of the path resembles a domain name, thus
+  creating scheme-relative links such as `//example.com/foo`. With the patch,
+  the leading double slash is reduced to a single slash, preventing the XSS
+  vector.
+- Open redirects. If the URI path is used for `Location` or `Link` headers,
+  without a scheme and authority, potential for open redirects exist if clients
+  do not prepend the scheme and authority. Again, preventing a double slash
+  corrects the vector.
+
+If you are using `Zend\Diactoros\Uri` for creating links, form targets, or
+redirect paths, and only using the path segment, we recommend upgrading
+immediately.
 
 ### Added
 
@@ -63,6 +83,9 @@ All notable changes to this project will be documented in this file, in reverse 
   - The request MUST return a `UriInterface` instance from `getUri()`; that
     instance CAN be empty. Previously, Diactoros would return `null`; now it
     lazy-instantiates an empty `Uri` instance on initialization.
+- [ZF2015-05](http://framework.zend.com/security/advisory/ZF2015-05) was
+  addressed by altering `Uri::filterPath()` to prevent emitting a path prepended
+  with multiple slashes.
 
 ## 1.0.3 - 2015-06-04
 
