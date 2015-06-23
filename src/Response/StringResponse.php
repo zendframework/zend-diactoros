@@ -69,7 +69,7 @@ final class StringResponse
      */
     public static function noContent($status = 204, array $headers = [])
     {
-        return static::createResponse('', $status, $headers);
+        return static::createResponse('', $status, $headers, null);
     }
 
     /**
