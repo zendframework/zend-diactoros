@@ -61,18 +61,6 @@ final class StringResponse
     }
 
     /**
-     * Create an empty response with the given status code.
-     *
-     * @param int $status Status code for the response, if any.
-     * @param array $headers Headers for the response, if any.
-     * @return Response
-     */
-    public static function noContent($status = 204, array $headers = [])
-    {
-        return static::createResponse('', $status, $headers, null);
-    }
-
-    /**
      * This class is non-instantiable.
      */
     private function __construct()
