@@ -511,11 +511,24 @@ class Uri implements UriInterface
      */
     private function filterPath($path)
     {
-        return preg_replace_callback(
+        $path = preg_replace_callback(
             '/(?:[^' . self::CHAR_UNRESERVED . ':@&=\+\$,\/;%]+|%(?![A-Fa-f0-9]{2}))/',
             [$this, 'urlEncodeChar'],
             $path
         );
+
+        if (empty($path)) {
+            // No path
+            return $path;
+        }
+
+        if ($path[0] !== '/') {
+            // Relative path
+            return $path;
+        }
+
+        // Ensure only one leading slash, to prevent XSS attempts.
+        return '/' . ltrim($path, '/');
     }
 
     /**
