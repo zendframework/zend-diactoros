@@ -82,7 +82,7 @@ class StringResponseTest extends TestCase
         $this->assertEquals('application/json', $response->getHeaderLine('content-type'));
         $this->assertSame(json_encode([$value], JSON_UNESCAPED_SLASHES), (string) $response->getBody());
     }
-    
+
     public function testNoContentConstructor()
     {
         $response = StringResponse::noContent();
