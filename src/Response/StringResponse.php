@@ -83,7 +83,7 @@ final class StringResponse
      * Create a Response from the provided information.
      *
      * Creates a Response using a php://temp stream, and writes the provided
-     * body to the stream; if no content-type header was provided, any given
+     * body to the stream; if no content-type header was provided, the given
      * $contentType is injected for it.
      *
      * @param string $body
@@ -92,12 +92,12 @@ final class StringResponse
      * @param string $contentType
      * @return Response
      */
-    private static function createResponse($body, $status, array $headers, $contentType = null)
+    private static function createResponse($body, $status, array $headers, $contentType)
     {
         $response = new Response('php://temp', $status, $headers);
         $response->getBody()->write($body);
 
-        if ($contentType === null || $response->hasHeader('content-type')) {
+        if (empty($contentType) || $response->hasHeader('content-type')) {
             return $response;
         }
 
