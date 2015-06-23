@@ -9,6 +9,7 @@
 
 namespace Zend\Diactoros\Response;
 
+use InvalidArgumentException;
 use Psr\Http\Message\UriInterface;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Stream;

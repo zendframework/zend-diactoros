@@ -49,4 +49,28 @@ class RedirectResponseTest extends TestCase
         $this->assertTrue($response->hasHeader('X-Foo'));
         $this->assertEquals('Bar', $response->getHeaderLine('X-Foo'));
     }
+
+    public function invalidUris()
+    {
+        return [
+            'null'       => [ null ],
+            'false'      => [ false ],
+            'true'       => [ true ],
+            'zero'       => [ 0 ],
+            'int'        => [ 1 ],
+            'zero-float' => [ 0.0 ],
+            'float'      => [ 1.1 ],
+            'array'      => [ [ '/foo/bar' ] ],
+            'object'     => [ (object) [ '/foo/bar' ] ],
+        ];
+    }
+
+    /**
+     * @dataProvider invalidUris
+     * @expectedException InvalidArgumentException Uri
+     */
+    public function testConstructorRaisesExceptionOnInvalidUri($uri)
+    {
+        $response = new RedirectResponse($uri);
+    }
 }
