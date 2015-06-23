@@ -11,6 +11,9 @@ All notable changes to this project will be documented in this file, in reverse 
   HTML or JSON responses. It contains the static methods:
   - `html($html, $status = 200, array $headers = [])`
   - `json($data, $status = 200, array $headers = [])`
+- [#58](https://github.com/zendframework/zend-diactoros/pull/58) adds
+  `Zend\Diactoros\Response\EmptyResponse`, a `Zend\Diactoros\Response` extension
+  for quickly creating empty, read-only responses.
 
 ### Deprecated
 
