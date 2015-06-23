@@ -28,7 +28,7 @@ class EmptyResponse extends Response
         $body = new Stream('php://temp', 'r');
         parent::__construct($body, $status, $headers);
     }
-    
+
     /**
      * Create an empty response with the given headers.
      *

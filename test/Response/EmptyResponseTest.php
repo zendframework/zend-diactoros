@@ -21,7 +21,7 @@ class EmptyResponseTest extends TestCase
         $this->assertEquals('', (string) $response->getBody());
         $this->assertEquals(201, $response->getStatusCode());
     }
-    
+
     public function testHeaderConstructor()
     {
         $response = EmptyResponse::withHeaders(['x-empty' => ['true']]);
