@@ -21,41 +21,62 @@ Some standard use cases, however, make this un-wieldy:
 Starting with version 1.1, Diactoros offers several custom response types and factories for
 simplifying these common tasks.
 
-## String responses
+## HTML responses
 
-`Zend\Diactoros\Response\StringResponse` provides factory methods for two standard string response
-types: HTML and JSON.
-
-### HTML
-
-The `html()` factory will create a response with the provided HTML as a payload, setting the
-`Content-Type` header to `text/html` by default:
+`Zend\Diactoros\Response\HtmlResponse` is a `Zend\Diactoros\Response` extension for producing
+HTML responses. The only required argument is the HTML body, which may be provided as either a string or
+`Psr\Http\Message\StreamInterface` instance. By default, the status 200 is used, and 'text/html' content-type
+is used; you may alter these via the additional optional arguments:
 
 ```php
-$response = StringResponse::html($htmlContent);
+class HtmlResponse extends Response
+{
+    public function __construct($body, $status = 200, array $headers = []);
+}
 ```
 
-The factory allows passing two additional arguments: a status code, and an array of headers. These
+Typical usage is:
+
+```php
+$response = new HtmlResponse('<html><body>Hello world!</body></html>');
+```
+
+The constructor allows passing two additional arguments: a status code, and an array of headers. These
 allow you to further seed the initial state of the response.
 
 Headers must be in the same format as you would provide to the
 [Response constructor][api.md#response-message].
 
-### JSON
-The `json()` factory accepts a data structure to convert to JSON, and returns a response with the
-JSON content and the `Content-Type` header set to `application/json`:
+## JSON responses
+
+`Zend\Diactoros\Response\JsonResponse` is a `Zend\Diactoros\Response` extension for producing
+JSON responses. The only required argument is the data that will be serialized as a JSON string. 
+By default, the status 200 is used, and 'application/json' content-type
+is used; you may alter these via the additional optional arguments:
 
 ```php
-$response = StringResponse::json($data);
+class HtmlResponse extends Response
+{
+    public function __construct($data, $status = 200, array $headers = [], $encodingOptions = 15);
+}
 ```
 
-If a null value is provide, an empty JSON object is used for the content. Scalar data is cast to an
-array before serialization. If providing an object, we recommend implementing
+If providing an object, we recommend implementing
 [JsonSerializable](http://php.net/JsonSerializable) to ensure your object is correctly serialized.
 
-Just like the `html()` factory, the `json()` factory allows passing two additional arguments — a
-status code, and an array of headers — to allow you to further seed the initial state of the
-response.
+Typical usage is:
+
+```php
+$response = new JsonResponse(array("hello" => "world");
+```
+
+The constructor allows passing three additional arguments: 
+
+- A status code
+- An array of headers. Headers must be in the same format as you would provide to the
+  [Response constructor][api.md#response-message].
+- The JSON encoding options. These options default to JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP 
+  | JSON_HEX_QUOT (RFC4627-compliant JSON, which may also be embedded into HTML)
 
 ## Empty Responses
 
