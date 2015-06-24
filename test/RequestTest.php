@@ -120,7 +120,7 @@ class RequestTest extends TestCase
             'false'      => [ false ],
             'int'        => [ 1 ],
             'float'      => [ 1.1 ],
-            'bad-string' => [ 'BOGUS-METHOD' ],
+            'bad-string' => [ 'BOGUS METHOD' ],
             'array'      => [ ['POST'] ],
             'stdClass'   => [ (object) [ 'method' => 'POST'] ],
         ];
@@ -133,6 +133,34 @@ class RequestTest extends TestCase
     {
         $this->setExpectedException('InvalidArgumentException', 'Unsupported HTTP method');
         new Request(null, $method);
+    }
+
+    public function customRequestMethods()
+    {
+        return[
+            /* WebDAV methods */
+            'TRACE'     => ['TRACE'],
+            'PROPFIND'  => ['PROPFIND'],
+            'PROPPATCH' => ['PROPPATCH'],
+            'MKCOL'     => ['MKCOL'],
+            'COPY'      => ['COPY'],
+            'MOVE'      => ['MOVE'],
+            'LOCK'      => ['LOCK'],
+            'UNLOCK'    => ['UNLOCK'],
+            'UNLOCK'    => ['UNLOCK'],
+            /* Arbitrary methods */
+            '#!ALPHA-1234&%' => ['#!ALPHA-1234&%'],
+        ];
+    }
+
+    /**
+     * @dataProvider customRequestMethods
+     * @group 29
+     */
+    public function testAllowsCustomRequestMethodsThatFollowSpec($method)
+    {
+        $request = new Request(null, $method);
+        $this->assertSame($method, $request->getMethod());
     }
 
     public function invalidRequestBody()
