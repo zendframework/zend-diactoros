@@ -47,4 +47,36 @@ class HtmlResponseTest extends TestCase
         $this->assertEquals(404, $response->getStatusCode());
         $this->assertSame($body, (string) $response->getBody());
     }
+
+    public function testAllowsStreamsForResponseBody()
+    {
+        $stream = $this->prophesize('Psr\Http\Message\StreamInterface');
+        $body   = $stream->reveal();
+        $response = new HtmlResponse($body);
+        $this->assertSame($body, $response->getBody());
+    }
+
+    public function invalidHtmlContent()
+    {
+        return [
+            'null'       => [null],
+            'true'       => [true],
+            'false'      => [false],
+            'zero'       => [0],
+            'int'        => [1],
+            'zero-float' => [0.0],
+            'float'      => [1.1],
+            'array'      => [['php://temp']],
+            'object'     => [(object) ['php://temp']],
+        ];
+    }
+
+    /**
+     * @dataProvider invalidHtmlContent
+     * @expectedException InvalidArgumentException
+     */
+    public function testRaisesExceptionforNonStringNonStreamBodyContent($body)
+    {
+        $response = new HtmlResponse($body);
+    }
 }
