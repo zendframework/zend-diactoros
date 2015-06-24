@@ -53,18 +53,20 @@ class UploadedFile implements UploadedFileInterface
 
     public function __construct($streamOrFile, $size, $errorStatus, $clientFilename = null, $clientMediaType = null)
     {
-        if (is_string($streamOrFile)) {
-            $this->file = $streamOrFile;
-        }
-        if (is_resource($streamOrFile)) {
-            $this->stream = new Stream($streamOrFile);
-        }
-
-        if (! $this->file && ! $this->stream) {
-            if (! $streamOrFile instanceof StreamInterface) {
-                throw new InvalidArgumentException('Invalid stream or file provided for UploadedFile');
+        if ($errorStatus === UPLOAD_ERR_OK) {
+            if (is_string($streamOrFile)) {
+                $this->file = $streamOrFile;
             }
-            $this->stream = $streamOrFile;
+            if (is_resource($streamOrFile)) {
+                $this->stream = new Stream($streamOrFile);
+            }
+
+            if (! $this->file && ! $this->stream) {
+                if (! $streamOrFile instanceof StreamInterface) {
+                    throw new InvalidArgumentException('Invalid stream or file provided for UploadedFile');
+                }
+                $this->stream = $streamOrFile;
+            }
         }
 
         if (! is_int($size)) {
@@ -99,9 +101,14 @@ class UploadedFile implements UploadedFileInterface
 
     /**
      * {@inheritdoc}
+     * @throws \RuntimeException if the upload was not successful.
      */
     public function getStream()
     {
+        if ($this->error !== UPLOAD_ERR_OK) {
+            throw new RuntimeException('Cannot retrieve stream due to upload error');
+        }
+
         if ($this->moved) {
             throw new RuntimeException('Cannot retrieve stream after it has already been moved');
         }
@@ -120,12 +127,17 @@ class UploadedFile implements UploadedFileInterface
      * @see http://php.net/is_uploaded_file
      * @see http://php.net/move_uploaded_file
      * @param string $targetPath Path to which to move the uploaded file.
+     * @throws \RuntimeException if the upload was not successful.
      * @throws \InvalidArgumentException if the $path specified is invalid.
      * @throws \RuntimeException on any error during the move operation, or on
      *     the second or subsequent call to the method.
      */
     public function moveTo($targetPath)
     {
+        if ($this->error !== UPLOAD_ERR_OK) {
+            throw new RuntimeException('Cannot retrieve stream due to upload error');
+        }
+
         if (! is_string($targetPath)) {
             throw new InvalidArgumentException(
                 'Invalid path provided for move operation; must be a string'

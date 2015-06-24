@@ -225,4 +225,49 @@ class UploadedFileTest extends TestCase
         $this->setExpectedException('RuntimeException', 'moved');
         $upload->getStream();
     }
+
+    public function nonOkErrorStatus()
+    {
+        return [
+            'UPLOAD_ERR_INI_SIZE'   => [ UPLOAD_ERR_INI_SIZE ],
+            'UPLOAD_ERR_FORM_SIZE'  => [ UPLOAD_ERR_FORM_SIZE ],
+            'UPLOAD_ERR_PARTIAL'    => [ UPLOAD_ERR_PARTIAL ],
+            'UPLOAD_ERR_NO_FILE'    => [ UPLOAD_ERR_NO_FILE ],
+            'UPLOAD_ERR_NO_TMP_DIR' => [ UPLOAD_ERR_NO_TMP_DIR ],
+            'UPLOAD_ERR_CANT_WRITE' => [ UPLOAD_ERR_CANT_WRITE ],
+            'UPLOAD_ERR_EXTENSION'  => [ UPLOAD_ERR_EXTENSION ],
+        ];
+    }
+
+    /**
+     * @dataProvider nonOkErrorStatus
+     * @group 60
+     */
+    public function testConstructorDoesNotRaiseExceptionForInvalidStreamWhenErrorStatusPresent($status)
+    {
+        $uploadedFile = new UploadedFile('not ok', 0, $status);
+        $this->assertSame($status, $uploadedFile->getError());
+    }
+
+    /**
+     * @dataProvider nonOkErrorStatus
+     * @group 60
+     */
+    public function testMoveToRaisesExceptionWhenErrorStatusPresent($status)
+    {
+        $uploadedFile = new UploadedFile('not ok', 0, $status);
+        $this->setExpectedException('RuntimeException', 'upload error');
+        $uploadedFile->moveTo(__DIR__ . '/' . uniqid());
+    }
+
+    /**
+     * @dataProvider nonOkErrorStatus
+     * @group 60
+     */
+    public function testGetStreamRaisesExceptionWhenErrorStatusPresent($status)
+    {
+        $uploadedFile = new UploadedFile('not ok', 0, $status);
+        $this->setExpectedException('RuntimeException', 'upload error');
+        $stream = $uploadedFile->getStream();
+    }
 }

@@ -29,6 +29,29 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - Nothing.
 
+## 1.0.5 - 2015-06-24
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#60](https://github.com/zendframework/zend-diactoros/pull/60) fixes
+  the behavior of `UploadedFile` when the `$errorStatus` provided at
+  instantiation is not `UPLOAD_ERR_OK`. Prior to the fix, an
+  `InvalidArgumentException` would occur at instantiation due to the fact that
+  the upload file was missing or invalid. With the fix, no exception is raised
+  until a call to `moveTo()` or `getStream()` is made.
+
 ## 1.0.4 - 2015-06-23
 
 This is a security release.
