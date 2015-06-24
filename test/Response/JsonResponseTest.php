@@ -10,27 +10,11 @@
 namespace ZendTest\Diactoros\Response;
 
 use PHPUnit_Framework_TestCase as TestCase;
-use Zend\Diactoros\Response\StringResponse;
+use Zend\Diactoros\Response\JsonResponse;
 
-class StringResponseTest extends TestCase
+class JsonResponseTest extends TestCase
 {
-    public function testHtmlConstructor()
-    {
-        $body = '<html>Uh oh not found</html>';
-        $status = 404;
-        $headers = [
-            'x-custom' => [ 'foo-bar' ],
-        ];
-
-        $response = StringResponse::html($body, $status, $headers);
-        $this->assertInstanceOf('Zend\Diactoros\Response', $response);
-        $this->assertSame($body, (string) $response->getBody());
-        $this->assertEquals(404, $response->getStatusCode());
-        $this->assertEquals(['foo-bar'], $response->getHeader('x-custom'));
-        $this->assertEquals('text/html', $response->getHeaderLine('content-type'));
-    }
-
-    public function testJsonConstructor()
+    public function testConstructorAcceptsDataAndCreatesJsonEncodedMessageBody()
     {
         $data = [
             'nested' => [
@@ -41,17 +25,15 @@ class StringResponseTest extends TestCase
         ];
         $json = '{"nested":{"json":["tree"]}}';
 
-        $response = StringResponse::json($data);
-        $this->assertInstanceOf('Zend\Diactoros\Response', $response);
+        $response = new JsonResponse($data);
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('application/json', $response->getHeaderLine('content-type'));
         $this->assertSame($json, (string) $response->getBody());
     }
 
-    public function testNullValuePassedToJsonRendersEmptyJSONObject()
+    public function testNullValuePassedToConstructorRendersEmptyJsonObjectInBody()
     {
-        $response = StringResponse::json(null);
-        $this->assertInstanceOf('Zend\Diactoros\Response', $response);
+        $response = new JsonResponse(null);
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('application/json', $response->getHeaderLine('content-type'));
         $this->assertSame('{}', (string) $response->getBody());
@@ -74,22 +56,23 @@ class StringResponseTest extends TestCase
     /**
      * @dataProvider scalarValuesForJSON
      */
-    public function testScalarValuePassedToJsonRendersValueWithinJSONArray($value)
+    public function testScalarValuePassedToConstructorRendersValueWithinJSONArray($value)
     {
-        $response = StringResponse::json($value);
-        $this->assertInstanceOf('Zend\Diactoros\Response', $response);
+        $response = new JsonResponse($value);
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('application/json', $response->getHeaderLine('content-type'));
         $this->assertSame(json_encode([$value], JSON_UNESCAPED_SLASHES), (string) $response->getBody());
     }
 
-    public function testContentTypeCanBeOverwritten()
+    public function testCanProvideStatusCodeToConstructor()
     {
-        $data = null;
-        $json = '{}';
+        $response = new JsonResponse(null, 404);
+        $this->assertEquals(404, $response->getStatusCode());
+    }
 
-        $response = StringResponse::json($data, 200, ['content-type' => 'foo/json']);
-        $this->assertSame($json, (string) $response->getBody());
+    public function testCanProvideAlternateContentTypeViaHeadersPassedToConstructor()
+    {
+        $response = new JsonResponse(null, 200, ['content-type' => 'foo/json']);
         $this->assertEquals('foo/json', $response->getHeaderLine('content-type'));
     }
 }
