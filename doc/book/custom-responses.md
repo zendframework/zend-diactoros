@@ -20,44 +20,63 @@ Some standard use cases, however, make this un-wieldy:
 - Returning a redirect response; in this case, you likely just want to specify the target for the
   `Location` header, and optionally the status code.
 
-Starting with version 1.1, Diactoros offers several custom response types and factories for
-simplifying these common tasks.
+Starting with version 1.1, Diactoros offers several custom response types for simplifying these
+common tasks.
 
-## String responses
+## HTML Responses
 
-`Zend\Diactoros\Response\StringResponse` provides factory methods for two standard string response
-types: HTML and JSON.
-
-### HTML
-
-The `html()` factory will create a response with the provided HTML as a payload, setting the
+`Zend\Diactoros\Response\HtmlResponse` allows specifying HTML as a payload, and sets the
 `Content-Type` header to `text/html` by default:
 
 ```php
-$response = StringResponse::html($htmlContent);
+$response = new HtmlResponse($htmlContent);
 ```
 
-The factory allows passing two additional arguments: a status code, and an array of headers. These
-allow you to further seed the initial state of the response.
+The constructor allows passing two additional arguments: a status code, and an array of headers.
+These allow you to further seed the initial state of the response, as well as to override the
+`Content-Type` header if desired:
+
+```php
+$response = new HtmlResponse($htmlContent, 200, [ 'Content-Type' => ['application/xhtml+xml']]);
+```
 
 Headers must be in the same format as you would provide to the
 [Response constructor][api.md#response-message].
 
-### JSON
-The `json()` factory accepts a data structure to convert to JSON, and returns a response with the
-JSON content and the `Content-Type` header set to `application/json`:
+## JSON Responses
+
+`Zend\Diactoros\Response\JsonResponse` accepts a data structure to convert to JSON, and sets
+the `Content-Type` header to `application/json`:
 
 ```php
-$response = StringResponse::json($data);
+$response = new JsonResponse($data);
 ```
 
 If a null value is provide, an empty JSON object is used for the content. Scalar data is cast to an
 array before serialization. If providing an object, we recommend implementing
 [JsonSerializable](http://php.net/JsonSerializable) to ensure your object is correctly serialized.
 
-Just like the `html()` factory, the `json()` factory allows passing two additional arguments — a
+Just like the `HtmlResponse`, the `JsonResponse` allows passing two additional arguments — a
 status code, and an array of headers — to allow you to further seed the initial state of the
-response.
+response:
+
+```php
+$response = new JsonResponse($data, 200, [ 'Content-Type' => ['application/hal+json']]);
+```
+
+Finally, `JsonResponse` allows a fourth optional argument, the flags to provide to `json_encode()`.
+By default, these are set to `JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT` (integer
+15), providing [RFC 4627](http://tools.ietf.org/html/rfc4627) compliant JSON capable of embedding in
+HTML. If you want to specify a different set of flags, use the fourth constructor argument:
+
+```php
+$response = new JsonResponse(
+    $data,
+    200,
+    [],
+    JSON_PRETTY_PRINT | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT
+);
+```
 
 ## Empty Responses
 
@@ -154,13 +173,20 @@ extensions; this is done to protect encapsulation and ensure consistency of oper
 instances.
 
 If you don't want to go the extension route (perhaps you don't want another `ResponseInterface`
-implementation within your object graph) you can instead create a factory. 
-[StringResponse](https://github.com/zendframework/zend-diactoros/tree/master/src/Response/StringResponse.php)
-provides one such example. We recommend the following semantics:
+implementation within your object graph) you can instead create a factory. As an example:
 
 ```php
-function ($dataOrMessage, $status = 200, array $headers = []);
+$plainTextResponse = function ($text, $status = 200, array $headers = []) {
+    $response = new Response('php://temp', $status, $headers);
+    $response->getBody()->write($text);
+    if (! $response->hasHeader('Content-Type')) {
+        $response = $response->withHeader('Content-Type', 'text/plain');
+    }
+    return $response;
+};
+
+$response = $plainTextResponse('Hello, world!');
 ```
 
-These ensure consistency of factories, and allow consumers to provide the status and
-instance-specific headers on creation. (Obviously, specify different defaults as necessary.)
+We recommend following the semantic of providing the status and headers as the final two arguments
+for any factory or custom response extensions.

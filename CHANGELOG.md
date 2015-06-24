@@ -6,17 +6,24 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- [#52](https://github.com/zendframework/zend-diactoros/pull/52) adds
-  `Zend\Diactoros\Response\StringResponse`, a factory class for generating
-  HTML or JSON responses. It contains the static methods:
-  - `html($html, $status = 200, array $headers = [])`
-  - `json($data, $status = 200, array $headers = [])`
-- [#58](https://github.com/zendframework/zend-diactoros/pull/58) adds
-  `Zend\Diactoros\Response\EmptyResponse`, a `Zend\Diactoros\Response` extension
-  for quickly creating empty, read-only responses.
-- [#59](https://github.com/zendframework/zend-diactoros/pull/59) adds
-  `Zend\Diactoros\Response\RedirectResponse`, a `Zend\Diactoros\Response` extension
-  for quickly creating redirect responses.
+- [#52](https://github.com/zendframework/zend-diactoros/pull/52),
+  [#58](https://github.com/zendframework/zend-diactoros/pull/58),
+  [#59](https://github.com/zendframework/zend-diactoros/pull/59), and
+  [#61](https://github.com/zendframework/zend-diactoros/pull/61) create several
+  custom response types for simplifying response creation:
+
+  - `Zend\Diactoros\Response\HtmlResponse` accepts HTML content via its
+    constructor, and sets the `Content-Type` to `text/html`.
+  - `Zend\Diactoros\Response\JsonResponse` accepts data to serialize to JSON via
+    its constructor, and sets the `Content-Type` to `application/json`.
+  - `Zend\Diactoros\Response\EmptyResponse` allows creating empty, read-only
+    responses, with a default status code of 204.
+  - `Zend\Diactoros\Response\RedirectResponse` allows specifying a URI for the
+    `Location` header in the constructor, with a default status code of 302.
+
+  Each also accepts an optional status code, and optional headers (which can
+  also be used to provide an alternate `Content-Type` in the case of the HTML
+  and JSON responses).
 
 ### Deprecated
 
