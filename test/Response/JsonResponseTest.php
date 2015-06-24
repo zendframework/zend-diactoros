@@ -75,4 +75,14 @@ class JsonResponseTest extends TestCase
         $response = new JsonResponse(null, 200, ['content-type' => 'foo/json']);
         $this->assertEquals('foo/json', $response->getHeaderLine('content-type'));
     }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testJsonErrorHandling()
+    {
+        // Serializing something that is not serializable.
+        $resource = fopen("php://memory", "r");
+        new JsonResponse($resource);
+    }
 }
