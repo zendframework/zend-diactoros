@@ -17,6 +17,8 @@ Some standard use cases, however, make this un-wieldy:
 - Returning a response containing JSON; in this case, you likely want to provide the data to
   seriazlize to JSON, not a stream containing serialized JSON.
 - Returning a response with no content; in this case, you don't want to bother with the body at all.
+- Returning a redirect response; in this case, you likely just want to specify the target for the
+  `Location` header, and optionally the status code.
 
 Starting with version 1.1, Diactoros offers several custom response types and factories for
 simplifying these common tasks.
@@ -93,6 +95,34 @@ $response = new EmptyResponse(201, [
 
 // Alternately, set the header after instantiation:
 $response = ( new EmptyResponse(201) )->withHeader('Location', $url);
+```
+
+## Redirects
+
+`Zend\Diactoros\Response\RedirectResponse` is a `Zend\Diactoros\Response` extension for producing
+redirect responses. The only required argument is a URI, which may be provided as either a string or
+`Psr\Http\Message\UriInterface` instance. By default, the status 302 is used, and no other headers
+are produced; you may alter these via the additional optional arguments:
+
+```php
+class RedirectResponse extends Response
+{
+    public function __construct($uri, $status = 302, array $headers = []);
+}
+```
+
+Typical usage is:
+
+```php
+// 302 redirect:
+$response = new RedirectResponse('/user/login');
+
+// 301 redirect:
+$response = new RedirectResponse('/user/login', 301);
+
+// using a URI instance (e.g., by altering the request URI instance)
+$uri = $request->getUri();
+$response = new RedirectResponse($uri->withPath('/login'));
 ```
 
 ## Creating custom responses
