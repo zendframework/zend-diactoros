@@ -48,18 +48,8 @@ class JsonResponseTest extends TestCase
      */
     public function testJsonErrorHandling()
     {
-        $recursiveObj = new \stdClass();
-        $recursiveObj->recurs = $recursiveObj;
-
-        new JsonResponse($recursiveObj);
-    }
-
-    /**
-     * @expectedException Exception
-     */
-    public function testSetContentJsonSerializeError()
-    {
-        $serializable = new JsonSerializableObject();
-        new JsonResponse($serializable);
+        // Serializing something that is not serializable.
+        $resource = fopen("php://memory", "r");
+        new JsonResponse($resource);
     }
 }

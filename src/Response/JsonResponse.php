@@ -35,24 +35,10 @@ class JsonResponse extends Response
      */
     public function __construct($data, $status = 200, array $headers = [], $encodingOptions = 15)
     {
-        $errorHandler = null;
-        $errorHandler = set_error_handler(function () use (&$errorHandler) {
-            if (JSON_ERROR_NONE !== json_last_error()) {
-                return;
-            }
-            if ($errorHandler) {
-                call_user_func_array($errorHandler, func_get_args());
-            }
-        });
-        try {
-            // Clear json_last_error()
-            json_encode(null);
-            $json = json_encode($data, $encodingOptions);
-            restore_error_handler();
-        } catch (\Exception $exception) {
-            restore_error_handler();
-            throw $exception;
-        }
+        // Clear json_last_error()
+        json_encode(null);
+        $json = json_encode($data, $encodingOptions);
+
         if (JSON_ERROR_NONE !== json_last_error()) {
             throw new \InvalidArgumentException(json_last_error_msg());
         }
