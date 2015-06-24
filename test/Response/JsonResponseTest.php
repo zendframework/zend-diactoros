@@ -82,7 +82,7 @@ class JsonResponseTest extends TestCase
     public function testJsonErrorHandling()
     {
         // Serializing something that is not serializable.
-        $resource = fopen("php://memory", "r");
+        $resource = fopen('php://memory', 'r');
         new JsonResponse($resource);
     }
 }

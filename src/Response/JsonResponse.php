@@ -65,6 +65,10 @@ class JsonResponse extends Response
      */
     private function jsonEncode($data, $encodingOptions)
     {
+        if (is_resource($data)) {
+            throw new InvalidArgumentException('Cannot JSON encode resources');
+        }
+
         if ($data === null) {
             // Use an ArrayObject to force an empty JSON object.
             $data = new ArrayObject();
@@ -80,7 +84,11 @@ class JsonResponse extends Response
         $json = json_encode($data, $encodingOptions);
 
         if (JSON_ERROR_NONE !== json_last_error()) {
-            throw new InvalidArgumentException(json_last_error_msg());
+            throw new InvalidArgumentException(sprintf(
+                'Unable to encode data to JSON in %s: %s',
+                __CLASS__,
+                json_last_error_msg()
+            ));
         }
 
         return $json;
