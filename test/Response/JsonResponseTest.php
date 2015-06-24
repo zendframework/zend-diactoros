@@ -34,7 +34,7 @@ class JsonResponseTest extends TestCase
 
     public function testContentTypeCanBeOverwritten()
     {
-        $data = array();
+        $data = [];
         $json = '[]';
 
         $response = new JsonResponse($data, 200, ['content-type' => 'foo/json']);

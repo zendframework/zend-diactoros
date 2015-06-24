@@ -24,10 +24,13 @@ class JsonResponse extends Response
      * Produces a JSON response, serialized from $data passed in parameter.
      * MIME Content-type is application/json
      *
+     * Default JSON encoding is performed with JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT options
+     * (RFC4627-compliant JSON, which may also be embedded into HTML)
+     *
      * @param mixed $data The response data, to be serialized in JSON.
      * @param int $status Integer status code for the response; 200 by default.
      * @param array $headers Array of headers to use at initialization.
-     * @param int $encodingOptions JSON Encoding parameters. Defaults to JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT (RFC4627-compliant JSON, which may also be embedded into HTML)
+     * @param int $encodingOptions JSON Encoding parameters.
      * @throws \Exception
      */
     public function __construct($data, $status = 200, array $headers = [], $encodingOptions = 15)
