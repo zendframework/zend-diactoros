@@ -37,7 +37,7 @@ class JsonResponse extends Response
      * - JSON_HEX_TAG
      * - JSON_HEX_APOS
      * - JSON_HEX_AMP
-     * - JSON_HEX_QUOT options
+     * - JSON_HEX_QUOT
      *
      * @param string $data Data to convert to JSON.
      * @param int $status Integer status code for the response; 200 by default.

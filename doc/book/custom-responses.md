@@ -64,6 +64,20 @@ response:
 $response = new JsonResponse($data, 200, [ 'Content-Type' => ['application/hal+json']]);
 ```
 
+Finally, `JsonResponse` allows a fourth optional argument, the flags to provide to `json_encode()`.
+By default, these are set to `JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT` (integer
+15), providing [RFC 4627](http://tools.ietf.org/html/rfc4627) compliant JSON capable of embedding in
+HTML. If you want to specify a different set of flags, use the fourth constructor argument:
+
+```php
+$response = new JsonResponse(
+    $data,
+    200,
+    [],
+    JSON_PRETTY_PRINT | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT
+);
+```
+
 ## Empty Responses
 
 Many API actions allow returning empty responses:
