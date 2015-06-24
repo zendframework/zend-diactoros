@@ -30,14 +30,18 @@ class JsonResponse extends Response
      * If the data provided is null, an empty ArrayObject is used; if the data
      * is scalar, it is cast to an array prior to serialization.
      *
+     * Default JSON encoding is performed with JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT options
+     * (RFC4627-compliant JSON, which may also be embedded into HTML)
+     *
      * @param string $data Data to convert to JSON.
      * @param int $status Integer status code for the response; 200 by default.
      * @param array $headers Array of headers to use at initialization.
+     * @param int $encodingOptions The JSON encoding options
      */
-    public function __construct($data, $status = 200, array $headers = [])
+    public function __construct($data, $status = 200, array $headers = [], $encodingOptions = 15)
     {
         $body = new Stream('php://temp', 'wb+');
-        $body->write($this->jsonEncode($data));
+        $body->write($this->jsonEncode($data, $encodingOptions));
 
         $headers = $this->injectContentType('application/json', $headers);
 
@@ -48,9 +52,10 @@ class JsonResponse extends Response
      * Encode the provided data to JSON.
      *
      * @param mixed $data
+     * @param int $encodingOptions
      * @return string
      */
-    private function jsonEncode($data)
+    private function jsonEncode($data, $encodingOptions)
     {
         if ($data === null) {
             // Use an ArrayObject to force an empty JSON object.
@@ -61,6 +66,14 @@ class JsonResponse extends Response
             $data = (array) $data;
         }
 
-        return json_encode($data, JSON_UNESCAPED_SLASHES);
+        // Clear json_last_error()
+        json_encode(null);
+        $json = json_encode($data, $encodingOptions);
+
+        if (JSON_ERROR_NONE !== json_last_error()) {
+            throw new \InvalidArgumentException(json_last_error_msg());
+        }
+
+        return $json;
     }
 }
