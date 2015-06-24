@@ -79,10 +79,25 @@ class JsonResponseTest extends TestCase
     /**
      * @expectedException InvalidArgumentException
      */
-    public function testJsonErrorHandling()
+    public function testJsonErrorHandlingOfResources()
     {
         // Serializing something that is not serializable.
         $resource = fopen('php://memory', 'r');
         new JsonResponse($resource);
+    }
+
+    public function testJsonErrorHandlingOfBadEmbeddedData()
+    {
+        if (version_compare(PHP_VERSION, '5.5', 'lt')) {
+            $this->markTestSkipped('Skipped as PHP versions prior to 5.5 are noisy about JSON errors');
+        }
+
+        // Serializing something that is not serializable.
+        $data = [
+            'stream' => fopen('php://memory', 'r'),
+        ];
+
+        $this->setExpectedException('InvalidArgumentException', 'Unable to encode');
+        new JsonResponse($data);
     }
 }
