@@ -41,7 +41,7 @@ class RedirectResponse extends Response
             ));
         }
 
-        $headers['location'] = [$uri];
+        $headers['location'] = [(string) $uri];
         parent::__construct('php://temp', $status, $headers);
     }
 }
