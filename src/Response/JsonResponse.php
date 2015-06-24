@@ -10,6 +10,7 @@
 namespace Zend\Diactoros\Response;
 
 use ArrayObject;
+use InvalidArgumentException;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Stream;
 
@@ -30,13 +31,19 @@ class JsonResponse extends Response
      * If the data provided is null, an empty ArrayObject is used; if the data
      * is scalar, it is cast to an array prior to serialization.
      *
-     * Default JSON encoding is performed with JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT options
-     * (RFC4627-compliant JSON, which may also be embedded into HTML)
+     * Default JSON encoding is performed with the following options, which
+     * produces RFC4627-compliant JSON, capable of embedding into HTML.
+     *
+     * - JSON_HEX_TAG
+     * - JSON_HEX_APOS
+     * - JSON_HEX_AMP
+     * - JSON_HEX_QUOT options
      *
      * @param string $data Data to convert to JSON.
      * @param int $status Integer status code for the response; 200 by default.
      * @param array $headers Array of headers to use at initialization.
-     * @param int $encodingOptions The JSON encoding options
+     * @param int $encodingOptions JSON encoding options to use.
+     * @throws InvalidArgumentException if unable to encode the $data to JSON.
      */
     public function __construct($data, $status = 200, array $headers = [], $encodingOptions = 15)
     {
@@ -54,6 +61,7 @@ class JsonResponse extends Response
      * @param mixed $data
      * @param int $encodingOptions
      * @return string
+     * @throws InvalidArgumentException if unable to encode the $data to JSON.
      */
     private function jsonEncode($data, $encodingOptions)
     {
@@ -68,10 +76,11 @@ class JsonResponse extends Response
 
         // Clear json_last_error()
         json_encode(null);
+
         $json = json_encode($data, $encodingOptions);
 
         if (JSON_ERROR_NONE !== json_last_error()) {
-            throw new \InvalidArgumentException(json_last_error_msg());
+            throw new InvalidArgumentException(json_last_error_msg());
         }
 
         return $json;
