@@ -12,6 +12,7 @@ namespace ZendTest\Diactoros\Response;
 use PHPUnit_Framework_TestCase as TestCase;
 use Zend\Diactoros\Response\JsonResponse;
 use Zend\Diactoros\Response\StringResponse;
+use ZendTest\Diactoros\TestAsset\JsonSerializableObject;
 
 class JsonResponseTest extends TestCase
 {
@@ -60,14 +61,5 @@ class JsonResponseTest extends TestCase
     {
         $serializable = new JsonSerializableObject();
         new JsonResponse($serializable);
-    }
-}
-
-class JsonSerializableObject implements \JsonSerializable
-{
-    public function jsonSerialize()
-    {
-        trigger_error('This error is expected', E_USER_WARNING);
-        return array();
     }
 }
