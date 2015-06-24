@@ -27,7 +27,10 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#29](https://github.com/zendframework/zend-diactoros/pull/29) fixes request
+  method validation to allow any valid token as defined by [RFC
+  7230](http://tools.ietf.org/html/rfc7230#appendix-B). This allows usage of
+  custom request methods, vs a static, hard-coded list.
 
 ## 1.0.5 - 2015-06-24
 
