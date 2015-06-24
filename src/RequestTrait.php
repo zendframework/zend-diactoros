@@ -48,23 +48,6 @@ trait RequestTrait
     private $uri;
 
     /**
-     * Supported HTTP methods
-     *
-     * @var array
-     */
-    private $validMethods = [
-        'CONNECT',
-        'DELETE',
-        'GET',
-        'HEAD',
-        'OPTIONS',
-        'PATCH',
-        'POST',
-        'PUT',
-        'TRACE',
-    ];
-
-    /**
      * Initialize request state.
      *
      * Used by constructors.
@@ -290,9 +273,7 @@ trait RequestTrait
             ));
         }
 
-        $method = strtoupper($method);
-
-        if (! in_array($method, $this->validMethods, true)) {
+        if (! preg_match('/^[!#$%&\'*+.^_`\|~0-9a-z-]+$/i', $method)) {
             throw new InvalidArgumentException(sprintf(
                 'Unsupported HTTP method "%s" provided',
                 $method
