@@ -12,6 +12,7 @@ namespace ZendTest\Diactoros\Response;
 use PHPUnit_Framework_TestCase as TestCase;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\Response\StringResponse;
+use Zend\Diactoros\Stream;
 
 class HtmlResponseTest extends TestCase
 {
@@ -30,6 +31,16 @@ class HtmlResponseTest extends TestCase
         $this->assertEquals('text/html', $response->getHeaderLine('content-type'));
     }
 
+    public function testHtmlConstructorWithStream()
+    {
+        $body = '<html>Hello world</html>';
+        $stream = new Stream("php://memory", "wb+");
+        $stream->write($body);
+
+        $response = new HtmlResponse($stream);
+        $this->assertSame($body, (string) $response->getBody());
+    }
+
     public function testContentTypeCanBeOverwritten()
     {
         $body = '<html>Uh oh not found</html>';
@@ -37,5 +48,13 @@ class HtmlResponseTest extends TestCase
         $response = new HtmlResponse($body, 200, ['content-type' => 'foo/html']);
         $this->assertSame($body, (string) $response->getBody());
         $this->assertEquals('foo/html', $response->getHeaderLine('content-type'));
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testInvalidContent()
+    {
+        new HtmlResponse(new \stdClass());
     }
 }

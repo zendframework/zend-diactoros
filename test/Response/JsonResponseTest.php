@@ -41,4 +41,33 @@ class JsonResponseTest extends TestCase
         $this->assertSame($json, (string) $response->getBody());
         $this->assertEquals('foo/json', $response->getHeaderLine('content-type'));
     }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testJsonErrorHandling()
+    {
+        $recursiveObj = new \stdClass();
+        $recursiveObj->recurs = $recursiveObj;
+
+        new JsonResponse($recursiveObj);
+    }
+
+    /**
+     * @expectedException Exception
+     */
+    public function testSetContentJsonSerializeError()
+    {
+        $serializable = new JsonSerializableObject();
+        new JsonResponse($serializable);
+    }
+}
+
+class JsonSerializableObject implements \JsonSerializable
+{
+    public function jsonSerialize()
+    {
+        trigger_error('This error is expected', E_USER_WARNING);
+        return array();
+    }
 }
