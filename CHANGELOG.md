@@ -14,6 +14,9 @@ All notable changes to this project will be documented in this file, in reverse 
 - [#58](https://github.com/zendframework/zend-diactoros/pull/58) adds
   `Zend\Diactoros\Response\EmptyResponse`, a `Zend\Diactoros\Response` extension
   for quickly creating empty, read-only responses.
+- [#59](https://github.com/zendframework/zend-diactoros/pull/59) adds
+  `Zend\Diactoros\Response\RedirectResponse`, a `Zend\Diactoros\Response` extension
+  for quickly creating redirect responses.
 
 ### Deprecated
 
