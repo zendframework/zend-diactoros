@@ -158,7 +158,7 @@ class ServerRequestFactoryTest extends TestCase
         $request = $request->withHeader('Host', 'example.com');
 
         $accumulator = (object) ['host' => '', 'port' => null];
-        ServerRequestFactory::marshalHostAndPort($accumulator, [], $request);
+        ServerRequestFactory::marshalHostAndPortFromHeaders($accumulator, [], $request->getHeaders());
         $this->assertEquals('example.com', $accumulator->host);
         $this->assertNull($accumulator->port);
     }
@@ -171,7 +171,7 @@ class ServerRequestFactoryTest extends TestCase
         $request = $request->withHeader('Host', 'example.com:8000');
 
         $accumulator = (object) ['host' => '', 'port' => null];
-        ServerRequestFactory::marshalHostAndPort($accumulator, [], $request);
+        ServerRequestFactory::marshalHostAndPortFromHeaders($accumulator, [], $request->getHeaders());
         $this->assertEquals('example.com', $accumulator->host);
         $this->assertEquals(8000, $accumulator->port);
     }
@@ -182,7 +182,7 @@ class ServerRequestFactoryTest extends TestCase
         $request = $request->withUri(new Uri());
 
         $accumulator = (object) ['host' => '', 'port' => null];
-        ServerRequestFactory::marshalHostAndPort($accumulator, [], $request);
+        ServerRequestFactory::marshalHostAndPortFromHeaders($accumulator, [], $request->getHeaders());
         $this->assertEquals('', $accumulator->host);
         $this->assertNull($accumulator->port);
     }
@@ -196,7 +196,7 @@ class ServerRequestFactoryTest extends TestCase
             'SERVER_NAME' => 'example.com',
         ];
         $accumulator = (object) ['host' => '', 'port' => null];
-        ServerRequestFactory::marshalHostAndPort($accumulator, $server, $request);
+        ServerRequestFactory::marshalHostAndPortFromHeaders($accumulator, $server, $request->getHeaders());
         $this->assertEquals('example.com', $accumulator->host);
         $this->assertNull($accumulator->port);
     }
@@ -211,7 +211,7 @@ class ServerRequestFactoryTest extends TestCase
             'SERVER_PORT' => 8000,
         ];
         $accumulator = (object) ['host' => '', 'port' => null];
-        ServerRequestFactory::marshalHostAndPort($accumulator, $server, $request);
+        ServerRequestFactory::marshalHostAndPortFromHeaders($accumulator, $server, $request->getHeaders());
         $this->assertEquals('example.com', $accumulator->host);
         $this->assertEquals(8000, $accumulator->port);
     }
@@ -226,7 +226,7 @@ class ServerRequestFactoryTest extends TestCase
             'SERVER_NAME' => 'example.com',
         ];
         $accumulator = (object) ['host' => '', 'port' => null];
-        ServerRequestFactory::marshalHostAndPort($accumulator, $server, $request);
+        ServerRequestFactory::marshalHostAndPortFromHeaders($accumulator, $server, $request->getHeaders());
         $this->assertEquals('example.com', $accumulator->host);
     }
 
@@ -241,7 +241,7 @@ class ServerRequestFactoryTest extends TestCase
             'SERVER_PORT' => 8000,
         ];
         $accumulator = (object) ['host' => '', 'port' => null];
-        ServerRequestFactory::marshalHostAndPort($accumulator, $server, $request);
+        ServerRequestFactory::marshalHostAndPortFromHeaders($accumulator, $server, $request->getHeaders());
         $this->assertEquals('[FE80::0202:B3FF:FE1E:8329]', $accumulator->host);
         $this->assertEquals(8000, $accumulator->port);
     }
@@ -256,7 +256,7 @@ class ServerRequestFactoryTest extends TestCase
             'SERVER_NAME' => '[FE80::0202:B3FF:FE1E:8329:80]',
         ];
         $accumulator = (object) ['host' => '', 'port' => null];
-        ServerRequestFactory::marshalHostAndPort($accumulator, $server, $request);
+        ServerRequestFactory::marshalHostAndPortFromHeaders($accumulator, $server, $request->getHeaders());
         $this->assertEquals('[FE80::0202:B3FF:FE1E:8329]', $accumulator->host);
         $this->assertEquals(80, $accumulator->port);
     }
@@ -271,7 +271,7 @@ class ServerRequestFactoryTest extends TestCase
             'HTTPS' => true,
         ];
 
-        $uri = ServerRequestFactory::marshalUri($server, $request);
+        $uri = ServerRequestFactory::marshalUriFromServer($server, $request->getHeaders());
         $this->assertInstanceOf('Zend\Diactoros\Uri', $uri);
         $this->assertEquals('https', $uri->getScheme());
     }
@@ -286,7 +286,7 @@ class ServerRequestFactoryTest extends TestCase
             'HTTPS' => 'off',
         ];
 
-        $uri = ServerRequestFactory::marshalUri($server, $request);
+        $uri = ServerRequestFactory::marshalUriFromServer($server, $request->getHeaders());
         $this->assertInstanceOf('Zend\Diactoros\Uri', $uri);
         $this->assertEquals('http', $uri->getScheme());
     }
@@ -300,7 +300,7 @@ class ServerRequestFactoryTest extends TestCase
 
         $server  = [];
 
-        $uri = ServerRequestFactory::marshalUri($server, $request);
+        $uri = ServerRequestFactory::marshalUriFromServer($server, $request->getHeaders());
         $this->assertInstanceOf('Zend\Diactoros\Uri', $uri);
         $this->assertEquals('https', $uri->getScheme());
     }
@@ -315,7 +315,7 @@ class ServerRequestFactoryTest extends TestCase
             'REQUEST_URI' => '/foo/bar?foo=bar',
         ];
 
-        $uri = ServerRequestFactory::marshalUri($server, $request);
+        $uri = ServerRequestFactory::marshalUriFromServer($server, $request->getHeaders());
         $this->assertInstanceOf('Zend\Diactoros\Uri', $uri);
         $this->assertEquals('/foo/bar', $uri->getPath());
     }
@@ -331,7 +331,7 @@ class ServerRequestFactoryTest extends TestCase
             'QUERY_STRING' => 'bar=baz',
         ];
 
-        $uri = ServerRequestFactory::marshalUri($server, $request);
+        $uri = ServerRequestFactory::marshalUriFromServer($server, $request->getHeaders());
         $this->assertInstanceOf('Zend\Diactoros\Uri', $uri);
         $this->assertEquals('bar=baz', $uri->getQuery());
     }

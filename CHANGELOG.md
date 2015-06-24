@@ -2,6 +2,46 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 1.1.0 - TBD
+
+### Added
+
+- [#52](https://github.com/zendframework/zend-diactoros/pull/52),
+  [#58](https://github.com/zendframework/zend-diactoros/pull/58),
+  [#59](https://github.com/zendframework/zend-diactoros/pull/59), and
+  [#61](https://github.com/zendframework/zend-diactoros/pull/61) create several
+  custom response types for simplifying response creation:
+
+  - `Zend\Diactoros\Response\HtmlResponse` accepts HTML content via its
+    constructor, and sets the `Content-Type` to `text/html`.
+  - `Zend\Diactoros\Response\JsonResponse` accepts data to serialize to JSON via
+    its constructor, and sets the `Content-Type` to `application/json`.
+  - `Zend\Diactoros\Response\EmptyResponse` allows creating empty, read-only
+    responses, with a default status code of 204.
+  - `Zend\Diactoros\Response\RedirectResponse` allows specifying a URI for the
+    `Location` header in the constructor, with a default status code of 302.
+
+  Each also accepts an optional status code, and optional headers (which can
+  also be used to provide an alternate `Content-Type` in the case of the HTML
+  and JSON responses).
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- [#43](https://github.com/zendframework/zend-diactoros/pull/43) removed both
+  `ServerRequestFactory::marshalUri()` and `ServerRequestFactory::marshalHostAndPort()`,
+  which were deprecated prior to the 1.0 release.
+
+### Fixed
+
+- [#29](https://github.com/zendframework/zend-diactoros/pull/29) fixes request
+  method validation to allow any valid token as defined by [RFC
+  7230](http://tools.ietf.org/html/rfc7230#appendix-B). This allows usage of
+  custom request methods, vs a static, hard-coded list.
+
 ## 1.0.5 - 2015-06-24
 
 ### Added
@@ -124,7 +164,7 @@ immediately.
 ### Removed
 
 - Nothing.
-
+-
 ### Fixed
 
 - [#41](https://github.com/zendframework/zend-diactoros/pull/41) fixes the
