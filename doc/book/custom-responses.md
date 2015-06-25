@@ -52,9 +52,8 @@ the `Content-Type` header to `application/json`:
 $response = new JsonResponse($data);
 ```
 
-If a null value is provide, an empty JSON object is used for the content. Scalar data is cast to an
-array before serialization. If providing an object, we recommend implementing
-[JsonSerializable](http://php.net/JsonSerializable) to ensure your object is correctly serialized.
+If providing an object, we recommend implementing [JsonSerializable](http://php.net/JsonSerializable)
+to ensure your object is correctly serialized.
 
 Just like the `HtmlResponse`, the `JsonResponse` allows passing two additional arguments — a
 status code, and an array of headers — to allow you to further seed the initial state of the
