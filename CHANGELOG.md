@@ -20,7 +20,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - Nothing.
 
-## 1.1.1 - TBD
+## 1.1.1 - 2015-06-25
 
 ### Added
 
@@ -36,7 +36,9 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#64](https://github.com/zendframework/zend-diactoros/pull/64) fixes the
+  behavior of `JsonResponse` with regards to serialization of `null` and scalar
+  values; the new behavior is to serialize them verbatim, without any casting.
 
 ## 1.1.0 - 2015-06-24
 

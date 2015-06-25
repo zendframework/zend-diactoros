@@ -31,17 +31,10 @@ class JsonResponseTest extends TestCase
         $this->assertSame($json, (string) $response->getBody());
     }
 
-    public function testNullValuePassedToConstructorRendersEmptyJsonObjectInBody()
-    {
-        $response = new JsonResponse(null);
-        $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals('application/json', $response->getHeaderLine('content-type'));
-        $this->assertSame('{}', (string) $response->getBody());
-    }
-
     public function scalarValuesForJSON()
     {
         return [
+            'null'         => [null],
             'false'        => [false],
             'true'         => [true],
             'zero'         => [0],
@@ -56,12 +49,13 @@ class JsonResponseTest extends TestCase
     /**
      * @dataProvider scalarValuesForJSON
      */
-    public function testScalarValuePassedToConstructorRendersValueWithinJSONArray($value)
+    public function testScalarValuePassedToConstructorJsonEncodesDirectly($value)
     {
         $response = new JsonResponse($value);
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('application/json', $response->getHeaderLine('content-type'));
-        $this->assertSame(json_encode([$value], JSON_UNESCAPED_SLASHES), (string) $response->getBody());
+        // 15 is the default mask used by JsonResponse
+        $this->assertSame(json_encode($value, 15), (string) $response->getBody());
     }
 
     public function testCanProvideStatusCodeToConstructor()
