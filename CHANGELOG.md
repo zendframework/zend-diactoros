@@ -18,7 +18,8 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#67](https://github.com/zendframework/zend-diactoros/pull/67) ensures that
+  the `Stream` class only accepts `stream` resources, not any resource.
 
 ## 1.1.1 - 2015-06-25
 
