@@ -539,4 +539,55 @@ class StreamTest extends TestCase
         $stream = new Stream($resource);
         $this->assertEquals($expected['size'], $stream->getSize());
     }
+
+    /**
+     * @group 67
+     */
+    public function testRaisesExceptionOnConstructionForNonStreamResources()
+    {
+        $resource = $this->getResourceFor67();
+        if (false === $resource) {
+            $this->markTestSkipped('No acceptable resource available to test ' . __METHOD__);
+        }
+
+        $this->setExpectedException('InvalidArgumentException', 'stream');
+        new Stream($resource);
+    }
+
+    /**
+     * @group 67
+     */
+    public function testRaisesExceptionOnAttachForNonStreamResources()
+    {
+        $resource = $this->getResourceFor67();
+        if (false === $resource) {
+            $this->markTestSkipped('No acceptable resource available to test ' . __METHOD__);
+        }
+
+        $stream = new Stream(__FILE__);
+
+        $this->setExpectedException('InvalidArgumentException', 'stream');
+        $stream->attach($resource);
+    }
+
+    public function getResourceFor67()
+    {
+        if (function_exists('curl_init')) {
+            return curl_init();
+        }
+
+        if (function_exists('shmop_open')) {
+            return shmop_open(ftok(__FILE__, 't'), 'c', 0644, 100);
+        }
+
+        if (function_exists('gmp_init')) {
+            return gmp_init(1);
+        }
+
+        if (function_exists('imagecreate')) {
+            return imagecreate(200, 200);
+        }
+
+        return false;
+    }
 }
