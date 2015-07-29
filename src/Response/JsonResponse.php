@@ -35,7 +35,7 @@ class JsonResponse extends Response
      * - JSON_HEX_AMP
      * - JSON_HEX_QUOT
      *
-     * @param string $data Data to convert to JSON.
+     * @param mixed $data Data to convert to JSON.
      * @param int $status Integer status code for the response; 200 by default.
      * @param array $headers Array of headers to use at initialization.
      * @param int $encodingOptions JSON encoding options to use.
