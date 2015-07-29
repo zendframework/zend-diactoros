@@ -15,7 +15,7 @@ Some standard use cases, however, make this un-wieldy:
 - Returning a response containing HTML; in this case, you likely want to provide the HTML to the
   constructor, not a stream with the HTML injected.
 - Returning a response containing JSON; in this case, you likely want to provide the data to
-  seriazlize to JSON, not a stream containing serialized JSON.
+  serialize to JSON, not a stream containing serialized JSON.
 - Returning a response with no content; in this case, you don't want to bother with the body at all.
 - Returning a redirect response; in this case, you likely just want to specify the target for the
   `Location` header, and optionally the status code.
