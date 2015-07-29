@@ -18,7 +18,9 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#71](https://github.com/zendframework/zend-diactoros/pull/71) fixes the
+  docblock of the `JsonResponse` constructor to typehint the `$data` argument
+  as `mixed`.
 
 ## 1.1.3 - TBD
 
