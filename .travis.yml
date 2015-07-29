@@ -5,6 +5,7 @@ language: php
 cache:
   directories:
     - $HOME/.composer/cache
+    - vendor
 
 matrix:
   fast_finish: true

@@ -24,7 +24,8 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- Nothing.
+- [#73](https://github.com/zendframework/zend-diactoros/pull/73) adds caching of
+  the vendor directory to the Travis-CI configuration, to speed up builds.
 
 ### Deprecated
 
