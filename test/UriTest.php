@@ -455,4 +455,101 @@ class UriTest extends TestCase
         $uri = new Uri($url);
         $this->assertEquals('http://example.org/zend.com', (string) $uri);
     }
+
+    /**
+     * As Per PSR7 UriInterface the host MUST be lowercased
+     *
+     * @group uriinterface
+     */
+    public function testHostnameMustBeLowerCasedAsPerPsr7Interface()
+    {
+        $url = 'http://WwW.ExAmPlE.CoM';
+        $uri = new Uri($url);
+        $this->assertEquals('www.example.com', $uri->getHost());
+    }
+
+    /**
+     * As Per PSR7 UriInterface the scheme MUST be lowercased
+     *
+     * @group uriinterface
+     */
+    public function testSchemeMustBeLowerCasedAsPerPsr7Interface()
+    {
+        $url = 'hTtp://www.example.com';
+        $uri = new Uri($url);
+        $this->assertEquals('http', $uri->getScheme());
+    }
+
+    /**
+     * As Per PSR7 UriInterface the path MUST be encoded following
+     * RFC3986 rules does it means that :
+     * - the encoding characters must be uppercased or not ?
+     * - the "~" character must not be encoded ?
+     *
+     * @group uriinterface
+     * @dataProvider pathProvider
+     */
+    public function testPathNormalizationPerPsr7Interface($url, $path)
+    {
+        $this->assertEquals($path, (new Uri($url))->getPath());
+    }
+
+    public function pathProvider()
+    {
+        return [
+            ['http://example.com/%a1/psr7/rocks', '/%A1/psr7/rocks'],
+            ['http://example.com/%7Epsr7/rocks', '/~psr7/rocks'],
+        ];
+    }
+
+    /**
+     * This assertion MAY need clarification as it is not stated in
+     * the interface if for the string representation indivual
+     * normalization MUST be applied prior to generate the string
+     * with the __toString() method
+     *
+     * @group uriinterface
+     */
+    public function testUrlStandardNormalization()
+    {
+        $url = 'hTtp://WwW.ExAmPlE.CoM/%a1/%7Epsr7/rocks';
+        $uri = new Uri($url);
+        $this->assertEquals('http://www.example.com/%A1/~psr7/rocks', (string) $uri);
+    }
+
+    /**
+     * Authority delimiter addition should follow PSR-7 interface
+     * in the following examples.
+     *
+     * Some of these example return invalid Url
+     *
+     * @group uriinterface
+     * @dataProvider authorityProvider
+     */
+    public function testAuthorityDelimiterPresence($url)
+    {
+        $this->assertEquals($url, (string) new Uri($url));
+    }
+
+    public function authorityProvider()
+    {
+        return [
+            ['//www.example.com'],
+            ['http:www.example.com'],
+            ['http:/www.example.com'],
+        ];
+    }
+
+    /**
+     * As Per PSR7 UriInterface the null value remove the port info
+     * no InvalidArgumentException should be thrown
+     *
+     * @group uriinterface
+     */
+    public function testWithPortWithNullValue()
+    {
+        $url = 'http://www.example.com:81';
+        $uri = new Uri($url);
+        $this->assertNull($uri->withPort(null)->getPort());
+    }
 }
