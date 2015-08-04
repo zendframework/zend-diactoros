@@ -23,6 +23,21 @@ Some standard use cases, however, make this un-wieldy:
 Starting with version 1.1, Diactoros offers several custom response types for simplifying these
 common tasks.
 
+## Text Responses
+
+`Zend\Diactoros\Response\TextResponse` creates a plain text response. It sets the
+`Content-Type` header to `text/plain` by default:
+
+```php
+$response = new TextResponse('Hello world!');
+```
+
+The constructor accepts two additional arguments: a status code and an array of headers.
+
+```php
+$response = new TextResponse($text, 200, ['Content-Type' => ['text/csv']]);
+```
+
 ## HTML Responses
 
 `Zend\Diactoros\Response\HtmlResponse` allows specifying HTML as a payload, and sets the
