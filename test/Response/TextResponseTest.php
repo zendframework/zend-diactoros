@@ -43,7 +43,7 @@ class TextResponseTest extends TestCase
 
         $response = new TextResponse($body, $status, $headers);
         $this->assertEquals(['foo-bar'], $response->getHeader('x-custom'));
-        $this->assertEquals('text/plain', $response->getHeaderLine('content-type'));
+        $this->assertEquals('text/plain; charset=utf-8', $response->getHeaderLine('content-type'));
         $this->assertEquals(404, $response->getStatusCode());
         $this->assertSame($body, (string) $response->getBody());
     }
