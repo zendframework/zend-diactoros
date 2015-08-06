@@ -10,40 +10,40 @@
 namespace ZendTest\Diactoros\Response;
 
 use PHPUnit_Framework_TestCase as TestCase;
-use Zend\Diactoros\Response\HtmlResponse;
+use Zend\Diactoros\Response\TextResponse;
 
-class HtmlResponseTest extends TestCase
+class TextResponseTest extends TestCase
 {
-    public function testConstructorAcceptsHtmlString()
+    public function testConstructorAcceptsBodyAsString()
     {
-        $body = '<html>Uh oh not found</html>';
+        $body = 'Uh oh not found';
 
-        $response = new HtmlResponse($body);
+        $response = new TextResponse($body);
         $this->assertSame($body, (string) $response->getBody());
         $this->assertEquals(200, $response->getStatusCode());
     }
 
     public function testConstructorAllowsPassingStatus()
     {
-        $body = '<html>Uh oh not found</html>';
+        $body = 'Uh oh not found';
         $status = 404;
 
-        $response = new HtmlResponse($body, $status);
+        $response = new TextResponse($body, $status);
         $this->assertEquals(404, $response->getStatusCode());
         $this->assertSame($body, (string) $response->getBody());
     }
 
     public function testConstructorAllowsPassingHeaders()
     {
-        $body = '<html>Uh oh not found</html>';
+        $body = 'Uh oh not found';
         $status = 404;
         $headers = [
             'x-custom' => [ 'foo-bar' ],
         ];
 
-        $response = new HtmlResponse($body, $status, $headers);
+        $response = new TextResponse($body, $status, $headers);
         $this->assertEquals(['foo-bar'], $response->getHeader('x-custom'));
-        $this->assertEquals('text/html; charset=utf-8', $response->getHeaderLine('content-type'));
+        $this->assertEquals('text/plain; charset=utf-8', $response->getHeaderLine('content-type'));
         $this->assertEquals(404, $response->getStatusCode());
         $this->assertSame($body, (string) $response->getBody());
     }
@@ -52,11 +52,11 @@ class HtmlResponseTest extends TestCase
     {
         $stream = $this->prophesize('Psr\Http\Message\StreamInterface');
         $body   = $stream->reveal();
-        $response = new HtmlResponse($body);
+        $response = new TextResponse($body);
         $this->assertSame($body, $response->getBody());
     }
 
-    public function invalidHtmlContent()
+    public function invalidContent()
     {
         return [
             'null'       => [null],
@@ -72,11 +72,11 @@ class HtmlResponseTest extends TestCase
     }
 
     /**
-     * @dataProvider invalidHtmlContent
-     * @expectedException InvalidArgumentException
+     * @dataProvider invalidContent
+     * @expectedException \InvalidArgumentException
      */
     public function testRaisesExceptionforNonStringNonStreamBodyContent($body)
     {
-        $response = new HtmlResponse($body);
+        new TextResponse($body);
     }
 }
