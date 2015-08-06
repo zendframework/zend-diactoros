@@ -43,7 +43,7 @@ class HtmlResponseTest extends TestCase
 
         $response = new HtmlResponse($body, $status, $headers);
         $this->assertEquals(['foo-bar'], $response->getHeader('x-custom'));
-        $this->assertEquals('text/html', $response->getHeaderLine('content-type'));
+        $this->assertEquals('text/html; charset=utf-8', $response->getHeaderLine('content-type'));
         $this->assertEquals(404, $response->getStatusCode());
         $this->assertSame($body, (string) $response->getBody());
     }
