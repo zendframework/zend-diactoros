@@ -6,7 +6,11 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- Nothing.
+- [#77](https://github.com/zendframework/zend-diactoros/pull/77) adds a new
+  response type, `Zend\Diactoros\Response\TextResponse`, for returning plain
+  text responses. By default, it sets the content type to `text/plain;
+  charset=utf-8`; per the other response types, the signature is `new
+  TextResponse($text, $status = 200, array $headers = []`.
 
 ### Deprecated
 
@@ -21,6 +25,9 @@ All notable changes to this project will be documented in this file, in reverse 
 - [#71](https://github.com/zendframework/zend-diactoros/pull/71) fixes the
   docblock of the `JsonResponse` constructor to typehint the `$data` argument
   as `mixed`.
+- [#77](https://github.com/zendframework/zend-diactoros/pull/77) updates the
+  `HtmlResponse` to set the charset to utf-8 by default (if no content type
+  header is provided at instantiation).
 
 ## 1.1.3 - TBD
 
