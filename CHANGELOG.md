@@ -21,6 +21,9 @@ All notable changes to this project will be documented in this file, in reverse 
 - [#71](https://github.com/zendframework/zend-diactoros/pull/71) fixes the
   docblock of the `JsonResponse` constructor to typehint the `$data` argument
   as `mixed`.
+- [#73](https://github.com/zendframework/zend-diactoros/pull/73) changes the
+  behavior in `Request` such that if it marshals a stream during instantiation,
+  the stream is marked as writeable (specifically, mode `wb+`).
 
 ## 1.1.2 - 2015-07-12
 

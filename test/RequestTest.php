@@ -92,6 +92,14 @@ class RequestTest extends TestCase
         }
     }
 
+    public function testDefaultStreamIsWritable()
+    {
+        $request = new Request();
+        $request->getBody()->write("test");
+
+        $this->assertSame("test", (string)$request->getBody());
+    }
+
     public function invalidRequestUri()
     {
         return [
