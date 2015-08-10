@@ -26,6 +26,24 @@ All notable changes to this project will be documented in this file, in reverse 
   `HtmlResponse` to set the charset to utf-8 by default (if no content type
   header is provided at instantiation).
 
+## 1.1.4 - TBD
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
 ## 1.1.3 - 2015-08-10
 
 ### Added
