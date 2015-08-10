@@ -49,6 +49,12 @@ All notable changes to this project will be documented in this file, in reverse 
 - [#73](https://github.com/zendframework/zend-diactoros/pull/73) changes the
   behavior in `Request` such that if it marshals a stream during instantiation,
   the stream is marked as writeable (specifically, mode `wb+`).
+- [#85](https://github.com/zendframework/zend-diactoros/pull/85) updates the
+  behavior of `Zend\Diactoros\Uri`'s various `with*()` methods that are
+  documented as accepting strings to raise exceptions on non-string input.
+  Previously, several simply passed non-string input on verbatim, others
+  normalized the input, and a few correctly raised the exceptions. Behavior is
+  now consistent across each.
 
 ## 1.1.2 - 2015-07-12
 

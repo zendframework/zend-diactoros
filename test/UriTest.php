@@ -455,4 +455,49 @@ class UriTest extends TestCase
         $uri = new Uri($url);
         $this->assertEquals('http://example.org/zend.com', (string) $uri);
     }
+
+    public function invalidStringComponentValues()
+    {
+        $methods = [
+            'withScheme',
+            'withUserInfo',
+            'withHost',
+            'withPath',
+            'withQuery',
+            'withFragment',
+        ];
+
+        $values = [
+            'null'       => null,
+            'true'       => true,
+            'false'      => false,
+            'zero'       => 0,
+            'int'        => 1,
+            'zero-float' => 0.0,
+            'float'      => 1.1,
+            'array'      => ['value'],
+            'object'     => (object)['value' => 'value'],
+        ];
+
+        $combinations = [];
+        foreach ($methods as $method) {
+            foreach ($values as $type => $value) {
+                $key = sprintf('%s-%s', $method, $type);
+                $combinations[$key] = [$method, $value];
+            }
+        }
+
+        return $combinations;
+    }
+
+    /**
+     * @group 80
+     * @dataProvider invalidStringComponentValues
+     */
+    public function testPassingInvalidValueToWithMethodRaisesException($method, $value)
+    {
+        $uri = new Uri('https://example.com/');
+        $this->setExpectedException('InvalidArgumentException');
+        $uri->$method($value);
+    }
 }
