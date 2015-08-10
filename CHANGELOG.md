@@ -55,6 +55,9 @@ All notable changes to this project will be documented in this file, in reverse 
   Previously, several simply passed non-string input on verbatim, others
   normalized the input, and a few correctly raised the exceptions. Behavior is
   now consistent across each.
+- [#87](https://github.com/zendframework/zend-diactoros/pull/87) fixes
+  `UploadedFile` to ensure that `moveTo()` works correctly in non-SAPI
+  environments when the file provided to the constructor is a path.
 
 ## 1.1.2 - 2015-07-12
 
