@@ -270,4 +270,20 @@ class UploadedFileTest extends TestCase
         $this->setExpectedException('RuntimeException', 'upload error');
         $stream = $uploadedFile->getStream();
     }
+
+    /**
+     * @group 82
+     */
+    public function testMoveToCreatesStreamIfOnlyAFilenameWasProvided()
+    {
+        $this->tmpFile = tempnam(sys_get_temp_dir(), 'DIA');
+
+        $uploadedFile = new UploadedFile(__FILE__, 100, UPLOAD_ERR_OK, basename(__FILE__), 'text/plain');
+        $uploadedFile->moveTo($this->tmpFile);
+
+        $original = file_get_contents(__FILE__);
+        $test     = file_get_contents($this->tmpFile);
+
+        $this->assertEquals($original, $test);
+    }
 }
