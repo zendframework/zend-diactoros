@@ -22,9 +22,6 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- [#71](https://github.com/zendframework/zend-diactoros/pull/71) fixes the
-  docblock of the `JsonResponse` constructor to typehint the `$data` argument
-  as `mixed`.
 - [#77](https://github.com/zendframework/zend-diactoros/pull/77) updates the
   `HtmlResponse` to set the charset to utf-8 by default (if no content type
   header is provided at instantiation).
@@ -46,7 +43,12 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#71](https://github.com/zendframework/zend-diactoros/pull/71) fixes the
+  docblock of the `JsonResponse` constructor to typehint the `$data` argument
+  as `mixed`.
+- [#73](https://github.com/zendframework/zend-diactoros/pull/73) changes the
+  behavior in `Request` such that if it marshals a stream during instantiation,
+  the stream is marked as writeable (specifically, mode `wb+`).
 
 ## 1.1.2 - 2015-07-12
 
