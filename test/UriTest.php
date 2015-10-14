@@ -73,6 +73,7 @@ class UriTest extends TestCase
     public function validPorts()
     {
         return [
+            'null'      => [ null ],
             'int'       => [ 3000 ],
             'string'    => [ "3000" ]
         ];
