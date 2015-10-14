@@ -96,7 +96,6 @@ class UriTest extends TestCase
     public function invalidPorts()
     {
         return [
-            'null'      => [ null ],
             'true'      => [ true ],
             'false'     => [ false ],
             'string'    => [ 'string' ],
