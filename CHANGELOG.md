@@ -21,6 +21,10 @@ All notable changes to this project will be documented in this file, in reverse 
 - [#96](https://github.com/zendframework/zend-diactoros/pull/96) updates
   `withPort()` to allow `null` port values (indicating usage of default for
   the given scheme).
+- [#98](https://github.com/zendframework/zend-diactoros/pull/98) updates
+  the default JSON flags used by `JsonResponse` to include
+  `JSON_UNESCAPED_SLASHES`, which still conforms with RFC 4627, and is a more
+  sane default.
 
 ## 1.1.3 - 2015-08-10
 
