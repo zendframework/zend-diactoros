@@ -21,6 +21,9 @@ All notable changes to this project will be documented in this file, in reverse 
 - [#96](https://github.com/zendframework/zend-diactoros/pull/96) updates
   `withPort()` to allow `null` port values (indicating usage of default for
   the given scheme).
+- [#91](https://github.com/zendframework/zend-diactoros/pull/91) fixes the
+  logic of `withUri()` to do a case-insensitive check for an existing `Host`
+  header, replacing it with the new one.
 
 ## 1.1.3 - 2015-08-10
 
