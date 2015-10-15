@@ -455,4 +455,46 @@ class RequestTest extends TestCase
         $this->setExpectedException('InvalidArgumentException');
         $request = new Request(null, null, 'php://memory', [$name =>  $value]);
     }
+
+    public function hostHeaderKeys()
+    {
+        return [
+            'lowercase'            => ['host'],
+            'mixed-4'              => ['hosT'],
+            'mixed-3-4'            => ['hoST'],
+            'reverse-titlecase'    => ['hOST'],
+            'uppercase'            => ['HOST'],
+            'mixed-1-2-3'          => ['HOSt'],
+            'mixed-1-2'            => ['HOst'],
+            'titlecase'            => ['Host'],
+            'mixed-1-4'            => ['HosT'],
+            'mixed-1-2-4'          => ['HOsT'],
+            'mixed-1-3-4'          => ['HoST'],
+            'mixed-1-3'            => ['HoSt'],
+            'mixed-2-3'            => ['hOSt'],
+            'mixed-2-4'            => ['hOsT'],
+            'mixed-2'              => ['hOst'],
+            'mixed-3'              => ['hoSt'],
+        ];
+    }
+
+    /**
+     * @group 91
+     * @dataProvider hostHeaderKeys
+     */
+    public function testWithUriAndNoPreserveHostWillOverwriteHostHeaderRegardlessOfOriginalCase($hostKey)
+    {
+        $request = (new Request())
+            ->withHeader($hostKey, 'example.com');
+
+        $uri  = new Uri('http://example.org/foo/bar');
+        $new  = $request->withUri($uri);
+        $host = $new->getHeaderLine('host');
+        $this->assertEquals('example.org', $host);
+        $headers = $new->getHeaders();
+        $this->assertArrayHasKey('Host', $headers);
+        if ($hostKey !== 'Host') {
+            $this->assertArrayNotHasKey($hostKey, $headers);
+        }
+    }
 }
