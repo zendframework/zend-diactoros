@@ -308,7 +308,7 @@ class Uri implements UriInterface
     {
         if (! is_numeric($port) && $port !== null) {
             throw new InvalidArgumentException(sprintf(
-                'Invalid port "%s" specified; must be an integer, an integer string or null',
+                'Invalid port "%s" specified; must be an integer, an integer string, or null',
                 (is_object($port) ? get_class($port) : gettype($port))
             ));
         }
