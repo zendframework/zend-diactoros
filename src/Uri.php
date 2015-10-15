@@ -306,21 +306,23 @@ class Uri implements UriInterface
      */
     public function withPort($port)
     {
-        if (! is_numeric($port)) {
+        if (! is_numeric($port) && $port !== null) {
             throw new InvalidArgumentException(sprintf(
-                'Invalid port "%s" specified; must be an integer or integer string',
+                'Invalid port "%s" specified; must be an integer, an integer string, or null',
                 (is_object($port) ? get_class($port) : gettype($port))
             ));
         }
 
-        $port = (int) $port;
+        if ($port !== null) {
+            $port = (int) $port;
+        }
 
         if ($port === $this->port) {
             // Do nothing if no change was made.
             return clone $this;
         }
 
-        if ($port < 1 || $port > 65535) {
+        if ($port !== null && $port < 1 || $port > 65535) {
             throw new InvalidArgumentException(sprintf(
                 'Invalid port "%d" specified; must be a valid TCP/UDP port',
                 $port
