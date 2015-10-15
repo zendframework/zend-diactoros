@@ -27,8 +27,14 @@ $ php -S 0.0.0.0:8080 -t doc/html/ # then browse to http://localhost:8080/
 
 > ### Bookdown
 >
-> You can install bookdown globally using `composer global require bookdown/bookdown`. If you do
-> this, make sure that `$HOME/.composer/vendor/bin` is on your `$PATH`.
+> You can install bookdown globally using `composer global require bookdown/bookdown`. 
+> If you do this, make sure that `$HOME/.composer/vendor/bin` is on your `$PATH`;
+> on *nix-like systems, you can do this by adding the following line to your
+> `.bashrc` (or preferred shell RC file):
+>
+> ```bash
+> export PATH="$HOME/.composer/vendor/bin:$PATH"
+> ```
 
   [Master]: https://travis-ci.org/zendframework/zend-diactoros
   [Master image]: https://secure.travis-ci.org/zendframework/zend-diactoros.svg?branch=master
