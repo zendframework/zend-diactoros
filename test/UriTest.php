@@ -73,6 +73,7 @@ class UriTest extends TestCase
     public function validPorts()
     {
         return [
+            'null'      => [ null ],
             'int'       => [ 3000 ],
             'string'    => [ "3000" ]
         ];
@@ -88,7 +89,7 @@ class UriTest extends TestCase
         $this->assertNotSame($uri, $new);
         $this->assertEquals($port, $new->getPort());
         $this->assertEquals(
-            sprintf('https://user:pass@local.example.com:%d/foo?bar=baz#quz', $port),
+            sprintf('https://user:pass@local.example.com%s/foo?bar=baz#quz', $port === null ? '' : ':' . $port),
             (string) $new
         );
     }
@@ -96,7 +97,6 @@ class UriTest extends TestCase
     public function invalidPorts()
     {
         return [
-            'null'      => [ null ],
             'true'      => [ true ],
             'false'     => [ false ],
             'string'    => [ 'string' ],
