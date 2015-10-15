@@ -6,6 +6,9 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
+- [#88](https://github.com/zendframework/zend-diactoros/pull/88) updates the
+  `SapiEmitter` to emit a `Content-Length` header with the content length as
+  reported by the response body stream.
 - [#77](https://github.com/zendframework/zend-diactoros/pull/77) adds a new
   response type, `Zend\Diactoros\Response\TextResponse`, for returning plain
   text responses. By default, it sets the content type to `text/plain;

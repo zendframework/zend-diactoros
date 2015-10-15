@@ -13,6 +13,7 @@ use PHPUnit_Framework_TestCase as TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Server;
+use Zend\Diactoros\Stream;
 use ZendTest\Diactoros\TestAsset\HeaderStack;
 
 class ServerTest extends TestCase
@@ -229,6 +230,7 @@ class ServerTest extends TestCase
      */
     public function testHeaderOrderIsHonoredWhenEmitted($stack)
     {
+        array_pop($stack); // ignore "Content-Length" automatically set by the response emitter
         $header = array_pop($stack);
         $this->assertContains(
             'Set-Cookie: bar=baz; expires=Wed, 8 Oct 2014 10:30; path=/foo/bar; domain=example.com',
@@ -252,6 +254,16 @@ class ServerTest extends TestCase
             ->expects($this->once())
             ->method('getHeaders')
             ->will($this->returnValue([]));
+
+        $responseBody = new Stream('php://temp');
+        $this->response
+            ->expects($this->any())
+            ->method('getBody')
+            ->willReturn($responseBody);
+        $this->response
+            ->expects($this->any())
+            ->method('withHeader')
+            ->willReturnSelf();
 
         $final = function ($req, $res, $err = null) use ($phpunit, $request, $response, &$invoked) {
             $phpunit->assertSame($request, $req);

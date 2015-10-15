@@ -12,7 +12,6 @@ namespace ZendTest\Diactoros\Response;
 use PHPUnit_Framework_TestCase as TestCase;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\SapiEmitter;
-use Zend\Diactoros\Stream;
 use ZendTest\Diactoros\TestAsset\HeaderStack;
 
 class SapiEmitterTest extends TestCase
@@ -45,6 +44,7 @@ class SapiEmitterTest extends TestCase
         ob_end_clean();
         $this->assertContains('HTTP/1.1 200 OK', HeaderStack::stack());
         $this->assertContains('Content-Type: text/plain', HeaderStack::stack());
+        $this->assertContains('Content-Length: 8', HeaderStack::stack());
     }
 
     public function testEmitsMessageBody()
