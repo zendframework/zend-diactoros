@@ -18,7 +18,9 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#96](https://github.com/zendframework/zend-diactoros/pull/96) updates
+  `withPort()` to allow `null` port values (indicating usage of default for
+  the given scheme).
 
 ## 1.1.3 - 2015-08-10
 
