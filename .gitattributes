@@ -6,3 +6,4 @@
 .scrutinizer.yml export-ignore
 .travis.yml export-ignore
 phpunit.xml.dist export-ignore
+phpcs.xml export-ignore
