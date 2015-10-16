@@ -2,11 +2,13 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 1.1.4 - TBD
+## 1.1.4 - 2015-10-16
 
 ### Added
 
-- Nothing.
+- [#98](https://github.com/zendframework/zend-diactoros/pull/98) adds
+  `JSON_UNESCAPED_SLASHES` to the default `json_encode` flags used by
+  `Zend\Diactoros\Response\JsonResponse`.
 
 ### Deprecated
 
