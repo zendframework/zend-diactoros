@@ -98,4 +98,32 @@ class JsonResponseTest extends TestCase
         $this->setExpectedException('InvalidArgumentException', 'Unable to encode');
         new JsonResponse($data);
     }
+
+    public function valuesToJsonEncode()
+    {
+        return [
+            'uri'    => ['https://example.com/foo?bar=baz&baz=bat', 'uri'],
+            'html'   => ['<p class="test">content</p>', 'html'],
+            'string' => ["Don't quote!", 'string'],
+        ];
+    }
+
+    /**
+     * @dataProvider valuesToJsonEncode
+     */
+    public function testUsesSaneDefaultJsonEncodingFlags($value, $key)
+    {
+        $defaultFlags = JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_SLASHES;
+
+        $response = new JsonResponse([$key => $value]);
+        $stream   = $response->getBody();
+        $contents = (string) $stream;
+
+        $expected = json_encode($value, $defaultFlags);
+        $this->assertContains(
+            $expected,
+            $contents,
+            sprintf('Did not encode %s properly; expected (%s), received (%s)', $key, $expected, $contents)
+        );
+    }
 }
