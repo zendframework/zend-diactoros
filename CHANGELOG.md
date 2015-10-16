@@ -48,10 +48,9 @@ All notable changes to this project will be documented in this file, in reverse 
 - [#96](https://github.com/zendframework/zend-diactoros/pull/96) updates
   `withPort()` to allow `null` port values (indicating usage of default for
   the given scheme).
-- [#98](https://github.com/zendframework/zend-diactoros/pull/98) updates
-  the default JSON flags used by `JsonResponse` to include
-  `JSON_UNESCAPED_SLASHES`, which still conforms with RFC 4627, and is a more
-  sane default.
+- [#91](https://github.com/zendframework/zend-diactoros/pull/91) fixes the
+  logic of `withUri()` to do a case-insensitive check for an existing `Host`
+  header, replacing it with the new one.
 
 ## 1.1.3 - 2015-08-10
 
@@ -233,7 +232,7 @@ immediately.
 - [#57](https://github.com/zendframework/zend-diactoros/pull/57) fixes the
   behavior of how the `ServerRequestFactory` marshals upload files when they are
   represented as a nested associative array.
-- [#49](https://github.com/zendframework/zend-diactoros/pull/49) provides several 
+- [#49](https://github.com/zendframework/zend-diactoros/pull/49) provides several
   fixes that ensure that Diactoros complies with the PSR-7 specification:
   - `MessageInterface::getHeaderLine()` MUST return a string (that string CAN be
     empty). Previously, Diactoros would return `null`.
