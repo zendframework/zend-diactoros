@@ -25,6 +25,17 @@ class JsonResponse extends Response
     use InjectContentTypeTrait;
 
     /**
+     * Default flags for json_encode; value of:
+     *
+     * <code>
+     * JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_UNESCAPED_SLASHES
+     * </code>
+     *
+     * @const int
+     */
+    const DEFAULT_JSON_FLAGS = 79;
+
+    /**
      * Create a JSON response with the given data.
      *
      * Default JSON encoding is performed with the following options, which
@@ -34,6 +45,7 @@ class JsonResponse extends Response
      * - JSON_HEX_APOS
      * - JSON_HEX_AMP
      * - JSON_HEX_QUOT
+     * - JSON_UNESCAPED_SLASHES
      *
      * @param mixed $data Data to convert to JSON.
      * @param int $status Integer status code for the response; 200 by default.
@@ -41,8 +53,12 @@ class JsonResponse extends Response
      * @param int $encodingOptions JSON encoding options to use.
      * @throws InvalidArgumentException if unable to encode the $data to JSON.
      */
-    public function __construct($data, $status = 200, array $headers = [], $encodingOptions = 15)
-    {
+    public function __construct(
+        $data,
+        $status = 200,
+        array $headers = [],
+        $encodingOptions = self::DEFAULT_JSON_FLAGS
+    ) {
         $body = new Stream('php://temp', 'wb+');
         $body->write($this->jsonEncode($data, $encodingOptions));
 
