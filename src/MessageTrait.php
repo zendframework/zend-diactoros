@@ -204,7 +204,7 @@ trait MessageTrait
         $normalized = strtolower($header);
 
         $new = clone $this;
-        if($new->hasHeader($header)) {
+        if ($new->hasHeader($header)) {
             unset($new->headers[$new->headerNames[$normalized]]);
         }
         $new->headerNames[$normalized] = $header;
