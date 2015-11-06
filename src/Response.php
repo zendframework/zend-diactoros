@@ -102,7 +102,7 @@ class Response implements ResponseInterface
     /**
      * @var int
      */
-    private $statusCode = 200;
+    private $statusCode;
 
     /**
      * @param string|resource|StreamInterface $stream Stream identifier and/or actual stream resource
@@ -120,12 +120,9 @@ class Response implements ResponseInterface
             );
         }
 
-        if (null !== $status) {
-            $this->validateStatus($status);
-        }
+        $this->setStatusCode($status);
 
-        $this->stream     = ($body instanceof StreamInterface) ? $body : new Stream($body, 'wb+');
-        $this->statusCode = $status ? (int) $status : 200;
+        $this->stream = ($body instanceof StreamInterface) ? $body : new Stream($body, 'wb+');
 
         list($this->headerNames, $headers) = $this->filterHeaders($headers);
         $this->assertHeaders($headers);
@@ -159,9 +156,8 @@ class Response implements ResponseInterface
      */
     public function withStatus($code, $reasonPhrase = '')
     {
-        $this->validateStatus($code);
         $new = clone $this;
-        $new->statusCode   = (int) $code;
+        $new->setStatusCode($code);
         $new->reasonPhrase = $reasonPhrase;
         return $new;
     }
@@ -172,7 +168,7 @@ class Response implements ResponseInterface
      * @param int|string $code
      * @throws InvalidArgumentException on an invalid status code.
      */
-    private function validateStatus($code)
+    private function setStatusCode($code)
     {
         if (! is_numeric($code)
             || is_float($code)
@@ -184,6 +180,7 @@ class Response implements ResponseInterface
                 (is_scalar($code) ? $code : gettype($code))
             ));
         }
+        $this->statusCode = $code;
     }
 
     /**

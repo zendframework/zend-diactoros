@@ -151,8 +151,16 @@ class ResponseTest extends TestCase
             'x-valid-string' => [ 'VALID' ],
             'x-valid-array' => [ 'VALID' ],
         ];
-        $response = new Response('php://memory', null, $headers);
+        $response = new Response('php://memory', 200, $headers);
         $this->assertEquals($expected, $response->getHeaders());
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testInvalidStatusCodeInConstructor()
+    {
+        new Response('php://memory', null);
     }
 
     public function testReasonPhraseCanBeEmpty()
