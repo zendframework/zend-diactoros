@@ -15,59 +15,59 @@ use Zend\Diactoros\Response;
 use Zend\Diactoros\Stream;
 
 /**
- * HTML response.
+ * Plain text response.
  *
- * Allows creating a response by passing an HTML string to the constructor;
+ * Allows creating a response by passing a string to the constructor;
  * by default, sets a status code of 200 and sets the Content-Type header to
- * text/html.
+ * text/plain.
  */
-class HtmlResponse extends Response
+class TextResponse extends Response
 {
     use InjectContentTypeTrait;
 
     /**
-     * Create an HTML response.
+     * Create a plain text response.
      *
-     * Produces an HTML response with a Content-Type of text/html and a default
+     * Produces a text response with a Content-Type of text/plain and a default
      * status of 200.
      *
-     * @param string|StreamInterface $html HTML or stream for the message body.
+     * @param string|StreamInterface $text String or stream for the message body.
      * @param int $status Integer status code for the response; 200 by default.
      * @param array $headers Array of headers to use at initialization.
-     * @throws InvalidArgumentException if $html is neither a string or stream.
+     * @throws InvalidArgumentException if $text is neither a string or stream.
      */
-    public function __construct($html, $status = 200, array $headers = [])
+    public function __construct($text, $status = 200, array $headers = [])
     {
         parent::__construct(
-            $this->createBody($html),
+            $this->createBody($text),
             $status,
-            $this->injectContentType('text/html; charset=utf-8', $headers)
+            $this->injectContentType('text/plain; charset=utf-8', $headers)
         );
     }
 
     /**
      * Create the message body.
      *
-     * @param string|StreamInterface $html
+     * @param string|StreamInterface $text
      * @return StreamInterface
      * @throws InvalidArgumentException if $html is neither a string or stream.
      */
-    private function createBody($html)
+    private function createBody($text)
     {
-        if ($html instanceof StreamInterface) {
-            return $html;
+        if ($text instanceof StreamInterface) {
+            return $text;
         }
 
-        if (! is_string($html)) {
+        if (! is_string($text)) {
             throw new InvalidArgumentException(sprintf(
                 'Invalid content (%s) provided to %s',
-                (is_object($html) ? get_class($html) : gettype($html)),
+                (is_object($text) ? get_class($text) : gettype($text)),
                 __CLASS__
             ));
         }
 
         $body = new Stream('php://temp', 'wb+');
-        $body->write($html);
+        $body->write($text);
         return $body;
     }
 }

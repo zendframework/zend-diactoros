@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 1.2.0 - TBD
+
+### Added
+
+- [#88](https://github.com/zendframework/zend-diactoros/pull/88) updates the
+  `SapiEmitter` to emit a `Content-Length` header with the content length as
+  reported by the response body stream, assuming that
+  `StreamInterface::getSize()` returns an integer.
+- [#77](https://github.com/zendframework/zend-diactoros/pull/77) adds a new
+  response type, `Zend\Diactoros\Response\TextResponse`, for returning plain
+  text responses. By default, it sets the content type to `text/plain;
+  charset=utf-8`; per the other response types, the signature is `new
+  TextResponse($text, $status = 200, array $headers = []`.
+- [#90](https://github.com/zendframework/zend-diactoros/pull/90) adds a new
+  `Zend\Diactoros\CallbackStream`, allowing you to back a stream with a PHP
+  callable (such as a generator) to generate the message content. Its
+  constructor accepts the callable: `$stream = new CallbackStream($callable);`
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#77](https://github.com/zendframework/zend-diactoros/pull/77) updates the
+  `HtmlResponse` to set the charset to utf-8 by default (if no content type
+  header is provided at instantiation).
+
 ## 1.1.5 - TBD
 
 ### Added
@@ -49,7 +81,8 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- Nothing.
+- [#73](https://github.com/zendframework/zend-diactoros/pull/73) adds caching of
+  the vendor directory to the Travis-CI configuration, to speed up builds.
 
 ### Deprecated
 

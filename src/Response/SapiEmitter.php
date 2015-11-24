@@ -29,6 +29,14 @@ class SapiEmitter implements EmitterInterface
             throw new RuntimeException('Unable to emit response; headers already sent');
         }
 
+        if (! $response->hasHeader('Content-Length')) {
+            // PSR-7 indicates int OR null for the stream size; for null values,
+            // we will not auto-inject the Content-Length.
+            if (null !== $response->getBody()->getSize()) {
+                $response = $response->withHeader('Content-Length', (string) $response->getBody()->getSize());
+            }
+        }
+
         $this->emitStatusLine($response);
         $this->emitHeaders($response);
         $this->emitBody($response, $maxBufferLevel);
