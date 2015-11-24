@@ -10,6 +10,8 @@
 namespace ZendTest\Diactoros\Response;
 
 use PHPUnit_Framework_TestCase as TestCase;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamInterface;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\SapiEmitter;
 use ZendTest\Diactoros\TestAsset\HeaderStack;
@@ -56,5 +58,22 @@ class SapiEmitterTest extends TestCase
 
         $this->expectOutputString('Content!');
         $this->emitter->emit($response);
+    }
+
+    public function testDoesNotInjectContentLengthHeaderIfStreamSizeIsUnknown()
+    {
+        $stream = $this->prophesize('Psr\Http\Message\StreamInterface');
+        $stream->__toString()->willReturn('Content!');
+        $stream->getSize()->willReturn(null);
+        $response = (new Response())
+            ->withStatus(200)
+            ->withBody($stream->reveal());
+
+        ob_start();
+        $this->emitter->emit($response);
+        ob_end_clean();
+        foreach (HeaderStack::stack() as $header) {
+            $this->assertNotContains('Content-Length:', $header);
+        }
     }
 }
