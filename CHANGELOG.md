@@ -2,7 +2,25 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 1.2.0 - TBD
+## 1.3.0 - TBD
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
+## 1.2.0 - 2015-11-24
 
 ### Added
 
@@ -33,24 +51,6 @@ All notable changes to this project will be documented in this file, in reverse 
 - [#77](https://github.com/zendframework/zend-diactoros/pull/77) updates the
   `HtmlResponse` to set the charset to utf-8 by default (if no content type
   header is provided at instantiation).
-
-## 1.1.5 - TBD
-
-### Added
-
-- Nothing.
-
-### Deprecated
-
-- Nothing.
-
-### Removed
-
-- Nothing.
-
-### Fixed
-
-- Nothing.
 
 ## 1.1.4 - 2015-10-16
 
