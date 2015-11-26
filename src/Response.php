@@ -105,7 +105,7 @@ class Response implements ResponseInterface
     private $statusCode = 200;
 
     /**
-     * @param string|resource|StreamInterface $stream Stream identifier and/or actual stream resource
+     * @param string|resource|StreamInterface $body Stream identifier and/or actual stream resource
      * @param int $status Status code for the response, if any.
      * @param array $headers Headers for the response, if any.
      * @throws InvalidArgumentException on any invalid element.
