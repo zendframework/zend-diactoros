@@ -155,11 +155,10 @@ class ResponseTest extends TestCase
         $this->assertEquals($expected, $response->getHeaders());
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testInvalidStatusCodeInConstructor()
     {
+        $this->setExpectedException('InvalidArgumentException');
+
         new Response('php://memory', null);
     }
 
