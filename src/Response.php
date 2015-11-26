@@ -110,9 +110,9 @@ class Response implements ResponseInterface
      * @param array $headers Headers for the response, if any.
      * @throws InvalidArgumentException on any invalid element.
      */
-    public function __construct($body = 'php://memory', $status = 200, array $headers = [])
+    public function __construct($stream = 'php://memory', $status = 200, array $headers = [])
     {
-        if (! is_string($body) && ! is_resource($body) && ! $body instanceof StreamInterface) {
+        if (! is_string($stream) && ! is_resource($stream) && ! $stream instanceof StreamInterface) {
             throw new InvalidArgumentException(
                 'Stream must be a string stream resource identifier, '
                 . 'an actual stream resource, '
@@ -124,12 +124,12 @@ class Response implements ResponseInterface
             $this->validateStatus($status);
         }
 
-        $this->stream     = ($body instanceof StreamInterface) ? $body : new Stream($body, 'wb+');
+        $this->stream     = ($stream instanceof StreamInterface) ? $stream : new Stream($stream, 'wb+');
         $this->statusCode = $status ? (int) $status : 200;
 
-        list($this->headerNames, $headers) = $this->filterHeaders($headers);
-        $this->assertHeaders($headers);
-        $this->headers = $headers;
+        list($this->headerNames, $filteredHeaders) = $this->filterHeaders($headers);
+        $this->assertHeaders($filteredHeaders);
+        $this->headers = $filteredHeaders;
     }
 
     /**
