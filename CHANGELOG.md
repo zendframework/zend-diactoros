@@ -50,7 +50,7 @@ All notable changes to this project will be documented in this file, in reverse 
   response type, `Zend\Diactoros\Response\TextResponse`, for returning plain
   text responses. By default, it sets the content type to `text/plain;
   charset=utf-8`; per the other response types, the signature is `new
-  TextResponse($text, $status = 200, array $headers = []`.
+  TextResponse($text, $status = 200, array $headers = [])`.
 - [#90](https://github.com/zendframework/zend-diactoros/pull/90) adds a new
   `Zend\Diactoros\CallbackStream`, allowing you to back a stream with a PHP
   callable (such as a generator) to generate the message content. Its
