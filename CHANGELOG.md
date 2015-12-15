@@ -6,7 +6,16 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- Nothing.
+- [#110](https://github.com/zendframework/zend-diactoros/pull/110) adds
+  `Zend\Diactoros\Response\SapiEmitterTrait`, which provides the following
+  private method definitions:
+  - `injectContentLength()`
+  - `emitStatusLine()`
+  - `emitHeaders()`
+  - `flush()`
+  - `filterHeader()`
+  The `SapiEmitter` implementation has been updated to remove those methods and
+  instead compose the trait.
 
 ### Deprecated
 
