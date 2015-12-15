@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 1.3.0 - TBD
+
+### Added
+
+- [#110](https://github.com/zendframework/zend-diactoros/pull/110) adds
+  `Zend\Diactoros\Response\SapiEmitterTrait`, which provides the following
+  private method definitions:
+  - `injectContentLength()`
+  - `emitStatusLine()`
+  - `emitHeaders()`
+  - `flush()`
+  - `filterHeader()`
+  The `SapiEmitter` implementation has been updated to remove those methods and
+  instead compose the trait.
+- [#111](https://github.com/zendframework/zend-diactoros/pull/111) adds
+  a new emitter implementation, `SapiStreamEmitter`; this emitter type will
+  loop through the stream instead of emitting it in one go, and supports content
+  ranges.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
 ## 1.2.1 - 2015-12-15
 
 ### Added
