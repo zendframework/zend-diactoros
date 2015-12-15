@@ -24,6 +24,15 @@ All notable changes to this project will be documented in this file, in reverse 
   in the cloned instance.
 - [#103](https://github.com/zendframework/zend-diactoros/pull/103) fixes the
   constructor of `Response` to ensure that null status codes are not possible.
+- [#99](https://github.com/zendframework/zend-diactoros/pull/99) fixes
+  validation of header values submitted via request and response constructors as
+  follows:
+  - numeric (integer and float) values are now properly allowed (this solves
+    some reported issues with setting Content-Length headers)
+  - invalid header names (non-string values or empty strings) now raise an
+    exception.
+  - invalid individual header values (non-string, non-numeric) now raise an
+    exception.
 
 ## 1.2.0 - 2015-11-24
 
