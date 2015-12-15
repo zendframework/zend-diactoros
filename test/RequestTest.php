@@ -9,6 +9,7 @@
 
 namespace ZendTest\Diactoros;
 
+use InvalidArgumentException;
 use PHPUnit_Framework_TestCase as TestCase;
 use Zend\Diactoros\Request;
 use Zend\Diactoros\Stream;
@@ -192,24 +193,25 @@ class RequestTest extends TestCase
         new Request(null, null, $body);
     }
 
-    public function testConstructorIgonoresInvalidHeaders()
+    public function invalidHeaderTypes()
     {
-        $headers = [
-            [ 'INVALID' ],
-            'x-invalid-null' => null,
-            'x-invalid-true' => true,
-            'x-invalid-false' => false,
-            'x-invalid-int' => 1,
-            'x-invalid-object' => (object) ['INVALID'],
-            'x-valid-string' => 'VALID',
-            'x-valid-array' => [ 'VALID' ],
+        return [
+            'indexed-array' => [[['INVALID']], 'header name'],
+            'null' => [['x-invalid-null' => null]],
+            'true' => [['x-invalid-true' => true]],
+            'false' => [['x-invalid-false' => false]],
+            'object' => [['x-invalid-object' => (object) ['INVALID']]],
         ];
-        $expected = [
-            'x-valid-string' => [ 'VALID' ],
-            'x-valid-array' => [ 'VALID' ],
-        ];
-        $request = new Request(null, null, 'php://memory', $headers);
-        $this->assertEquals($expected, $request->getHeaders());
+    }
+
+    /**
+     * @dataProvider invalidHeaderTypes
+     * @group 99
+     */
+    public function testConstructorRaisesExceptionForInvalidHeaders($headers, $contains = 'header value type')
+    {
+        $this->setExpectedException(InvalidArgumentException::class, $contains);
+        new Request(null, null, 'php://memory', $headers);
     }
 
     public function testRequestTargetIsSlashWhenNoUriPresent()
