@@ -16,6 +16,10 @@ All notable changes to this project will be documented in this file, in reverse 
   - `filterHeader()`
   The `SapiEmitter` implementation has been updated to remove those methods and
   instead compose the trait.
+- [#111](https://github.com/zendframework/zend-diactoros/pull/111) adds
+  a new emitter implementation, `SapiStreamEmitter`; this emitter type will
+  loop through the stream instead of emitting it in one go, and supports content
+  ranges.
 
 ### Deprecated
 
