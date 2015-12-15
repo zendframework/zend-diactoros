@@ -352,7 +352,7 @@ trait MessageTrait
 
             if (is_array($value)) {
                 array_walk($value, function ($item) {
-                    if (! is_array($item) && ! is_string($item) && ! is_numeric($item)) {
+                    if (! is_string($item) && ! is_numeric($item)) {
                         throw new InvalidArgumentException(sprintf(
                             'Invalid header value type; expected number, string, or array; received %s',
                             (is_object($item) ? get_class($item) : gettype($item))

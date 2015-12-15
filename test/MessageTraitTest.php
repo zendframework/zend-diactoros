@@ -312,8 +312,17 @@ class MessageTraitTest extends TestCase
         ];
     }
 
+    public function invalidArrayHeaderValues()
+    {
+        yield 'array' => [['INVALID']];
+
+        foreach ($this->invalidHeaderValueTypes() as $type => $args) {
+            yield $type => $args;
+        }
+    }
+
     /**
-     * @dataProvider invalidHeaderValueTypes
+     * @dataProvider invalidArrayHeaderValues
      * @group 99
      */
     public function testFilterHeadersShouldRaiseExceptionForInvalidHeaderValuesInArrays($value)
