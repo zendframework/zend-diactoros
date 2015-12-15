@@ -40,6 +40,8 @@ All notable changes to this project will be documented in this file, in reverse 
   `withHeader()` implementation to ensure that if the header existed previously
   but using a different casing strategy, the previous version will be removed
   in the cloned instance.
+- [#103](https://github.com/zendframework/zend-diactoros/pull/103) fixes the
+  constructor of `Response` to ensure that null status codes are not possible.
 
 ## 1.2.0 - 2015-11-24
 
