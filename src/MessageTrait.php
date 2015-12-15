@@ -340,7 +340,7 @@ trait MessageTrait
                 continue;
             }
 
-            if (! is_array($value) && ! is_string($value)) {
+            if (! is_array($value) && ! is_string($value) && ! is_numeric($value)) {
                 continue;
             }
 

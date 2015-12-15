@@ -11,6 +11,7 @@ namespace ZendTest\Diactoros;
 
 use PHPUnit_Framework_TestCase as TestCase;
 use Psr\Http\Message\MessageInterface;
+use ReflectionMethod;
 use Zend\Diactoros\Request;
 
 class MessageTraitTest extends TestCase
@@ -265,5 +266,38 @@ class MessageTraitTest extends TestCase
     {
         $message = $this->message->withAddedHeader('X-Foo-Bar', "value,\r\n second value");
         $this->assertEquals("value,\r\n second value", $message->getHeaderLine('X-Foo-Bar'));
+    }
+
+    public function testNumericHeaderValues()
+    {
+        return [
+            'integer' => [ 123 ],
+            'float'   => [ 12.3 ],
+        ];
+    }
+
+    /**
+     * @dataProvider testNumericHeaderValues
+     * @group 99
+     */
+    public function testFilterValuesShouldAllowIntegersAndFloats($value)
+    {
+        $filter = new ReflectionMethod($this->message, 'filterHeaders');
+        $filter->setAccessible(true);
+        $headers = [
+            'X-Test-Array'  => [ $value ],
+            'X-Test-Scalar' => $value,
+        ];
+        $test = $filter->invoke($this->message, $headers);
+        $this->assertEquals([
+            [
+                'x-test-array'  => 'X-Test-Array',
+                'x-test-scalar' => 'X-Test-Scalar',
+            ],
+            [
+                'X-Test-Array'  => [ $value ],
+                'X-Test-Scalar' => [ $value ],
+            ]
+        ], $test);
     }
 }
