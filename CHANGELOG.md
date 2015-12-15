@@ -18,7 +18,10 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#101](https://github.com/zendframework/zend-diactoros/pull/101) fixes the
+  `withHeader()` implementation to ensure that if the header existed previously
+  but using a different casing strategy, the previous version will be removed
+  in the cloned instance.
 
 ## 1.2.0 - 2015-11-24
 

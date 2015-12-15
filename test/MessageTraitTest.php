@@ -175,6 +175,14 @@ class MessageTraitTest extends TestCase
         $message = $this->message->withHeader('X-Foo', $value);
     }
 
+    public function testWithHeaderReplacesDifferentCapitalization()
+    {
+        $this->message = $this->message->withHeader('X-Foo', ['foo']);
+        $new = $this->message->withHeader('X-foo', ['bar']);
+        $this->assertEquals(['bar'], $new->getHeader('x-foo'));
+        $this->assertEquals(['X-foo' => ['bar']], $new->getHeaders());
+    }
+
     /**
      * @dataProvider invalidGeneralHeaderValues
      */
