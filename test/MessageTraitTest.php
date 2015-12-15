@@ -316,12 +316,26 @@ class MessageTraitTest extends TestCase
      * @dataProvider invalidHeaderValueTypes
      * @group 99
      */
-    public function testFilterHeadersShouldRaiseExceptionForInvalidHeaderValues($value)
+    public function testFilterHeadersShouldRaiseExceptionForInvalidHeaderValuesInArrays($value)
     {
         $filter = new ReflectionMethod($this->message, 'filterHeaders');
         $filter->setAccessible(true);
         $headers = [
             'X-Test-Array'  => [ $value ],
+        ];
+        $this->setExpectedException('InvalidArgumentException', 'header value type');
+        $filter->invoke($this->message, $headers);
+    }
+
+    /**
+     * @dataProvider invalidHeaderValueTypes
+     * @group 99
+     */
+    public function testFilterHeadersShouldRaiseExceptionForInvalidHeaderScalarValues($value)
+    {
+        $filter = new ReflectionMethod($this->message, 'filterHeaders');
+        $filter->setAccessible(true);
+        $headers = [
             'X-Test-Scalar' => $value,
         ];
         $this->setExpectedException('InvalidArgumentException', 'header value type');
