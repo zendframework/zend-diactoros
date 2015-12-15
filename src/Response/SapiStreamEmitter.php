@@ -41,9 +41,10 @@ class SapiStreamEmitter implements EmitterInterface
 
         if (is_array($range)) {
             $this->emitBodyRange($range, $response, $maxBufferLength);
-        } else {
-            $this->emitBody($response, $maxBufferLength);
+            return;
         }
+
+        $this->emitBody($response, $maxBufferLength);
     }
 
     /**
@@ -57,7 +58,7 @@ class SapiStreamEmitter implements EmitterInterface
         $body = $response->getBody();
         $body->rewind();
 
-        while (!$body->eof()) {
+        while (! $body->eof()) {
             echo $body->read($maxBufferLength);
         }
     }
@@ -78,7 +79,7 @@ class SapiStreamEmitter implements EmitterInterface
         $body->seek($first);
         $pos = $first;
 
-        while (!$body->eof() && $pos < $last) {
+        while (! $body->eof() && $pos < $last) {
             if (($pos + $maxBufferLength) > $last) {
                 echo $body->read($last - $pos);
                 break;
@@ -94,17 +95,19 @@ class SapiStreamEmitter implements EmitterInterface
      * http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.16
      *
      * @param string $header
-     * @return array [unit, first, last, lenght]
+     * @return false|array [unit, first, last, length]; returns false if no
+     *     content range or an invalid content range is provided
      */
     private function parseContentRange($header)
     {
-        if (preg_match('/([\w]+)\s+(\d+)-(\d+)\/(\d+|\*)/', $header, $matches)) {
+        if (preg_match('/(?P<unit>[\w]+)\s+(?P<first>\d+)-(?P<last>\d+)\/(?P<length>\d+|\*)/', $header, $matches)) {
             return [
-                $matches[1],
-                (int) $matches[2],
-                (int) $matches[3],
-                $matches[4] === '*' ? '*' : (int) $matches[4],
+                $matches['unit'],
+                (int) $matches['first'],
+                (int) $matches['last'],
+                $matches['length'] === '*' ? '*' : (int) $matches['length'],
             ];
         }
+        return false;
     }
 }
