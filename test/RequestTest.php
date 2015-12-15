@@ -210,7 +210,7 @@ class RequestTest extends TestCase
      */
     public function testConstructorRaisesExceptionForInvalidHeaders($headers, $contains = 'header value type')
     {
-        $this->setExpectedException(InvalidArgumentException::class, $contains);
+        $this->setExpectedException('InvalidArgumentException', $contains);
         new Request(null, null, 'php://memory', $headers);
     }
 

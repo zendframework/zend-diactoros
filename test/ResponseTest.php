@@ -154,7 +154,7 @@ class ResponseTest extends TestCase
      */
     public function testConstructorRaisesExceptionForInvalidHeaders($headers, $contains = 'header value type')
     {
-        $this->setExpectedException(InvalidArgumentException::class, $contains);
+        $this->setExpectedException('InvalidArgumentException', $contains);
         new Response('php://memory', 200, $headers);
     }
 

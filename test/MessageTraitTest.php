@@ -324,7 +324,7 @@ class MessageTraitTest extends TestCase
             'X-Test-Array'  => [ $value ],
             'X-Test-Scalar' => $value,
         ];
-        $this->setExpectedException(InvalidArgumentException::class, 'header value type');
+        $this->setExpectedException('InvalidArgumentException', 'header value type');
         $filter->invoke($this->message, $headers);
     }
 }
