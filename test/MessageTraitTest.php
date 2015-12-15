@@ -9,6 +9,7 @@
 
 namespace ZendTest\Diactoros;
 
+use InvalidArgumentException;
 use PHPUnit_Framework_TestCase as TestCase;
 use Psr\Http\Message\MessageInterface;
 use ReflectionMethod;
@@ -280,7 +281,7 @@ class MessageTraitTest extends TestCase
      * @dataProvider testNumericHeaderValues
      * @group 99
      */
-    public function testFilterValuesShouldAllowIntegersAndFloats($value)
+    public function testFilterHeadersShouldAllowIntegersAndFloats($value)
     {
         $filter = new ReflectionMethod($this->message, 'filterHeaders');
         $filter->setAccessible(true);
@@ -299,5 +300,31 @@ class MessageTraitTest extends TestCase
                 'X-Test-Scalar' => [ $value ],
             ]
         ], $test);
+    }
+
+    public function invalidHeaderValueTypes()
+    {
+        return [
+            'null'   => [null],
+            'true'   => [true],
+            'false'  => [false],
+            'object' => [(object) ['header' => ['foo', 'bar']]],
+        ];
+    }
+
+    /**
+     * @dataProvider invalidHeaderValueTypes
+     * @group 99
+     */
+    public function testFilterHeadersShouldRaiseExceptionForInvalidHeaderValues($value)
+    {
+        $filter = new ReflectionMethod($this->message, 'filterHeaders');
+        $filter->setAccessible(true);
+        $headers = [
+            'X-Test-Array'  => [ $value ],
+            'X-Test-Scalar' => $value,
+        ];
+        $this->setExpectedException(InvalidArgumentException::class, 'header value type');
+        $filter->invoke($this->message, $headers);
     }
 }

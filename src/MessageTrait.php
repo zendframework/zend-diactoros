@@ -341,7 +341,10 @@ trait MessageTrait
             }
 
             if (! is_array($value) && ! is_string($value) && ! is_numeric($value)) {
-                continue;
+                throw new InvalidArgumentException(sprintf(
+                    'Invalid header value type; expected number, string, or array; received %s',
+                    (is_object($value) ? get_class($value) : gettype($value))
+                ));
             }
 
             if (! is_array($value)) {
