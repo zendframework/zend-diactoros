@@ -110,7 +110,16 @@ final class Serializer extends AbstractSerializer
     private static function getRequestLine(StreamInterface $stream)
     {
         $requestLine = self::getLine($stream);
-
+        if (0 === strpos($requestLine, ' ')) {//empty method
+            if (! preg_match(
+                '#^ (?P<target>[^\s]+) HTTP/(?P<version>[1-9]\d*\.\d+)$#',
+                $requestLine,
+                $matches
+            )) {
+                throw new UnexpectedValueException('Invalid request line detected');
+            }
+            return [null, $matches['target'], $matches['version']];
+        }
         if (! preg_match(
             '#^(?P<method>[!\#$%&\'*+.^_`|~a-zA-Z0-9-]+) (?P<target>[^\s]+) HTTP/(?P<version>[1-9]\d*\.\d+)$#',
             $requestLine,

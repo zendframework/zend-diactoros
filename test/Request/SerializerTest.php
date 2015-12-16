@@ -32,6 +32,46 @@ class SerializerTest extends TestCase
         );
     }
 
+    public function testSerializeEmptyRequest()
+    {
+        $request = new Request();
+
+        $message = Serializer::toString($request);
+        $this->assertEquals(
+            " / HTTP/1.1",
+            $message
+        );
+    }
+
+    public function testCanDeserializeEmptyRequest()
+    {
+        $message = " / HTTP/1.1";
+        $request = Serializer::fromString($message);
+        $this->assertEquals('', $request->getMethod());
+    }
+
+    public function testSerializeEmptyMethod()
+    {
+        $request = (new Request())
+            ->withUri(new Uri('http://example.com/foo/bar?baz=bat'));
+
+        $message = Serializer::toString($request);
+        $this->assertEquals(
+            " /foo/bar?baz=bat HTTP/1.1\r\nHost: example.com",
+            $message
+        );
+    }
+
+    public function testCanDeserializeRequestWithEmptyMethod()
+    {
+        $message = " /foo/bar?baz=bat HTTP/1.1\r\nHost: example.com";
+        $request = Serializer::fromString($message);
+        $this->assertEquals('', $request->getMethod());
+        $this->assertEquals('/foo/bar?baz=bat', $request->getRequestTarget());
+        $this->assertEquals('example.com', $request->getHeaderLine('Host'));
+    }
+
+
     public function testSerializesRequestWithBody()
     {
         $body   = json_encode(['test' => 'value']);
