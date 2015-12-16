@@ -61,6 +61,7 @@ class JsonResponse extends Response
     ) {
         $body = new Stream('php://temp', 'wb+');
         $body->write($this->jsonEncode($data, $encodingOptions));
+        $body->rewind();
 
         $headers = $this->injectContentType('application/json', $headers);
 
