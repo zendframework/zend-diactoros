@@ -213,4 +213,14 @@ class SerializerTest extends TestCase
 
         Serializer::fromStream($stream);
     }
+
+    /**
+     * @group 113
+     */
+    public function testDeserializeCorrectlyCastsStatusCodeToInteger()
+    {
+        $response = Response\Serializer::fromString('HTTP/1.0 204');
+        // according to interface the int is expected
+        $this->assertSame(204, $response->getStatusCode());
+    }
 }
