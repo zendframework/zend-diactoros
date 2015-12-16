@@ -79,4 +79,13 @@ class HtmlResponseTest extends TestCase
     {
         $response = new HtmlResponse($body);
     }
+
+    public function testConstructorRewindsBodyStream()
+    {
+        $html = '<p>test data</p>';
+        $response = new HtmlResponse($html);
+
+        $actual = $response->getBody()->getContents();
+        $this->assertEquals($html, $actual);
+    }
 }
