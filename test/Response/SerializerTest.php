@@ -151,13 +151,6 @@ class SerializerTest extends TestCase
         $this->assertEquals('Content!', $body);
     }
 
-    public function testDeserializeCorrectlyParseStatusCode()
-    {
-        $response = Response\Serializer::fromString('HTTP/1.0 204');
-        // according to interface the int is expected
-        $this->assertSame(204, $response->getStatusCode());
-    }
-
     public function testDeserializationRaisesExceptionForInvalidStatusLine()
     {
         $text = "This is an invalid status line\r\nX-Foo-Bar: Baz\r\n\r\nContent!";
@@ -219,5 +212,15 @@ class SerializerTest extends TestCase
             ->will($this->returnValue(false));
 
         Serializer::fromStream($stream);
+    }
+
+    /**
+     * @group 113
+     */
+    public function testDeserializeCorrectlyCastsStatusCodeToInteger()
+    {
+        $response = Response\Serializer::fromString('HTTP/1.0 204');
+        // according to interface the int is expected
+        $this->assertSame(204, $response->getStatusCode());
     }
 }
