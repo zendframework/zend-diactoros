@@ -79,4 +79,16 @@ class TextResponseTest extends TestCase
     {
         new TextResponse($body);
     }
+
+    /**
+     * @group 115
+     */
+    public function testConstructorRewindsBodyStream()
+    {
+        $text = 'test data';
+        $response = new TextResponse($text);
+
+        $actual = $response->getBody()->getContents();
+        $this->assertEquals($text, $actual);
+    }
 }

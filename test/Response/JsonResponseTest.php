@@ -126,4 +126,13 @@ class JsonResponseTest extends TestCase
             sprintf('Did not encode %s properly; expected (%s), received (%s)', $key, $expected, $contents)
         );
     }
+
+    public function testConstructorRewindsBodyStream()
+    {
+        $json = ['test' => 'data'];
+        $response = new JsonResponse($json);
+
+        $actual = json_decode($response->getBody()->getContents(), true);
+        $this->assertEquals($json, $actual);
+    }
 }
