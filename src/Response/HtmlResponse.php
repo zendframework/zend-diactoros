@@ -68,6 +68,7 @@ class HtmlResponse extends Response
 
         $body = new Stream('php://temp', 'wb+');
         $body->write($html);
+        $body->rewind();
         return $body;
     }
 }

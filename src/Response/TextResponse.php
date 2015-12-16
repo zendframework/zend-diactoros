@@ -68,6 +68,7 @@ class TextResponse extends Response
 
         $body = new Stream('php://temp', 'wb+');
         $body->write($text);
+        $body->rewind();
         return $body;
     }
 }
