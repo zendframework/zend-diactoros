@@ -54,7 +54,7 @@ final class Serializer extends AbstractSerializer
 
         return (new Response($body, $status, $headers))
             ->withProtocolVersion($version)
-            ->withStatus($status, $reasonPhrase);
+            ->withStatus((int) $status, $reasonPhrase);
     }
 
     /**
