@@ -18,7 +18,9 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#113](https://github.com/zendframework/zend-diactoros/pull/113) fixes an
+  issue in the response serializer, ensuring that the status code in the
+  deserialized response is an integer.
 
 ## 1.3.0 - 2015-12-15
 
