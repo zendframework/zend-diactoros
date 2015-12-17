@@ -70,6 +70,7 @@ trait MessageTrait
      */
     public function withProtocolVersion($version)
     {
+        $this->validateProtocolVersion($version);
         $new = clone $this;
         $new->protocol = $version;
         return $new;
@@ -399,5 +400,33 @@ trait MessageTrait
     private static function assertValidHeaderValue(array $values)
     {
         array_walk($values, __NAMESPACE__ . '\HeaderSecurity::assertValid');
+    }
+
+    /**
+     * Validate the HTTP protocol version
+     *
+     * @param string $version
+     * @throws InvalidArgumentException on invalid HTTP protocol version
+     */
+    private function validateProtocolVersion($version)
+    {
+        if (empty($version)) {
+            throw new InvalidArgumentException(sprintf(
+                'HTTP protocol version can not be empty'
+            ));
+        }
+        if (! is_string($version)) {
+            throw new InvalidArgumentException(sprintf(
+                'Unsupported HTTP protocol version; must be a string, received %s',
+                (is_object($version) ? get_class($version) : gettype($version))
+            ));
+        }
+        //HTTP uses a "<major>.<minor>" numbering scheme to indicate versions of the protocol
+        if (! preg_match('~^\d+\.\d+$~', $version)) {
+            throw new InvalidArgumentException(sprintf(
+                'Unsupported HTTP protocol version "%s" provided',
+                $version
+            ));
+        }
     }
 }
