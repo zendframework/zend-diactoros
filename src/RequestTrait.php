@@ -52,7 +52,7 @@ trait RequestTrait
      *
      * Used by constructors.
      *
-     * @param null|string $uri URI for the request, if any.
+     * @param null|string|UriInterface $uri URI for the request, if any.
      * @param null|string $method HTTP method for the request, if any.
      * @param string|resource|StreamInterface $body Message body, if any.
      * @param array $headers Headers for the message, if any.
@@ -60,12 +60,6 @@ trait RequestTrait
      */
     private function initialize($uri = null, $method = null, $body = 'php://memory', array $headers = [])
     {
-        if (! $uri instanceof UriInterface && ! is_string($uri) && null !== $uri) {
-            throw new InvalidArgumentException(
-                'Invalid URI provided; must be null, a string, or a Psr\Http\Message\UriInterface instance'
-            );
-        }
-
         $this->validateMethod($method);
 
         if (! is_string($body) && ! is_resource($body) && ! $body instanceof StreamInterface) {
@@ -76,17 +70,29 @@ trait RequestTrait
             );
         }
 
-        if (is_string($uri)) {
-            $uri = new Uri($uri);
-        }
-
         $this->method = $method ?: '';
-        $this->uri    = $uri ?: new Uri();
+        $this->uri    = $this->createUri($uri);
         $this->stream = ($body instanceof StreamInterface) ? $body : new Stream($body, 'wb+');
 
         list($this->headerNames, $headers) = $this->filterHeaders($headers);
         $this->assertHeaders($headers);
         $this->headers = $headers;
+    }
+
+    private function createUri($uri)
+    {
+        if ($uri instanceof UriInterface) {
+            return $uri;
+        }
+        if (is_string($uri)) {
+            return new Uri($uri);
+        }
+        if ($uri === null) {
+            return new Uri();
+        }
+        throw new InvalidArgumentException(
+            'Invalid URI provided; must be null, a string, or a Psr\Http\Message\UriInterface instance'
+        );
     }
 
     /**
