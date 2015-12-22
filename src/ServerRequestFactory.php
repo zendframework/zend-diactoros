@@ -14,6 +14,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use stdClass;
+use UnexpectedValueException;
 
 /**
  * Class for marshaling a request object from the current PHP environment.
@@ -70,6 +71,7 @@ abstract class ServerRequestFactory
         );
 
         return $request
+            ->withProtocolVersion(static::marshalProtocolVersion($_SERVER))
             ->withCookieParams($cookies ?: $_COOKIE)
             ->withQueryParams($query ?: $_GET)
             ->withParsedBody($body ?: $_POST);
@@ -454,5 +456,24 @@ abstract class ServerRequestFactory
             $normalizedFiles[$key] = self::createUploadedFileFromSpec($spec);
         }
         return $normalizedFiles;
+    }
+
+    /**
+     * Return HTTP protocol version (X.Y)
+     *
+     * @param array $server
+     * @return string
+     */
+    public static function marshalProtocolVersion(array $server)
+    {
+        if (!isset($server['SERVER_PROTOCOL'])) {
+            return '1.1';
+        }
+
+        if (!preg_match('#^HTTP/(?P<version>[1-9]\d*\.\d)$#', $server['SERVER_PROTOCOL'], $matches)) {
+            throw new UnexpectedValueException('Unrecognized protocol version.');
+        }
+
+        return $matches['version'];
     }
 }
