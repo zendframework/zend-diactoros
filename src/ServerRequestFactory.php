@@ -60,19 +60,18 @@ abstract class ServerRequestFactory
         $server  = static::normalizeServer($server ?: $_SERVER);
         $files   = static::normalizeFiles($files ?: $_FILES);
         $headers = static::marshalHeaders($server);
-        $request = new ServerRequest(
+
+        return new ServerRequest(
             $server,
             $files,
             static::marshalUriFromServer($server, $headers),
             static::get('REQUEST_METHOD', $server, 'GET'),
             'php://input',
-            $headers
+            $headers,
+            $cookies ?: $_COOKIE,
+            $query ?: $_GET,
+            $body ?: $_POST
         );
-
-        return $request
-            ->withCookieParams($cookies ?: $_COOKIE)
-            ->withQueryParams($query ?: $_GET)
-            ->withParsedBody($body ?: $_POST);
     }
 
     /**

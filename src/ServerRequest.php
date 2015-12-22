@@ -77,7 +77,11 @@ class ServerRequest implements ServerRequestInterface
         $uri = null,
         $method = null,
         $body = 'php://input',
-        array $headers = []
+        array $headers = [],
+        array $cookies = [],
+        array $queryParams = [],
+        $parsedBody = null,
+        $protocol = '1.1'
     ) {
         $this->validateUploadedFiles($uploadedFiles);
 
@@ -85,6 +89,10 @@ class ServerRequest implements ServerRequestInterface
         $this->initialize($uri, $method, $body, $headers);
         $this->serverParams  = $serverParams;
         $this->uploadedFiles = $uploadedFiles;
+        $this->cookieParams  = $cookies;
+        $this->queryParams   = $queryParams;
+        $this->parsedBody    = $parsedBody;
+        $this->protocol      = $protocol;
     }
 
     /**

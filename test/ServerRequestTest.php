@@ -135,6 +135,14 @@ class ServerRequestTest extends TestCase
         $headers = [
             'host' => ['example.com'],
         ];
+        $cookies = [
+            'boo' => 'foo',
+        ];
+        $queryParams = [
+            'bar' => 'bat',
+        ];
+        $parsedBody = 'bazbar';
+        $protocol = '1.2';
 
         $request = new ServerRequest(
             $server,
@@ -142,15 +150,23 @@ class ServerRequestTest extends TestCase
             $uri,
             $parameterMethod,
             'php://memory',
-            $headers
+            $headers,
+            $cookies,
+            $queryParams,
+            $parsedBody,
+            $protocol
         );
 
-        $this->assertEquals($server, $request->getServerParams());
-        $this->assertEquals($files, $request->getUploadedFiles());
+        $this->assertSame($server, $request->getServerParams());
+        $this->assertSame($files, $request->getUploadedFiles());
 
         $this->assertSame($uri, $request->getUri());
-        $this->assertEquals($methodReturned, $request->getMethod());
-        $this->assertEquals($headers, $request->getHeaders());
+        $this->assertSame($methodReturned, $request->getMethod());
+        $this->assertSame($headers, $request->getHeaders());
+        $this->assertSame($cookies, $request->getCookieParams());
+        $this->assertSame($queryParams, $request->getQueryParams());
+        $this->assertSame($parsedBody, $request->getParsedBody());
+        $this->assertSame($protocol, $request->getProtocolVersion());
 
         $body = $request->getBody();
         $r = new ReflectionProperty($body, 'stream');
