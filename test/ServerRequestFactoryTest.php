@@ -445,7 +445,7 @@ class ServerRequestFactoryTest extends TestCase
 
     public function testMarshalProtocolVersionRisesExceptionIfVersionIsNotRecognized()
     {
-        $this->setExpectedException(UnexpectedValueException::class);
+        $this->setExpectedException('UnexpectedValueException');
         ServerRequestFactory::marshalProtocolVersion(['SERVER_PROTOCOL' => 'dadsa/1.0']);
     }
 
