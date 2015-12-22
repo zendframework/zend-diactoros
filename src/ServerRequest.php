@@ -203,10 +203,6 @@ class ServerRequest implements ServerRequestInterface
      */
     public function withoutAttribute($attribute)
     {
-        if (! isset($this->attributes[$attribute])) {
-            return clone $this;
-        }
-
         $new = clone $this;
         unset($new->attributes[$attribute]);
         return $new;
