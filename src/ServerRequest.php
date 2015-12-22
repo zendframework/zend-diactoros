@@ -69,6 +69,10 @@ class ServerRequest implements ServerRequestInterface
      * @param null|string $method HTTP method for the request, if any.
      * @param string|resource|StreamInterface $body Message body, if any.
      * @param array $headers Headers for the message, if any.
+     * @param array $cookies Cookies for the message, if any.
+     * @param array $queryParams Query params for the message, if any.
+     * @param null|array|object $parsedBody The deserialized body parameters, if any.
+     * @param string HTTP protocol version.
      * @throws InvalidArgumentException for any invalid value.
      */
     public function __construct(
@@ -77,7 +81,11 @@ class ServerRequest implements ServerRequestInterface
         $uri = null,
         $method = null,
         $body = 'php://input',
-        array $headers = []
+        array $headers = [],
+        array $cookies = [],
+        array $queryParams = [],
+        $parsedBody = null,
+        $protocol = '1.1'
     ) {
         $this->validateUploadedFiles($uploadedFiles);
 
@@ -85,6 +93,10 @@ class ServerRequest implements ServerRequestInterface
         $this->initialize($uri, $method, $body, $headers);
         $this->serverParams  = $serverParams;
         $this->uploadedFiles = $uploadedFiles;
+        $this->cookieParams  = $cookies;
+        $this->queryParams   = $queryParams;
+        $this->parsedBody    = $parsedBody;
+        $this->protocol      = $protocol;
     }
 
     /**

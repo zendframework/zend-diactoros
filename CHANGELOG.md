@@ -24,7 +24,15 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- Nothing.
+- [#124](https://github.com/zendframework/zend-diactoros/pull/124) adds four
+  more optional arguments to the `ServerRequest` constructor:
+  - `array $cookies`
+  - `array $queryParams`
+  - `null|array|object $parsedBody`
+  - `string $protocolVersion`
+  `ServerRequestFactory` was updated to pass values for each of these parameters
+  when creating an instance, instead of using the related `with*()` methods on
+  an instance.
 
 ### Deprecated
 
