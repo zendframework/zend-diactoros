@@ -10,7 +10,9 @@
 namespace ZendTest\Diactoros;
 
 use PHPUnit_Framework_TestCase as TestCase;
+use ReflectionMethod;
 use ReflectionProperty;
+use UnexpectedValueException;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\ServerRequestFactory;
 use Zend\Diactoros\UploadedFile;
@@ -372,6 +374,7 @@ class ServerRequestFactoryTest extends TestCase
         $this->assertEquals($body, $request->getParsedBody());
         $this->assertEquals($expectedFiles, $request->getUploadedFiles());
         $this->assertEmpty($request->getAttributes());
+        $this->assertEquals('1.1', $request->getProtocolVersion());
     }
 
     public function testNormalizeServerUsesMixedCaseAuthorizationHeaderFromApacheWhenPresent()
@@ -433,5 +436,29 @@ class ServerRequestFactoryTest extends TestCase
         $normalizedFiles = ServerRequestFactory::normalizeFiles($files);
 
         $this->assertCount(1, $normalizedFiles['fooFiles']);
+    }
+
+    public function testMarshalProtocolVersionReturnsHttpVersion()
+    {
+        $method = new ReflectionMethod(ServerRequestFactory::class, 'marshalProtocolVersion');
+        $method->setAccessible(true);
+        $version = $method->invoke(null, ['SERVER_PROTOCOL' => 'HTTP/1.0']);
+        $this->assertEquals('1.0', $version);
+    }
+
+    public function testMarshalProtocolVersionRisesExceptionIfVersionIsNotRecognized()
+    {
+        $method = new ReflectionMethod(ServerRequestFactory::class, 'marshalProtocolVersion');
+        $method->setAccessible(true);
+        $this->setExpectedException('UnexpectedValueException');
+        $method->invoke(null, ['SERVER_PROTOCOL' => 'dadsa/1.0']);
+    }
+
+    public function testMarshalProtocolReturnsDefaultValueIfHeaderIsNotPresent()
+    {
+        $method = new ReflectionMethod(ServerRequestFactory::class, 'marshalProtocolVersion');
+        $method->setAccessible(true);
+        $version = $method->invoke(null, []);
+        $this->assertEquals('1.1', $version);
     }
 }

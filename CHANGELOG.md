@@ -36,7 +36,9 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#122](https://github.com/zendframework/zend-diactoros/pull/122) updates the
+  `ServerRequestFactory` to retrieve the HTTP protocol version and inject it in
+  the generated `ServerRequest`, which previously was not performed.
 
 ## 1.3.1 - 2015-12-16
 
