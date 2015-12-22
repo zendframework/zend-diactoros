@@ -10,6 +10,7 @@
 namespace ZendTest\Diactoros;
 
 use PHPUnit_Framework_TestCase as TestCase;
+use ReflectionMethod;
 use ReflectionProperty;
 use UnexpectedValueException;
 use Zend\Diactoros\ServerRequest;
@@ -439,19 +440,25 @@ class ServerRequestFactoryTest extends TestCase
 
     public function testMarshalProtocolVersionReturnsHttpVersion()
     {
-        $version = ServerRequestFactory::marshalProtocolVersion(['SERVER_PROTOCOL' => 'HTTP/1.0']);
+        $method = new ReflectionMethod(ServerRequestFactory::class, 'marshalProtocolVersion');
+        $method->setAccessible(true);
+        $version = $method->invoke(null, ['SERVER_PROTOCOL' => 'HTTP/1.0']);
         $this->assertEquals('1.0', $version);
     }
 
     public function testMarshalProtocolVersionRisesExceptionIfVersionIsNotRecognized()
     {
+        $method = new ReflectionMethod(ServerRequestFactory::class, 'marshalProtocolVersion');
+        $method->setAccessible(true);
         $this->setExpectedException('UnexpectedValueException');
-        ServerRequestFactory::marshalProtocolVersion(['SERVER_PROTOCOL' => 'dadsa/1.0']);
+        $method->invoke(null, ['SERVER_PROTOCOL' => 'dadsa/1.0']);
     }
 
     public function testMarshalProtocolReturnsDefaultValueIfHeaderIsNotPresent()
     {
-        $version = ServerRequestFactory::marshalProtocolVersion([]);
+        $method = new ReflectionMethod(ServerRequestFactory::class, 'marshalProtocolVersion');
+        $method->setAccessible(true);
+        $version = $method->invoke(null, []);
         $this->assertEquals('1.1', $version);
     }
 }

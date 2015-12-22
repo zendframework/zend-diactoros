@@ -71,7 +71,7 @@ abstract class ServerRequestFactory
         );
 
         return $request
-            ->withProtocolVersion(static::marshalProtocolVersion($_SERVER))
+            ->withProtocolVersion(static::marshalProtocolVersion($server))
             ->withCookieParams($cookies ?: $_COOKIE)
             ->withQueryParams($query ?: $_GET)
             ->withParsedBody($body ?: $_POST);
@@ -464,14 +464,17 @@ abstract class ServerRequestFactory
      * @param array $server
      * @return string
      */
-    public static function marshalProtocolVersion(array $server)
+    private static function marshalProtocolVersion(array $server)
     {
-        if (!isset($server['SERVER_PROTOCOL'])) {
+        if (! isset($server['SERVER_PROTOCOL'])) {
             return '1.1';
         }
 
-        if (!preg_match('#^HTTP/(?P<version>[1-9]\d*\.\d)$#', $server['SERVER_PROTOCOL'], $matches)) {
-            throw new UnexpectedValueException('Unrecognized protocol version.');
+        if (! preg_match('#^(HTTP/)?(?P<version>[1-9]\d*\.\d)$#', $server['SERVER_PROTOCOL'], $matches)) {
+            throw new UnexpectedValueException(sprintf(
+                'Unrecognized protocol version (%s)',
+                $server['SERVER_PROTOCOL']
+            ));
         }
 
         return $matches['version'];
