@@ -10,8 +10,6 @@
 namespace Zend\Diactoros;
 
 use InvalidArgumentException;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use stdClass;
 
