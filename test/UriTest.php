@@ -74,8 +74,7 @@ class UriTest extends TestCase
     {
         $uri = new Uri('https://user:pass@local.example.com:3001/foo?bar=baz#quz');
 
-        $this->setExpectedException(\InvalidArgumentException::class);
-
+        $this->setExpectedException('InvalidArgumentException');
         $uri->withUserInfo('matthew', 1);
     }
 

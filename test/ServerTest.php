@@ -12,7 +12,6 @@ namespace ZendTest\Diactoros;
 use PHPUnit_Framework_TestCase as TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\Server;
 use Zend\Diactoros\Stream;
 use ZendTest\Diactoros\TestAsset\HeaderStack;
@@ -94,7 +93,7 @@ class ServerTest extends TestCase
             $this->request,
             $this->response
         );
-        $emmiter = $this->getMock(EmitterInterface::class);
+        $emmiter = $this->getMock('Zend\Diactoros\Response\EmitterInterface');
         $emmiter->expects($this->once())->method('emit');
 
         $server->setEmitter($emmiter);
