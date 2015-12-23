@@ -203,4 +203,29 @@ class ServerRequestTest extends TestCase
         $request = new ServerRequest();
         $this->assertNull($request->getParsedBody());
     }
+
+    public function testTryToAddInvalidUploadedFiles()
+    {
+        $request = new ServerRequest();
+
+        $this->setExpectedException(\InvalidArgumentException::class);
+
+        $request->withUploadedFiles([null]);
+    }
+
+    public function testNestedUploadedFiles()
+    {
+        $request = new ServerRequest();
+
+        $uploadedFiles = [
+            [
+                new UploadedFile('php://temp', 0, 0),
+                new UploadedFile('php://temp', 0, 0),
+            ]
+        ];
+
+        $request = $request->withUploadedFiles($uploadedFiles);
+
+        $this->assertSame($uploadedFiles, $request->getUploadedFiles());
+    }
 }
