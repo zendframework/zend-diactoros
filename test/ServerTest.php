@@ -12,6 +12,7 @@ namespace ZendTest\Diactoros;
 use PHPUnit_Framework_TestCase as TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\Server;
 use Zend\Diactoros\Stream;
 use ZendTest\Diactoros\TestAsset\HeaderStack;
@@ -84,6 +85,23 @@ class ServerTest extends TestCase
         $prop = uniqid();
         $this->setExpectedException('OutOfBoundsException');
         $server->$prop;
+    }
+
+    public function testEmmiterSetter()
+    {
+        $server = new Server(
+            $this->callback,
+            $this->request,
+            $this->response
+        );
+        $emmiter = $this->getMock(EmitterInterface::class);
+        $emmiter->expects($this->once())->method('emit');
+
+        $server->setEmitter($emmiter);
+
+        $this->expectOutputString('');
+        $server->listen();
+        ob_end_flush();
     }
 
     public function testCreateServerWillCreateDefaultInstancesForRequestAndResponse()
