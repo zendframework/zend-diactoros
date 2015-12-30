@@ -262,8 +262,15 @@ abstract class ServerRequestFactory
             $query = ltrim($server['QUERY_STRING'], '?');
         }
 
+        // URI fragment
+        $fragment = '';
+        if (strpos($path, '#') !== false) {
+            list($path, $fragment) = explode('#', $path, 2);
+        }
+
         return $uri
             ->withPath($path)
+            ->withFragment($fragment)
             ->withQuery($query);
     }
 
