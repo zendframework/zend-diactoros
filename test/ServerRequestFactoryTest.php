@@ -338,6 +338,21 @@ class ServerRequestFactoryTest extends TestCase
         $this->assertEquals('bar=baz', $uri->getQuery());
     }
 
+    public function testMarshalUriInjectsFragmentFromServer()
+    {
+        $request = new ServerRequest();
+        $request = $request->withUri(new Uri('http://example.com/'));
+        $request = $request->withHeader('Host', 'example.com');
+
+        $server = [
+            'REQUEST_URI' => '/foo/bar#foo',
+        ];
+
+        $uri = ServerRequestFactory::marshalUriFromServer($server, $request->getHeaders());
+        $this->assertInstanceOf('Zend\Diactoros\Uri', $uri);
+        $this->assertEquals('foo', $uri->getFragment());
+    }
+
     public function testCanCreateServerRequestViaFromGlobalsMethod()
     {
         $server = [
