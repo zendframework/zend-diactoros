@@ -69,6 +69,7 @@ class ServerRequestFactoryTest extends TestCase
         ];
 
         $expected = [
+            'cookie' => 'COOKIE',
             'authorization' => 'token',
             'content-type' => 'application/json',
             'accept' => 'application/json',
