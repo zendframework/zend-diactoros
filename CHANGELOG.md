@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 1.3.3 - TBD
+## 1.3.3 - 2016-01-04
 
 ### Added
 
@@ -18,7 +18,11 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#135](https://github.com/zendframework/zend-diactoros/pull/135) fixes the
+  behavior of `ServerRequestFactory::marshalHeaders()` to no longer omit
+  `Cookie` headers from the aggregated headers. While the values are parsed and
+  injected into the cookie params, it's useful to have access to the raw headers
+  as well.
 
 ## 1.3.2 - 2015-12-22
 
