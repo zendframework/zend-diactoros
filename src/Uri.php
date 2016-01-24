@@ -99,10 +99,8 @@ class Uri implements UriInterface
                 (is_object($uri) ? get_class($uri) : gettype($uri))
             ));
         }
-
-        if (! empty($uri)) {
-            $this->parseUri($uri);
-        }
+        
+        $this->parseUri($uri);
     }
 
     /**
