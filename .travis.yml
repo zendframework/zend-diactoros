@@ -18,9 +18,7 @@ matrix:
       env:
         - EXECUTE_COVERAGE=true
     - php: 7
-    - php: hhvm 
-  allow_failures:
-    - php: 7
+    - php: hhvm
 
 notifications:
   irc: "irc.freenode.org#zftalk.dev"
