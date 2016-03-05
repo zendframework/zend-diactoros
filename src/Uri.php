@@ -627,7 +627,7 @@ class Uri implements UriInterface
     private function filterFragment($fragment)
     {
         if (! empty($fragment) && strpos($fragment, '#') === 0) {
-            $fragment = substr($fragment, 1);
+            $fragment = urlencode('#') . substr($fragment, 1);
         }
 
         return $this->filterQueryOrFragment($fragment);

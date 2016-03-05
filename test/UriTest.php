@@ -331,7 +331,7 @@ class UriTest extends TestCase
     {
         $uri = new Uri('http://example.com');
         $new = $uri->withFragment('#/foo/bar');
-        $this->assertEquals('/foo/bar', $new->getFragment());
+        $this->assertEquals('%23/foo/bar', $new->getFragment());
     }
 
     public function standardSchemePortCombinations()
