@@ -198,21 +198,18 @@ abstract class ServerRequestFactory
     {
         $headers = [];
         foreach ($server as $key => $value) {
-            if ($value && strpos($key, 'HTTP_') === 0) {
-                $name = strtr(substr($key, 5), '_', ' ');
-                $name = strtr(ucwords(strtolower($name)), ' ', '-');
-                $name = strtolower($name);
+            if ($value) {
+                if (strpos($key, 'HTTP_') === 0) {
+                    $name = substr($key, 5);
+                } elseif (strpos($key, 'CONTENT_') === 0) {
+                    $name = $key;
+                } else {
+                    continue;
+                }
 
-                $headers[$name] = $value;
-                continue;
-            }
-
-            if ($value && strpos($key, 'CONTENT_') === 0) {
-                $name = substr($key, 8); // Content-
-                $name = 'Content-' . (($name == 'MD5') ? $name : ucfirst(strtolower($name)));
+                $name = strtr($name, '_', '-');
                 $name = strtolower($name);
                 $headers[$name] = $value;
-                continue;
             }
         }
 
