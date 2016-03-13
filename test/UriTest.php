@@ -561,4 +561,11 @@ class UriTest extends TestCase
         $this->setExpectedException('InvalidArgumentException');
         $uri->$method($value);
     }
+
+    public function testUtf8Uri()
+    {
+        $uri = new Uri('http://ουτοπία.δπθ.gr/');
+
+        $this->assertEquals('ουτοπία.δπθ.gr' , $uri->getHost());
+    }
 }
