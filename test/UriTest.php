@@ -505,6 +505,6 @@ class UriTest extends TestCase
     {
         $uri = new Uri('http://ουτοπία.δπθ.gr/');
 
-        $this->assertEquals('ουτοπία.δπθ.gr' , $uri->getHost());
+        $this->assertEquals('ουτοπία.δπθ.gr', $uri->getHost());
     }
 }
