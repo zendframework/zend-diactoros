@@ -155,7 +155,7 @@ class CallbackStream implements StreamInterface
     {
         $callback = $this->detach();
 
-        return $callback ? $callback() : '';
+        return $callback ? call_user_fanc($callback) : '';
     }
 
     /**
