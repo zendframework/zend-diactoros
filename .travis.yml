@@ -36,9 +36,9 @@ install:
   - composer info -i
 
 script:
-  - if [[ $EXECUTE_COVERAGE == 'true' ]]; then ./vendor/bin/phpunit --coverage-clover clover.xml ; fi
-  - if [[ $EXECUTE_COVERAGE != 'true' ]]; then ./vendor/bin/phpunit ; fi
-  - if [[ $EXECUTE_CS_CHECK == 'true' ]]; then ./vendor/bin/phpcs ; fi
+  - if [[ $EXECUTE_COVERAGE == 'true' ]]; then composer test-coverage ; fi
+  - if [[ $EXECUTE_COVERAGE != 'true' ]]; then composer test ; fi
+  - if [[ $EXECUTE_CS_CHECK == 'true' ]]; then composer cs ; fi
 
 after_script:
-  - if [[ $EXECUTE_COVERAGE == 'true' ]]; then ./vendor/bin/coveralls ; fi
+  - if [[ $EXECUTE_COVERAGE == 'true' ]]; then composer coveralls ; fi
