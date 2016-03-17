@@ -10,7 +10,6 @@
 namespace Zend\Diactoros\Response;
 
 use Psr\Http\Message\ResponseInterface;
-use RuntimeException;
 
 trait SapiEmitterTrait
 {
