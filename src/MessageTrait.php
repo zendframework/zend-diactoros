@@ -421,8 +421,10 @@ trait MessageTrait
                 (is_object($version) ? get_class($version) : gettype($version))
             ));
         }
-        //HTTP uses a "<major>.<minor>" numbering scheme to indicate versions of the protocol
-        if (! preg_match('~^\d+\.\d+$~', $version)) {
+
+        // HTTP/1 uses a "<major>.<minor>" numbering scheme to indicate
+        // versions of the protocol, while HTTP/2 does not.
+        if (! preg_match('#^(1\.[01]|2)$#', $version)) {
             throw new InvalidArgumentException(sprintf(
                 'Unsupported HTTP protocol version "%s" provided',
                 $version

@@ -43,16 +43,20 @@ class MessageTraitTest extends TestCase
     public function invalidProtocolVersionProvider()
     {
         return [
-            'true'     => [ true ],
-            'false'    => [ false ],
-            'int'      => [ 1 ],
-            'float'    => [ 1.1 ],
-            'array'    => [ ['1.1'] ],
-            'stdClass' => [ (object) [ 'version' => '1.0'] ],
-            'wrong-format' => [ '1'],
-            'wrong-format2' => [ '1.2.3'],
+            'null'                 => [ null ],
+            'true'                 => [ true ],
+            'false'                => [ false ],
+            'int'                  => [ 1 ],
+            'float'                => [ 1.1 ],
+            'array'                => [ ['1.1'] ],
+            'stdClass'             => [ (object) [ 'version' => '1.0'] ],
+            '1-without-minor'      => [ '1' ],
+            '1-with-invalid-minor' => [ '1.2' ],
+            '1-with-hotfix'        => [ '1.2.3' ],
+            '2-with-minor'         => [ '2.0' ],
         ];
     }
+
     /**
      * @dataProvider invalidProtocolVersionProvider
      */
