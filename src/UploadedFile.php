@@ -51,6 +51,14 @@ class UploadedFile implements UploadedFileInterface
      */
     private $stream;
 
+    /**
+     * @param string|resource $streamOrFile
+     * @param int $size
+     * @param int $errorStatus
+     * @param string $clientFilename
+     * @param string $clientMediaType
+     * @throws InvalidArgumentException
+     */
     public function __construct($streamOrFile, $size, $errorStatus, $clientFilename = null, $clientMediaType = null)
     {
         if ($errorStatus === UPLOAD_ERR_OK) {
