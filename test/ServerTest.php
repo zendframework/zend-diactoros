@@ -86,6 +86,23 @@ class ServerTest extends TestCase
         $server->$prop;
     }
 
+    public function testEmmiterSetter()
+    {
+        $server = new Server(
+            $this->callback,
+            $this->request,
+            $this->response
+        );
+        $emmiter = $this->getMock('Zend\Diactoros\Response\EmitterInterface');
+        $emmiter->expects($this->once())->method('emit');
+
+        $server->setEmitter($emmiter);
+
+        $this->expectOutputString('');
+        $server->listen();
+        ob_end_flush();
+    }
+
     public function testCreateServerWillCreateDefaultInstancesForRequestAndResponse()
     {
         $server = [

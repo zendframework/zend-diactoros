@@ -166,5 +166,15 @@ class CallbackStreamTest extends TestCase
 
         $ret = $stream->getMetadata('eof');
         $this->assertFalse($ret);
+
+        $all = $stream->getMetadata();
+        $this->assertSame([
+            'eof' => false,
+            'stream_type' => 'callback',
+            'seekable' => false,
+        ], $all);
+
+        $notExists = $stream->getMetadata('boo');
+        $this->assertNull($notExists);
     }
 }
