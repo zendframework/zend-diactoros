@@ -18,6 +18,26 @@ use Zend\Diactoros\CallbackStream;
  */
 class CallbackStreamTest extends TestCase
 {
+    /**
+     * Sample callback to use with testing.
+     *
+     * @return string
+     */
+    public function sampleCallback()
+    {
+        return __METHOD__;
+    }
+
+    /**
+     * Sample static callback to use with testing.
+     *
+     * @return string
+     */
+    public static function sampleStaticCallback()
+    {
+        return __METHOD__;
+    }
+
     public function testToString()
     {
         $stream = new CallbackStream(function () {
@@ -176,5 +196,27 @@ class CallbackStreamTest extends TestCase
 
         $notExists = $stream->getMetadata('boo');
         $this->assertNull($notExists);
+    }
+
+    public function phpCallbacksForStreams()
+    {
+        $class = 'ZendTest\Diactoros\CallbackStreamTest';
+
+        // @codingStandardsIgnoreStart
+        return [
+            'instance-method' => [[new self(), 'sampleCallback'],   $class . '::sampleCallback'],
+            'static-method'   => [[$class, 'sampleStaticCallback'], $class . '::sampleStaticCallback'],
+        ];
+        // @codingStandardsIgnoreEnd
+    }
+
+    /**
+     * @dataProvider phpCallbacksForStreams
+     */
+    public function testAllowsArbitraryPhpCallbacks($callback, $expected)
+    {
+        $stream = new CallbackStream($callback);
+        $contents = $stream->getContents();
+        $this->assertEquals($expected, $contents);
     }
 }

@@ -154,8 +154,7 @@ class CallbackStream implements StreamInterface
     public function getContents()
     {
         $callback = $this->detach();
-
-        return $callback ? call_user_fanc($callback) : '';
+        return $callback ? $callback() : '';
     }
 
     /**
