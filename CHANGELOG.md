@@ -20,7 +20,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - Nothing.
 
-## 1.3.4 - TBD
+## 1.3.4 - 2016-03-17
 
 ### Added
 
