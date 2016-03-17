@@ -454,14 +454,6 @@ class ServerRequestFactoryTest extends TestCase
         $this->assertCount(1, $normalizedFiles['fooFiles']);
     }
 
-    public function testMarshalProtocolVersionReturnsHttpVersion()
-    {
-        $method = new ReflectionMethod('Zend\Diactoros\ServerRequestFactory', 'marshalProtocolVersion');
-        $method->setAccessible(true);
-        $version = $method->invoke(null, ['SERVER_PROTOCOL' => 'HTTP/1.0']);
-        $this->assertEquals('1.0', $version);
-    }
-
     public function testMarshalProtocolVersionRisesExceptionIfVersionIsNotRecognized()
     {
         $method = new ReflectionMethod('Zend\Diactoros\ServerRequestFactory', 'marshalProtocolVersion');
@@ -476,5 +468,25 @@ class ServerRequestFactoryTest extends TestCase
         $method->setAccessible(true);
         $version = $method->invoke(null, []);
         $this->assertEquals('1.1', $version);
+    }
+
+    /**
+     * @dataProvider marshalProtocolVersionProvider
+     */
+    public function testMarshalProtocolVersionReturnsHttpVersions($protocol, $expected)
+    {
+        $method = new ReflectionMethod('Zend\Diactoros\ServerRequestFactory', 'marshalProtocolVersion');
+        $method->setAccessible(true);
+        $version = $method->invoke(null, ['SERVER_PROTOCOL' => $protocol]);
+        $this->assertEquals($expected, $version);
+    }
+
+    public function marshalProtocolVersionProvider()
+    {
+        return [
+            'HTTP/1.0' => ['HTTP/1.0', '1.0'],
+            'HTTP/1.1' => ['HTTP/1.1', '1.1'],
+            'HTTP/2'   => ['HTTP/2', '2'],
+        ];
     }
 }
