@@ -28,6 +28,9 @@ All notable changes to this project will be documented in this file, in reverse 
 - [#142](https://github.com/zendframework/zend-diactoros/pull/142) updates the
   exceptions thrown by `HeaderSecurity` to include the header name and/or
   value.
+- [#148](https://github.com/zendframework/zend-diactoros/pull/148) fixes several
+  stream operations to ensure they raise exceptions when the internal pointer
+  is at an invalid position.
 
 ## 1.3.3 - 2016-01-04
 
