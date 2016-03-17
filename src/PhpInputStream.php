@@ -28,10 +28,9 @@ class PhpInputStream extends Stream
      * @param  string|resource $stream
      * @param  string $mode
      */
-    public function __construct($stream = 'php://input', $mode = 'r')
+    public function __construct($stream = 'php://input')
     {
-        $mode = 'r';
-        parent::__construct($stream, $mode);
+        parent::__construct($stream);
     }
 
     /**
