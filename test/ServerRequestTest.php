@@ -203,4 +203,19 @@ class ServerRequestTest extends TestCase
         $request = new ServerRequest();
         $this->assertNull($request->getParsedBody());
     }
+
+    public function testAllowsRemovingAttributeWithNullValue()
+    {
+        $request = new ServerRequest();
+        $request = $request->withAttribute('boo', null);
+        $request = $request->withoutAttribute('boo');
+        $this->assertSame([], $request->getAttributes());
+    }
+
+    public function testAllowsRemovingNonExistentAttribute()
+    {
+        $request = new ServerRequest();
+        $request = $request->withoutAttribute('boo');
+        $this->assertSame([], $request->getAttributes());
+    }
 }
