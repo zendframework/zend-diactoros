@@ -72,7 +72,7 @@ class ServerRequest implements ServerRequestInterface
      * @param array $cookies Cookies for the message, if any.
      * @param array $queryParams Query params for the message, if any.
      * @param null|array|object $parsedBody The deserialized body parameters, if any.
-     * @param string HTTP protocol version.
+     * @param string $protocol HTTP protocol version.
      * @throws InvalidArgumentException for any invalid value.
      */
     public function __construct(
