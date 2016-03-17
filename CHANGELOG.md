@@ -36,7 +36,8 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#117](https://github.com/zendframework/zend-diactoros/pull/117) provides
+  validation of the HTTP protocol version.
 
 ## 1.3.3 - 2016-01-04
 
