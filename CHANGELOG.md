@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 1.3.5 - TBD
+## 1.3.5 - 2016-03-17
 
 ### Added
 
@@ -18,7 +18,8 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#160](https://github.com/zendframework/zend-diactoros/pull/160) fixes HTTP
+  protocol detection in the `ServerRequestFactory` to work correctly with HTTP/2.
 
 ## 1.3.4 - 2016-03-17
 
