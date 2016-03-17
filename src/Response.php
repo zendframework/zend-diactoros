@@ -113,18 +113,8 @@ class Response implements ResponseInterface
      */
     public function __construct($body = 'php://memory', $status = 200, array $headers = [])
     {
-        if (! is_string($body) && ! is_resource($body) && ! $body instanceof StreamInterface) {
-            throw new InvalidArgumentException(
-                'Stream must be a string stream resource identifier, '
-                . 'an actual stream resource, '
-                . 'or a Psr\Http\Message\StreamInterface implementation'
-            );
-        }
-
         $this->setStatusCode($status);
-
-        $this->stream = ($body instanceof StreamInterface) ? $body : new Stream($body, 'wb+');
-
+        $this->stream = $this->getStream($body, 'wb+');
         list($this->headerNames, $headers) = $this->filterHeaders($headers);
         $this->assertHeaders($headers);
         $this->headers = $headers;

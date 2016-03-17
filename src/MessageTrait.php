@@ -314,6 +314,23 @@ trait MessageTrait
         return $new;
     }
 
+    private function getStream($stream, $modeIfNotInstance)
+    {
+        if ($stream instanceof StreamInterface) {
+            return $stream;
+        }
+
+        if (! is_string($stream) && ! is_resource($stream)) {
+            throw new InvalidArgumentException(
+                'Stream must be a string stream resource identifier, '
+                . 'an actual stream resource, '
+                . 'or a Psr\Http\Message\StreamInterface implementation'
+            );
+        }
+
+        return new Stream($stream, $modeIfNotInstance);
+    }
+
     /**
      * Test that an array contains only strings
      *

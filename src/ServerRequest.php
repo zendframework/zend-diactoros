@@ -89,7 +89,10 @@ class ServerRequest implements ServerRequestInterface
     ) {
         $this->validateUploadedFiles($uploadedFiles);
 
-        $body = $this->getStream($body);
+        if ($body === 'php://input') {
+            $body = new PhpInputStream();
+        }
+
         $this->initialize($uri, $method, $body, $headers);
         $this->serverParams  = $serverParams;
         $this->uploadedFiles = $uploadedFiles;
@@ -254,33 +257,6 @@ class ServerRequest implements ServerRequestInterface
         $new = clone $this;
         $new->method = $method;
         return $new;
-    }
-
-    /**
-     * Set the body stream
-     *
-     * @param string|resource|StreamInterface $stream
-     * @return StreamInterface
-     */
-    private function getStream($stream)
-    {
-        if ($stream === 'php://input') {
-            return new PhpInputStream();
-        }
-
-        if (! is_string($stream) && ! is_resource($stream) && ! $stream instanceof StreamInterface) {
-            throw new InvalidArgumentException(
-                'Stream must be a string stream resource identifier, '
-                . 'an actual stream resource, '
-                . 'or a Psr\Http\Message\StreamInterface implementation'
-            );
-        }
-
-        if (! $stream instanceof StreamInterface) {
-            return new Stream($stream, 'r');
-        }
-
-        return $stream;
     }
 
     /**
