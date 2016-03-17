@@ -31,6 +31,8 @@ All notable changes to this project will be documented in this file, in reverse 
 - [#148](https://github.com/zendframework/zend-diactoros/pull/148) fixes several
   stream operations to ensure they raise exceptions when the internal pointer
   is at an invalid position.
+- [#151](https://github.com/zendframework/zend-diactoros/pull/151) ensures
+  URI fragments are properly encoded.
 
 ## 1.3.3 - 2016-01-04
 
