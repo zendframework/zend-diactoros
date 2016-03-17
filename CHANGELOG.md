@@ -6,7 +6,8 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- Nothing.
+- [#119](https://github.com/zendframework/zend-diactoros/pull/119) adds the 451
+  (Unavailable for Legal Reasons) status code to the `Response` class.
 
 ### Deprecated
 
