@@ -71,6 +71,22 @@ trait RequestTrait
         $this->headers = $headers;
     }
 
+    /**
+     * Create and return a URI instance.
+     *
+     * If `$uri` is a already a `UriInterface` instance, returns it.
+     *
+     * If `$uri` is a string, passes it to the `Uri` constructor to return an
+     * instance.
+     *
+     * If `$uri is null, creates and returns an empty `Uri` instance.
+     *
+     * Otherwise, it raises an exception.
+     *
+     * @param null|string|UriInterface $uri
+     * @return UriInterface
+     * @throws InvalidArgumentException
+     */
     private function createUri($uri)
     {
         if ($uri instanceof UriInterface) {
