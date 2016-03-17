@@ -25,6 +25,9 @@ All notable changes to this project will be documented in this file, in reverse 
   removes attributes with `null` values when calling `withoutAttribute()`.
 - [#132](https://github.com/zendframework/zend-diactoros/pull/132) updates the
   `ServerRequestFactory` to marshal the request path fragment, if present.
+- [#142](https://github.com/zendframework/zend-diactoros/pull/142) updates the
+  exceptions thrown by `HeaderSecurity` to include the header name and/or
+  value.
 
 ## 1.3.3 - 2016-01-04
 
