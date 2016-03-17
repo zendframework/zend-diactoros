@@ -24,6 +24,7 @@ final class HeaderSecurity
 {
     /**
      * Private constructor; non-instantiable.
+     * @codeCoverageIgnore
      */
     private function __construct()
     {
