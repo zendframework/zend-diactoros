@@ -39,6 +39,30 @@ class MessageTraitTest extends TestCase
         $this->assertEquals('1.0', $message->getProtocolVersion());
     }
 
+
+    public function invalidProtocolVersionProvider()
+    {
+        return [
+            'true'     => [ true ],
+            'false'    => [ false ],
+            'int'      => [ 1 ],
+            'float'    => [ 1.1 ],
+            'array'    => [ ['1.1'] ],
+            'stdClass' => [ (object) [ 'version' => '1.0'] ],
+            'wrong-format' => [ '1'],
+            'wrong-format2' => [ '1.2.3'],
+        ];
+    }
+    /**
+     * @dataProvider invalidProtocolVersionProvider
+     */
+    public function testWithProtocolVersionRaisesExceptionForInvalidVersion($version)
+    {
+        $this->setExpectedException('InvalidArgumentException');
+        $request = new Request();
+        $request->withProtocolVersion($version);
+    }
+
     public function testUsesStreamProvidedInConstructorAsBody()
     {
         $stream  = $this->getMock('Psr\Http\Message\StreamInterface');

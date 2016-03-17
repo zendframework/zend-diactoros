@@ -15,6 +15,7 @@ use Zend\Diactoros\Request;
 use Zend\Diactoros\Request\Serializer;
 use Zend\Diactoros\Stream;
 use Zend\Diactoros\Uri;
+use UnexpectedValueException;
 
 class SerializerTest extends TestCase
 {
@@ -325,5 +326,15 @@ class SerializerTest extends TestCase
 
         $stream = Serializer::fromStream($stream);
         $this->assertInstanceOf('Zend\Diactoros\RelativeStream', $stream->getBody());
+    }
+
+    /**
+     * @expectedException UnexpectedValueException
+     */
+    public function testToStringRaisesExceptionOnEmptyMethod()
+    {
+        $request = (new Request())
+            ->withUri(new Uri('http://example.com/foo/bar?baz=bat'));
+        $message = Serializer::toString($request);
     }
 }
