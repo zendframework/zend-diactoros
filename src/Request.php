@@ -66,9 +66,7 @@ class Request implements RequestInterface
         }
 
         $header = $this->headerNames[strtolower($header)];
-        $value  = $this->headers[$header];
-        $value  = is_array($value) ? $value : [$value];
 
-        return $value;
+        return (array) $this->headers[$header];
     }
 }

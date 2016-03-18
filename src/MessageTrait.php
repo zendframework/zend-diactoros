@@ -112,7 +112,7 @@ trait MessageTrait
      */
     public function hasHeader($header)
     {
-        return array_key_exists(strtolower($header), $this->headerNames);
+        return isset($this->headerNames[strtolower($header)]);
     }
 
     /**
@@ -136,10 +136,8 @@ trait MessageTrait
         }
 
         $header = $this->headerNames[strtolower($header)];
-        $value  = $this->headers[$header];
-        $value  = is_array($value) ? $value : [$value];
 
-        return $value;
+        return (array) $this->headers[$header];
     }
 
     /**
@@ -199,8 +197,7 @@ trait MessageTrait
             );
         }
 
-        HeaderSecurity::assertValidName($header);
-        self::assertValidHeaderValue($value);
+        $this->assertHeader($header, $value);
 
         $normalized = strtolower($header);
 
@@ -234,7 +231,7 @@ trait MessageTrait
     public function withAddedHeader($header, $value)
     {
         if (is_string($value)) {
-            $value = [ $value ];
+            $value = [$value];
         }
 
         if (! is_array($value) || ! $this->arrayContainsOnlyStrings($value)) {
@@ -243,8 +240,7 @@ trait MessageTrait
             );
         }
 
-        HeaderSecurity::assertValidName($header);
-        self::assertValidHeaderValue($value);
+        $this->assertHeader($header, $value);
 
         if (! $this->hasHeader($header)) {
             return $this->withHeader($header, $value);
@@ -343,24 +339,34 @@ trait MessageTrait
     }
 
     /**
+     * Test if a value is a string
+     *
+     * Used with array_reduce.
+     *
+     * @param bool $carry
+     * @param mixed $item
+     * @return bool
+     */
+    private static function filterStringValue($carry, $item)
+    {
+        if (! is_string($item)) {
+            return false;
+        }
+        return $carry;
+    }
+
+    /**
      * Filter a set of headers to ensure they are in the correct internal format.
      *
      * Used by message constructors to allow setting all initial headers at once.
      *
      * @param array $originalHeaders Headers to filter.
-     * @return array Filtered headers and names.
      */
-    private function filterHeaders(array $originalHeaders)
+    private function setHeaders(array $originalHeaders)
     {
         $headerNames = $headers = [];
-        foreach ($originalHeaders as $header => $value) {
-            if (! is_string($header)) {
-                throw new InvalidArgumentException(sprintf(
-                    'Invalid header name; expected non-empty string, received %s',
-                    gettype($header)
-                ));
-            }
 
+        foreach ($originalHeaders as $header => $value) {
             if (! is_array($value) && ! is_string($value) && ! is_numeric($value)) {
                 throw new InvalidArgumentException(sprintf(
                     'Invalid header value type; expected number, string, or array; received %s',
@@ -380,43 +386,20 @@ trait MessageTrait
             }
 
             if (! is_array($value)) {
-                $value = [ $value ];
+                $value = [$value];
             }
 
-            $headerNames[strtolower($header)] = $header;
+
+            $headerNormalized = is_string($header) ? strtolower($header) : $header;
+
+            $this->assertHeader($headerNormalized, $value);
+
+            $headerNames[$headerNormalized] = $header;
             $headers[$header] = $value;
         }
 
-        return [$headerNames, $headers];
-    }
-
-    /**
-     * Test if a value is a string
-     *
-     * Used with array_reduce.
-     *
-     * @param bool $carry
-     * @param mixed $item
-     * @return bool
-     */
-    private static function filterStringValue($carry, $item)
-    {
-        if (! is_string($item)) {
-            return false;
-        }
-        return $carry;
-    }
-
-    /**
-     * Assert that the provided header values are valid.
-     *
-     * @see http://tools.ietf.org/html/rfc7230#section-3.2
-     * @param string[] $values
-     * @throws InvalidArgumentException
-     */
-    private static function assertValidHeaderValue(array $values)
-    {
-        array_walk($values, __NAMESPACE__ . '\HeaderSecurity::assertValid');
+        $this->headerNames = $headerNames;
+        $this->headers = $headers;
     }
 
     /**
@@ -446,6 +429,34 @@ trait MessageTrait
                 'Unsupported HTTP protocol version "%s" provided',
                 $version
             ));
+        }
+    }
+
+    /**
+     * Ensure header names and values are valid.
+     *
+     * @param array $headers
+     * @throws InvalidArgumentException
+     */
+    private function assertHeaders(array $headers)
+    {
+        foreach ($headers as $name => $headerValues) {
+            $this->assertHeader($name, $headerValues);
+        }
+    }
+
+    /**
+     * Ensure header name and values are valid.
+     *
+     * @param array $headers
+     * @throws InvalidArgumentException
+     */
+    private function assertHeader($name, array $values)
+    {
+        HeaderSecurity::assertValidName($name);
+
+        foreach ($values as $value) {
+            HeaderSecurity::assertValid($value);
         }
     }
 }

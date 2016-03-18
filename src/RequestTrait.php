@@ -66,9 +66,7 @@ trait RequestTrait
         $this->uri    = $this->createUri($uri);
         $this->stream = $this->getStream($body, 'wb+');
 
-        list($this->headerNames, $headers) = $this->filterHeaders($headers);
-        $this->assertHeaders($headers);
-        $this->headers = $headers;
+        $this->setHeaders($headers);
     }
 
     /**
@@ -315,19 +313,5 @@ trait RequestTrait
         $host  = $this->uri->getHost();
         $host .= $this->uri->getPort() ? ':' . $this->uri->getPort() : '';
         return $host;
-    }
-
-    /**
-     * Ensure header names and values are valid.
-     *
-     * @param array $headers
-     * @throws InvalidArgumentException
-     */
-    private function assertHeaders(array $headers)
-    {
-        foreach ($headers as $name => $headerValues) {
-            HeaderSecurity::assertValidName($name);
-            array_walk($headerValues, __NAMESPACE__ . '\HeaderSecurity::assertValid');
-        }
     }
 }

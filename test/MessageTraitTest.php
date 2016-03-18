@@ -311,23 +311,29 @@ class MessageTraitTest extends TestCase
      */
     public function testFilterHeadersShouldAllowIntegersAndFloats($value)
     {
-        $filter = new ReflectionMethod($this->message, 'filterHeaders');
+        $filter = new ReflectionMethod($this->message, 'setHeaders');
         $filter->setAccessible(true);
         $headers = [
-            'X-Test-Array'  => [ $value ],
+            'X-Test-Array'  => [$value],
             'X-Test-Scalar' => $value,
         ];
-        $test = $filter->invoke($this->message, $headers);
+        $filter->invoke($this->message, $headers);
+
+        $headerNamesProperty = new \ReflectionProperty($this->message, 'headerNames');
+        $headerNamesProperty->setAccessible(true);
+
         $this->assertEquals([
-            [
-                'x-test-array'  => 'X-Test-Array',
-                'x-test-scalar' => 'X-Test-Scalar',
-            ],
-            [
-                'X-Test-Array'  => [ $value ],
-                'X-Test-Scalar' => [ $value ],
-            ]
-        ], $test);
+            'x-test-array'  => 'X-Test-Array',
+            'x-test-scalar' => 'X-Test-Scalar',
+        ], $headerNamesProperty->getValue($this->message));
+
+        $headersProperty = new \ReflectionProperty($this->message, 'headers');
+        $headersProperty->setAccessible(true);
+
+        $this->assertEquals([
+            'X-Test-Array'  => [$value],
+            'X-Test-Scalar' => [$value],
+        ], $headersProperty->getValue($this->message));
     }
 
     public function invalidHeaderValueTypes()
@@ -353,7 +359,7 @@ class MessageTraitTest extends TestCase
      */
     public function testFilterHeadersShouldRaiseExceptionForInvalidHeaderValuesInArrays($value)
     {
-        $filter = new ReflectionMethod($this->message, 'filterHeaders');
+        $filter = new ReflectionMethod($this->message, 'setHeaders');
         $filter->setAccessible(true);
         $headers = [
             'X-Test-Array'  => [ $value ],
@@ -368,7 +374,7 @@ class MessageTraitTest extends TestCase
      */
     public function testFilterHeadersShouldRaiseExceptionForInvalidHeaderScalarValues($value)
     {
-        $filter = new ReflectionMethod($this->message, 'filterHeaders');
+        $filter = new ReflectionMethod($this->message, 'setHeaders');
         $filter->setAccessible(true);
         $headers = [
             'X-Test-Scalar' => $value,
