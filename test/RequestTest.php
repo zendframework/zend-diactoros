@@ -27,16 +27,34 @@ class RequestTest extends TestCase
         $this->request = new Request();
     }
 
-    public function testMethodIsEmptyByDefault()
+    public function testMethodIsGetByDefault()
     {
-        $this->assertSame('', $this->request->getMethod());
+        $this->assertSame('GET', $this->request->getMethod());
     }
 
     public function testMethodMutatorReturnsCloneWithChangedMethod()
     {
-        $request = $this->request->withMethod('GET');
+        $request = $this->request->withMethod('POST');
         $this->assertNotSame($this->request, $request);
-        $this->assertEquals('GET', $request->getMethod());
+        $this->assertEquals('POST', $request->getMethod());
+    }
+
+    public function invalidMethod()
+    {
+        return [
+            [null],
+            [''],
+        ];
+    }
+
+    /**
+     * @dataProvider invalidMethod
+     */
+    public function testWithInvalidMethod($method)
+    {
+        $this->setExpectedException('InvalidArgumentException');
+
+        $this->request->withMethod($method);
     }
 
     public function testReturnsUnpopulatedUriByDefault()
