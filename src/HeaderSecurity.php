@@ -129,6 +129,12 @@ final class HeaderSecurity
      */
     public static function assertValid($value)
     {
+        if (! is_string($value) && ! is_numeric($value)) {
+            throw new InvalidArgumentException(sprintf(
+                'Invalid header value type; expected number, string, or array; received %s',
+                (is_object($value) ? get_class($value) : gettype($value))
+            ));
+        }
         if (! self::isValid($value)) {
             throw new InvalidArgumentException(sprintf(
                 '"%s" is not valid header value',

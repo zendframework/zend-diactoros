@@ -67,6 +67,6 @@ class Request implements RequestInterface
 
         $header = $this->headerNames[strtolower($header)];
 
-        return (array) $this->headers[$header];
+        return $this->headers[$header];
     }
 }

@@ -137,7 +137,7 @@ trait MessageTrait
 
         $header = $this->headerNames[strtolower($header)];
 
-        return (array) $this->headers[$header];
+        return $this->headers[$header];
     }
 
     /**
@@ -187,7 +187,7 @@ trait MessageTrait
      */
     public function withHeader($header, $value)
     {
-        if (is_string($value)) {
+        if (!is_array($value)) {
             $value = [$value];
         }
 
@@ -230,11 +230,11 @@ trait MessageTrait
      */
     public function withAddedHeader($header, $value)
     {
-        if (is_string($value)) {
+        if (! is_array($value)) {
             $value = [$value];
         }
 
-        if (! is_array($value) || ! $this->arrayContainsOnlyStrings($value)) {
+        if (! $this->arrayContainsOnlyStrings($value)) {
             throw new InvalidArgumentException(
                 'Invalid header value; must be a string or array of strings'
             );
@@ -367,34 +367,17 @@ trait MessageTrait
         $headerNames = $headers = [];
 
         foreach ($originalHeaders as $header => $value) {
-            if (! is_array($value) && ! is_string($value) && ! is_numeric($value)) {
-                throw new InvalidArgumentException(sprintf(
-                    'Invalid header value type; expected number, string, or array; received %s',
-                    (is_object($value) ? get_class($value) : gettype($value))
-                ));
-            }
-
             if (is_array($value)) {
-                array_walk($value, function ($item) {
-                    if (! is_string($item) && ! is_numeric($item)) {
-                        throw new InvalidArgumentException(sprintf(
-                            'Invalid header value type; expected number, string, or array; received %s',
-                            (is_object($item) ? get_class($item) : gettype($item))
-                        ));
-                    }
-                });
+                $this->arrayContainsOnlyStrings($value);
             }
 
             if (! is_array($value)) {
                 $value = [$value];
             }
 
+            $this->assertHeader($header, $value);
 
-            $headerNormalized = is_string($header) ? strtolower($header) : $header;
-
-            $this->assertHeader($headerNormalized, $value);
-
-            $headerNames[$headerNormalized] = $header;
+            $headerNames[strtolower($header)] = $header;
             $headers[$header] = $value;
         }
 
