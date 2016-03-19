@@ -218,7 +218,7 @@ class MessageTraitTest extends TestCase
      */
     public function testWithAddedHeaderRaisesExceptionForNonStringNonArrayValue($value)
     {
-        $this->setExpectedException('InvalidArgumentException', 'must be a string');
+        $this->setExpectedException('InvalidArgumentException', 'expected string');
         $message = $this->message->withAddedHeader('X-Foo', $value);
     }
 
@@ -303,37 +303,6 @@ class MessageTraitTest extends TestCase
             'integer' => [ 123 ],
             'float'   => [ 12.3 ],
         ];
-    }
-
-    /**
-     * @dataProvider testNumericHeaderValues
-     * @group 99
-     */
-    public function testFilterHeadersShouldAllowIntegersAndFloats($value)
-    {
-        $filter = new ReflectionMethod($this->message, 'setHeaders');
-        $filter->setAccessible(true);
-        $headers = [
-            'X-Test-Array'  => [$value],
-            'X-Test-Scalar' => $value,
-        ];
-        $filter->invoke($this->message, $headers);
-
-        $headerNamesProperty = new \ReflectionProperty($this->message, 'headerNames');
-        $headerNamesProperty->setAccessible(true);
-
-        $this->assertEquals([
-            'x-test-array'  => 'X-Test-Array',
-            'x-test-scalar' => 'X-Test-Scalar',
-        ], $headerNamesProperty->getValue($this->message));
-
-        $headersProperty = new \ReflectionProperty($this->message, 'headers');
-        $headersProperty->setAccessible(true);
-
-        $this->assertEquals([
-            'X-Test-Array'  => [$value],
-            'X-Test-Scalar' => [$value],
-        ], $headersProperty->getValue($this->message));
     }
 
     public function invalidHeaderValueTypes()

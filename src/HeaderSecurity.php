@@ -129,9 +129,9 @@ final class HeaderSecurity
      */
     public static function assertValid($value)
     {
-        if (! is_string($value) && ! is_numeric($value)) {
+        if (! is_string($value)) {
             throw new InvalidArgumentException(sprintf(
-                'Invalid header value type; expected number, string, or array; received %s',
+                'Invalid header value type; expected string, or array; received %s',
                 (is_object($value) ? get_class($value) : gettype($value))
             ));
         }
@@ -152,7 +152,13 @@ final class HeaderSecurity
      */
     public static function assertValidName($name)
     {
-        if (!is_string($name) || ! preg_match('/^[a-zA-Z0-9\'`#$%&*+.^_|~!-]+$/', $name)) {
+        if (! is_string($name)) {
+            throw new InvalidArgumentException(sprintf(
+                'Invalid header name type; expected string; received %s',
+                (is_object($name) ? get_class($name) : gettype($name))
+            ));
+        }
+        if (! preg_match('/^[a-zA-Z0-9\'`#$%&*+.^_|~!-]+$/', $name)) {
             throw new InvalidArgumentException(sprintf(
                 '"%s" is not valid header name',
                 $name

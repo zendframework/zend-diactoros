@@ -191,12 +191,6 @@ trait MessageTrait
             $value = [$value];
         }
 
-        if (! is_array($value) || ! $this->arrayContainsOnlyStrings($value)) {
-            throw new InvalidArgumentException(
-                'Invalid header value; must be a string or array of strings'
-            );
-        }
-
         $this->assertHeader($header, $value);
 
         $normalized = strtolower($header);
@@ -234,20 +228,13 @@ trait MessageTrait
             $value = [$value];
         }
 
-        if (! $this->arrayContainsOnlyStrings($value)) {
-            throw new InvalidArgumentException(
-                'Invalid header value; must be a string or array of strings'
-            );
-        }
-
         $this->assertHeader($header, $value);
 
         if (! $this->hasHeader($header)) {
             return $this->withHeader($header, $value);
         }
 
-        $normalized = strtolower($header);
-        $header     = $this->headerNames[$normalized];
+        $header = $this->headerNames[strtolower($header)];
 
         $new = clone $this;
         $new->headers[$header] = array_merge($this->headers[$header], $value);
@@ -328,34 +315,6 @@ trait MessageTrait
     }
 
     /**
-     * Test that an array contains only strings
-     *
-     * @param array $array
-     * @return bool
-     */
-    private function arrayContainsOnlyStrings(array $array)
-    {
-        return array_reduce($array, [__CLASS__, 'filterStringValue'], true);
-    }
-
-    /**
-     * Test if a value is a string
-     *
-     * Used with array_reduce.
-     *
-     * @param bool $carry
-     * @param mixed $item
-     * @return bool
-     */
-    private static function filterStringValue($carry, $item)
-    {
-        if (! is_string($item)) {
-            return false;
-        }
-        return $carry;
-    }
-
-    /**
      * Filter a set of headers to ensure they are in the correct internal format.
      *
      * Used by message constructors to allow setting all initial headers at once.
@@ -367,10 +326,6 @@ trait MessageTrait
         $headerNames = $headers = [];
 
         foreach ($originalHeaders as $header => $value) {
-            if (is_array($value)) {
-                $this->arrayContainsOnlyStrings($value);
-            }
-
             if (! is_array($value)) {
                 $value = [$value];
             }
@@ -412,19 +367,6 @@ trait MessageTrait
                 'Unsupported HTTP protocol version "%s" provided',
                 $version
             ));
-        }
-    }
-
-    /**
-     * Ensure header names and values are valid.
-     *
-     * @param array $headers
-     * @throws InvalidArgumentException
-     */
-    private function assertHeaders(array $headers)
-    {
-        foreach ($headers as $name => $headerValues) {
-            $this->assertHeader($name, $headerValues);
         }
     }
 
