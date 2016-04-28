@@ -12,7 +12,7 @@ For server-side applications, you will create a `ServerRequest` instance, and po
 
 A client will _send_ a request, and _return_ a response. As a developer, you will _create_ and
 _populate_ the request, and then _introspect_ the response.  Both requests and responses are
-immutable; if you make changes -- e.g., by calling setter methods -- you must capture the return
+immutable; if you make changes &mdash; e.g., by calling setter methods &mdash; you must capture the return
 value, as it is a new instance.
 
 ```php
