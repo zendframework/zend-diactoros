@@ -6,7 +6,8 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- Nothing.
+- [#170](https://github.com/zendframework/zend-diactoros/pull/170) prepared
+  documentation for publication at https://zendframework.github.io/zend-diactoros/
 
 ### Deprecated
 

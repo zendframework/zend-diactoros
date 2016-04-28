@@ -1,4 +1,5 @@
 doc/html/
 vendor/
+zf-mkdoc-theme/
 composer.lock
 phpunit.xml
