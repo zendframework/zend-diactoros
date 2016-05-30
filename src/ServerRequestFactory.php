@@ -197,7 +197,7 @@ abstract class ServerRequestFactory
         $headers = [];
         foreach ($server as $key => $value) {
             if ($value && strpos($key, 'HTTP_') === 0) {
-                $name = strtr(strtolower(substr($key, 5)), '_', '- ');
+                $name = strtr(strtolower(substr($key, 5)), '_', '-');
                 $headers[$name] = $value;
                 continue;
             }
