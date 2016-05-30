@@ -74,7 +74,7 @@ trait RequestTrait
         // Host header is provided
         if (! $this->hasHeader('Host') && $this->uri->getHost()) {
             $this->headerNames['host'] = 'Host';
-            $this->headers['host'] = [$this->getHostFromUri()];
+            $this->headers['Host'] = [$this->getHostFromUri()];
         }        
     }
 
