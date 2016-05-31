@@ -140,7 +140,7 @@ $server = Zend\Diactoros\Server::createServer(
 );
 
 // Using the createServerFromRequest factory, and providing it a request:
-$server = Zend\Diactoros\Server::createServerfromRequest(
+$server = Zend\Diactoros\Server::createServerFromRequest(
   function ($request, $response, $done) {
       $response->getBody()->write("Hello world!");
   },
