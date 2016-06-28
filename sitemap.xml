@@ -4,7 +4,7 @@
     
     <url>
      <loc>None/</loc>
-     <lastmod>2016-04-28</lastmod>
+     <lastmod>2016-06-28</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
@@ -12,7 +12,7 @@
     
     <url>
      <loc>None/overview/</loc>
-     <lastmod>2016-04-28</lastmod>
+     <lastmod>2016-06-28</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
@@ -20,7 +20,7 @@
     
     <url>
      <loc>None/install/</loc>
-     <lastmod>2016-04-28</lastmod>
+     <lastmod>2016-06-28</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
@@ -28,7 +28,7 @@
     
     <url>
      <loc>None/usage/</loc>
-     <lastmod>2016-04-28</lastmod>
+     <lastmod>2016-06-28</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
@@ -37,25 +37,25 @@
         
     <url>
      <loc>None/custom-responses/</loc>
-     <lastmod>2016-04-28</lastmod>
+     <lastmod>2016-06-28</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>None/emitting-responses/</loc>
-     <lastmod>2016-04-28</lastmod>
+     <lastmod>2016-06-28</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>None/serialization/</loc>
-     <lastmod>2016-04-28</lastmod>
+     <lastmod>2016-06-28</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>None/api/</loc>
-     <lastmod>2016-04-28</lastmod>
+     <lastmod>2016-06-28</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
