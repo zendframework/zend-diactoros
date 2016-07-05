@@ -11,6 +11,7 @@ namespace Zend\Diactoros\Response;
 
 use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
+use Zend\Diactoros\RelativeStream;
 
 class SapiStreamEmitter implements EmitterInterface
 {
@@ -74,14 +75,14 @@ class SapiStreamEmitter implements EmitterInterface
     {
         list($unit, $first, $last, $lenght) = $range;
 
-        ++$last; //zero-based position
-        $body = $response->getBody();
-        $body->seek($first);
-        $pos = $first;
+        $body = new RelativeStream($response->getBody(), $first);
+        $body->rewind();
+        $pos = 0;
+        $length = $last - $first + 1;
 
-        while (! $body->eof() && $pos < $last) {
-            if (($pos + $maxBufferLength) > $last) {
-                echo $body->read($last - $pos);
+        while (! $body->eof() && $pos < $length) {
+            if (($pos + $maxBufferLength) > $length) {
+                echo $body->read($length - $pos);
                 break;
             }
 
