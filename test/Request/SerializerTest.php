@@ -10,7 +10,6 @@
 namespace ZendTest\Diactoros\Request;
 
 use PHPUnit_Framework_TestCase as TestCase;
-use Zend\Diactoros\RelativeStream;
 use Zend\Diactoros\Request;
 use Zend\Diactoros\Request\Serializer;
 use Zend\Diactoros\Stream;
