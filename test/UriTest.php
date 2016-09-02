@@ -568,4 +568,11 @@ class UriTest extends TestCase
 
         $this->assertEquals('ουτοπία.δπθ.gr', $uri->getHost());
     }
+
+    public function testUriDoesNotAppendColonToHostIfPortIsEmpty()
+    {
+        $uri = (new Uri())->withHost('google.com');
+        $this->assertEquals('google.com', (string) $uri);
+        $this->assertNotEquals('google.com:', (string) $uri);
+    }
 }
