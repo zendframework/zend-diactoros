@@ -81,6 +81,23 @@ class ServerRequestFactoryTest extends TestCase
         $this->assertEquals($expected, ServerRequestFactory::marshalHeaders($server));
     }
 
+    public function testMarshalsVariablesPrefixedByApacheFromServerArray()
+    {
+        // Non-prefixed versions will be preferred
+        $server = [
+            'HTTP_X_FOO_BAR' => 'nonprefixed',
+            'REDIRECT_HTTP_AUTHORIZATION' => 'token',
+            'REDIRECT_HTTP_X_FOO_BAR' => 'prefixed',
+        ];
+
+        $expected = [
+            'authorization' => 'token',
+            'x-foo-bar' => 'nonprefixed',
+        ];
+
+        $this->assertEquals($expected, ServerRequestFactory::marshalHeaders($server));
+    }
+
     public function testStripQueryStringReturnsUnchangedStringIfNoQueryStringDetected()
     {
         $path = '/foo/bar';
