@@ -51,6 +51,9 @@ All notable changes to this project will be documented in this file, in reverse 
   response serialization always provides a `\r\n\r\n` sequence following the
   headers, even when no message body is present, to ensure it conforms with RFC
   7230.
+- [#175](https://github.com/zendframework/zend-diactoros/pull/175) updates the
+  `Request` class to set the `Host` header from the URI host if no header is
+  already present. (Ensures conformity with PSR-7 specification.)
 
 ## 1.3.5 - 2016-03-17
 

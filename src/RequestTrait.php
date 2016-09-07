@@ -69,6 +69,13 @@ trait RequestTrait
         list($this->headerNames, $headers) = $this->filterHeaders($headers);
         $this->assertHeaders($headers);
         $this->headers = $headers;
+
+        // per PSR-7: attempt to set the Host header from a provided URI if no
+        // Host header is provided
+        if (! $this->hasHeader('Host') && $this->uri->getHost()) {
+            $this->headerNames['host'] = 'Host';
+            $this->headers['Host'] = [$this->getHostFromUri()];
+        }
     }
 
     /**
