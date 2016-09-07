@@ -243,6 +243,7 @@ class UploadedFileTest extends TestCase
         $this->assertTrue(file_exists($to));
 
         $this->setExpectedException(RuntimeException::class, 'moved');
+
         $upload->moveTo($to);
     }
 
@@ -307,7 +308,7 @@ class UploadedFileTest extends TestCase
 
         $this->setExpectedException(RuntimeException::class, 'upload error');
 
-        $stream = $uploadedFile->getStream();
+        $uploadedFile->getStream();
     }
 
     /**

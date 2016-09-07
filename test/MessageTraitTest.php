@@ -61,8 +61,10 @@ class MessageTraitTest extends TestCase
      */
     public function testWithProtocolVersionRaisesExceptionForInvalidVersion($version)
     {
-        $this->setExpectedException(InvalidArgumentException::class);
         $request = new Request();
+
+        $this->setExpectedException(InvalidArgumentException::class);
+
         $request->withProtocolVersion($version);
     }
 
@@ -194,7 +196,8 @@ class MessageTraitTest extends TestCase
     public function testWithHeaderRaisesExceptionForInvalidNestedHeaderValue($value)
     {
         $this->setExpectedException(InvalidArgumentException::class, 'Invalid header value');
-        $message = $this->message->withHeader('X-Foo', [ $value ]);
+
+        $this->message->withHeader('X-Foo', [ $value ]);
     }
 
     public function invalidHeaderValues()
@@ -213,7 +216,8 @@ class MessageTraitTest extends TestCase
     public function testWithHeaderRaisesExceptionForInvalidValueType($value)
     {
         $this->setExpectedException(InvalidArgumentException::class, 'Invalid header value');
-        $message = $this->message->withHeader('X-Foo', $value);
+
+        $this->message->withHeader('X-Foo', $value);
     }
 
     public function testWithHeaderReplacesDifferentCapitalization()
@@ -230,7 +234,8 @@ class MessageTraitTest extends TestCase
     public function testWithAddedHeaderRaisesExceptionForNonStringNonArrayValue($value)
     {
         $this->setExpectedException(InvalidArgumentException::class, 'must be a string');
-        $message = $this->message->withAddedHeader('X-Foo', $value);
+
+        $this->message->withAddedHeader('X-Foo', $value);
     }
 
     public function testWithoutHeaderDoesNothingIfHeaderDoesNotExist()
@@ -283,6 +288,7 @@ class MessageTraitTest extends TestCase
     public function testDoesNotAllowCRLFInjectionWhenCallingWithHeader($name, $value)
     {
         $this->setExpectedException(InvalidArgumentException::class);
+
         $this->message->withHeader($name, $value);
     }
 
@@ -293,6 +299,7 @@ class MessageTraitTest extends TestCase
     public function testDoesNotAllowCRLFInjectionWhenCallingWithAddedHeader($name, $value)
     {
         $this->setExpectedException(InvalidArgumentException::class);
+
         $this->message->withAddedHeader($name, $value);
     }
 

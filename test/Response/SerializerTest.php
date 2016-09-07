@@ -171,7 +171,7 @@ class SerializerTest extends TestCase
 
         $this->setExpectedException(UnexpectedValueException::class, 'status line');
 
-        $response = Serializer::fromString($text);
+        Serializer::fromString($text);
     }
 
     public function messagesWithInvalidHeaders()
@@ -198,34 +198,37 @@ class SerializerTest extends TestCase
     public function testDeserializationRaisesExceptionForMalformedHeaders($message, $exceptionMessage)
     {
         $this->setExpectedException(UnexpectedValueException::class, $exceptionMessage);
-        $response = Serializer::fromString($message);
+
+        Serializer::fromString($message);
     }
 
     public function testFromStreamThrowsExceptionWhenStreamIsNotReadable()
     {
-        $this->setExpectedException(InvalidArgumentException::class);
         $stream = $this
             ->getMockBuilder('Psr\Http\Message\StreamInterface')
             ->getMock();
 
-        $stream->expects($this->once())->method('isReadable')
+        $stream->method('isReadable')
             ->will($this->returnValue(false));
+
+        $this->setExpectedException(InvalidArgumentException::class);
 
         Serializer::fromStream($stream);
     }
 
     public function testFromStreamThrowsExceptionWhenStreamIsNotSeekable()
     {
-        $this->setExpectedException(InvalidArgumentException::class);
         $stream = $this
             ->getMockBuilder('Psr\Http\Message\StreamInterface')
             ->getMock();
 
-        $stream->expects($this->once())->method('isReadable')
+        $stream->method('isReadable')
             ->will($this->returnValue(true));
 
-        $stream->expects($this->once())->method('isSeekable')
+        $stream->method('isSeekable')
             ->will($this->returnValue(false));
+
+        $this->setExpectedException(InvalidArgumentException::class);
 
         Serializer::fromStream($stream);
     }

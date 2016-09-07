@@ -365,7 +365,7 @@ class UriTest extends TestCase
     {
         $this->setExpectedException(InvalidArgumentException::class, 'Unsupported scheme');
 
-        $uri = new Uri($scheme . '://example.com');
+        new Uri($scheme . '://example.com');
     }
 
     /**

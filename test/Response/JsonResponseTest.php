@@ -89,6 +89,7 @@ class JsonResponseTest extends TestCase
         ];
 
         $this->setExpectedException(InvalidArgumentException::class, 'Unable to encode');
+
         new JsonResponse($data);
     }
 

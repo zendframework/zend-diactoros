@@ -79,6 +79,7 @@ class StreamTest extends TestCase
     public function testPassingInvalidStreamResourceToConstructorRaisesException()
     {
         $this->setExpectedException(InvalidArgumentException::class);
+
         $stream = new Stream(['  THIS WILL NOT WORK  ']);
     }
 
@@ -566,7 +567,7 @@ class StreamTest extends TestCase
             $this->markTestSkipped('No acceptable resource available to test ' . __METHOD__);
         }
 
-        $this->setExpectedException(\InvalidArgumentException::class, 'stream');
+        $this->setExpectedException(InvalidArgumentException::class, 'stream');
 
         new Stream($resource);
     }
@@ -583,7 +584,8 @@ class StreamTest extends TestCase
 
         $stream = new Stream(__FILE__);
 
-        $this->setExpectedException(\InvalidArgumentException::class, 'stream');
+        $this->setExpectedException(InvalidArgumentException::class, 'stream');
+
         $stream->attach($resource);
     }
 

@@ -112,6 +112,7 @@ class ResponseTest extends TestCase
     public function testConstructorRaisesExceptionForInvalidStream()
     {
         $this->setExpectedException(InvalidArgumentException::class);
+
         new Response([ 'TOTALLY INVALID' ]);
     }
 
@@ -201,6 +202,7 @@ class ResponseTest extends TestCase
     public function testConstructorRaisesExceptionForInvalidBody($body)
     {
         $this->setExpectedException(InvalidArgumentException::class, 'stream');
+
         new Response($body);
     }
 
