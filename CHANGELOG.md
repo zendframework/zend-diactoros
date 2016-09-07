@@ -29,6 +29,10 @@ All notable changes to this project will be documented in this file, in reverse 
   `SapiStreamEmitter` to implement a check for `isSeekable()` prior to attempts
   to rewind; this allows it to work with non-seekable streams such as the
   `CallbackStream`.
+- [#169](https://github.com/zendframework/zend-diactoros/pull/169) ensures that
+  response serialization always provides a `\r\n\r\n` sequence following the
+  headers, even when no message body is present, to ensure it conforms with RFC
+  7230.
 
 ## 1.3.5 - 2016-03-17
 
