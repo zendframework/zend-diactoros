@@ -36,6 +36,9 @@ All notable changes to this project will be documented in this file, in reverse 
 - [#175](https://github.com/zendframework/zend-diactoros/pull/175) updates the
   `Request` class to set the `Host` header from the URI host if no header is
   already present. (Ensures conformity with PSR-7 specification.)
+- [#197](https://github.com/zendframework/zend-diactoros/pull/197) updates the
+  `Uri` class to ensure that string serialization does not include a colon after
+  the host name if no port is present in the instance.
 
 ## 1.3.5 - 2016-03-17
 
