@@ -2,11 +2,18 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 1.3.6 - TBD
+## 1.3.6 - 2016-09-07
 
 ### Added
 
-- Nothing.
+- [#170](https://github.com/zendframework/zend-diactoros/pull/170) prepared
+  documentation for publication at https://zendframework.github.io/zend-diactoros/
+- [#165](https://github.com/zendframework/zend-diactoros/pull/165) adds support
+  for Apache `REDIRECT_HTTP_*` header detection in the `ServerRequestFactory`.
+- [#166](https://github.com/zendframework/zend-diactoros/pull/166) adds support
+  for UTF-8 characters in URI paths.
+- [#204](https://github.com/zendframework/zend-diactoros/pull/204) adds testing
+  against PHP 7.1 release-candidate builds.
 
 ### Deprecated
 
@@ -18,7 +25,22 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#186](https://github.com/zendframework/zend-diactoros/pull/186) fixes a typo
+  in a variable name within the `SapiStreamEmitter`.
+- [#200](https://github.com/zendframework/zend-diactoros/pull/200) updates the
+  `SapiStreamEmitter` to implement a check for `isSeekable()` prior to attempts
+  to rewind; this allows it to work with non-seekable streams such as the
+  `CallbackStream`.
+- [#169](https://github.com/zendframework/zend-diactoros/pull/169) ensures that
+  response serialization always provides a `\r\n\r\n` sequence following the
+  headers, even when no message body is present, to ensure it conforms with RFC
+  7230.
+- [#175](https://github.com/zendframework/zend-diactoros/pull/175) updates the
+  `Request` class to set the `Host` header from the URI host if no header is
+  already present. (Ensures conformity with PSR-7 specification.)
+- [#197](https://github.com/zendframework/zend-diactoros/pull/197) updates the
+  `Uri` class to ensure that string serialization does not include a colon after
+  the host name if no port is present in the instance.
 
 ## 1.3.5 - 2016-03-17
 

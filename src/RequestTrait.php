@@ -67,6 +67,13 @@ trait RequestTrait
         $this->stream = $this->getStream($body, 'wb+');
 
         $this->setHeaders($headers);
+
+        // per PSR-7: attempt to set the Host header from a provided URI if no
+        // Host header is provided
+        if (! $this->hasHeader('Host') && $this->uri->getHost()) {
+            $this->headerNames['host'] = 'Host';
+            $this->headers['Host'] = [$this->getHostFromUri()];
+        }
     }
 
     /**

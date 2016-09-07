@@ -72,7 +72,6 @@ abstract class ServerRequestFactory
             $body ?: $_POST,
             static::marshalProtocolVersion($server)
         );
-
     }
 
     /**
@@ -196,19 +195,26 @@ abstract class ServerRequestFactory
     {
         $headers = [];
         foreach ($server as $key => $value) {
-            if ($value && strpos($key, 'HTTP_') === 0) {
-                $name = strtr(substr($key, 5), '_', ' ');
-                $name = strtr(ucwords(strtolower($name)), ' ', '-');
-                $name = strtolower($name);
+            // Apache prefixes environment variables with REDIRECT_
+            // if they are added by rewrite rules
+            if (strpos($key, 'REDIRECT_') === 0) {
+                $key = substr($key, 9);
 
+                // We will not overwrite existing variables with the
+                // prefixed versions, though
+                if (array_key_exists($key, $server)) {
+                    continue;
+                }
+            }
+
+            if ($value && strpos($key, 'HTTP_') === 0) {
+                $name = strtr(strtolower(substr($key, 5)), '_', '-');
                 $headers[$name] = $value;
                 continue;
             }
 
             if ($value && strpos($key, 'CONTENT_') === 0) {
-                $name = substr($key, 8); // Content-
-                $name = 'Content-' . (($name == 'MD5') ? $name : ucfirst(strtolower($name)));
-                $name = strtolower($name);
+                $name = 'content-' . strtolower(substr($key, 8));
                 $headers[$name] = $value;
                 continue;
             }

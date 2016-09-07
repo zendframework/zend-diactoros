@@ -6,6 +6,16 @@ cache:
   directories:
     - $HOME/.composer/cache
     - vendor
+    - $HOME/.local
+    - zf-mkdoc-theme
+
+env:
+  global:
+    - SITE_URL: https://zendframework.github.io/zend-diactoros
+    - GH_USER_NAME: "Matthew Weier O'Phinney"
+    - GH_USER_EMAIL: matthew@weierophinney.net
+    - GH_REF: github.com/zendframework/zend-diactoros.git
+    - secure: "abqt51VvId/3EvfymODyivOye2YNlTXPMNk297kM3G5bMxB7ILPUwwSTxfMHoiW9BHjJpdKi+IGBF4GKeYElQHdIwleyLow8dTCpUiJS3RogwaTcm2FbwEJDCFbkV4WRm/HHjriji/wBfBmaAJEfYYlLQAHQWTT7AK7dAgQmiAzaItStl2TV5D/XZU9GLNXay3nH0cDygf+g4t6rFcf3VsI5weHb3WhjATfN+mU82XXkwm2z8Pc1IglBYHskdlwUgbsz8ppTdXplXdKjnf6YdxPapYDKd7TecIV3BWtueC2i48rqblPaSWOzx7qMCA/4aJjzEBmuqqSlYXka2SdGPdBPbpGwcKv09e273xqWQ9sF3d8YhEsSrJBpMpgu4RN+ucLRa15Xcj0oF4aVxrFqxtC7wud7hC0pg6q48dY7PlQh/wTO2biuXcGACcGqMcjPgmE3HJYpK5HoWHUBoWi1VHqbTPRx1jIQD1ILibu9WkuTEtdAi5IXSYAmVSknfyZ7UYJuJgOjhmmkMOcYzD5JJuRGEJASzQk1tX5DItX8mH/LIW942bVOQ+fwsmL/Z+tJDnMpJXLd6tXtyYs99lxFSBSSjqNGAG5HUFjVczvQy9GeeDd2p70IA80NuQNjfXrsyQ9tg8d1keNTOpPCJUwZm7S6IEsvrWAGO6lZ+q7DPQk="
 
 matrix:
   fast_finish: true
@@ -17,7 +27,10 @@ matrix:
     - php: 5.6
       env:
         - EXECUTE_COVERAGE=true
-    - php: 7
+        - DEPLOY_DOCS="$(if [[ $TRAVIS_BRANCH == 'master' && $TRAVIS_PULL_REQUEST == 'false' ]]; then echo -n 'true' ; else echo -n 'false' ; fi)"
+        - PATH="$HOME/.local/bin:$PATH"
+    - php: 7.0
+    - php: 7.1
     - php: hhvm
 
 notifications:
@@ -30,13 +43,17 @@ before_install:
   - if [[ $EXECUTE_COVERAGE == 'true' ]]; then composer require --no-update satooshi/php-coveralls:dev-master ; fi
 
 install:
-  - travis_retry composer install --no-interaction --ignore-platform-reqs --prefer-source
+  - travis_retry composer install --no-interaction --prefer-source
   - composer info -i
 
 script:
   - if [[ $EXECUTE_COVERAGE == 'true' ]]; then composer test-coverage ; fi
   - if [[ $EXECUTE_COVERAGE != 'true' ]]; then composer test ; fi
   - if [[ $EXECUTE_CS_CHECK == 'true' ]]; then composer cs ; fi
+  - if [[ $DEPLOY_DOCS == "true" && "$TRAVIS_TEST_RESULT" == "0" ]]; then wget -O theme-installer.sh "https://raw.githubusercontent.com/zendframework/zf-mkdoc-theme/master/theme-installer.sh" ; chmod 755 theme-installer.sh ; ./theme-installer.sh ; fi
+
+after_success:
+  - if [[ $DEPLOY_DOCS == "true" ]]; then echo "Preparing to build and deploy documentation" ; ./zf-mkdoc-theme/deploy.sh ; echo "Completed deploying documentation" ; fi
 
 after_script:
   - if [[ $EXECUTE_COVERAGE == 'true' ]]; then composer coveralls ; fi

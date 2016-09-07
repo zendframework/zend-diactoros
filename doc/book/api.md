@@ -19,8 +19,8 @@ class Request
 }
 ```
 
-Requests are immutable. Any methods that would change state -- those prefixed with `with` and
-`without` -- all return a new instance with the changes requested.
+Requests are immutable. Any methods that would change state &mdash; those prefixed with `with` and
+`without` &mdash; all return a new instance with the changes requested.
 
 ## ServerRequest Message
 
@@ -45,8 +45,8 @@ class ServerRequest
 }
 ```
 
-The `ServerRequest` is immutable. Any methods that would change state -- those prefixed with `with`
-and `without` -- all return a new instance with the changes requested. Server parameters are
+The `ServerRequest` is immutable. Any methods that would change state &mdash; those prefixed with `with`
+and `without` &mdash; all return a new instance with the changes requested. Server parameters are
 considered completely immutable, however, as they cannot be recalculated, and, rather, is a source
 for other values.
 
@@ -71,7 +71,7 @@ class Response
 ```
 
 Like the `Request` and `ServerRequest`, responses are immutable. Any methods that would change state
--- those prefixed with `with` and `without` -- all return a new instance with the changes requested.
+&mdash; those prefixed with `with` and `without` &mdash; all return a new instance with the changes requested.
 
 ### StringResponse (factory)
 
@@ -145,8 +145,9 @@ class Uri
 }
 ```
 
-Like the various message objects, URIs are immutable. Any methods that would change state -- those
-prefixed with `with` and `without` -- all return a new instance with the changes requested.
+Like the various message objects, URIs are immutable. Any methods that would
+change state &mdash; those
+prefixed with `with` and `without` &mdash; all return a new instance with the changes requested.
 
 ## Stream
 

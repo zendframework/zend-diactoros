@@ -12,6 +12,7 @@ namespace ZendTest\Diactoros\Response;
 use PHPUnit_Framework_TestCase as TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
+use Zend\Diactoros\CallbackStream;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\SapiStreamEmitter;
 use ZendTest\Diactoros\TestAsset\HeaderStack;
@@ -22,6 +23,19 @@ class SapiStreamEmitterTest extends SapiEmitterTest
     {
         HeaderStack::reset();
         $this->emitter = new SapiStreamEmitter();
+    }
+
+    public function testEmitCallbackStreamResponse()
+    {
+        $stream = new CallbackStream(function () {
+            return 'it works';
+        });
+        $response = (new Response())
+            ->withStatus(200)
+            ->withBody($stream);
+        ob_start();
+        $this->emitter->emit($response);
+        $this->assertEquals('it works', ob_get_clean());
     }
 
     public function testDoesNotInjectContentLengthHeaderIfStreamSizeIsUnknown()
@@ -65,5 +79,19 @@ class SapiStreamEmitterTest extends SapiEmitterTest
         ob_start();
         $this->emitter->emit($response);
         $this->assertEquals($expected, ob_get_clean());
+    }
+
+    public function testContentRangeUnseekableBody()
+    {
+        $body = new CallbackStream(function () {
+            return 'Hello world';
+        });
+        $response = (new Response())
+            ->withBody($body)
+            ->withHeader('Content-Range', 'bytes 3-6/*');
+
+        ob_start();
+        $this->emitter->emit($response);
+        $this->assertEquals('lo w', ob_get_clean());
     }
 }

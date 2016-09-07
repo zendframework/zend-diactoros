@@ -36,7 +36,7 @@ class Uri implements UriInterface
      *
      * @const string
      */
-    const CHAR_UNRESERVED = 'a-zA-Z0-9_\-\.~';
+    const CHAR_UNRESERVED = 'a-zA-Z0-9_\-\.~\pL';
 
     /**
      * @var int[] Array indexed by valid scheme names to their corresponding ports.
@@ -507,6 +507,9 @@ class Uri implements UriInterface
     private function isNonStandardPort($scheme, $host, $port)
     {
         if (! $scheme) {
+            if ($host && ! $port) {
+                return false;
+            }
             return true;
         }
 
@@ -553,7 +556,7 @@ class Uri implements UriInterface
     private function filterPath($path)
     {
         $path = preg_replace_callback(
-            '/(?:[^' . self::CHAR_UNRESERVED . ':@&=\+\$,\/;%]+|%(?![A-Fa-f0-9]{2}))/',
+            '/(?:[^' . self::CHAR_UNRESERVED . ':@&=\+\$,\/;%]+|%(?![A-Fa-f0-9]{2}))/u',
             [$this, 'urlEncodeChar'],
             $path
         );
