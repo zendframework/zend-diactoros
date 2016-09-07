@@ -19,7 +19,8 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#186](https://github.com/zendframework/zend-diactoros/pull/186) fixes a typo
+  in a variable name within the `SapiStreamEmitter`.
 
 ## 1.3.5 - 2016-03-17
 
