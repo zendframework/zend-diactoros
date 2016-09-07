@@ -72,7 +72,6 @@ abstract class ServerRequestFactory
             $body ?: $_POST,
             static::marshalProtocolVersion($server)
         );
-
     }
 
     /**
