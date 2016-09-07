@@ -39,6 +39,10 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - [#186](https://github.com/zendframework/zend-diactoros/pull/186) fixes a typo
   in a variable name within the `SapiStreamEmitter`.
+- [#200](https://github.com/zendframework/zend-diactoros/pull/200) updates the
+  `SapiStreamEmitter` to implement a check for `isSeekable()` prior to attempts
+  to rewind; this allows it to work with non-seekable streams such as the
+  `CallbackStream`.
 
 ## 1.3.5 - 2016-03-17
 
