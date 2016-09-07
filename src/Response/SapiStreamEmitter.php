@@ -76,10 +76,17 @@ class SapiStreamEmitter implements EmitterInterface
      */
     private function emitBodyRange(array $range, ResponseInterface $response, $maxBufferLength)
     {
-        list($unit, $first, $last, $lenght) = $range;
+        list($unit, $first, $last, $length) = $range;
 
         ++$last; //zero-based position
         $body = $response->getBody();
+
+        if (!$body->isSeekable()) {
+            $contents = $body->getContents();
+            echo substr($contents, $first, $last - $first);
+            return;
+        }
+
         $body->seek($first);
         $pos = $first;
 

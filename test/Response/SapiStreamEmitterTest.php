@@ -80,4 +80,18 @@ class SapiStreamEmitterTest extends SapiEmitterTest
         $this->emitter->emit($response);
         $this->assertEquals($expected, ob_get_clean());
     }
+
+    public function testContentRangeUnseekableBody()
+    {
+        $body = new CallbackStream(function () {
+            return 'Hello world';
+        });
+        $response = (new Response())
+            ->withBody($body)
+            ->withHeader('Content-Range', 'bytes 3-6/*');
+
+        ob_start();
+        $this->emitter->emit($response);
+        $this->assertEquals('lo w', ob_get_clean());
+    }
 }
