@@ -568,4 +568,24 @@ class UriTest extends TestCase
 
         $this->assertEquals('ουτοπία.δπθ.gr', $uri->getHost());
     }
+
+
+    /**
+     * @dataProvider utf8PathsDataProvider
+     */
+    public function testUtf8Path($url, $result)
+    {
+        $uri = new Uri($url);
+
+        $this->assertEquals($result, $uri->getPath());
+    }
+
+
+    public function utf8PathsDataProvider()
+    {
+        return [
+            ['http://example.com/тестовый_путь/', '/тестовый_путь/'],
+            ['http://example.com/ουτοπία/', '/ουτοπία/']
+        ];
+    }
 }
