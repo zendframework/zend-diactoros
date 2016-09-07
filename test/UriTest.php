@@ -569,7 +569,6 @@ class UriTest extends TestCase
         $this->assertEquals('ουτοπία.δπθ.gr', $uri->getHost());
     }
 
-
     /**
      * @dataProvider utf8PathsDataProvider
      */
@@ -587,5 +586,11 @@ class UriTest extends TestCase
             ['http://example.com/тестовый_путь/', '/тестовый_путь/'],
             ['http://example.com/ουτοπία/', '/ουτοπία/']
         ];
+    }
+
+    public function testUriDoesNotAppendColonToHostIfPortIsEmpty()
+    {
+        $uri = (new Uri())->withHost('google.com');
+        $this->assertEquals('google.com', (string) $uri);
     }
 }
