@@ -198,6 +198,11 @@ response. A single implementation is currently available, <code>Zend\Diactoros\R
 which will use the native PHP functions <code>header()</code> and <code>echo</code> in order to emit the response. If you
 are using a non-SAPI implementation, you will need to create your own <code>EmitterInterface</code>
 implementation.</p>
+<p>For example, the <code>SapiEmitter</code> implementation of the <code>EmitterInterface</code> can be used thus:</p>
+<pre class="codehilite"><code class="language-php">$response = new Zend\Diactoros\Response();
+$response-&gt;getBody()-&gt;write(&quot;some content\n&quot;);
+$emitter = new Zend\Diactoros\Response\SapiEmitter();
+$emitter-&gt;emit($response);</code></pre>
 
 <hr />
 
