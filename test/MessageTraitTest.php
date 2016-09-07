@@ -24,7 +24,7 @@ class MessageTraitTest extends TestCase
 
     public function setUp()
     {
-        $this->message = new Request(null, null, $this->createMock('Psr\Http\Message\StreamInterface'));
+        $this->message = new Request(null, null, $this->getMockBuilder('Psr\Http\Message\StreamInterface')->getMock());
     }
 
     public function testProtocolHasAcceptableDefault()
@@ -69,14 +69,14 @@ class MessageTraitTest extends TestCase
 
     public function testUsesStreamProvidedInConstructorAsBody()
     {
-        $stream  = $this->createMock('Psr\Http\Message\StreamInterface');
+        $stream  = $this->getMockBuilder('Psr\Http\Message\StreamInterface')->getMock();
         $message = new Request(null, null, $stream);
         $this->assertSame($stream, $message->getBody());
     }
 
     public function testBodyMutatorReturnsCloneWithChanges()
     {
-        $stream  = $this->createMock('Psr\Http\Message\StreamInterface');
+        $stream  = $this->getMockBuilder('Psr\Http\Message\StreamInterface')->getMock();
         $message = $this->message->withBody($stream);
         $this->assertNotSame($this->message, $message);
         $this->assertSame($stream, $message->getBody());
