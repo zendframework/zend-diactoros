@@ -208,18 +208,13 @@ abstract class ServerRequestFactory
             }
 
             if ($value && strpos($key, 'HTTP_') === 0) {
-                $name = strtr(substr($key, 5), '_', ' ');
-                $name = strtr(ucwords(strtolower($name)), ' ', '-');
-                $name = strtolower($name);
-
+                $name = strtr(strtolower(substr($key, 5)), '_', '-');
                 $headers[$name] = $value;
                 continue;
             }
 
             if ($value && strpos($key, 'CONTENT_') === 0) {
-                $name = substr($key, 8); // Content-
-                $name = 'Content-' . (($name == 'MD5') ? $name : ucfirst(strtolower($name)));
-                $name = strtolower($name);
+                $name = 'content-' . strtolower(substr($key, 8));
                 $headers[$name] = $value;
                 continue;
             }
