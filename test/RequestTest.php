@@ -395,6 +395,19 @@ class RequestTest extends TestCase
         $this->assertEmpty($request->getHeaderLine('host'));
     }
 
+    public function testHostHeaderSetFromUriOnCreationIfNoHostHeaderSpecified()
+    {
+        $request = new Request('http://www.example.com');
+        $this->assertTrue($request->hasHeader('Host'));
+        $this->assertEquals('www.example.com', $request->getHeaderLine('host'));
+    }
+
+    public function testHostHeaderNotSetFromUriOnCreationIfHostHeaderSpecified()
+    {
+        $request = new Request('http://www.example.com', null, 'php://memory', ['Host' => 'www.test.com']);
+        $this->assertEquals('www.test.com', $request->getHeaderLine('host'));
+    }
+
     public function testPassingPreserveHostFlagWhenUpdatingUriDoesNotUpdateHostHeader()
     {
         $request = (new Request())
