@@ -57,14 +57,15 @@ class SapiStreamEmitter implements EmitterInterface
     private function emitBody(ResponseInterface $response, $maxBufferLength)
     {
         $body = $response->getBody();
-        if ($body->isSeekable()) {
-            $body->rewind();
 
-            while (! $body->eof()) {
-                echo $body->read($maxBufferLength);
-            }
-        } else {
+        if (! $body->isSeekable()) {
             echo $body;
+            return;
+        }
+
+        $body->rewind();
+        while (! $body->eof()) {
+            echo $body->read($maxBufferLength);
         }
     }
 
@@ -79,17 +80,18 @@ class SapiStreamEmitter implements EmitterInterface
     {
         list($unit, $first, $last, $length) = $range;
 
-        $body = new RelativeStream($response->getBody(), $first);
-        $body->rewind();
-        $pos = 0;
-        $length = $last - $first + 1;
+        $body = $response->getBody();
 
-        if (!$body->isSeekable()) {
+        if (! $body->isSeekable()) {
             $contents = $body->getContents();
-            echo substr($contents, $first, $last - $first);
+            echo substr($contents, $first, $last - $first + 1);
             return;
         }
 
+        $body = new RelativeStream($body, $first);
+        $body->rewind();
+        $pos = 0;
+        $length = $last - $first + 1;
         while (! $body->eof() && $pos < $length) {
             if (($pos + $maxBufferLength) > $length) {
                 echo $body->read($length - $pos);
