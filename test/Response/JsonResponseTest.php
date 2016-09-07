@@ -82,10 +82,6 @@ class JsonResponseTest extends TestCase
 
     public function testJsonErrorHandlingOfBadEmbeddedData()
     {
-        if (version_compare(PHP_VERSION, '5.5', 'lt')) {
-            $this->markTestSkipped('Skipped as PHP versions prior to 5.5 are noisy about JSON errors');
-        }
-
         // Serializing something that is not serializable.
         $data = [
             'stream' => fopen('php://memory', 'r'),
