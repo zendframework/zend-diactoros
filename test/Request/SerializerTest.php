@@ -333,13 +333,13 @@ class SerializerTest extends TestCase
         $this->assertInstanceOf('Zend\Diactoros\RelativeStream', $stream->getBody());
     }
 
-    /**
-     * @expectedException UnexpectedValueException
-     */
     public function testToStringRaisesExceptionOnEmptyMethod()
     {
         $request = (new Request())
             ->withUri(new Uri('http://example.com/foo/bar?baz=bat'));
-        $message = Serializer::toString($request);
+
+        $this->setExpectedException(UnexpectedValueException::class);
+
+        Serializer::toString($request);
     }
 }

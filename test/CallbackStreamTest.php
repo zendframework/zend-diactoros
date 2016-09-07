@@ -10,7 +10,7 @@
 namespace ZendTest\Diactoros;
 
 use PHPUnit_Framework_TestCase as TestCase;
-use Zend\Diactoros\RelativeStream;
+use RuntimeException;
 use Zend\Diactoros\CallbackStream;
 
 /**
@@ -89,13 +89,13 @@ class CallbackStreamTest extends TestCase
         $this->assertNull($ret);
     }
 
-    /**
-     * @expectedException RuntimeException
-     */
     public function testTell()
     {
         $stream = new CallbackStream(function () {
         });
+
+        $this->setExpectedException(RuntimeException::class);
+
         $stream->tell();
     }
 
@@ -123,43 +123,43 @@ class CallbackStreamTest extends TestCase
         $this->assertFalse($ret);
     }
 
-    /**
-     * @expectedException RuntimeException
-     */
     public function testSeek()
     {
         $stream = new CallbackStream(function () {
         });
+
+        $this->setExpectedException(RuntimeException::class);
+
         $stream->seek(0);
     }
 
-    /**
-     * @expectedException RuntimeException
-     */
     public function testRewind()
     {
         $stream = new CallbackStream(function () {
         });
+
+        $this->setExpectedException(RuntimeException::class);
+
         $stream->rewind();
     }
 
-    /**
-     * @expectedException RuntimeException
-     */
     public function testWrite()
     {
         $stream = new CallbackStream(function () {
         });
+
+        $this->setExpectedException(RuntimeException::class);
+
         $stream->write('foobarbaz');
     }
 
-    /**
-     * @expectedException RuntimeException
-     */
     public function testRead()
     {
         $stream = new CallbackStream(function () {
         });
+
+        $this->setExpectedException(RuntimeException::class);
+
         $stream->read(3);
     }
 

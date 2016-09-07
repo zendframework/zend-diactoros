@@ -9,6 +9,7 @@
 
 namespace ZendTest\Diactoros\Response;
 
+use InvalidArgumentException;
 use PHPUnit_Framework_TestCase as TestCase;
 use Zend\Diactoros\Response\HtmlResponse;
 
@@ -73,11 +74,12 @@ class HtmlResponseTest extends TestCase
 
     /**
      * @dataProvider invalidHtmlContent
-     * @expectedException InvalidArgumentException
      */
     public function testRaisesExceptionforNonStringNonStreamBodyContent($body)
     {
-        $response = new HtmlResponse($body);
+        $this->setExpectedException(InvalidArgumentException::class);
+
+        new HtmlResponse($body);
     }
 
     public function testConstructorRewindsBodyStream()
