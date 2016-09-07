@@ -20,7 +20,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - Nothing.
 
-## 1.3.6 - TBD
+## 1.3.6 - 2016-09-07
 
 ### Added
 
@@ -30,6 +30,8 @@ All notable changes to this project will be documented in this file, in reverse 
   for Apache `REDIRECT_HTTP_*` header detection in the `ServerRequestFactory`.
 - [#166](https://github.com/zendframework/zend-diactoros/pull/166) adds support
   for UTF-8 characters in URI paths.
+- [#204](https://github.com/zendframework/zend-diactoros/pull/204) adds testing
+  against PHP 7.1 release-candidate builds.
 
 ### Deprecated
 
