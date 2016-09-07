@@ -10,6 +10,8 @@ All notable changes to this project will be documented in this file, in reverse 
   documentation for publication at https://zendframework.github.io/zend-diactoros/
 - [#165](https://github.com/zendframework/zend-diactoros/pull/165) adds support
   for Apache `REDIRECT_HTTP_*` header detection in the `ServerRequestFactory`.
+- [#166](https://github.com/zendframework/zend-diactoros/pull/166) adds support
+  for UTF-8 characters in URI paths.
 
 ### Deprecated
 
