@@ -40,8 +40,8 @@ class ServerTest extends TestCase
         $this->callback   = function ($req, $res, $done) {
             //  Intentionally empty
         };
-        $this->request = $this->getMock('Psr\Http\Message\ServerRequestInterface');
-        $this->response = $this->getMock('Psr\Http\Message\ResponseInterface');
+        $this->request = $this->createMock('Psr\Http\Message\ServerRequestInterface');
+        $this->response = $this->createMock('Psr\Http\Message\ResponseInterface');
     }
 
     public function tearDown()
@@ -93,7 +93,7 @@ class ServerTest extends TestCase
             $this->request,
             $this->response
         );
-        $emmiter = $this->getMock('Zend\Diactoros\Response\EmitterInterface');
+        $emmiter = $this->createMock('Zend\Diactoros\Response\EmitterInterface');
         $emmiter->expects($this->once())->method('emit');
 
         $server->setEmitter($emmiter);
