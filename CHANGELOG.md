@@ -8,6 +8,8 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - [#170](https://github.com/zendframework/zend-diactoros/pull/170) prepared
   documentation for publication at https://zendframework.github.io/zend-diactoros/
+- [#165](https://github.com/zendframework/zend-diactoros/pull/165) adds support
+  for Apache `REDIRECT_HTTP_*` header detection in the `ServerRequestFactory`.
 
 ### Deprecated
 
