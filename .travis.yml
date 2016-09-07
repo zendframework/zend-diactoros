@@ -42,7 +42,7 @@ before_install:
   - if [[ $EXECUTE_COVERAGE == 'true' ]]; then composer require --no-update satooshi/php-coveralls:dev-master ; fi
 
 install:
-  - travis_retry composer install --no-interaction --ignore-platform-reqs --prefer-source
+  - travis_retry composer install --no-interaction --prefer-source
   - composer info -i
 
 script:
