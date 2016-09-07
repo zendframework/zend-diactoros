@@ -11,6 +11,8 @@ namespace ZendTest\Diactoros\Response;
 
 use InvalidArgumentException;
 use PHPUnit_Framework_TestCase as TestCase;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamInterface;
 use UnexpectedValueException;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\Serializer;
@@ -73,8 +75,8 @@ class SerializerTest extends TestCase
         $text = "HTTP/1.0 200 A-OK\r\nContent-Type: text/plain\r\nX-Foo-Bar: Baz\r\n\r\nContent!";
         $response = Serializer::fromString($text);
 
-        $this->assertInstanceOf('Psr\Http\Message\ResponseInterface', $response);
-        $this->assertInstanceOf('Zend\Diactoros\Response', $response);
+        $this->assertInstanceOf(ResponseInterface::class, $response);
+        $this->assertInstanceOf(Response::class, $response);
 
         $this->assertEquals('1.0', $response->getProtocolVersion());
         $this->assertEquals(200, $response->getStatusCode());
@@ -94,8 +96,8 @@ class SerializerTest extends TestCase
         $text = "HTTP/1.0 200 A-OK\r\nContent-Type: text/plain\r\nX-Foo-Bar: Baz\r\nX-Foo-Bar: Bat\r\n\r\nContent!";
         $response = Serializer::fromString($text);
 
-        $this->assertInstanceOf('Psr\Http\Message\ResponseInterface', $response);
-        $this->assertInstanceOf('Zend\Diactoros\Response', $response);
+        $this->assertInstanceOf(ResponseInterface::class, $response);
+        $this->assertInstanceOf(Response::class, $response);
 
         $this->assertTrue($response->hasHeader('X-Foo-Bar'));
         $values = $response->getHeader('X-Foo-Bar');
@@ -117,8 +119,8 @@ class SerializerTest extends TestCase
     {
         $response = Serializer::fromString($text);
 
-        $this->assertInstanceOf('Psr\Http\Message\ResponseInterface', $response);
-        $this->assertInstanceOf('Zend\Diactoros\Response', $response);
+        $this->assertInstanceOf(ResponseInterface::class, $response);
+        $this->assertInstanceOf(Response::class, $response);
 
         $this->assertTrue($response->hasHeader('X-Foo-Bar'));
         $this->assertEquals('Baz;Bat', $response->getHeaderLine('X-Foo-Bar'));
@@ -129,8 +131,8 @@ class SerializerTest extends TestCase
         $text = "HTTP/1.0 204\r\nX-Foo-Bar: Baz";
         $response = Serializer::fromString($text);
 
-        $this->assertInstanceOf('Psr\Http\Message\ResponseInterface', $response);
-        $this->assertInstanceOf('Zend\Diactoros\Response', $response);
+        $this->assertInstanceOf(ResponseInterface::class, $response);
+        $this->assertInstanceOf(Response::class, $response);
 
         $this->assertTrue($response->hasHeader('X-Foo-Bar'));
         $this->assertEquals('Baz', $response->getHeaderLine('X-Foo-Bar'));
@@ -144,8 +146,8 @@ class SerializerTest extends TestCase
         $text = "HTTP/1.0 204";
         $response = Serializer::fromString($text);
 
-        $this->assertInstanceOf('Psr\Http\Message\ResponseInterface', $response);
-        $this->assertInstanceOf('Zend\Diactoros\Response', $response);
+        $this->assertInstanceOf(ResponseInterface::class, $response);
+        $this->assertInstanceOf(Response::class, $response);
 
         $this->assertEmpty($response->getHeaders());
         $body = $response->getBody()->getContents();
@@ -157,8 +159,8 @@ class SerializerTest extends TestCase
         $text = "HTTP/1.0 204\r\n\r\nContent!";
         $response = Serializer::fromString($text);
 
-        $this->assertInstanceOf('Psr\Http\Message\ResponseInterface', $response);
-        $this->assertInstanceOf('Zend\Diactoros\Response', $response);
+        $this->assertInstanceOf(ResponseInterface::class, $response);
+        $this->assertInstanceOf(Response::class, $response);
 
         $this->assertEmpty($response->getHeaders());
         $body = $response->getBody()->getContents();
@@ -205,7 +207,7 @@ class SerializerTest extends TestCase
     public function testFromStreamThrowsExceptionWhenStreamIsNotReadable()
     {
         $stream = $this
-            ->getMockBuilder('Psr\Http\Message\StreamInterface')
+            ->getMockBuilder(StreamInterface::class)
             ->getMock();
 
         $stream->method('isReadable')
@@ -219,7 +221,7 @@ class SerializerTest extends TestCase
     public function testFromStreamThrowsExceptionWhenStreamIsNotSeekable()
     {
         $stream = $this
-            ->getMockBuilder('Psr\Http\Message\StreamInterface')
+            ->getMockBuilder(StreamInterface::class)
             ->getMock();
 
         $stream->method('isReadable')

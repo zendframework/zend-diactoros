@@ -12,6 +12,8 @@ namespace ZendTest\Diactoros;
 use InvalidArgumentException;
 use PHPUnit_Framework_TestCase as TestCase;
 use Psr\Http\Message\MessageInterface;
+use Psr\Http\Message\StreamInterface;
+use ReflectionMethod;
 use Zend\Diactoros\Request;
 
 class MessageTraitTest extends TestCase
@@ -23,7 +25,7 @@ class MessageTraitTest extends TestCase
 
     public function setUp()
     {
-        $this->message = new Request(null, null, $this->getMockBuilder('Psr\Http\Message\StreamInterface')->getMock());
+        $this->message = new Request(null, null, $this->getMockBuilder(StreamInterface::class)->getMock());
     }
 
     public function testProtocolHasAcceptableDefault()
@@ -70,14 +72,14 @@ class MessageTraitTest extends TestCase
 
     public function testUsesStreamProvidedInConstructorAsBody()
     {
-        $stream  = $this->getMockBuilder('Psr\Http\Message\StreamInterface')->getMock();
+        $stream  = $this->getMockBuilder(StreamInterface::class)->getMock();
         $message = new Request(null, null, $stream);
         $this->assertSame($stream, $message->getBody());
     }
 
     public function testBodyMutatorReturnsCloneWithChanges()
     {
-        $stream  = $this->getMockBuilder('Psr\Http\Message\StreamInterface')->getMock();
+        $stream  = $this->getMockBuilder(StreamInterface::class)->getMock();
         $message = $this->message->withBody($stream);
         $this->assertNotSame($this->message, $message);
         $this->assertSame($stream, $message->getBody());

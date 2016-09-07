@@ -39,14 +39,14 @@ class StreamTest extends TestCase
 
     public function testCanInstantiateWithStreamIdentifier()
     {
-        $this->assertInstanceOf('Zend\Diactoros\Stream', $this->stream);
+        $this->assertInstanceOf(Stream::class, $this->stream);
     }
 
     public function testCanInstantiteWithStreamResource()
     {
         $resource = fopen('php://memory', 'wb+');
         $stream   = new Stream($resource);
-        $this->assertInstanceOf('Zend\Diactoros\Stream', $stream);
+        $this->assertInstanceOf(Stream::class, $stream);
     }
 
     public function testIsReadableReturnsFalseIfStreamIsNotReadable()

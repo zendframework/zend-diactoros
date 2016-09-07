@@ -10,6 +10,7 @@
 namespace ZendTest\Diactoros\Response;
 
 use PHPUnit_Framework_TestCase as TestCase;
+use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\EmptyResponse;
 
 class EmptyResponseTest extends TestCase
@@ -17,7 +18,7 @@ class EmptyResponseTest extends TestCase
     public function testConstructor()
     {
         $response = new EmptyResponse(201);
-        $this->assertInstanceOf('Zend\Diactoros\Response', $response);
+        $this->assertInstanceOf(Response::class, $response);
         $this->assertEquals('', (string) $response->getBody());
         $this->assertEquals(201, $response->getStatusCode());
     }
@@ -25,7 +26,7 @@ class EmptyResponseTest extends TestCase
     public function testHeaderConstructor()
     {
         $response = EmptyResponse::withHeaders(['x-empty' => ['true']]);
-        $this->assertInstanceOf('Zend\Diactoros\Response', $response);
+        $this->assertInstanceOf(Response::class, $response);
         $this->assertEquals('', (string) $response->getBody());
         $this->assertEquals(204, $response->getStatusCode());
         $this->assertEquals('true', $response->getHeaderLine('x-empty'));

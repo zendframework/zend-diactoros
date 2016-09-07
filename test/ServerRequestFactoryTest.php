@@ -292,7 +292,8 @@ class ServerRequestFactoryTest extends TestCase
         ];
 
         $uri = ServerRequestFactory::marshalUriFromServer($server, $request->getHeaders());
-        $this->assertInstanceOf('Zend\Diactoros\Uri', $uri);
+
+        $this->assertInstanceOf(Uri::class, $uri);
         $this->assertEquals('https', $uri->getScheme());
     }
 
@@ -307,7 +308,8 @@ class ServerRequestFactoryTest extends TestCase
         ];
 
         $uri = ServerRequestFactory::marshalUriFromServer($server, $request->getHeaders());
-        $this->assertInstanceOf('Zend\Diactoros\Uri', $uri);
+
+        $this->assertInstanceOf(Uri::class, $uri);
         $this->assertEquals('http', $uri->getScheme());
     }
 
@@ -321,7 +323,8 @@ class ServerRequestFactoryTest extends TestCase
         $server  = [];
 
         $uri = ServerRequestFactory::marshalUriFromServer($server, $request->getHeaders());
-        $this->assertInstanceOf('Zend\Diactoros\Uri', $uri);
+
+        $this->assertInstanceOf(Uri::class, $uri);
         $this->assertEquals('https', $uri->getScheme());
     }
 
@@ -336,7 +339,8 @@ class ServerRequestFactoryTest extends TestCase
         ];
 
         $uri = ServerRequestFactory::marshalUriFromServer($server, $request->getHeaders());
-        $this->assertInstanceOf('Zend\Diactoros\Uri', $uri);
+
+        $this->assertInstanceOf(Uri::class, $uri);
         $this->assertEquals('/foo/bar', $uri->getPath());
     }
 
@@ -352,7 +356,8 @@ class ServerRequestFactoryTest extends TestCase
         ];
 
         $uri = ServerRequestFactory::marshalUriFromServer($server, $request->getHeaders());
-        $this->assertInstanceOf('Zend\Diactoros\Uri', $uri);
+
+        $this->assertInstanceOf(Uri::class, $uri);
         $this->assertEquals('bar=baz', $uri->getQuery());
     }
 
@@ -367,7 +372,8 @@ class ServerRequestFactoryTest extends TestCase
         ];
 
         $uri = ServerRequestFactory::marshalUriFromServer($server, $request->getHeaders());
-        $this->assertInstanceOf('Zend\Diactoros\Uri', $uri);
+
+        $this->assertInstanceOf(Uri::class, $uri);
         $this->assertEquals('foo', $uri->getFragment());
     }
 
@@ -401,7 +407,7 @@ class ServerRequestFactoryTest extends TestCase
         ];
 
         $request = ServerRequestFactory::fromGlobals($server, $query, $body, $cookies, $files);
-        $this->assertInstanceOf('Zend\Diactoros\ServerRequest', $request);
+        $this->assertInstanceOf(ServerRequest::class, $request);
         $this->assertEquals($cookies, $request->getCookieParams());
         $this->assertEquals($query, $request->getQueryParams());
         $this->assertEquals($body, $request->getParsedBody());
@@ -476,7 +482,7 @@ class ServerRequestFactoryTest extends TestCase
 
     public function testNormalizeServerUsesMixedCaseAuthorizationHeaderFromApacheWhenPresent()
     {
-        $r = new ReflectionProperty('Zend\Diactoros\ServerRequestFactory', 'apacheRequestHeaders');
+        $r = new ReflectionProperty(ServerRequestFactory::class, 'apacheRequestHeaders');
         $r->setAccessible(true);
         $r->setValue(function () {
             return ['Authorization' => 'foobar'];
@@ -490,7 +496,7 @@ class ServerRequestFactoryTest extends TestCase
 
     public function testNormalizeServerUsesLowerCaseAuthorizationHeaderFromApacheWhenPresent()
     {
-        $r = new ReflectionProperty('Zend\Diactoros\ServerRequestFactory', 'apacheRequestHeaders');
+        $r = new ReflectionProperty(ServerRequestFactory::class, 'apacheRequestHeaders');
         $r->setAccessible(true);
         $r->setValue(function () {
             return ['authorization' => 'foobar'];
@@ -504,7 +510,7 @@ class ServerRequestFactoryTest extends TestCase
 
     public function testNormalizeServerReturnsArrayUnalteredIfApacheHeadersDoNotContainAuthorization()
     {
-        $r = new ReflectionProperty('Zend\Diactoros\ServerRequestFactory', 'apacheRequestHeaders');
+        $r = new ReflectionProperty(ServerRequestFactory::class, 'apacheRequestHeaders');
         $r->setAccessible(true);
         $r->setValue(function () {
             return [];
@@ -537,7 +543,7 @@ class ServerRequestFactoryTest extends TestCase
 
     public function testMarshalProtocolVersionRisesExceptionIfVersionIsNotRecognized()
     {
-        $method = new ReflectionMethod('Zend\Diactoros\ServerRequestFactory', 'marshalProtocolVersion');
+        $method = new ReflectionMethod(ServerRequestFactory::class, 'marshalProtocolVersion');
         $method->setAccessible(true);
 
         $this->setExpectedException(UnexpectedValueException::class);
@@ -547,7 +553,7 @@ class ServerRequestFactoryTest extends TestCase
 
     public function testMarshalProtocolReturnsDefaultValueIfHeaderIsNotPresent()
     {
-        $method = new ReflectionMethod('Zend\Diactoros\ServerRequestFactory', 'marshalProtocolVersion');
+        $method = new ReflectionMethod(ServerRequestFactory::class, 'marshalProtocolVersion');
         $method->setAccessible(true);
         $version = $method->invoke(null, []);
         $this->assertEquals('1.1', $version);
@@ -558,7 +564,7 @@ class ServerRequestFactoryTest extends TestCase
      */
     public function testMarshalProtocolVersionReturnsHttpVersions($protocol, $expected)
     {
-        $method = new ReflectionMethod('Zend\Diactoros\ServerRequestFactory', 'marshalProtocolVersion');
+        $method = new ReflectionMethod(ServerRequestFactory::class, 'marshalProtocolVersion');
         $method->setAccessible(true);
         $version = $method->invoke(null, ['SERVER_PROTOCOL' => $protocol]);
         $this->assertEquals($expected, $version);

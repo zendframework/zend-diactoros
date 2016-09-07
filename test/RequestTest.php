@@ -10,6 +10,7 @@
 namespace ZendTest\Diactoros;
 
 use PHPUnit_Framework_TestCase as TestCase;
+use Psr\Http\Message\UriInterface;
 use Zend\Diactoros\Request;
 use Zend\Diactoros\Stream;
 use Zend\Diactoros\Uri;
@@ -41,8 +42,8 @@ class RequestTest extends TestCase
     public function testReturnsUnpopulatedUriByDefault()
     {
         $uri = $this->request->getUri();
-        $this->assertInstanceOf('Psr\Http\Message\UriInterface', $uri);
-        $this->assertInstanceOf('Zend\Diactoros\Uri', $uri);
+        $this->assertInstanceOf(UriInterface::class, $uri);
+        $this->assertInstanceOf(Uri::class, $uri);
         $this->assertEmpty($uri->getScheme());
         $this->assertEmpty($uri->getUserInfo());
         $this->assertEmpty($uri->getHost());

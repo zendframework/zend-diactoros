@@ -14,7 +14,10 @@ use PHPUnit_Framework_MockObject_MockObject;
 use PHPUnit_Framework_TestCase as TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Zend\Diactoros\Response;
+use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\Server;
+use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\Stream;
 use ZendTest\Diactoros\TestAsset\HeaderStack;
 
@@ -42,8 +45,8 @@ class ServerTest extends TestCase
         $this->callback   = function ($req, $res, $done) {
             //  Intentionally empty
         };
-        $this->request = $this->getMockBuilder('Psr\Http\Message\ServerRequestInterface')->getMock();
-        $this->response = $this->getMockBuilder('Psr\Http\Message\ResponseInterface')->getMock();
+        $this->request = $this->getMockBuilder(ServerRequestInterface::class)->getMock();
+        $this->response = $this->getMockBuilder(ResponseInterface::class)->getMock();
     }
 
     public function tearDown()
@@ -58,7 +61,8 @@ class ServerTest extends TestCase
             $this->request,
             $this->response
         );
-        $this->assertInstanceOf('Zend\Diactoros\Server', $server);
+
+        $this->assertInstanceOf(Server::class, $server);
         $this->assertSame($this->callback, $server->callback);
         $this->assertSame($this->request, $server->request);
         $this->assertSame($this->response, $server->response);
@@ -70,10 +74,11 @@ class ServerTest extends TestCase
             $this->callback,
             $this->request
         );
-        $this->assertInstanceOf('Zend\Diactoros\Server', $server);
+
+        $this->assertInstanceOf(Server::class, $server);
         $this->assertSame($this->callback, $server->callback);
         $this->assertSame($this->request, $server->request);
-        $this->assertInstanceOf('Zend\Diactoros\Response', $server->response);
+        $this->assertInstanceOf(Response::class, $server->response);
     }
 
     public function testCannotAccessArbitraryProperties()
@@ -97,7 +102,7 @@ class ServerTest extends TestCase
             $this->request,
             $this->response
         );
-        $emmiter = $this->getMockBuilder('Zend\Diactoros\Response\EmitterInterface')->getMock();
+        $emmiter = $this->getMockBuilder(EmitterInterface::class)->getMock();
         $emmiter->expects($this->once())->method('emit');
 
         $server->setEmitter($emmiter);
@@ -117,16 +122,16 @@ class ServerTest extends TestCase
             'QUERY_STRING' => 'bar=baz',
         ];
         $server = Server::createServer($this->callback, $server, [], [], [], []);
-        $this->assertInstanceOf('Zend\Diactoros\Server', $server);
+        $this->assertInstanceOf(Server::class, $server);
         $this->assertSame($this->callback, $server->callback);
 
-        $this->assertInstanceOf('Zend\Diactoros\ServerRequest', $server->request);
+        $this->assertInstanceOf(ServerRequest::class, $server->request);
         $request = $server->request;
         $this->assertEquals('POST', $request->getMethod());
         $this->assertEquals('/foo/bar', $request->getUri()->getPath());
         $this->assertTrue($request->hasHeader('Accept'));
 
-        $this->assertInstanceOf('Zend\Diactoros\Response', $server->response);
+        $this->assertInstanceOf(Response::class, $server->response);
     }
 
     public function testListenInvokesCallbackAndSendsResponse()
@@ -272,17 +277,14 @@ class ServerTest extends TestCase
         $response = $this->response;
 
         $this->response
-            ->expects($this->once())
             ->method('getHeaders')
             ->will($this->returnValue([]));
 
         $responseBody = new Stream('php://temp');
         $this->response
-            ->expects($this->any())
             ->method('getBody')
             ->willReturn($responseBody);
         $this->response
-            ->expects($this->any())
             ->method('withHeader')
             ->willReturnSelf();
 

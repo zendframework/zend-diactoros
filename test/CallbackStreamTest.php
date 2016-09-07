@@ -200,7 +200,7 @@ class CallbackStreamTest extends TestCase
 
     public function phpCallbacksForStreams()
     {
-        $class = 'ZendTest\Diactoros\CallbackStreamTest';
+        $class = __CLASS__;
 
         // @codingStandardsIgnoreStart
         return [
