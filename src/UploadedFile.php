@@ -142,24 +142,26 @@ class UploadedFile implements UploadedFileInterface
      */
     public function moveTo($targetPath)
     {
+        if ($this->moved) {
+            throw new RuntimeException('Cannot move file; already moved!');
+        }
+
         if ($this->error !== UPLOAD_ERR_OK) {
             throw new RuntimeException('Cannot retrieve stream due to upload error');
         }
 
-        if (! is_string($targetPath)) {
-            throw new InvalidArgumentException(
-                'Invalid path provided for move operation; must be a string'
-            );
-        }
-
-        if (empty($targetPath)) {
+        if (! is_string($targetPath) || empty($targetPath)) {
             throw new InvalidArgumentException(
                 'Invalid path provided for move operation; must be a non-empty string'
             );
         }
 
-        if ($this->moved) {
-            throw new RuntimeException('Cannot move file; already moved!');
+        $targetDirectory = dirname($targetPath);
+        if (! is_dir($targetDirectory) || ! is_writable($targetDirectory)) {
+            throw new RuntimeException(sprintf(
+                'The target directory `%s` does not exists or is not writable',
+                $targetDirectory
+            ));
         }
 
         $sapi = PHP_SAPI;
