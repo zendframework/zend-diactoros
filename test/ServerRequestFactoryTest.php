@@ -539,7 +539,9 @@ class ServerRequestFactoryTest extends TestCase
     {
         $method = new ReflectionMethod('Zend\Diactoros\ServerRequestFactory', 'marshalProtocolVersion');
         $method->setAccessible(true);
-        $this->setExpectedException('UnexpectedValueException');
+
+        $this->setExpectedException(UnexpectedValueException::class);
+
         $method->invoke(null, ['SERVER_PROTOCOL' => 'dadsa/1.0']);
     }
 

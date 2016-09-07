@@ -54,7 +54,7 @@ class RequestTest extends TestCase
 
     public function testConstructorRaisesExceptionForInvalidStream()
     {
-        $this->setExpectedException('InvalidArgumentException');
+        $this->setExpectedException(InvalidArgumentException::class);
         new Request(['TOTALLY INVALID']);
     }
 
@@ -117,7 +117,7 @@ class RequestTest extends TestCase
      */
     public function testConstructorRaisesExceptionForInvalidUri($uri)
     {
-        $this->setExpectedException('InvalidArgumentException', 'Invalid URI');
+        $this->setExpectedException(InvalidArgumentException::class, 'Invalid URI');
         new Request($uri);
     }
 
@@ -139,7 +139,7 @@ class RequestTest extends TestCase
      */
     public function testConstructorRaisesExceptionForInvalidMethod($method)
     {
-        $this->setExpectedException('InvalidArgumentException', 'Unsupported HTTP method');
+        $this->setExpectedException(InvalidArgumentException::class, 'Unsupported HTTP method');
         new Request(null, $method);
     }
 
@@ -188,7 +188,7 @@ class RequestTest extends TestCase
      */
     public function testConstructorRaisesExceptionForInvalidBody($body)
     {
-        $this->setExpectedException('InvalidArgumentException', 'stream');
+        $this->setExpectedException(InvalidArgumentException::class, 'stream');
         new Request(null, null, $body);
     }
 
@@ -209,7 +209,7 @@ class RequestTest extends TestCase
      */
     public function testConstructorRaisesExceptionForInvalidHeaders($headers, $contains = 'header value type')
     {
-        $this->setExpectedException('InvalidArgumentException', $contains);
+        $this->setExpectedException(InvalidArgumentException::class, $contains);
         new Request(null, null, 'php://memory', $headers);
     }
 
@@ -288,7 +288,7 @@ class RequestTest extends TestCase
     public function testRequestTargetCannotContainWhitespace()
     {
         $request = new Request();
-        $this->setExpectedException('InvalidArgumentException', 'Invalid request target');
+        $this->setExpectedException(InvalidArgumentException::class, 'Invalid request target');
         $request->withRequestTarget('foo bar baz');
     }
 
@@ -487,8 +487,8 @@ class RequestTest extends TestCase
      */
     public function testConstructorRaisesExceptionForHeadersWithCRLFVectors($name, $value)
     {
-        $this->setExpectedException('InvalidArgumentException');
-        $request = new Request(null, null, 'php://memory', [$name => $value]);
+        $this->setExpectedException(InvalidArgumentException::class);
+        $request = new Request(null, null, 'php://memory', [$name =>  $value]);
     }
 
     public function hostHeaderKeys()

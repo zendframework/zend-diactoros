@@ -9,12 +9,13 @@
 
 namespace ZendTest\Diactoros\Request;
 
+use InvalidArgumentException;
 use PHPUnit_Framework_TestCase as TestCase;
+use UnexpectedValueException;
 use Zend\Diactoros\Request;
 use Zend\Diactoros\Request\Serializer;
 use Zend\Diactoros\Stream;
 use Zend\Diactoros\Uri;
-use UnexpectedValueException;
 
 class SerializerTest extends TestCase
 {
@@ -204,7 +205,9 @@ class SerializerTest extends TestCase
     public function testRaisesExceptionDuringDeserializationForInvalidRequestLine($line)
     {
         $message = $line . "\r\nX-Foo-Bar: Baz\r\n\r\nContent";
-        $this->setExpectedException('UnexpectedValueException');
+
+        $this->setExpectedException(UnexpectedValueException::class);
+
         Serializer::fromString($message);
     }
 
@@ -266,35 +269,38 @@ class SerializerTest extends TestCase
      */
     public function testDeserializationRaisesExceptionForMalformedHeaders($message, $exceptionMessage)
     {
-        $this->setExpectedException('UnexpectedValueException', $exceptionMessage);
-        $request = Serializer::fromString($message);
+        $this->setExpectedException(UnexpectedValueException::class, $exceptionMessage);
+
+        Serializer::fromString($message);
     }
 
     public function testFromStreamThrowsExceptionWhenStreamIsNotReadable()
     {
-        $this->setExpectedException('InvalidArgumentException');
         $stream = $this
             ->getMockBuilder('Psr\Http\Message\StreamInterface')
             ->getMock();
 
-        $stream->expects($this->once())->method('isReadable')
+        $stream->method('isReadable')
             ->will($this->returnValue(false));
+
+        $this->setExpectedException(InvalidArgumentException::class);
 
         Serializer::fromStream($stream);
     }
 
     public function testFromStreamThrowsExceptionWhenStreamIsNotSeekable()
     {
-        $this->setExpectedException('InvalidArgumentException');
         $stream = $this
             ->getMockBuilder('Psr\Http\Message\StreamInterface')
             ->getMock();
 
-        $stream->expects($this->once())->method('isReadable')
+        $stream->method('isReadable')
             ->will($this->returnValue(true));
 
-        $stream->expects($this->once())->method('isSeekable')
+        $stream->method('isSeekable')
             ->will($this->returnValue(false));
+
+        $this->setExpectedException(InvalidArgumentException::class);
 
         Serializer::fromStream($stream);
     }

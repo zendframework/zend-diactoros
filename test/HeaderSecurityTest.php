@@ -9,6 +9,7 @@
 
 namespace ZendTest\Diactoros;
 
+use InvalidArgumentException;
 use PHPUnit_Framework_TestCase as TestCase;
 use Zend\Diactoros\HeaderSecurity;
 
@@ -103,7 +104,7 @@ class HeaderSecurityTest extends TestCase
      */
     public function testAssertValidRaisesExceptionForInvalidValue($value)
     {
-        $this->setExpectedException('InvalidArgumentException');
+        $this->setExpectedException(InvalidArgumentException::class);
         HeaderSecurity::assertValid($value);
     }
 }

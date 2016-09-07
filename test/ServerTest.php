@@ -9,6 +9,8 @@
 
 namespace ZendTest\Diactoros;
 
+use OutOfBoundsException;
+use PHPUnit_Framework_MockObject_MockObject;
 use PHPUnit_Framework_TestCase as TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -24,12 +26,12 @@ class ServerTest extends TestCase
     protected $callback;
 
     /**
-     * @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var ServerRequestInterface|PHPUnit_Framework_MockObject_MockObject
      */
     protected $request;
 
     /**
-     * @var ResponseInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var ResponseInterface|PHPUnit_Framework_MockObject_MockObject
      */
     protected $response;
 
@@ -82,7 +84,9 @@ class ServerTest extends TestCase
             $this->response
         );
         $prop = uniqid();
-        $this->setExpectedException('OutOfBoundsException');
+
+        $this->setExpectedException(OutOfBoundsException::class);
+
         $server->$prop;
     }
 

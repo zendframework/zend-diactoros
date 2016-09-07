@@ -9,6 +9,7 @@
 
 namespace ZendTest\Diactoros;
 
+use InvalidArgumentException;
 use PHPUnit_Framework_TestCase as TestCase;
 use ReflectionProperty;
 use Zend\Diactoros\ServerRequest;
@@ -222,7 +223,9 @@ class ServerRequestTest extends TestCase
     public function testTryToAddInvalidUploadedFiles()
     {
         $request = new ServerRequest();
-        $this->setExpectedException('InvalidArgumentException');
+
+        $this->setExpectedException(InvalidArgumentException::class);
+
         $request->withUploadedFiles([null]);
     }
 

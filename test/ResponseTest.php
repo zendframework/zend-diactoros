@@ -111,7 +111,7 @@ class ResponseTest extends TestCase
 
     public function testConstructorRaisesExceptionForInvalidStream()
     {
-        $this->setExpectedException('InvalidArgumentException');
+        $this->setExpectedException(InvalidArgumentException::class);
         new Response([ 'TOTALLY INVALID' ]);
     }
 
@@ -153,7 +153,7 @@ class ResponseTest extends TestCase
      */
     public function testConstructorRaisesExceptionForInvalidStatus($code)
     {
-        $this->setExpectedException('InvalidArgumentException', 'Invalid status code');
+        $this->setExpectedException(InvalidArgumentException::class, 'Invalid status code');
 
         new Response('php://memory', $code);
     }
@@ -200,7 +200,7 @@ class ResponseTest extends TestCase
      */
     public function testConstructorRaisesExceptionForInvalidBody($body)
     {
-        $this->setExpectedException('InvalidArgumentException', 'stream');
+        $this->setExpectedException(InvalidArgumentException::class, 'stream');
         new Response($body);
     }
 
@@ -222,13 +222,14 @@ class ResponseTest extends TestCase
      */
     public function testConstructorRaisesExceptionForInvalidHeaders($headers, $contains = 'header value type')
     {
-        $this->setExpectedException('InvalidArgumentException', $contains);
+        $this->setExpectedException(InvalidArgumentException::class, $contains);
+
         new Response('php://memory', 200, $headers);
     }
 
     public function testInvalidStatusCodeInConstructor()
     {
-        $this->setExpectedException('InvalidArgumentException');
+        $this->setExpectedException(InvalidArgumentException::class);
 
         new Response('php://memory', null);
     }
@@ -264,7 +265,8 @@ class ResponseTest extends TestCase
      */
     public function testConstructorRaisesExceptionForHeadersWithCRLFVectors($name, $value)
     {
-        $this->setExpectedException('InvalidArgumentException');
+        $this->setExpectedException(InvalidArgumentException::class);
+
         $request = new Response('php://memory', 200, [$name => $value]);
     }
 }
