@@ -44,6 +44,7 @@ class Response implements ResponseInterface
         206 => 'Partial Content',
         207 => 'Multi-status',
         208 => 'Already Reported',
+        226 => 'IM used',
         // REDIRECTION CODES
         300 => 'Multiple Choices',
         301 => 'Moved Permanently',
@@ -53,6 +54,7 @@ class Response implements ResponseInterface
         305 => 'Use Proxy',
         306 => 'Switch Proxy', // Deprecated
         307 => 'Temporary Redirect',
+        308 => 'Permanent Redirect',
         // CLIENT ERROR
         400 => 'Bad Request',
         401 => 'Unauthorized',
