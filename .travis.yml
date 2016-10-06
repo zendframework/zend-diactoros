@@ -10,6 +10,7 @@ cache:
 
 env:
   global:
+    - COMPOSER_ARGS="--no-interaction --ignore-platform-reqs"
     - SITE_URL="https://zendframework.github.io/zend-diactoros"
     - GH_USER_NAME="Matthew Weier O'Phinney"
     - GH_USER_EMAIL="matthew@weierophinney.net"
