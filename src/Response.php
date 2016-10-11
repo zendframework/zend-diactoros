@@ -44,6 +44,7 @@ class Response implements ResponseInterface
         206 => 'Partial Content',
         207 => 'Multi-status',
         208 => 'Already Reported',
+        226 => 'IM used',
         // REDIRECTION CODES
         300 => 'Multiple Choices',
         301 => 'Moved Permanently',
@@ -53,6 +54,7 @@ class Response implements ResponseInterface
         305 => 'Use Proxy',
         306 => 'Switch Proxy', // Deprecated
         307 => 'Temporary Redirect',
+        308 => 'Permanent Redirect',
         // CLIENT ERROR
         400 => 'Bad Request',
         401 => 'Unauthorized',
@@ -81,8 +83,10 @@ class Response implements ResponseInterface
         428 => 'Precondition Required',
         429 => 'Too Many Requests',
         431 => 'Request Header Fields Too Large',
+        444 => 'Connection Closed Without Response',
         451 => 'Unavailable For Legal Reasons',
         // SERVER ERROR
+        499 => 'Client Closed Request',
         500 => 'Internal Server Error',
         501 => 'Not Implemented',
         502 => 'Bad Gateway',
@@ -92,7 +96,9 @@ class Response implements ResponseInterface
         506 => 'Variant Also Negotiates',
         507 => 'Insufficient Storage',
         508 => 'Loop Detected',
+        510 => 'Not Extended',
         511 => 'Network Authentication Required',
+        599 => 'Network Connect Timeout Error',
     ];
 
     /**
