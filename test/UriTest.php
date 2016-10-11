@@ -588,6 +588,24 @@ class UriTest extends TestCase
         ];
     }
 
+    /**
+     * @dataProvider utf8QueryStringsDataProvider
+     */
+    public function testUtf8Query($url, $result)
+    {
+        $uri = new Uri($url);
+
+        $this->assertEquals($result, $uri->getQuery());
+    }
+
+    public function utf8QueryStringsDataProvider()
+    {
+        return [
+            ['http://example.com/?q=тестовый_путь', 'q=тестовый_путь'],
+            ['http://example.com/?q=ουτοπία', 'q=ουτοπία'],
+        ];
+    }
+
     public function testUriDoesNotAppendColonToHostIfPortIsEmpty()
     {
         $uri = (new Uri())->withHost('google.com');

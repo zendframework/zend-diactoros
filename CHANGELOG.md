@@ -14,6 +14,8 @@ All notable changes to this project will be documented in this file, in reverse 
   - 499 ('Client Closed Request')
   - 510 ('Not Extended')
   - 599 ('Network Connect Timeout Error')
+- [#211](https://github.com/zendframework/zend-diactoros/pull/211) adds support
+  for UTF-8 characters in query strings handled by `Zend\Diactoros\Uri`.
 
 ### Deprecated
 
