@@ -167,7 +167,7 @@ class ResponseTest extends TestCase
 
     public function testReasonPhraseCanBeEmpty()
     {
-        $response = $this->response->withStatus(599);
+        $response = $this->response->withStatus(555);
         $this->assertInternalType('string', $response->getReasonPhrase());
         $this->assertEmpty($response->getReasonPhrase());
     }
