@@ -645,7 +645,7 @@ class Uri implements UriInterface
     private function filterQueryOrFragment($value)
     {
         return preg_replace_callback(
-            '/(?:[^' . self::CHAR_UNRESERVED . self::CHAR_SUB_DELIMS . '%:@\/\?]+|%(?![A-Fa-f0-9]{2}))/',
+            '/(?:[^' . self::CHAR_UNRESERVED . self::CHAR_SUB_DELIMS . '%:@\/\?]+|%(?![A-Fa-f0-9]{2}))/u',
             [$this, 'urlEncodeChar'],
             $value
         );
