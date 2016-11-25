@@ -219,6 +219,14 @@ class UploadedFile implements UploadedFileInterface
     public function getClientMediaType()
     {
         return $this->clientMediaType;
+    }   
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getFile()
+    {
+        return $this->file;
     }
 
     /**
