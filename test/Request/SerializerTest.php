@@ -63,6 +63,43 @@ class SerializerTest extends TestCase
         $this->assertContains("X-Foo-Bar: Bat", $message);
     }
 
+    public function testSerializesToArray()
+    {
+        $body   = json_encode(['test' => 'value']);
+        $stream = new Stream('php://memory', 'wb+');
+        $stream->write($body);
+
+        $request = (new Request())
+            ->withMethod('POST')
+            ->withUri(new Uri('http://example.com/foo/bar?baz=bat'))
+            ->withAddedHeader('Accept', 'application/json')
+            ->withAddedHeader('X-Foo-Bar', 'Baz')
+            ->withAddedHeader('X-Foo-Bar', 'Bat')
+            ->withBody($stream);
+
+        $message = Serializer::toArray($request);
+
+        $this->assertSame([
+            'method' => 'POST',
+            'request_target' => '/foo/bar?baz=bat',
+            'uri' => 'http://example.com/foo/bar?baz=bat',
+            'protocol_version' => '1.1',
+            'headers' => [
+                'Host' => [
+                    'example.com',
+                ],
+                'Accept' => [
+                    'application/json',
+                ],
+                'X-Foo-Bar' => [
+                    'Baz',
+                    'Bat'
+                ],
+            ],
+            'body' => '{"test":"value"}',
+        ], $message);
+    }
+
     public function originForms()
     {
         return [
