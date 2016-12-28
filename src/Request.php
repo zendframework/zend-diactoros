@@ -43,7 +43,7 @@ class Request implements RequestInterface
     {
         $headers = $this->headers;
         if (! $this->hasHeader('host')
-            && ($this->uri && $this->uri->getHost())
+            && $this->uri->getHost()
         ) {
             $headers['Host'] = [$this->getHostFromUri()];
         }
@@ -58,7 +58,7 @@ class Request implements RequestInterface
     {
         if (! $this->hasHeader($header)) {
             if (strtolower($header) === 'host'
-                && ($this->uri && $this->uri->getHost())
+                && $this->uri->getHost()
             ) {
                 return [$this->getHostFromUri()];
             }
