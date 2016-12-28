@@ -546,7 +546,7 @@ class ServerRequestFactoryTest extends TestCase
         $method = new ReflectionMethod(ServerRequestFactory::class, 'marshalProtocolVersion');
         $method->setAccessible(true);
 
-        $this->setExpectedException(UnexpectedValueException::class);
+        $this->expectException(UnexpectedValueException::class);
 
         $method->invoke(null, ['SERVER_PROTOCOL' => 'dadsa/1.0']);
     }

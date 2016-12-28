@@ -65,7 +65,7 @@ class MessageTraitTest extends TestCase
     {
         $request = new Request();
 
-        $this->setExpectedException(InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         $request->withProtocolVersion($version);
     }
@@ -197,7 +197,7 @@ class MessageTraitTest extends TestCase
      */
     public function testWithHeaderRaisesExceptionForInvalidNestedHeaderValue($value)
     {
-        $this->setExpectedException(InvalidArgumentException::class, 'Invalid header value');
+        $this->expectException(InvalidArgumentException::class, 'Invalid header value');
 
         $this->message->withHeader('X-Foo', [ $value ]);
     }
@@ -217,7 +217,7 @@ class MessageTraitTest extends TestCase
      */
     public function testWithHeaderRaisesExceptionForInvalidValueType($value)
     {
-        $this->setExpectedException(InvalidArgumentException::class, 'Invalid header value');
+        $this->expectException(InvalidArgumentException::class, 'Invalid header value');
 
         $this->message->withHeader('X-Foo', $value);
     }
@@ -235,7 +235,7 @@ class MessageTraitTest extends TestCase
      */
     public function testWithAddedHeaderRaisesExceptionForNonStringNonArrayValue($value)
     {
-        $this->setExpectedException(InvalidArgumentException::class, 'must be a string');
+        $this->expectException(InvalidArgumentException::class, 'must be a string');
 
         $this->message->withAddedHeader('X-Foo', $value);
     }
@@ -289,7 +289,7 @@ class MessageTraitTest extends TestCase
      */
     public function testDoesNotAllowCRLFInjectionWhenCallingWithHeader($name, $value)
     {
-        $this->setExpectedException(InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         $this->message->withHeader($name, $value);
     }
@@ -300,7 +300,7 @@ class MessageTraitTest extends TestCase
      */
     public function testDoesNotAllowCRLFInjectionWhenCallingWithAddedHeader($name, $value)
     {
-        $this->setExpectedException(InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         $this->message->withAddedHeader($name, $value);
     }

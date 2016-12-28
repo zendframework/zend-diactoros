@@ -76,7 +76,7 @@ class JsonResponseTest extends TestCase
         // Serializing something that is not serializable.
         $resource = fopen('php://memory', 'r');
 
-        $this->setExpectedException(InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         new JsonResponse($resource);
     }
@@ -88,7 +88,7 @@ class JsonResponseTest extends TestCase
             'stream' => fopen('php://memory', 'r'),
         ];
 
-        $this->setExpectedException(InvalidArgumentException::class, 'Unable to encode');
+        $this->expectException(InvalidArgumentException::class, 'Unable to encode');
 
         new JsonResponse($data);
     }

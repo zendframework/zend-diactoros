@@ -78,7 +78,7 @@ class HtmlResponseTest extends TestCase
      */
     public function testRaisesExceptionforNonStringNonStreamBodyContent($body)
     {
-        $this->setExpectedException(InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         new HtmlResponse($body);
     }

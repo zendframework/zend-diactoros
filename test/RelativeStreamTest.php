@@ -159,7 +159,7 @@ class RelativeStreamTest extends TestCase
         $decorated->write("foobaz")->shouldNotBeCalled();
         $stream = new RelativeStream($decorated->reveal(), 100);
 
-        $this->setExpectedException(RuntimeException::class, 'Invalid pointer position');
+        $this->expectException(RuntimeException::class, 'Invalid pointer position');
 
         $stream->write("foobaz");
     }
@@ -171,7 +171,7 @@ class RelativeStreamTest extends TestCase
         $decorated->read(3)->shouldNotBeCalled();
         $stream = new RelativeStream($decorated->reveal(), 100);
 
-        $this->setExpectedException(RuntimeException::class, 'Invalid pointer position');
+        $this->expectException(RuntimeException::class, 'Invalid pointer position');
 
         $stream->read(3);
     }
@@ -183,7 +183,7 @@ class RelativeStreamTest extends TestCase
         $decorated->getContents()->shouldNotBeCalled();
         $stream = new RelativeStream($decorated->reveal(), 100);
 
-        $this->setExpectedException(RuntimeException::class, 'Invalid pointer position');
+        $this->expectException(RuntimeException::class, 'Invalid pointer position');
 
         $stream->getContents();
     }

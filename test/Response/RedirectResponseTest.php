@@ -71,7 +71,7 @@ class RedirectResponseTest extends TestCase
      */
     public function testConstructorRaisesExceptionOnInvalidUri($uri)
     {
-        $this->setExpectedException(InvalidArgumentException::class, 'Uri');
+        $this->expectException(InvalidArgumentException::class, 'Uri');
 
         new RedirectResponse($uri);
     }

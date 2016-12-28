@@ -78,7 +78,7 @@ class TextResponseTest extends TestCase
      */
     public function testRaisesExceptionforNonStringNonStreamBodyContent($body)
     {
-        $this->setExpectedException(InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         new TextResponse($body);
     }

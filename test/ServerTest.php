@@ -90,7 +90,7 @@ class ServerTest extends TestCase
         );
         $prop = uniqid();
 
-        $this->setExpectedException(OutOfBoundsException::class);
+        $this->expectException(OutOfBoundsException::class);
 
         $server->$prop;
     }

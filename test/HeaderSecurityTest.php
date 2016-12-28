@@ -104,7 +104,7 @@ class HeaderSecurityTest extends TestCase
      */
     public function testAssertValidRaisesExceptionForInvalidValue($value)
     {
-        $this->setExpectedException(InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         HeaderSecurity::assertValid($value);
     }
