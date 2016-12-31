@@ -63,6 +63,7 @@ class SapiStreamEmitterTest extends SapiEmitterTest
         return [
             ['bytes 0-2/*', 'Hello world', 'Hel'],
             ['bytes 3-6/*', 'Hello world', 'lo w'],
+            ['items 0-0/1', 'Hello world', 'Hello world'],
         ];
     }
 
