@@ -113,7 +113,7 @@ class ArraySerializerTest extends TestCase
             ],
         ];
 
-        $this->expectException(UnexpectedValueException::class);
+        $this->setExpectedException(UnexpectedValueException::class);
 
         ArraySerializer::fromArray($serializedRequest);
     }
