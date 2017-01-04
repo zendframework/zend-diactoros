@@ -15,7 +15,7 @@ use Zend\Diactoros\Request;
 use Zend\Diactoros\Stream;
 
 /**
- * Serialize or deserialize messages.
+ * Serialize or deserialize request messages.
  *
  * This class provides functionality for serializing a RequestInterface instance
  * to an array, as well as the reverse operation of creating a Request instance
@@ -27,6 +27,7 @@ final class ArraySerializer
      * Serialize a request message to an array.
      *
      * @param RequestInterface $request
+     *
      * @return array
      */
     public static function toArray(RequestInterface $request)
@@ -44,13 +45,14 @@ final class ArraySerializer
     /**
      * Deserialize a request array to a request instance.
      *
-     * @param array $message
+     * @param array $serializedRequest
+     *
      * @return Request
+     *
      * @throws UnexpectedValueException when missing parameters in array.
      */
     public static function fromArray(array $serializedRequest)
     {
-
         $uri = self::getValueFromKey($serializedRequest, 'uri');
         $method = self::getValueFromKey($serializedRequest, 'method');
         $body = new Stream('php://memory', 'wb+');
