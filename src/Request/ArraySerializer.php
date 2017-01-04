@@ -10,6 +10,9 @@
 namespace Zend\Diactoros\Request;
 
 use Psr\Http\Message\RequestInterface;
+use UnexpectedValueException;
+use Zend\Diactoros\Request;
+use Zend\Diactoros\Stream;
 
 /**
  * Serialize or deserialize messages.
@@ -36,5 +39,48 @@ final class ArraySerializer
             'headers' => $request->getHeaders(),
             'body' => (string) $request->getBody(),
         ];
+    }
+
+    /**
+     * Deserialize a request array to a request instance.
+     *
+     * @param array $message
+     * @return Request
+     * @throws UnexpectedValueException when missing parameters in array.
+     */
+    public static function fromArray(array $serializedRequest)
+    {
+
+        $uri = self::getValueFromKey($serializedRequest, 'uri');
+        $method = self::getValueFromKey($serializedRequest, 'method');
+        $body = new Stream('php://memory', 'wb+');
+        $body->write(self::getValueFromKey($serializedRequest, 'body'));
+        $headers = self::getValueFromKey($serializedRequest, 'headers');
+        $requestTarget = self::getValueFromKey($serializedRequest, 'request_target');
+        $protocolVersion = self::getValueFromKey($serializedRequest, 'protocol_version');
+
+        return (new Request($uri, $method, $body, $headers))
+            ->withRequestTarget($requestTarget)
+            ->withProtocolVersion($protocolVersion);
+    }
+
+    /**
+     * @param array $data
+     * @param string $key
+     * @param string $message
+     *
+     * @return mixed
+     *
+     * @throws UnexpectedValueException
+     */
+    private static function getValueFromKey(array $data, $key, $message = null)
+    {
+        if (isset($data[$key])) {
+            return $data[$key];
+        }
+        if ($message === null) {
+            $message = sprintf('Missing "%s" key in serialized request', $key);
+        }
+        throw new UnexpectedValueException($message);
     }
 }
