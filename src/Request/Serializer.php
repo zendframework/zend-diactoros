@@ -98,24 +98,6 @@ final class Serializer extends AbstractSerializer
     }
 
     /**
-     * Serialize a request message to an array.
-     *
-     * @param RequestInterface $request
-     * @return array
-     */
-    public static function toArray(RequestInterface $request)
-    {
-        return [
-            'method' => $request->getMethod(),
-            'request_target' => $request->getRequestTarget(),
-            'uri' => (string) $request->getUri(),
-            'protocol_version' => $request->getProtocolVersion(),
-            'headers' => $request->getHeaders(),
-            'body' => (string) $request->getBody(),
-        ];
-    }
-
-    /**
      * Retrieve the components of the request line.
      *
      * Retrieves the first line of the stream and parses it, raising an
