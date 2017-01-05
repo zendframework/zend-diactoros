@@ -442,12 +442,12 @@ class Uri implements UriInterface
             );
         }
 
-        $this->scheme    = isset($parts['scheme'])   ? $this->filterScheme($parts['scheme']) : '';
-        $this->userInfo  = isset($parts['user'])     ? $parts['user']     : '';
-        $this->host      = isset($parts['host'])     ? $parts['host']     : '';
-        $this->port      = isset($parts['port'])     ? $parts['port']     : null;
-        $this->path      = isset($parts['path'])     ? $this->filterPath($parts['path']) : '';
-        $this->query     = isset($parts['query'])    ? $this->filterQuery($parts['query']) : '';
+        $this->scheme    = isset($parts['scheme']) ? $this->filterScheme($parts['scheme']) : '';
+        $this->userInfo  = isset($parts['user']) ? $parts['user'] : '';
+        $this->host      = isset($parts['host']) ? $parts['host'] : '';
+        $this->port      = isset($parts['port']) ? $parts['port'] : null;
+        $this->path      = isset($parts['path']) ? $this->filterPath($parts['path']) : '';
+        $this->query     = isset($parts['query']) ? $this->filterQuery($parts['query']) : '';
         $this->fragment  = isset($parts['fragment']) ? $this->filterFragment($parts['fragment']) : '';
 
         if (isset($parts['pass'])) {
