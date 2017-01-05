@@ -197,6 +197,6 @@ class ResponseTest extends TestCase
     public function testConstructorRaisesExceptionForHeadersWithCRLFVectors($name, $value)
     {
         $this->setExpectedException('InvalidArgumentException');
-        $request = new Response('php://memory', 200, [$name =>  $value]);
+        $request = new Response('php://memory', 200, [$name => $value]);
     }
 }
