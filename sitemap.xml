@@ -3,32 +3,32 @@
 
     
     <url>
-     <loc>None/</loc>
-     <lastmod>2016-10-11</lastmod>
+     <loc>/</loc>
+     <lastmod>2017-01-05</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
 
     
     <url>
-     <loc>None/overview/</loc>
-     <lastmod>2016-10-11</lastmod>
+     <loc>/overview/</loc>
+     <lastmod>2017-01-05</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
 
     
     <url>
-     <loc>None/install/</loc>
-     <lastmod>2016-10-11</lastmod>
+     <loc>/install/</loc>
+     <lastmod>2017-01-05</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
 
     
     <url>
-     <loc>None/usage/</loc>
-     <lastmod>2016-10-11</lastmod>
+     <loc>/usage/</loc>
+     <lastmod>2017-01-05</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
@@ -36,26 +36,26 @@
     
         
     <url>
-     <loc>None/custom-responses/</loc>
-     <lastmod>2016-10-11</lastmod>
+     <loc>/custom-responses/</loc>
+     <lastmod>2017-01-05</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
-     <loc>None/emitting-responses/</loc>
-     <lastmod>2016-10-11</lastmod>
+     <loc>/emitting-responses/</loc>
+     <lastmod>2017-01-05</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
-     <loc>None/serialization/</loc>
-     <lastmod>2016-10-11</lastmod>
+     <loc>/serialization/</loc>
+     <lastmod>2017-01-05</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
-     <loc>None/api/</loc>
-     <lastmod>2016-10-11</lastmod>
+     <loc>/api/</loc>
+     <lastmod>2017-01-05</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
