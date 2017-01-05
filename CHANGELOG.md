@@ -36,7 +36,11 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#222](https://github.com/zendframework/zend-diactoros/pull/222) fixes the
+  `SapiStreamEmitter`'s handling of the `Content-Range` header to properly only
+  emit a range of bytes if the header value is in the form `bytes {first-last}/length`.
+  This allows using other range units, such as `items`, without incorrectly
+  emitting truncated content.
 
 ## 1.3.7 - 2016-10-11
 
