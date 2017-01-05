@@ -100,7 +100,7 @@ $htmlResponse = StringResponse::html($html, 404, [
     'Content-Type' => [ 'application/xhtml+xml' ],
 ]);
 
-$jsonResponse = StringResponse::html($html, 422, [
+$jsonResponse = StringResponse::json($data, 422, [
     'Content-Type' => [ 'application/problem+json' ],
 ]);
 ```
