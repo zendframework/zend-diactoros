@@ -290,7 +290,7 @@ including the <code>Content-Type</code> header:</p>
     'Content-Type' =&gt; [ 'application/xhtml+xml' ],
 ]);
 
-$jsonResponse = StringResponse::html($html, 422, [
+$jsonResponse = StringResponse::json($data, 422, [
     'Content-Type' =&gt; [ 'application/problem+json' ],
 ]);</code></pre>
 
