@@ -187,11 +187,7 @@ trait MessageTrait
      */
     public function withHeader($header, $value)
     {
-        if (!is_array($value)) {
-            $value = [$value];
-        }
-
-        $this->assertHeader($header, $value);
+        $this->assertHeader($header);
 
         $normalized = strtolower($header);
 
@@ -199,6 +195,9 @@ trait MessageTrait
         if ($new->hasHeader($header)) {
             unset($new->headers[$new->headerNames[$normalized]]);
         }
+
+        $value = $this->filterHeaderValue($value);
+
         $new->headerNames[$normalized] = $header;
         $new->headers[$header]         = $value;
 
@@ -224,11 +223,7 @@ trait MessageTrait
      */
     public function withAddedHeader($header, $value)
     {
-        if (! is_array($value)) {
-            $value = [$value];
-        }
-
-        $this->assertHeader($header, $value);
+        $this->assertHeader($header);
 
         if (! $this->hasHeader($header)) {
             return $this->withHeader($header, $value);
@@ -237,6 +232,7 @@ trait MessageTrait
         $header = $this->headerNames[strtolower($header)];
 
         $new = clone $this;
+        $value = $this->filterHeaderValue($value);
         $new->headers[$header] = array_merge($this->headers[$header], $value);
         return $new;
     }
@@ -326,11 +322,9 @@ trait MessageTrait
         $headerNames = $headers = [];
 
         foreach ($originalHeaders as $header => $value) {
-            if (! is_array($value)) {
-                $value = [$value];
-            }
+            $value = $this->filterHeaderValue($value);
 
-            $this->assertHeader($header, $value);
+            $this->assertHeader($header);
 
             $headerNames[strtolower($header)] = $header;
             $headers[$header] = $value;
@@ -371,17 +365,31 @@ trait MessageTrait
     }
 
     /**
+     * @param mixed $values
+     * @return string[]
+     */
+    private function filterHeaderValue($values)
+    {
+        if (! is_array($values)) {
+            $values = [$values];
+        }
+
+        return array_map(function($value){
+            HeaderSecurity::assertValid($value);
+
+            return (string) $value;
+        }, $values);
+    }
+
+    /**
      * Ensure header name and values are valid.
      *
-     * @param array $headers
+     * @param string $name
+     *
      * @throws InvalidArgumentException
      */
-    private function assertHeader($name, array $values)
+    private function assertHeader($name)
     {
         HeaderSecurity::assertValidName($name);
-
-        foreach ($values as $value) {
-            HeaderSecurity::assertValid($value);
-        }
     }
 }
