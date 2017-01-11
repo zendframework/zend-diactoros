@@ -132,6 +132,22 @@ class MessageTraitTest extends TestCase
         $this->assertEquals('Foo,Bar', $message2->getHeaderLine('X-Foo'));
     }
 
+    public function testHeaderExistsIfWithNoValues()
+    {
+        $message = $this->message->withHeader('X-Foo', []);
+
+        $this->assertTrue($message->hasHeader('X-Foo'));
+    }
+
+    public function testHeaderWithNoValues()
+    {
+        $message = $this->message->withHeader('X-Foo', []);
+
+        $this->assertSame([], $message->getHeader('X-Foo'));
+        $this->assertSame('', $message->getHeaderLine('X-Foo'));
+    }
+
+
     public function testCanRemoveHeaders()
     {
         $message = $this->message->withHeader('X-Foo', 'Foo');
