@@ -22,14 +22,11 @@ use Psr\Http\Message\UriInterface;
  * the environment. As such, this trait exists to provide the common code
  * between both client-side and server-side requests, and each can then
  * use the headers functionality required by their implementations.
- *
- * @property array $headers
- * @property array $headerNames
- * @property StreamInterface $stream
- * @method bool hasHeader(string $header)
  */
 trait RequestTrait
 {
+    use MessageTrait;
+
     /**
      * @var string
      */

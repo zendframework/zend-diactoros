@@ -21,7 +21,7 @@ use Psr\Http\Message\StreamInterface;
  */
 class Request implements RequestInterface
 {
-    use MessageTrait, RequestTrait;
+    use RequestTrait;
 
     /**
      * @param null|string|UriInterface $uri URI for the request, if any.
