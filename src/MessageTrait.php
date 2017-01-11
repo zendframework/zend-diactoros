@@ -374,7 +374,7 @@ trait MessageTrait
             $values = [$values];
         }
 
-        return array_map(function($value){
+        return array_map(function ($value) {
             HeaderSecurity::assertValid($value);
 
             return (string) $value;
