@@ -229,7 +229,7 @@ class MessageTraitTest extends TestCase
      */
     public function testWithAddedHeaderRaisesExceptionForNonStringNonArrayValue($value)
     {
-        $this->setExpectedException('InvalidArgumentException', 'expected string');
+        $this->setExpectedException('InvalidArgumentException', 'must be a string');
         $message = $this->message->withAddedHeader('X-Foo', $value);
     }
 
