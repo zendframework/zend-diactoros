@@ -62,10 +62,10 @@ class SapiStreamEmitter implements EmitterInterface
             $body->rewind();
         }
 
-        if ($body->isReadable())
-        {
-            while (! $body->eof())
+        if ($body->isReadable()) {
+            while (! $body->eof()) {
                 echo $body->read($maxBufferLength);
+            }
             return;
         }
 
@@ -92,16 +92,13 @@ class SapiStreamEmitter implements EmitterInterface
             $first = 0;
         }
 
-        if ($body->isReadable())
-        {
-            for ($remaining = $length; 
-                 ($remaining >= $maxBufferLength) && (!$body->eof());
-                 $remaining -= strlen($contents)) {
+        if ($body->isReadable()) {
+            for ($remaining = $length; ($remaining >= $maxBufferLength)
+                                       && (! $body->eof()); $remaining -= strlen($contents)) {
                 echo ($contents = $body->read($maxBufferLength));
-
             }
 
-            if (($remaining > 0) && (!$body->eof())) {
+            if (($remaining > 0) && (! $body->eof())) {
                 echo $body->read($remaining);
             }
 
