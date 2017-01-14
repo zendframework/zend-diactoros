@@ -83,15 +83,15 @@ class SapiStreamEmitterTest extends SapiEmitterTest
         $stream->isReadable()->willReturn(true);
         $stream->rewind()->willReturn(true);
 
-        $stream->eof()->will(function () use (&$contents, &$position){
-            return !isset($contents[$position]);
+        $stream->eof()->will(function () use (&$contents, &$position) {
+            return ! isset($contents[$position]);
         });
 
-        $stream->read(Argument::type('integer'))->will(function ($args) use (&$contents, &$position){
+        $stream->read(Argument::type('integer'))->will(function ($args) use (&$contents, &$position) {
                 $data = substr($contents, $position, $args[0]);
                 $position += strlen($data);
                 return $data;
-            });
+        });
 
         $response = (new Response())
             ->withStatus(200)
@@ -102,7 +102,6 @@ class SapiStreamEmitterTest extends SapiEmitterTest
         $stream->rewind()->shouldBeCalledTimes($seekable ? 1 : 0);
         $stream->read(Argument::type('integer'))->shouldBeCalledTimes($expectedReads);
         $this->assertEquals($contents, ob_get_clean());
-
     }
 
     public function emitBodyRangeProvider()
@@ -128,16 +127,16 @@ class SapiStreamEmitterTest extends SapiEmitterTest
         $stream->getSize()->willReturn(strlen($contents));
         $stream->isSeekable()->willReturn($seekable);
         $stream->isReadable()->willReturn(true);
-        $stream->seek(Argument::type('integer'))->will(function ($args) use (&$position){
+        $stream->seek(Argument::type('integer'))->will(function ($args) use (&$position) {
             $position = $args[0];
             return true;
         });
 
-        $stream->eof()->will(function () use (&$contents, &$position){
-            return !isset($contents[$position]);
+        $stream->eof()->will(function () use (&$contents, &$position) {
+            return ! isset($contents[$position]);
         });
 
-        $stream->read(Argument::type('integer'))->will(function ($args) use (&$contents, &$position){
+        $stream->read(Argument::type('integer'))->will(function ($args) use (&$contents, &$position) {
             $data = substr($contents, $position, $args[0]);
             $position += strlen($data);
             return $data;
