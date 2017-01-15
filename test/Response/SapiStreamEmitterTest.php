@@ -81,6 +81,8 @@ class SapiStreamEmitterTest extends SapiEmitterTest
         $stream->getSize()->willReturn(strlen($contents));
         $stream->isSeekable()->willReturn($seekable);
         $stream->isReadable()->willReturn(true);
+        $stream->__toString()->willReturn($contents);
+        $stream->getContents()->willReturn($contents);
         $stream->rewind()->willReturn(true);
 
         $stream->eof()->will(function () use (&$contents, &$position) {
@@ -102,6 +104,109 @@ class SapiStreamEmitterTest extends SapiEmitterTest
         $stream->rewind()->shouldBeCalledTimes($seekable ? 1 : 0);
         $stream->read(Argument::type('integer'))->shouldBeCalledTimes($expectedReads);
         $this->assertEquals($contents, ob_get_clean());
+    }
+
+    public function emitMemoryUsageProvider()
+    {
+        return [
+            [true,   512, 1000, 20,       null],
+            [true,  8192, 1000, 20,       null],
+            [false,  512, 1000, 20,       null],
+            [false, 8192, 1000, 20,       null],
+            [true,   512, 1000, 20,   [25, 75]],
+            [true,  8192, 1000, 20,   [25, 75]],
+            [true,   512, 1000, 20, [250, 750]],
+            [true,  8192, 1000, 20, [250, 750]],
+            [false,  512, 1000, 20,   [25, 75]],
+            [false, 8192, 1000, 20,   [25, 75]],
+            [false,  512, 1000, 20, [250, 750]],
+            [false, 8192, 1000, 20, [250, 750]],
+        ];
+    }
+
+    /**
+     * @dataProvider emitMemoryUsageProvider
+     */
+    public function testEmitMemoryUsage($seekable, $maxBufferLength, $sizeBlocks, $maxAllowedBlocks, $rangeBlocks)
+    {
+        $sizeBytes = $maxBufferLength * $sizeBlocks;
+        $maxAllowedMemoryUsage = $maxBufferLength * $maxAllowedBlocks;
+        $peakBufferLength = 0;
+        $peakMemoryUsage = 0;
+
+        if ($rangeBlocks) {
+            $first = $maxBufferLength * $rangeBlocks[0];
+            $last  = $maxBufferLength * $rangeBlocks[1];
+            $position = $first;
+        } else {
+            $position = 0;
+        }
+
+        $closureFullContents = function () use (&$sizeBytes) {
+            return str_repeat('0', $sizeBytes);
+        };
+
+        $stream = $this->prophesize('Psr\Http\Message\StreamInterface');
+        $stream->getSize()->willReturn($sizeBytes);
+        $stream->isSeekable()->willReturn($seekable);
+        $stream->isReadable()->willReturn(true);
+        $stream->__toString()->will($closureFullContents);
+        $stream->getContents()->willReturn($closureFullContents);
+        $stream->rewind()->willReturn(true);
+
+        $stream->seek(Argument::type('integer'), Argument::any())->will(function ($args) use (&$position) {
+            $position = $args[0];
+            return true;
+        });
+
+        $stream->eof()->will(function () use (&$sizeBytes, &$position) {
+            return ($position >= $sizeBytes);
+        });
+
+        $stream->read(Argument::type('integer'))->will(function ($args) use (&$position, &$peakBufferLength) {
+            if ($args[0] > $peakBufferLength) {
+                $peakBufferLength = $args[0];
+            }
+
+            $position += $args[0];
+            return str_repeat('0', $args[0]);
+        });
+
+        $response = (new Response())
+            ->withStatus(200)
+            ->withBody($stream->reveal());
+
+
+        if ($rangeBlocks) {
+            $response->withHeader('Content-Range', "bytes $first-$last/*");
+        }
+
+        ob_start(function ($output) {
+            return "";
+        }, $maxBufferLength);
+
+        $closureTrackMemoryUsage = function () use (&$peakMemoryUsage) {
+            $memoryUsage = memory_get_usage();
+
+            if ($memoryUsage > $peakMemoryUsage) {
+                $peakMemoryUsage = $memoryUsage;
+            }
+        };
+
+        register_tick_function($closureTrackMemoryUsage);
+
+        declare (ticks = 1) {
+            $this->emitter->emit($response, $maxBufferLength);
+        }
+
+        unregister_tick_function($closureTrackMemoryUsage);
+
+        ob_end_flush();
+
+        $localMemoryUsage = memory_get_usage();
+
+        $this->assertLessThanOrEqual($maxBufferLength, $peakBufferLength);
+        $this->assertLessThanOrEqual($maxAllowedMemoryUsage, ($peakMemoryUsage - $localMemoryUsage));
     }
 
     public function emitBodyRangeProvider()
@@ -127,13 +232,21 @@ class SapiStreamEmitterTest extends SapiEmitterTest
         $stream->getSize()->willReturn(strlen($contents));
         $stream->isSeekable()->willReturn($seekable);
         $stream->isReadable()->willReturn(true);
-        $stream->seek(Argument::type('integer'))->will(function ($args) use (&$position) {
+        $stream->__toString()->willReturn($contents);
+        $stream->getContents()->willReturn($contents);
+        $stream->rewind()->willReturn(true);
+
+        $stream->seek(Argument::type('integer'), Argument::any())->will(function ($args) use (&$position) {
             $position = $args[0];
             return true;
         });
 
         $stream->eof()->will(function () use (&$contents, &$position) {
             return ! isset($contents[$position]);
+        });
+
+        $stream->tell()->will(function () use (&$position) {
+            return $position;
         });
 
         $stream->read(Argument::type('integer'))->will(function ($args) use (&$contents, &$position) {
@@ -149,7 +262,7 @@ class SapiStreamEmitterTest extends SapiEmitterTest
 
         ob_start();
         $this->emitter->emit($response, $maxBufferLength);
-        $stream->seek(Argument::type('integer'))->shouldBeCalledTimes($seekable ? 1 : 0);
+        $stream->seek(Argument::type('integer'), Argument::any())->shouldBeCalledTimes($seekable ? 1 : 0);
         $stream->read(Argument::type('integer'))->shouldBeCalledTimes($expectedReads);
         $this->assertEquals(substr($contents, $first, $last - $first + 1), ob_get_clean());
     }
