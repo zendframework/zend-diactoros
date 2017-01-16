@@ -205,6 +205,8 @@ class SapiStreamEmitterTest extends SapiEmitterTest
 
         ob_end_flush();
 
+        gc_collect_cycles();
+
         $localMemoryUsage = memory_get_usage();
 
         $this->assertLessThanOrEqual($maxBufferLength, $peakBufferLength);
