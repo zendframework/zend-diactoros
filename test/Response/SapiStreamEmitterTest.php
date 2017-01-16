@@ -142,6 +142,14 @@ class SapiStreamEmitterTest extends SapiEmitterTest
             $position = 0;
         }
 
+        $closureTrackMemoryUsage = function () use (&$peakMemoryUsage) {
+            $memoryUsage = memory_get_usage();
+
+            if ($memoryUsage > $peakMemoryUsage) {
+                $peakMemoryUsage = $memoryUsage;
+            }
+        };
+
         $closureFullContents = function () use (&$sizeBytes) {
             return str_repeat('0', $sizeBytes);
         };
@@ -151,7 +159,7 @@ class SapiStreamEmitterTest extends SapiEmitterTest
         $stream->isSeekable()->willReturn($seekable);
         $stream->isReadable()->willReturn(true);
         $stream->__toString()->will($closureFullContents);
-        $stream->getContents()->willReturn($closureFullContents);
+        $stream->getContents()->will($closureFullContents);
         $stream->rewind()->willReturn(true);
 
         $stream->seek(Argument::type('integer'), Argument::any())->will(function ($args) use (&$position) {
@@ -163,12 +171,17 @@ class SapiStreamEmitterTest extends SapiEmitterTest
             return ($position >= $sizeBytes);
         });
 
+        $stream->tell()->will(function () use (&$position) {
+            return $position;
+        });
+
         $stream->read(Argument::type('integer'))->will(function ($args) use (&$position, &$peakBufferLength) {
             if ($args[0] > $peakBufferLength) {
                 $peakBufferLength = $args[0];
             }
 
             $position += $args[0];
+
             return str_repeat('0', $args[0]);
         });
 
@@ -178,28 +191,17 @@ class SapiStreamEmitterTest extends SapiEmitterTest
 
 
         if ($rangeBlocks) {
-            $response->withHeader('Content-Range', "bytes $first-$last/*");
+            $response = $response->withHeader('Content-Range', "bytes $first-$last/*");
         }
 
-        ob_start(function ($output) {
+        ob_start(function ($output) use (&$closureTrackMemoryUsage) {
+            call_user_func($closureTrackMemoryUsage);
             return "";
         }, $maxBufferLength);
 
-        $closureTrackMemoryUsage = function () use (&$peakMemoryUsage) {
-            $memoryUsage = memory_get_usage();
+        gc_collect_cycles();
 
-            if ($memoryUsage > $peakMemoryUsage) {
-                $peakMemoryUsage = $memoryUsage;
-            }
-        };
-
-        register_tick_function($closureTrackMemoryUsage);
-
-        declare (ticks = 1) {
-            $this->emitter->emit($response, $maxBufferLength);
-        }
-
-        unregister_tick_function($closureTrackMemoryUsage);
+        $this->emitter->emit($response, $maxBufferLength);
 
         ob_end_flush();
 
