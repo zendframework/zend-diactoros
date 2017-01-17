@@ -9,10 +9,7 @@
 
 namespace ZendTest\Diactoros\Response;
 
-use PHPUnit_Framework_TestCase as TestCase;
 use Prophecy\Argument;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\StreamInterface;
 use Zend\Diactoros\CallbackStream;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\SapiStreamEmitter;
