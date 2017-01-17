@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 1.3.9 - TBD
+## 1.3.10 - TBD
 
 ### Added
 
@@ -19,6 +19,27 @@ All notable changes to this project will be documented in this file, in reverse 
 ### Fixed
 
 - Nothing.
+
+## 1.3.9 - 2017-01-17
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#223](https://github.com/zendframework/zend-diactoros/issues/223)
+  [#224](https://github.com/zendframework/zend-diactoros/pull/224) fixed an issue
+  with the `SapiStreamEmitter` consuming too much memory when producing output
+  for readable bodies.
 
 ## 1.3.8 - 2017-01-05
 
