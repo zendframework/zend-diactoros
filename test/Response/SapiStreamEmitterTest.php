@@ -188,16 +188,20 @@ class SapiStreamEmitterTest extends SapiEmitterTest
             $response = $response->withHeader('Content-Range', 'bytes ' . $first . '-' . $last . '/*');
         }
 
-        ob_start(function ($output) use (& $closureTrackMemoryUsage) {
-            call_user_func($closureTrackMemoryUsage);
-            return "";
-        }, $maxBufferLength);
+        ob_start(
+            function () use (& $closureTrackMemoryUsage) {
+                $closureTrackMemoryUsage();
+
+                return '';
+            },
+            $maxBufferLength
+        );
 
         gc_collect_cycles();
 
         $this->emitter->emit($response, $maxBufferLength);
 
-        ob_end_clean();
+        ob_end_flush();
 
         gc_collect_cycles();
 
