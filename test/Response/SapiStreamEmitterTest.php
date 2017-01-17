@@ -82,7 +82,7 @@ class SapiStreamEmitterTest extends SapiEmitterTest
         $stream->getContents()->willReturn($contents);
         $stream->rewind()->willReturn(true);
 
-        $stream->eof()->will(function () use (&$contents, &$position) {
+        $stream->eof()->will(function () use (& $contents, & $position) {
             return ! isset($contents[$position]);
         });
 
@@ -144,7 +144,7 @@ class SapiStreamEmitterTest extends SapiEmitterTest
             $peakMemoryUsage = max($peakMemoryUsage, memory_get_usage());
         };
 
-        $closureFullContents = function () use (&$sizeBytes) {
+        $closureFullContents = function () use (& $sizeBytes) {
             return str_repeat('0', $sizeBytes);
         };
 
@@ -156,20 +156,20 @@ class SapiStreamEmitterTest extends SapiEmitterTest
         $stream->getContents()->will($closureFullContents);
         $stream->rewind()->willReturn(true);
 
-        $stream->seek(Argument::type('integer'), Argument::any())->will(function ($args) use (&$position) {
+        $stream->seek(Argument::type('integer'), Argument::any())->will(function ($args) use (& $position) {
             $position = $args[0];
             return true;
         });
 
-        $stream->eof()->will(function () use (&$sizeBytes, &$position) {
+        $stream->eof()->will(function () use (& $sizeBytes, & $position) {
             return ($position >= $sizeBytes);
         });
 
-        $stream->tell()->will(function () use (&$position) {
+        $stream->tell()->will(function () use (& $position) {
             return $position;
         });
 
-        $stream->read(Argument::type('integer'))->will(function ($args) use (&$position, &$peakBufferLength) {
+        $stream->read(Argument::type('integer'))->will(function ($args) use (& $position, & $peakBufferLength) {
             if ($args[0] > $peakBufferLength) {
                 $peakBufferLength = $args[0];
             }
@@ -188,7 +188,7 @@ class SapiStreamEmitterTest extends SapiEmitterTest
             $response = $response->withHeader('Content-Range', 'bytes ' . $first . '-' . $last . '/*');
         }
 
-        ob_start(function ($output) use (&$closureTrackMemoryUsage) {
+        ob_start(function ($output) use (& $closureTrackMemoryUsage) {
             call_user_func($closureTrackMemoryUsage);
             return "";
         }, $maxBufferLength);
@@ -234,20 +234,20 @@ class SapiStreamEmitterTest extends SapiEmitterTest
         $stream->getContents()->willReturn($contents);
         $stream->rewind()->willReturn(true);
 
-        $stream->seek(Argument::type('integer'), Argument::any())->will(function ($args) use (&$position) {
+        $stream->seek(Argument::type('integer'), Argument::any())->will(function ($args) use (& $position) {
             $position = $args[0];
             return true;
         });
 
-        $stream->eof()->will(function () use (&$contents, &$position) {
+        $stream->eof()->will(function () use (& $contents, & $position) {
             return ! isset($contents[$position]);
         });
 
-        $stream->tell()->will(function () use (&$position) {
+        $stream->tell()->will(function () use (& $position) {
             return $position;
         });
 
-        $stream->read(Argument::type('integer'))->will(function ($args) use (&$contents, &$position) {
+        $stream->read(Argument::type('integer'))->will(function ($args) use (& $contents, & $position) {
             $data = substr($contents, $position, $args[0]);
             $position += strlen($data);
             return $data;
