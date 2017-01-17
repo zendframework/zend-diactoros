@@ -86,10 +86,11 @@ class SapiStreamEmitterTest extends SapiEmitterTest
             return ! isset($contents[$position]);
         });
 
-        $stream->read(Argument::type('integer'))->will(function ($args) use (&$contents, &$position) {
-                $data = substr($contents, $position, $args[0]);
-                $position += strlen($data);
-                return $data;
+        $stream->read(Argument::type('integer'))->will(function ($args) use (& $contents, & $position) {
+            $data      = substr($contents, $position, $args[0]);
+            $position += strlen($data);
+
+            return $data;
         });
 
         $response = (new Response())
@@ -131,20 +132,16 @@ class SapiStreamEmitterTest extends SapiEmitterTest
         $peakBufferLength = 0;
         $peakMemoryUsage = 0;
 
+        $position = 0;
+
         if ($rangeBlocks) {
-            $first = $maxBufferLength * $rangeBlocks[0];
-            $last  = $maxBufferLength * $rangeBlocks[1];
+            $first    = $maxBufferLength * $rangeBlocks[0];
+            $last     = $maxBufferLength * $rangeBlocks[1];
             $position = $first;
-        } else {
-            $position = 0;
         }
 
-        $closureTrackMemoryUsage = function () use (&$peakMemoryUsage) {
-            $memoryUsage = memory_get_usage();
-
-            if ($memoryUsage > $peakMemoryUsage) {
-                $peakMemoryUsage = $memoryUsage;
-            }
+        $closureTrackMemoryUsage = function () use (& $peakMemoryUsage) {
+            $peakMemoryUsage = max($peakMemoryUsage, memory_get_usage());
         };
 
         $closureFullContents = function () use (&$sizeBytes) {
@@ -200,7 +197,7 @@ class SapiStreamEmitterTest extends SapiEmitterTest
 
         $this->emitter->emit($response, $maxBufferLength);
 
-        ob_end_flush();
+        ob_end_clean();
 
         gc_collect_cycles();
 
