@@ -185,7 +185,7 @@ class SapiStreamEmitterTest extends SapiEmitterTest
 
 
         if ($rangeBlocks) {
-            $response = $response->withHeader('Content-Range', "bytes $first-$last/*");
+            $response = $response->withHeader('Content-Range', 'bytes ' . $first . '-' . $last . '/*');
         }
 
         ob_start(function ($output) use (&$closureTrackMemoryUsage) {
@@ -204,7 +204,7 @@ class SapiStreamEmitterTest extends SapiEmitterTest
         $localMemoryUsage = memory_get_usage();
 
         $this->assertLessThanOrEqual($maxBufferLength, $peakBufferLength);
-        $this->assertLessThanOrEqual($maxAllowedMemoryUsage, ($peakMemoryUsage - $localMemoryUsage));
+        $this->assertLessThanOrEqual($maxAllowedMemoryUsage, $peakMemoryUsage - $localMemoryUsage);
     }
 
     public function emitBodyRangeProvider()
