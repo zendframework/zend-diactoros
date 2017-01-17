@@ -62,14 +62,13 @@ class SapiStreamEmitter implements EmitterInterface
             $body->rewind();
         }
 
-        if ($body->isReadable()) {
-            while (! $body->eof()) {
-                echo $body->read($maxBufferLength);
-            }
-            return;
+        if (! $body->isReadable()) {
+            echo $body;
         }
 
-        echo $body;
+        while (! $body->eof()) {
+            echo $body->read($maxBufferLength);
+        }
     }
 
     /**
@@ -89,24 +88,26 @@ class SapiStreamEmitter implements EmitterInterface
 
         if ($body->isSeekable()) {
             $body->seek($first);
+
             $first = 0;
         }
 
-        if ($body->isReadable()) {
-            for ($remaining = $length; ($remaining >= $maxBufferLength)
-                                       && (! $body->eof()); $remaining -= strlen($contents)) {
-                echo ($contents = $body->read($maxBufferLength));
-            }
-
-            if (($remaining > 0) && (! $body->eof())) {
-                echo $body->read($remaining);
-            }
-
-            return;
+        if (! $body->isReadable()) {
+            echo substr($body->getContents(), $first, $length);
         }
 
-        $contents = $body->getContents();
-        echo substr($contents, $first, $length);
+        $remaining = $length;
+
+        while ($remaining >= $maxBufferLength && ! $body->eof()) {
+            $contents   = $body->read($maxBufferLength);
+            $remaining -= strlen($contents);
+
+            echo $contents;
+        }
+
+        if ($remaining > 0 && ! $body->eof()) {
+            echo $body->read($remaining);
+        }
     }
 
     /**
