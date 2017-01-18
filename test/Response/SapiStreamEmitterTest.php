@@ -64,6 +64,8 @@ class SapiStreamEmitterTest extends SapiEmitterTest
             [true,   '012345678901234567890123', 10, 3],
             [false,  '01234567890123456789'    , 10, 2],
             [false,  '012345678901234567890123', 10, 3],
+            [true,   '012345678901234567890123', 0, 0],
+            [false,  '012345678901234567890123', 0, 0],
         ];
     }
 
@@ -74,13 +76,22 @@ class SapiStreamEmitterTest extends SapiEmitterTest
     {
         $position = 0;
 
+        $closureContents = function () use (& $contents, & $position) {
+            $position = strlen($contents);
+            return $contents;
+        };
+
         $stream = $this->prophesize('Psr\Http\Message\StreamInterface');
         $stream->getSize()->willReturn(strlen($contents));
         $stream->isSeekable()->willReturn($seekable);
-        $stream->isReadable()->willReturn(true);
-        $stream->__toString()->willReturn($contents);
-        $stream->getContents()->willReturn($contents);
-        $stream->rewind()->willReturn(true);
+        $stream->isReadable()->willReturn($expectedReads > 0 ? true : false);
+        $stream->__toString()->will($closureContents);
+        $stream->getContents()->will($closureContents);
+
+        $stream->rewind()->will(function () use (& $position) {
+            $position = 0;
+            return true;
+        });
 
         $stream->eof()->will(function () use (& $contents, & $position) {
             return ! isset($contents[$position]);
@@ -218,6 +229,8 @@ class SapiStreamEmitterTest extends SapiEmitterTest
             [true,  '012345678901234567890123', ['bytes', 10, 40, '*'], 10, 2],
             [false, '01234567890123456789'    , ['bytes', 11, 20, '*'], 10, 1],
             [false, '012345678901234567890123', ['bytes', 11, 40, '*'], 10, 2],
+            [true,  '012345678901234567890123', ['bytes', 11, 40, '*'], 0, 0],
+            [false, '012345678901234567890123', ['bytes', 11, 40, '*'], 0, 0],
         ];
     }
 
@@ -228,19 +241,42 @@ class SapiStreamEmitterTest extends SapiEmitterTest
     {
         list($unit, $first, $last, $length) = $range;
 
-        $position = $first;
+        $position = 0;
+        $size = strlen($contents);
+
+        if (! $seekable && $expectedReads > 0) {
+            $position = $first;
+        }
 
         $stream = $this->prophesize('Psr\Http\Message\StreamInterface');
-        $stream->getSize()->willReturn(strlen($contents));
+        $stream->getSize()->willReturn($size);
         $stream->isSeekable()->willReturn($seekable);
-        $stream->isReadable()->willReturn(true);
-        $stream->__toString()->willReturn($contents);
-        $stream->getContents()->willReturn($contents);
-        $stream->rewind()->willReturn(true);
+        $stream->isReadable()->willReturn($expectedReads > 0 ? true : false);
 
-        $stream->seek(Argument::type('integer'), Argument::any())->will(function ($args) use (& $position) {
-            $position = $args[0];
+        $stream->__toString()->will(function () use (& $contents, & $position) {
+            $position = strlen($contents);
+            return $contents;
+        });
+
+        $stream->getContents()->will(function () use (& $contents, & $position) {
+            $remainingContents = substr($contents, $position);
+            $position = strlen($contents);
+
+            return $remainingContents;
+        });
+
+        $stream->rewind()->will(function () use (& $position) {
+            $position = 0;
             return true;
+        });
+
+        $stream->seek(Argument::type('integer'), Argument::any())->will(function ($args) use ($size, & $position) {
+            if ($position < $size) {
+                $position = $args[0];
+                return true;
+            }
+
+            return false;
         });
 
         $stream->eof()->will(function () use (& $contents, & $position) {
@@ -254,6 +290,7 @@ class SapiStreamEmitterTest extends SapiEmitterTest
         $stream->read(Argument::type('integer'))->will(function ($args) use (& $contents, & $position) {
             $data = substr($contents, $position, $args[0]);
             $position += strlen($data);
+
             return $data;
         });
 
