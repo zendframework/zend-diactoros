@@ -131,7 +131,7 @@ final class HeaderSecurity
     {
         if (! is_string($value) && ! is_numeric($value)) {
             throw new InvalidArgumentException(sprintf(
-                'Invalid header value type; must be a string, numeric or array; received %s',
+                'Invalid header value type; must be a string or numeric; received %s',
                 (is_object($value) ? get_class($value) : gettype($value))
             ));
         }
