@@ -14,6 +14,7 @@ use Zend\Diactoros\CallbackStream;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\SapiStreamEmitter;
 use ZendTest\Diactoros\TestAsset\HeaderStack;
+use Zend\Diactoros\Response\JsonResponse;
 
 class SapiStreamEmitterTest extends SapiEmitterTest
 {
@@ -57,52 +58,146 @@ class SapiStreamEmitterTest extends SapiEmitterTest
         }
     }
 
-    public function emitBodyProvider()
+    private function expandTestData()
     {
-        return [
-            [true,   '01234567890123456789'    , 10, 2],
-            [true,   '012345678901234567890123', 10, 3],
-            [false,  '01234567890123456789'    , 10, 2],
-            [false,  '012345678901234567890123', 10, 3],
-            [true,   '012345678901234567890123', 0, 0],
-            [false,  '012345678901234567890123', 0, 0],
-        ];
-    }
+        $initialData = func_get_args();
 
-    /**
-     * @dataProvider emitBodyProvider
-    */
-    public function testEmitBody($seekable, $contents, $maxBufferLength, $expectedReads = 0)
-    {
-        $position = 0;
+        $initialData = array_filter($initialData, 'is_array');
 
-        $closureContents = function () use (& $contents, & $position) {
-            $position = strlen($contents);
-            return $contents;
+        $resultData = [];
+
+        $closureExpand = function ($item, $key, $parameters) use (& $closureExpand) {
+            if (! is_array($item)) {
+                $item = [$item];
+            }
+
+            $parameters['items'] = array_merge($parameters['items'], $item);
+
+            if (count($parameters['initialData']) > 0) {
+                array_walk(array_shift($parameters['initialData']), $closureExpand, $parameters);
+            } else {
+                $parameters['resultData'][] = $parameters['items'];
+            }
         };
 
+        array_walk(array_shift($initialData), $closureExpand, [
+            'initialData' => $initialData,
+            'items' => [],
+            'resultData' => & $resultData]);
+
+        return $resultData;
+    }
+
+    private function getStreamProphecy(& $contents, & $size, & $position, & $peakBufferLength)
+    {
         $stream = $this->prophesize('Psr\Http\Message\StreamInterface');
-        $stream->getSize()->willReturn(strlen($contents));
-        $stream->isSeekable()->willReturn($seekable);
-        $stream->isReadable()->willReturn($expectedReads > 0 ? true : false);
-        $stream->__toString()->will($closureContents);
-        $stream->getContents()->will($closureContents);
+
+        $stream->__toString()->will(function () use (& $contents, & $position, $size) {
+            if (is_callable($contents)) {
+                $data = $contents(0);
+            } else {
+                $data = $contents;
+            }
+
+            $position = $size;
+
+            return $data;
+        });
+
+        $stream->getSize()->willReturn($size);
+
+        $stream->tell()->will(function () use (& $position) {
+            return $position;
+        });
+
+        $stream->eof()->will(function () use ($size, & $position) {
+            return ($position >= $size);
+        });
+
+        $stream->seek(Argument::type('integer'), Argument::any())->will(function ($args) use ($size, & $position) {
+            if ($args[0] < $size) {
+                $position = $args[0];
+                return true;
+            }
+
+            return false;
+        });
 
         $stream->rewind()->will(function () use (& $position) {
             $position = 0;
             return true;
         });
 
-        $stream->eof()->will(function () use (& $contents, & $position) {
-            return ! isset($contents[$position]);
+        $stream->read(Argument::type('integer'))
+            ->will(function ($args) use (& $contents, & $position, & $peakBufferLength) {
+                if (is_callable($contents)) {
+                    $data = $contents($position, $args[0]);
+                } else {
+                    $data = substr($contents, $position, $args[0]);
+                }
+
+                if ($args[0] > $peakBufferLength) {
+                    $peakBufferLength = $args[0];
+                }
+
+                $position += strlen($data);
+
+                return $data;
+            });
+
+        $stream->getContents()->will(function () use (& $contents, & $position) {
+            if (is_callable($contents)) {
+                $remainingContents = $contents($position);
+            } else {
+                $remainingContents = substr($contents, $position);
+            }
+
+            $position += strlen($remainingContents);
+
+            return $remainingContents;
         });
 
-        $stream->read(Argument::type('integer'))->will(function ($args) use (& $contents, & $position) {
-            $data      = substr($contents, $position, $args[0]);
-            $position += strlen($data);
+        return $stream;
+    }
 
-            return $data;
-        });
+    public function emitStreamResponseProvider()
+    {
+        $capabilities = [
+            [true, true],
+            [true, false],
+            [false, true],
+            [false, false],
+        ];
+
+
+        $contents = [
+            ['01234567890987654321'],
+            ['01234567890987654321012'],
+        ];
+
+        $bufferLengths = [
+          [10],
+          [20],
+          [100],
+        ];
+
+        return $this->expandTestData($capabilities, $contents, $bufferLengths);
+    }
+
+    /**
+     * @dataProvider emitStreamResponseProvider
+     */
+    public function testEmitStreamResponse($seekable, $readable, $contents, $maxBufferLength)
+    {
+        $size = strlen($contents);
+        $position = 0;
+        $peakBufferLength = 0;
+        $rewindCalled = false;
+        $fullContentsCalled = false;
+
+        $stream = $this->getStreamProphecy($contents, $size, $position, $peakBufferLength);
+        $stream->isSeekable()->willReturn($seekable);
+        $stream->isReadable()->willReturn($readable);
 
         $response = (new Response())
             ->withStatus(200)
@@ -110,33 +205,167 @@ class SapiStreamEmitterTest extends SapiEmitterTest
 
         ob_start();
         $this->emitter->emit($response, $maxBufferLength);
-        $stream->rewind()->shouldBeCalledTimes($seekable ? 1 : 0);
-        $stream->read(Argument::type('integer'))->shouldBeCalledTimes($expectedReads);
-        $this->assertEquals($contents, ob_get_clean());
+        $emittedContents = ob_get_clean();
+
+        if ($seekable) {
+            $rewindPredictionClosure = function () use (& $rewindCalled) {
+                $rewindCalled = true;
+            };
+
+            $stream->rewind()->should($rewindPredictionClosure);
+            $stream->seek(0)->should($rewindPredictionClosure);
+            $stream->seek(0, SEEK_SET)->should($rewindPredictionClosure);
+        } else {
+            $stream->rewind()->shouldNotBeCalled();
+            $stream->seek(Argument::type('integer'), Argument::any())->shouldNotBeCalled();
+        }
+
+        if ($readable) {
+            $stream->__toString()->shouldNotBeCalled();
+            $stream->read(Argument::type('integer'))->shouldBeCalled();
+            $stream->eof()->shouldBeCalled();
+            $stream->getContents()->shouldNotBeCalled();
+        } else {
+            $fullContentsPredictionClosure = function () use (& $fullContentsCalled) {
+                $fullContentsCalled = true;
+            };
+
+            $stream->__toString()->should($fullContentsPredictionClosure);
+            $stream->read(Argument::type('integer'))->shouldNotBeCalled();
+            $stream->eof()->shouldNotBeCalled();
+
+            if ($seekable) {
+                $stream->getContents()->should($fullContentsPredictionClosure);
+            } else {
+                $stream->getContents()->shouldNotBeCalled();
+            }
+        }
+
+        $stream->checkProphecyMethodsPredictions();
+
+        $this->assertEquals($seekable, $rewindCalled);
+        $this->assertEquals(! $readable, $fullContentsCalled);
+        $this->assertEquals($contents, $emittedContents);
+        $this->assertLessThanOrEqual($maxBufferLength, $peakBufferLength);
+    }
+
+    public function emitRangeStreamResponseProvider()
+    {
+        $capabilities = [
+                [true,   true],
+                [true,  false],
+                [false,  true],
+                [false, false],
+        ];
+
+        $ranges = [
+                [['bytes', 10, 20, '*']],
+                [['bytes', 10, 100, '*']],
+        ];
+
+        $contents = [
+                ['01234567890987654321'],
+                ['01234567890987654321012'],
+        ];
+
+        $bufferLengths = [
+                [10],
+                [20],
+                [100],
+        ];
+
+        return $this->expandTestData($capabilities, $ranges, $contents, $bufferLengths);
+    }
+
+
+    /**
+     * @dataProvider emitRangeStreamResponseProvider
+     */
+    public function testEmitRangeStreamResponse($seekable, $readable, array $range, $contents, $maxBufferLength)
+    {
+        list($unit, $first, $last, $length) = $range;
+        $size = strlen($contents);
+
+        if ($readable && ! $seekable) {
+            $position = $first;
+        } else {
+            $position = 0;
+        }
+
+        $peakBufferLength = 0;
+        $seekCalled = false;
+
+        $stream = $this->getStreamProphecy($contents, $size, $position, $peakBufferLength);
+        $stream->isSeekable()->willReturn($seekable);
+        $stream->isReadable()->willReturn($readable);
+
+        $response = (new Response())
+            ->withStatus(200)
+            ->withHeader('Content-Range', 'bytes ' . $first . '-' . $last . '/*')
+            ->withBody($stream->reveal());
+
+        ob_start();
+        $this->emitter->emit($response, $maxBufferLength);
+        $emittedContents = ob_get_clean();
+
+        $stream->rewind()->shouldNotBeCalled();
+
+        if ($seekable) {
+            $seekPredictionClosure = function () use (& $seekCalled) {
+                $seekCalled = true;
+            };
+
+            $stream->seek($first)->should($seekPredictionClosure);
+            $stream->seek($first, SEEK_SET)->should($seekPredictionClosure);
+        } else {
+            $stream->seek(Argument::type('integer'), Argument::any())->shouldNotBeCalled();
+        }
+
+        $stream->__toString()->shouldNotBeCalled();
+
+        if ($readable) {
+            $stream->read(Argument::type('integer'))->shouldBeCalled();
+            $stream->eof()->shouldBeCalled();
+            $stream->getContents()->shouldNotBeCalled();
+        } else {
+            $stream->read(Argument::type('integer'))->shouldNotBeCalled();
+            $stream->eof()->shouldNotBeCalled();
+            $stream->getContents()->shouldBeCalled();
+        }
+
+        $stream->checkProphecyMethodsPredictions();
+
+        $this->assertEquals($seekable, $seekCalled);
+        $this->assertEquals(substr($contents, $first, $last - $first + 1), $emittedContents);
+        $this->assertLessThanOrEqual($maxBufferLength, $peakBufferLength);
     }
 
     public function emitMemoryUsageProvider()
     {
-        return [
-            [true,   512, 1000, 20,       null],
-            [true,  8192, 1000, 20,       null],
-            [false,  512, 1000, 20,       null],
-            [false, 8192, 1000, 20,       null],
-            [true,   512, 1000, 20,   [25, 75]],
-            [true,  8192, 1000, 20,   [25, 75]],
-            [true,   512, 1000, 20, [250, 750]],
-            [true,  8192, 1000, 20, [250, 750]],
-            [false,  512, 1000, 20,   [25, 75]],
-            [false, 8192, 1000, 20,   [25, 75]],
-            [false,  512, 1000, 20, [250, 750]],
-            [false, 8192, 1000, 20, [250, 750]],
+        $capabilitiesLimitsRanges = [
+            [true,   true,  1000,   20,       null],
+            [true,  false,   100,  320,       null],
+            [false,  true,  1000,   20,       null],
+            [false, false,   100,  320,       null],
+            [true,   true,  1000,   20,   [25, 75]],
+            [false,  true,  1000,   20,   [25, 75]],
+            [true,   true,  1000,   20, [250, 750]],
+            [false,  true,  1000,   20, [250, 750]],
         ];
+
+        $bufferLengths = [
+                [512],
+                [4096],
+                [8192],
+        ];
+
+        return $this->expandTestData($capabilitiesLimitsRanges, $bufferLengths);
     }
 
     /**
      * @dataProvider emitMemoryUsageProvider
      */
-    public function testEmitMemoryUsage($seekable, $maxBufferLength, $sizeBlocks, $maxAllowedBlocks, $rangeBlocks)
+    public function testEmitMemoryUsage($seekable, $readable, $sizeBlocks, $maxAllowedBlocks, $rangeBlocks, $maxBufferLength)
     {
         $sizeBytes = $maxBufferLength * $sizeBlocks;
         $maxAllowedMemoryUsage = $maxBufferLength * $maxAllowedBlocks;
@@ -148,47 +377,27 @@ class SapiStreamEmitterTest extends SapiEmitterTest
         if ($rangeBlocks) {
             $first    = $maxBufferLength * $rangeBlocks[0];
             $last     = $maxBufferLength * $rangeBlocks[1];
-            $position = $first;
+
+            if ($readable && ! $seekable) {
+                $position = $first;
+            }
         }
 
         $closureTrackMemoryUsage = function () use (& $peakMemoryUsage) {
             $peakMemoryUsage = max($peakMemoryUsage, memory_get_usage());
         };
 
-        $closureFullContents = function () use (& $sizeBytes) {
-            return str_repeat('0', $sizeBytes);
-        };
-
-        $stream = $this->prophesize('Psr\Http\Message\StreamInterface');
-        $stream->getSize()->willReturn($sizeBytes);
-        $stream->isSeekable()->willReturn($seekable);
-        $stream->isReadable()->willReturn(true);
-        $stream->__toString()->will($closureFullContents);
-        $stream->getContents()->will($closureFullContents);
-        $stream->rewind()->willReturn(true);
-
-        $stream->seek(Argument::type('integer'), Argument::any())->will(function ($args) use (& $position) {
-            $position = $args[0];
-            return true;
-        });
-
-        $stream->eof()->will(function () use (& $sizeBytes, & $position) {
-            return ($position >= $sizeBytes);
-        });
-
-        $stream->tell()->will(function () use (& $position) {
-            return $position;
-        });
-
-        $stream->read(Argument::type('integer'))->will(function ($args) use (& $position, & $peakBufferLength) {
-            if ($args[0] > $peakBufferLength) {
-                $peakBufferLength = $args[0];
+        $closureContents = function ($position, $length = null) use (& $sizeBytes) {
+            if (! $length) {
+                $length = $sizeBytes - $position;
             }
 
-            $position += $args[0];
+            return str_repeat('0', $length);
+        };
 
-            return str_repeat('0', $args[0]);
-        });
+        $stream = $this->getStreamProphecy($closureContents, $sizeBytes, $position, $peakBufferLength);
+        $stream->isSeekable()->willReturn($seekable);
+        $stream->isReadable()->willReturn($readable);
 
         $response = (new Response())
             ->withStatus(200)
@@ -210,9 +419,13 @@ class SapiStreamEmitterTest extends SapiEmitterTest
 
         gc_collect_cycles();
 
+        gc_disable();
+
         $this->emitter->emit($response, $maxBufferLength);
 
         ob_end_flush();
+
+        gc_enable();
 
         gc_collect_cycles();
 
@@ -220,90 +433,6 @@ class SapiStreamEmitterTest extends SapiEmitterTest
 
         $this->assertLessThanOrEqual($maxBufferLength, $peakBufferLength);
         $this->assertLessThanOrEqual($maxAllowedMemoryUsage, $peakMemoryUsage - $localMemoryUsage);
-    }
-
-    public function emitBodyRangeProvider()
-    {
-        return [
-            [true,  '01234567890123456789'    , ['bytes', 10, 20, '*'], 10, 1],
-            [true,  '012345678901234567890123', ['bytes', 10, 40, '*'], 10, 2],
-            [false, '01234567890123456789'    , ['bytes', 11, 20, '*'], 10, 1],
-            [false, '012345678901234567890123', ['bytes', 11, 40, '*'], 10, 2],
-            [true,  '012345678901234567890123', ['bytes', 11, 40, '*'], 0, 0],
-            [false, '012345678901234567890123', ['bytes', 11, 40, '*'], 0, 0],
-        ];
-    }
-
-    /**
-     * @dataProvider emitBodyRangeProvider
-     */
-    public function testEmitBodyRange($seekable, $contents, $range, $maxBufferLength, $expectedReads = 0)
-    {
-        list($unit, $first, $last, $length) = $range;
-
-        $position = 0;
-        $size = strlen($contents);
-
-        if (! $seekable && $expectedReads > 0) {
-            $position = $first;
-        }
-
-        $stream = $this->prophesize('Psr\Http\Message\StreamInterface');
-        $stream->getSize()->willReturn($size);
-        $stream->isSeekable()->willReturn($seekable);
-        $stream->isReadable()->willReturn($expectedReads > 0 ? true : false);
-
-        $stream->__toString()->will(function () use (& $contents, & $position) {
-            $position = strlen($contents);
-            return $contents;
-        });
-
-        $stream->getContents()->will(function () use (& $contents, & $position) {
-            $remainingContents = substr($contents, $position);
-            $position = strlen($contents);
-
-            return $remainingContents;
-        });
-
-        $stream->rewind()->will(function () use (& $position) {
-            $position = 0;
-            return true;
-        });
-
-        $stream->seek(Argument::type('integer'), Argument::any())->will(function ($args) use ($size, & $position) {
-            if ($position < $size) {
-                $position = $args[0];
-                return true;
-            }
-
-            return false;
-        });
-
-        $stream->eof()->will(function () use (& $contents, & $position) {
-            return ! isset($contents[$position]);
-        });
-
-        $stream->tell()->will(function () use (& $position) {
-            return $position;
-        });
-
-        $stream->read(Argument::type('integer'))->will(function ($args) use (& $contents, & $position) {
-            $data = substr($contents, $position, $args[0]);
-            $position += strlen($data);
-
-            return $data;
-        });
-
-        $response = (new Response())
-            ->withStatus(200)
-            ->withHeader('Content-Range', "$unit $first-$last/$length")
-            ->withBody($stream->reveal());
-
-        ob_start();
-        $this->emitter->emit($response, $maxBufferLength);
-        $stream->seek(Argument::type('integer'), Argument::any())->shouldBeCalledTimes($seekable ? 1 : 0);
-        $stream->read(Argument::type('integer'))->shouldBeCalledTimes($expectedReads);
-        $this->assertEquals(substr($contents, $first, $last - $first + 1), ob_get_clean());
     }
 
     public function contentRangeProvider()
