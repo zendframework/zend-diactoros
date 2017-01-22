@@ -12,9 +12,12 @@ namespace ZendTest\Diactoros\Response;
 use Prophecy\Argument;
 use Zend\Diactoros\CallbackStream;
 use Zend\Diactoros\Response;
-use Zend\Diactoros\Response\SapiStreamEmitter;
-use ZendTest\Diactoros\TestAsset\HeaderStack;
+use Zend\Diactoros\Response\EmptyResponse;
 use Zend\Diactoros\Response\JsonResponse;
+use Zend\Diactoros\Response\HtmlResponse;
+use Zend\Diactoros\Response\SapiStreamEmitter;
+use Zend\Diactoros\Response\TextResponse;
+use ZendTest\Diactoros\TestAsset\HeaderStack;
 
 class SapiStreamEmitterTest extends SapiEmitterTest
 {
@@ -442,23 +445,43 @@ class SapiStreamEmitterTest extends SapiEmitterTest
         $this->assertLessThanOrEqual($maxAllowedMemoryUsage, $peakMemoryUsage - $localMemoryUsage);
     }
 
-    public function contentRangeProvider()
+    public function testEmitEmptyResponse()
     {
-        return [
-            ['bytes 0-2/*', 'Hello world', 'Hel'],
-            ['bytes 3-6/*', 'Hello world', 'lo w'],
-            ['items 0-0/1', 'Hello world', 'Hello world'],
-        ];
+        $response = (new EmptyResponse())
+            ->withStatus(204);
+
+        ob_start();
+        $this->emitter->emit($response);
+        $this->assertEmpty($response->getHeaderLine('content-type'));
+        $this->assertEmpty(ob_get_clean());
+    }
+
+    public function testEmitHtmlResponse()
+    {
+        $contents = '<!DOCTYPE html>'
+                  . '<html>'
+                  . '    <body>'
+                  . '        <h1>Hello world</h1>'
+                  . '    </body>'
+                  . '</html>';
+
+        $response = (new HtmlResponse($contents))
+            ->withStatus(200);
+
+        ob_start();
+        $this->emitter->emit($response);
+        $this->assertEquals('text/html; charset=utf-8', $response->getHeaderLine('content-type'));
+        $this->assertEquals($contents, ob_get_clean());
     }
 
     public function emitJsonResponseProvider()
     {
-        return [[0.1],
-                ['test'],
-                [true],
-                [1],
-                [['key1' => 'value1']],
-                [null],
+        return [[0.1                                                                         ],
+                ['test'                                                                      ],
+                [true                                                                        ],
+                [1                                                                           ],
+                [['key1' => 'value1']                                                        ],
+                [null                                                                        ],
                 [[[0.1, 0.2], ['test', 'test2'], [true, false], ['key1' => 'value1'], [null]]],
         ];
     }
@@ -473,7 +496,30 @@ class SapiStreamEmitterTest extends SapiEmitterTest
 
         ob_start();
         $this->emitter->emit($response);
+        $this->assertEquals('application/json', $response->getHeaderLine('content-type'));
         $this->assertEquals(json_encode($contents), ob_get_clean());
+    }
+
+    public function testEmitTextResponse()
+    {
+        $contents = 'Hello world';
+
+        $response = (new TextResponse($contents))
+            ->withStatus(200);
+
+        ob_start();
+        $this->emitter->emit($response);
+        $this->assertEquals('text/plain; charset=utf-8', $response->getHeaderLine('content-type'));
+        $this->assertEquals($contents, ob_get_clean());
+    }
+
+    public function contentRangeProvider()
+    {
+        return [
+                ['bytes 0-2/*', 'Hello world', 'Hel'],
+                ['bytes 3-6/*', 'Hello world', 'lo w'],
+                ['items 0-0/1', 'Hello world', 'Hello world'],
+        ];
     }
 
     /**
