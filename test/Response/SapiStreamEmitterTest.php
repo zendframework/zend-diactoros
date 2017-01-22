@@ -61,41 +61,23 @@ class SapiStreamEmitterTest extends SapiEmitterTest
         }
     }
 
-    private function expandTestData()
+    /**
+    * Create a new stream prophecy and setup common promises
+    *
+    * @param string|callable $contents              Stream contents.
+    * @param integer         $size                  Size of stream contents.
+    * @param integer         $startPosition         Start position of internal stream data pointer.
+    * @param callable|null   $trackPeakBufferLength Called on "read" calls.
+    *                                               Receives data length (i.e. data length <= buffer length).
+    * @return ObjectProphecy                        Returns new stream prophecy.
+    */
+    private function setUpStreamProphecy($contents, $size, $startPosition, callable $trackPeakBufferLength = null)
     {
-        $initialData = func_get_args();
+        $position = $startPosition;
 
-        $initialData = array_filter($initialData, 'is_array');
-
-        $resultData = [];
-
-        $closureExpand = function ($item, $key, $parameters) use (& $closureExpand) {
-            if (! is_array($item)) {
-                $item = [$item];
-            }
-
-            $parameters['items'] = array_merge($parameters['items'], $item);
-
-            if (count($parameters['initialData']) > 0) {
-                array_walk(array_shift($parameters['initialData']), $closureExpand, $parameters);
-            } else {
-                $parameters['resultData'][] = $parameters['items'];
-            }
-        };
-
-        array_walk(array_shift($initialData), $closureExpand, [
-            'initialData' => $initialData,
-            'items' => [],
-            'resultData' => & $resultData]);
-
-        return $resultData;
-    }
-
-    private function getStreamProphecy(& $contents, & $size, & $position, & $peakBufferLength)
-    {
         $stream = $this->prophesize('Psr\Http\Message\StreamInterface');
 
-        $stream->__toString()->will(function () use (& $contents, & $position, $size) {
+        $stream->__toString()->will(function () use ($contents, $size, & $position) {
             if (is_callable($contents)) {
                 $data = $contents(0);
             } else {
@@ -132,15 +114,15 @@ class SapiStreamEmitterTest extends SapiEmitterTest
         });
 
         $stream->read(Argument::type('integer'))
-            ->will(function ($args) use (& $contents, & $position, & $peakBufferLength) {
+            ->will(function ($args) use ($contents, & $position, & $trackPeakBufferLength) {
                 if (is_callable($contents)) {
                     $data = $contents($position, $args[0]);
                 } else {
                     $data = substr($contents, $position, $args[0]);
                 }
 
-                if ($args[0] > $peakBufferLength) {
-                    $peakBufferLength = $args[0];
+                if ($trackPeakBufferLength) {
+                    $trackPeakBufferLength($args[0]);
                 }
 
                 $position += strlen($data);
@@ -148,7 +130,7 @@ class SapiStreamEmitterTest extends SapiEmitterTest
                 return $data;
             });
 
-        $stream->getContents()->will(function () use (& $contents, & $position) {
+        $stream->getContents()->will(function () use ($contents, & $position) {
             if (is_callable($contents)) {
                 $remainingContents = $contents($position);
             } else {
@@ -165,40 +147,60 @@ class SapiStreamEmitterTest extends SapiEmitterTest
 
     public function emitStreamResponseProvider()
     {
-        $capabilities = [
-            [true, true],
-            [true, false],
-            [false, true],
-            [false, false],
+        return [
+            [true,   true,    '01234567890987654321',   10],
+            [true,   true,    '01234567890987654321',   20],
+            [true,   true,    '01234567890987654321',  100],
+            [true,   true, '01234567890987654321012',   10],
+            [true,   true, '01234567890987654321012',   20],
+            [true,   true, '01234567890987654321012',  100],
+            [true,  false,    '01234567890987654321',   10],
+            [true,  false,    '01234567890987654321',   20],
+            [true,  false,    '01234567890987654321',  100],
+            [true,  false, '01234567890987654321012',   10],
+            [true,  false, '01234567890987654321012',   20],
+            [true,  false, '01234567890987654321012',  100],
+            [false,  true,    '01234567890987654321',   10],
+            [false,  true,    '01234567890987654321',   20],
+            [false,  true,    '01234567890987654321',  100],
+            [false,  true, '01234567890987654321012',   10],
+            [false,  true, '01234567890987654321012',   20],
+            [false,  true, '01234567890987654321012',  100],
+            [false, false,    '01234567890987654321',   10],
+            [false, false,    '01234567890987654321',   20],
+            [false, false,    '01234567890987654321',  100],
+            [false, false, '01234567890987654321012',   10],
+            [false, false, '01234567890987654321012',   20],
+            [false, false, '01234567890987654321012',  100],
         ];
-
-
-        $contents = [
-            ['01234567890987654321'],
-            ['01234567890987654321012'],
-        ];
-
-        $bufferLengths = [
-          [10],
-          [20],
-          [100],
-        ];
-
-        return $this->expandTestData($capabilities, $contents, $bufferLengths);
     }
 
     /**
+     * @param boolean $seekable                 Indicates if stream is seekable
+     * @param boolean $readable                 Indicates if stream is readable
+     * @param string  $contents                 Contents stored in stream
+     * @param boolean $maxBufferLength          Maximum buffer length used in the emitter call.
      * @dataProvider emitStreamResponseProvider
      */
     public function testEmitStreamResponse($seekable, $readable, $contents, $maxBufferLength)
     {
         $size = strlen($contents);
-        $position = 0;
+        $startPosition = 0;
         $peakBufferLength = 0;
         $rewindCalled = false;
         $fullContentsCalled = false;
 
-        $stream = $this->getStreamProphecy($contents, $size, $position, $peakBufferLength);
+        $stream = $this->setUpStreamProphecy(
+            $contents,
+            $size,
+            $startPosition,
+            function ($bufferLength) use (& $peakBufferLength) {
+                if ($bufferLength > $peakBufferLength) {
+                    $peakBufferLength = $bufferLength;
+                }
+            }
+        );
+
         $stream->isSeekable()->willReturn($seekable);
         $stream->isReadable()->willReturn($readable);
 
@@ -254,34 +256,65 @@ class SapiStreamEmitterTest extends SapiEmitterTest
 
     public function emitRangeStreamResponseProvider()
     {
-        $capabilities = [
-                [true,   true],
-                [true,  false],
-                [false,  true],
-                [false, false],
+        return [
+            [true,   true, ['bytes', 10,  20, '*'],    '01234567890987654321',   5],
+            [true,   true, ['bytes', 10,  20, '*'],    '01234567890987654321',  10],
+            [true,   true, ['bytes', 10,  20, '*'],    '01234567890987654321', 100],
+            [true,   true, ['bytes', 10,  20, '*'], '01234567890987654321012',   5],
+            [true,   true, ['bytes', 10,  20, '*'], '01234567890987654321012',  10],
+            [true,   true, ['bytes', 10,  20, '*'], '01234567890987654321012', 100],
+            [true,   true, ['bytes', 10, 100, '*'],    '01234567890987654321',   5],
+            [true,   true, ['bytes', 10, 100, '*'],    '01234567890987654321',  10],
+            [true,   true, ['bytes', 10, 100, '*'],    '01234567890987654321', 100],
+            [true,   true, ['bytes', 10, 100, '*'], '01234567890987654321012',   5],
+            [true,   true, ['bytes', 10, 100, '*'], '01234567890987654321012',  10],
+            [true,   true, ['bytes', 10, 100, '*'], '01234567890987654321012', 100],
+            [true,  false, ['bytes', 10,  20, '*'],    '01234567890987654321',   5],
+            [true,  false, ['bytes', 10,  20, '*'],    '01234567890987654321',  10],
+            [true,  false, ['bytes', 10,  20, '*'],    '01234567890987654321', 100],
+            [true,  false, ['bytes', 10,  20, '*'], '01234567890987654321012',   5],
+            [true,  false, ['bytes', 10,  20, '*'], '01234567890987654321012',  10],
+            [true,  false, ['bytes', 10,  20, '*'], '01234567890987654321012', 100],
+            [true,  false, ['bytes', 10, 100, '*'],    '01234567890987654321',   5],
+            [true,  false, ['bytes', 10, 100, '*'],    '01234567890987654321',  10],
+            [true,  false, ['bytes', 10, 100, '*'],    '01234567890987654321', 100],
+            [true,  false, ['bytes', 10, 100, '*'], '01234567890987654321012',   5],
+            [true,  false, ['bytes', 10, 100, '*'], '01234567890987654321012',  10],
+            [true,  false, ['bytes', 10, 100, '*'], '01234567890987654321012', 100],
+            [false,  true, ['bytes', 10,  20, '*'],    '01234567890987654321',   5],
+            [false,  true, ['bytes', 10,  20, '*'],    '01234567890987654321',  10],
+            [false,  true, ['bytes', 10,  20, '*'],    '01234567890987654321', 100],
+            [false,  true, ['bytes', 10,  20, '*'], '01234567890987654321012',   5],
+            [false,  true, ['bytes', 10,  20, '*'], '01234567890987654321012',  10],
+            [false,  true, ['bytes', 10,  20, '*'], '01234567890987654321012', 100],
+            [false,  true, ['bytes', 10, 100, '*'],    '01234567890987654321',   5],
+            [false,  true, ['bytes', 10, 100, '*'],    '01234567890987654321',  10],
+            [false,  true, ['bytes', 10, 100, '*'],    '01234567890987654321', 100],
+            [false,  true, ['bytes', 10, 100, '*'], '01234567890987654321012',   5],
+            [false,  true, ['bytes', 10, 100, '*'], '01234567890987654321012',  10],
+            [false,  true, ['bytes', 10, 100, '*'], '01234567890987654321012', 100],
+            [false, false, ['bytes', 10,  20, '*'],    '01234567890987654321',   5],
+            [false, false, ['bytes', 10,  20, '*'],    '01234567890987654321',  10],
+            [false, false, ['bytes', 10,  20, '*'],    '01234567890987654321', 100],
+            [false, false, ['bytes', 10,  20, '*'], '01234567890987654321012',   5],
+            [false, false, ['bytes', 10,  20, '*'], '01234567890987654321012',  10],
+            [false, false, ['bytes', 10,  20, '*'], '01234567890987654321012', 100],
+            [false, false, ['bytes', 10, 100, '*'],    '01234567890987654321',   5],
+            [false, false, ['bytes', 10, 100, '*'],    '01234567890987654321',  10],
+            [false, false, ['bytes', 10, 100, '*'],    '01234567890987654321', 100],
+            [false, false, ['bytes', 10, 100, '*'], '01234567890987654321012',   5],
+            [false, false, ['bytes', 10, 100, '*'], '01234567890987654321012',  10],
+            [false, false, ['bytes', 10, 100, '*'], '01234567890987654321012', 100],
         ];
-
-        $ranges = [
-                [['bytes', 10, 20, '*']],
-                [['bytes', 10, 100, '*']],
-        ];
-
-        $contents = [
-                ['01234567890987654321'],
-                ['01234567890987654321012'],
-        ];
-
-        $bufferLengths = [
-                [10],
-                [20],
-                [100],
-        ];
-
-        return $this->expandTestData($capabilities, $ranges, $contents, $bufferLengths);
     }
 
 
     /**
+     * @param boolean $seekable                 Indicates if stream is seekable
+     * @param boolean $readable                 Indicates if stream is readable
+     * @param array   $range                    Emitted range of data [$unit, $first, $last, $length]
+     * @param string  $contents                 Contents stored in stream
+     * @param boolean $maxBufferLength          Maximum buffer length used in the emitter call.
      * @dataProvider emitRangeStreamResponseProvider
      */
     public function testEmitRangeStreamResponse($seekable, $readable, array $range, $contents, $maxBufferLength)
@@ -290,15 +323,24 @@ class SapiStreamEmitterTest extends SapiEmitterTest
         $size = strlen($contents);
 
         if ($readable && ! $seekable) {
-            $position = $first;
+            $startPosition = $first;
         } else {
-            $position = 0;
+            $startPosition = 0;
         }
 
         $peakBufferLength = 0;
         $seekCalled = false;
 
-        $stream = $this->getStreamProphecy($contents, $size, $position, $peakBufferLength);
+        $stream = $this->setUpStreamProphecy(
+            $contents,
+            $size,
+            $startPosition,
+            function ($bufferLength) use (& $peakBufferLength) {
+                if ($bufferLength > $peakBufferLength) {
+                    $peakBufferLength = $bufferLength;
+                }
+            }
+        );
         $stream->isSeekable()->willReturn($seekable);
         $stream->isReadable()->willReturn($readable);
 
@@ -345,27 +387,42 @@ class SapiStreamEmitterTest extends SapiEmitterTest
 
     public function emitMemoryUsageProvider()
     {
-        $capabilitiesLimitsRanges = [
-            [true,   true,  1000,   20,       null],
-            [true,  false,   100,  320,       null],
-            [false,  true,  1000,   20,       null],
-            [false, false,   100,  320,       null],
-            [true,   true,  1000,   20,   [25, 75]],
-            [false,  true,  1000,   20,   [25, 75]],
-            [true,   true,  1000,   20, [250, 750]],
-            [false,  true,  1000,   20, [250, 750]],
+        return [
+            [true,   true,  1000,   20,       null,  512],
+            [true,   true,  1000,   20,       null, 4096],
+            [true,   true,  1000,   20,       null, 8192],
+            [true,  false,   100,  320,       null,  512],
+            [true,  false,   100,  320,       null, 4096],
+            [true,  false,   100,  320,       null, 8192],
+            [false,  true,  1000,   20,       null,  512],
+            [false,  true,  1000,   20,       null, 4096],
+            [false,  true,  1000,   20,       null, 8192],
+            [false, false,   100,  320,       null,  512],
+            [false, false,   100,  320,       null, 4096],
+            [false, false,   100,  320,       null, 8192],
+            [true,   true,  1000,   20,   [25, 75],  512],
+            [true,   true,  1000,   20,   [25, 75], 4096],
+            [true,   true,  1000,   20,   [25, 75], 8192],
+            [false,  true,  1000,   20,   [25, 75],  512],
+            [false,  true,  1000,   20,   [25, 75], 4096],
+            [false,  true,  1000,   20,   [25, 75], 8192],
+            [true,   true,  1000,   20, [250, 750],  512],
+            [true,   true,  1000,   20, [250, 750], 4096],
+            [true,   true,  1000,   20, [250, 750], 8192],
+            [false,  true,  1000,   20, [250, 750],  512],
+            [false,  true,  1000,   20, [250, 750], 4096],
+            [false,  true,  1000,   20, [250, 750], 8192],
         ];
-
-        $bufferLengths = [
-                [512],
-                [4096],
-                [8192],
-        ];
-
-        return $this->expandTestData($capabilitiesLimitsRanges, $bufferLengths);
     }
 
     /**
+     * @param boolean $seekable                 Indicates if stream is seekable
+     * @param boolean $readable                 Indicates if stream is readable
+     * @param integer $sizeBlocks               Number the blocks of stream data.
+     *                                          Block size is equal to $maxBufferLength.
+     * @param integer $maxAllowedBlocks         Maximum allowed memory usage in block units.
+     * @param boolean $rangeBlocks              Emitted range of data in block units [$firstBlock, $lastBlock].
+     * @param boolean $maxBufferLength          Maximum buffer length used in the emitter call.
      * @dataProvider emitMemoryUsageProvider
      */
     public function testEmitMemoryUsage(
@@ -386,7 +443,7 @@ class SapiStreamEmitterTest extends SapiEmitterTest
 
         if ($rangeBlocks) {
             $first    = $maxBufferLength * $rangeBlocks[0];
-            $last     = $maxBufferLength * $rangeBlocks[1];
+            $last     = ($maxBufferLength * $rangeBlocks[1]) + $maxBufferLength - 1;
 
             if ($readable && ! $seekable) {
                 $position = $first;
@@ -405,7 +462,22 @@ class SapiStreamEmitterTest extends SapiEmitterTest
             return str_repeat('0', $length);
         };
 
-        $stream = $this->getStreamProphecy($closureContents, $sizeBytes, $position, $peakBufferLength);
+        $stream = $this->setUpStreamProphecy(
+            function ($position, $length = null) use (& $sizeBytes) {
+                if (! $length) {
+                    $length = $sizeBytes - $position;
+                }
+
+                return str_repeat('0', $length);
+            },
+            $sizeBytes,
+            $position,
+            function ($bufferLength) use (& $peakBufferLength) {
+                if ($bufferLength > $peakBufferLength) {
+                    $peakBufferLength = $bufferLength;
+                }
+            }
+        );
         $stream->isSeekable()->willReturn($seekable);
         $stream->isReadable()->willReturn($readable);
 
@@ -476,17 +548,19 @@ class SapiStreamEmitterTest extends SapiEmitterTest
 
     public function emitJsonResponseProvider()
     {
-        return [[0.1                                                                         ],
-                ['test'                                                                      ],
-                [true                                                                        ],
-                [1                                                                           ],
-                [['key1' => 'value1']                                                        ],
-                [null                                                                        ],
-                [[[0.1, 0.2], ['test', 'test2'], [true, false], ['key1' => 'value1'], [null]]],
+        return [
+            [0.1                                                                         ],
+            ['test'                                                                      ],
+            [true                                                                        ],
+            [1                                                                           ],
+            [['key1' => 'value1']                                                        ],
+            [null                                                                        ],
+            [[[0.1, 0.2], ['test', 'test2'], [true, false], ['key1' => 'value1'], [null]]],
         ];
     }
 
     /**
+     * @param string  $contents                 Contents stored in stream
      * @dataProvider emitJsonResponseProvider
      */
     public function testEmitJsonResponse($contents)
@@ -516,9 +590,9 @@ class SapiStreamEmitterTest extends SapiEmitterTest
     public function contentRangeProvider()
     {
         return [
-                ['bytes 0-2/*', 'Hello world', 'Hel'],
-                ['bytes 3-6/*', 'Hello world', 'lo w'],
-                ['items 0-0/1', 'Hello world', 'Hello world'],
+            ['bytes 0-2/*', 'Hello world', 'Hel'],
+            ['bytes 3-6/*', 'Hello world', 'lo w'],
+            ['items 0-0/1', 'Hello world', 'Hello world'],
         ];
     }
 
