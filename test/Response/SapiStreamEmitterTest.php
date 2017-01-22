@@ -365,8 +365,15 @@ class SapiStreamEmitterTest extends SapiEmitterTest
     /**
      * @dataProvider emitMemoryUsageProvider
      */
-    public function testEmitMemoryUsage($seekable, $readable, $sizeBlocks, $maxAllowedBlocks, $rangeBlocks, $maxBufferLength)
-    {
+    public function testEmitMemoryUsage(
+        $seekable,
+        $readable,
+        $sizeBlocks,
+        $maxAllowedBlocks,
+        $rangeBlocks,
+        $maxBufferLength
+    ) {
+
         $sizeBytes = $maxBufferLength * $sizeBlocks;
         $maxAllowedMemoryUsage = $maxBufferLength * $maxAllowedBlocks;
         $peakBufferLength = 0;
@@ -442,6 +449,31 @@ class SapiStreamEmitterTest extends SapiEmitterTest
             ['bytes 3-6/*', 'Hello world', 'lo w'],
             ['items 0-0/1', 'Hello world', 'Hello world'],
         ];
+    }
+
+    public function emitJsonResponseProvider()
+    {
+        return [[0.1],
+                ['test'],
+                [true],
+                [1],
+                [['key1' => 'value1']],
+                [null],
+                [[[0.1, 0.2], ['test', 'test2'], [true, false], ['key1' => 'value1'], [null]]],
+        ];
+    }
+
+    /**
+     * @dataProvider emitJsonResponseProvider
+     */
+    public function testEmitJsonResponse($contents)
+    {
+        $response = (new JsonResponse($contents))
+            ->withStatus(200);
+
+        ob_start();
+        $this->emitter->emit($response);
+        $this->assertEquals(json_encode($contents), ob_get_clean());
     }
 
     /**
