@@ -64,6 +64,7 @@ class SapiStreamEmitter implements EmitterInterface
 
         if (! $body->isReadable()) {
             echo $body;
+            return;
         }
 
         while (! $body->eof()) {
@@ -94,6 +95,7 @@ class SapiStreamEmitter implements EmitterInterface
 
         if (! $body->isReadable()) {
             echo substr($body->getContents(), $first, $length);
+            return;
         }
 
         $remaining = $length;
