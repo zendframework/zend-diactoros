@@ -455,14 +455,6 @@ class SapiStreamEmitterTest extends SapiEmitterTest
             $peakMemoryUsage = max($peakMemoryUsage, memory_get_usage());
         };
 
-        $closureContents = function ($position, $length = null) use (& $sizeBytes) {
-            if (! $length) {
-                $length = $sizeBytes - $position;
-            }
-
-            return str_repeat('0', $length);
-        };
-
         $stream = $this->setUpStreamProphecy(
             function ($position, $length = null) use (& $sizeBytes) {
                 if (! $length) {
