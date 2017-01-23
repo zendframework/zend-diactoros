@@ -179,7 +179,7 @@ class SapiStreamEmitterTest extends SapiEmitterTest
      * @param boolean $seekable                 Indicates if stream is seekable
      * @param boolean $readable                 Indicates if stream is readable
      * @param string  $contents                 Contents stored in stream
-     * @param boolean $maxBufferLength          Maximum buffer length used in the emitter call.
+     * @param integer $maxBufferLength          Maximum buffer length used in the emitter call.
      * @dataProvider emitStreamResponseProvider
      */
     public function testEmitStreamResponse($seekable, $readable, $contents, $maxBufferLength)
@@ -314,7 +314,7 @@ class SapiStreamEmitterTest extends SapiEmitterTest
      * @param boolean $readable                 Indicates if stream is readable
      * @param array   $range                    Emitted range of data [$unit, $first, $last, $length]
      * @param string  $contents                 Contents stored in stream
-     * @param boolean $maxBufferLength          Maximum buffer length used in the emitter call.
+     * @param integer $maxBufferLength          Maximum buffer length used in the emitter call.
      * @dataProvider emitRangeStreamResponseProvider
      */
     public function testEmitRangeStreamResponse($seekable, $readable, array $range, $contents, $maxBufferLength)
@@ -421,8 +421,8 @@ class SapiStreamEmitterTest extends SapiEmitterTest
      * @param integer $sizeBlocks               Number the blocks of stream data.
      *                                          Block size is equal to $maxBufferLength.
      * @param integer $maxAllowedBlocks         Maximum allowed memory usage in block units.
-     * @param boolean $rangeBlocks              Emitted range of data in block units [$firstBlock, $lastBlock].
-     * @param boolean $maxBufferLength          Maximum buffer length used in the emitter call.
+     * @param array   $rangeBlocks              Emitted range of data in block units [$firstBlock, $lastBlock].
+     * @param integer $maxBufferLength          Maximum buffer length used in the emitter call.
      * @dataProvider emitMemoryUsageProvider
      */
     public function testEmitMemoryUsage(
@@ -430,7 +430,7 @@ class SapiStreamEmitterTest extends SapiEmitterTest
         $readable,
         $sizeBlocks,
         $maxAllowedBlocks,
-        $rangeBlocks,
+        array $rangeBlocks,
         $maxBufferLength
     ) {
 
