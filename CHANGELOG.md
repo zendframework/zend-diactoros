@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 1.3.10 - TBD
+## 1.3.11 - TBD
 
 ### Added
 
@@ -19,6 +19,27 @@ All notable changes to this project will be documented in this file, in reverse 
 ### Fixed
 
 - Nothing.
+
+## 1.3.10 - 2017-01-23
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#226](https://github.com/zendframework/zend-diactoros/pull/226) fixed an
+  issue with the `SapiStreamEmitter` causing the response body to be cast
+  to `(string)` and also be read as a readable stream, potentially producing
+  double output.
 
 ## 1.3.9 - 2017-01-17
 
