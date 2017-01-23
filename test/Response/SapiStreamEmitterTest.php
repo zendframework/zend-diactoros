@@ -416,13 +416,14 @@ class SapiStreamEmitterTest extends SapiEmitterTest
     }
 
     /**
-     * @param boolean $seekable                 Indicates if stream is seekable
-     * @param boolean $readable                 Indicates if stream is readable
-     * @param integer $sizeBlocks               Number the blocks of stream data.
+     * @param boolean    $seekable              Indicates if stream is seekable
+     * @param boolean    $readable              Indicates if stream is readable
+     * @param integer    $sizeBlocks            Number the blocks of stream data.
      *                                          Block size is equal to $maxBufferLength.
-     * @param integer $maxAllowedBlocks         Maximum allowed memory usage in block units.
-     * @param array   $rangeBlocks              Emitted range of data in block units [$firstBlock, $lastBlock].
-     * @param integer $maxBufferLength          Maximum buffer length used in the emitter call.
+     * @param integer    $maxAllowedBlocks      Maximum allowed memory usage in block units.
+     * @param array|null $rangeBlocks           Emitted range of data in block units [$firstBlock, $lastBlock].
+     * @param integer    $maxBufferLength       Maximum buffer length used in the emitter call.
+     *
      * @dataProvider emitMemoryUsageProvider
      */
     public function testEmitMemoryUsage(
@@ -430,7 +431,7 @@ class SapiStreamEmitterTest extends SapiEmitterTest
         $readable,
         $sizeBlocks,
         $maxAllowedBlocks,
-        array $rangeBlocks,
+        $rangeBlocks,
         $maxBufferLength
     ) {
 
