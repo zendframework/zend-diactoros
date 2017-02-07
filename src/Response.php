@@ -44,7 +44,7 @@ class Response implements ResponseInterface
         206 => 'Partial Content',
         207 => 'Multi-status',
         208 => 'Already Reported',
-        226 => 'IM used',
+        226 => 'IM Used',
         // REDIRECTION CODES
         300 => 'Multiple Choices',
         301 => 'Moved Permanently',
