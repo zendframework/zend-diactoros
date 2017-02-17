@@ -209,7 +209,7 @@ class SapiStreamEmitterTest extends SapiEmitterTest
             ->withBody($stream->reveal());
 
         ob_start();
-        $this->emitter->emit($response, $maxBufferLength);
+        $this->emitter->emit($response, null, $maxBufferLength);
         $emittedContents = ob_get_clean();
 
         if ($seekable) {
@@ -350,7 +350,7 @@ class SapiStreamEmitterTest extends SapiEmitterTest
             ->withBody($stream->reveal());
 
         ob_start();
-        $this->emitter->emit($response, $maxBufferLength);
+        $this->emitter->emit($response, null, $maxBufferLength);
         $emittedContents = ob_get_clean();
 
         $stream->rewind()->shouldNotBeCalled();
@@ -496,7 +496,7 @@ class SapiStreamEmitterTest extends SapiEmitterTest
 
         gc_disable();
 
-        $this->emitter->emit($response, $maxBufferLength);
+        $this->emitter->emit($response, null, $maxBufferLength);
 
         ob_end_flush();
 
