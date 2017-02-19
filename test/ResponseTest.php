@@ -66,6 +66,68 @@ class ResponseTest extends TestCase
         $this->assertEquals('Unprocessable Entity', $response->getReasonPhrase());
     }
 
+    public function ianaCodesReasonPhrasesProvider()
+    {
+        set_error_handler(function ($errno, $errstr) {
+            throw new \ErrorException($errstr, 0, $errno);
+        });
+
+        try {
+            $ianaHttpStatusCodes = new \DOMDocument();
+            $ianaHttpStatusCodes->load(__DIR__ . '/TestAsset/http-status-codes.xml');
+            $validTestAsset = $ianaHttpStatusCodes->relaxNGValidate(__DIR__ . '/TestAsset/http-status-codes.rng');
+        } catch (\Exception $e) {
+            $xmlError = $e->getMessage();
+            $validTestAsset = false;
+        }
+
+        restore_error_handler();
+
+        if (! $validTestAsset) {
+            $this->markTestIncomplete(
+                'Invalid IANA "http-status-codes.xml". Error: ' . $xmlError
+            );
+            return null;
+        }
+
+        $ianaCodesReasonPhrases = [];
+
+        $xpath = new \DomXPath($ianaHttpStatusCodes);
+        $xpath->registerNamespace('ns', 'http://www.iana.org/assignments');
+
+        $records = $xpath->query('//ns:record');
+
+        foreach ($records as $record) {
+            $value = $xpath->query('.//ns:value', $record)->item(0)->nodeValue;
+            $description = $xpath->query('.//ns:description', $record)->item(0)->nodeValue;
+
+            if ($description === 'Unassigned') {
+                continue;
+            }
+
+            $range = preg_match('/^([0-9]+)\s*\-\s*([0-9]+)$/', $value, $matches);
+
+            if (! $range) {
+                $ianaCodesReasonPhrases[] = [$value, $description];
+            } else {
+                for ($value = $matches[1]; $value <= $matches[2]; $value++) {
+                    $ianaCodesReasonPhrases[] = [$value, $description];
+                }
+            }
+        }
+
+        return $ianaCodesReasonPhrases;
+    }
+
+    /**
+     * @dataProvider ianaCodesReasonPhrasesProvider
+     */
+    public function testReasonPhraseDefaultsAgainstIana($code, $reasonPhrase)
+    {
+        $response = $this->response->withStatus($code);
+        $this->assertEquals($reasonPhrase, $response->getReasonPhrase());
+    }
+
     public function testCanSetCustomReasonPhrase()
     {
         $response = $this->response->withStatus(422, 'Foo Bar!');
