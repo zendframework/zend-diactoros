@@ -101,7 +101,7 @@ class ResponseTest extends TestCase
             $value = $xpath->query('.//ns:value', $record)->item(0)->nodeValue;
             $description = $xpath->query('.//ns:description', $record)->item(0)->nodeValue;
 
-            if ($description === 'Unassigned') {
+            if ($description === 'Unassigned' | $description === '(Unused)') {
                 continue;
             }
 
