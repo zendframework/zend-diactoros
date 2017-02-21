@@ -66,6 +66,74 @@ class ResponseTest extends TestCase
         $this->assertEquals('Unprocessable Entity', $response->getReasonPhrase());
     }
 
+    protected function checkNewVersionIanaHttpStatusCodes(\DOMDocument $ianaHttpStatusCodes)
+    {
+        set_error_handler(function ($errno, $errstr) {
+            throw new \ErrorException($errstr, 0, $errno);
+        });
+
+        $updateError = null;
+
+        try {
+            $xpath = new \DomXPath($ianaHttpStatusCodes);
+            $xpath->registerNamespace('ns', 'http://www.iana.org/assignments');
+
+            $updated = $xpath->query('//ns:updated')->item(0)->nodeValue;
+            $lastModified  = new \DateTime($updated . ' +24 hour GMT');
+
+            $options = [
+              'http' => [
+                  'method'  => 'GET',
+                  'timeout' => 30,
+                  'header' => [
+                      'If-Modified-Since: ' . $lastModified->format("r") . "\r\n"
+                  ]
+              ],
+            ];
+
+            $contents = file_get_contents(
+                'https://www.iana.org/assignments/http-status-codes/http-status-codes.xml',
+                false,
+                stream_context_create($options)
+            );
+
+            $http_status = 0;
+            $remoteLastModified = $lastModified;
+
+            if ($http_response_header) {
+                for ($i = 0; $i < count($http_response_header); $i++) {
+                    if (preg_match('/^HTTP\/[0-9\.]+\s*([0-9]+)\s*.+$/i', $http_response_header[$i], $matches) > 0) {
+                        $http_status = $matches[1];
+                    } elseif (preg_match('/^Last-Modified\s*:\s*(.+)$/i', $http_response_header[$i], $matches) > 0) {
+                        $remoteLastModified = new \DateTime($matches[1]);
+                    }
+                }
+            }
+
+            if ($http_status == 200 && $remoteLastModified > $lastModified) {
+                $ianaHttpStatusCodes->loadXml($contents);
+                $validXml = $ianaHttpStatusCodes->relaxNGValidate(__DIR__ . '/TestAsset/http-status-codes.rng');
+
+                if ($validXml) {
+                    file_put_contents(__DIR__ . '/TestAsset/http-status-codes.xml', $contents);
+                    print 'IANA "http-status-codes.xml" updated successful' . "\n";
+                } else {
+                    $ianaHttpStatusCodes->load(__DIR__ . '/TestAsset/http-status-codes.xml');
+                }
+            }
+        } catch (\Exception $e) {
+            $updateError = $e->getMessage();
+        }
+
+        restore_error_handler();
+
+        if ($updateError) {
+            print 'Error on IANA "http-status-codes.xml" update. Error: ' . $updateError . "\n";
+        }
+
+        return $ianaHttpStatusCodes;
+    }
+
     public function ianaCodesReasonPhrasesProvider()
     {
         set_error_handler(function ($errno, $errstr) {
@@ -75,20 +143,22 @@ class ResponseTest extends TestCase
         try {
             $ianaHttpStatusCodes = new \DOMDocument();
             $ianaHttpStatusCodes->load(__DIR__ . '/TestAsset/http-status-codes.xml');
-            $validTestAsset = $ianaHttpStatusCodes->relaxNGValidate(__DIR__ . '/TestAsset/http-status-codes.rng');
+            $validXml = $ianaHttpStatusCodes->relaxNGValidate(__DIR__ . '/TestAsset/http-status-codes.rng');
         } catch (\Exception $e) {
             $xmlError = $e->getMessage();
-            $validTestAsset = false;
+            $validXml = false;
         }
 
         restore_error_handler();
 
-        if (! $validTestAsset) {
+        if (! $validXml) {
             $this->markTestIncomplete(
                 'Invalid IANA "http-status-codes.xml". Error: ' . $xmlError
             );
             return null;
         }
+
+        $ianaHttpStatusCodes = $this->checkNewVersionIanaHttpStatusCodes($ianaHttpStatusCodes);
 
         $ianaCodesReasonPhrases = [];
 
@@ -101,7 +171,7 @@ class ResponseTest extends TestCase
             $value = $xpath->query('.//ns:value', $record)->item(0)->nodeValue;
             $description = $xpath->query('.//ns:description', $record)->item(0)->nodeValue;
 
-            if ($description === 'Unassigned' | $description === '(Unused)') {
+            if ($description === 'Unassigned' || $description === '(Unused)') {
                 continue;
             }
 
