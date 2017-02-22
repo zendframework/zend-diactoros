@@ -66,29 +66,23 @@ class ResponseTest extends TestCase
         $this->assertEquals('Unprocessable Entity', $response->getReasonPhrase());
     }
 
-    protected function checkNewVersionIanaHttpStatusCodes(\DOMDocument $ianaHttpStatusCodes)
+    protected function updateAndLoadIanaHttpStatusCodes()
     {
         set_error_handler(function ($errno, $errstr) {
             throw new \ErrorException($errstr, 0, $errno);
         });
 
-        $updateError = null;
+        $ianaHttpStatusCodes = new \DOMDocument();
+        $validXml = false;
+        $errorMessage = null;
+        $http_status = 0;
 
         try {
-            $xpath = new \DomXPath($ianaHttpStatusCodes);
-            $xpath->registerNamespace('ns', 'http://www.iana.org/assignments');
-
-            $updated = $xpath->query('//ns:updated')->item(0)->nodeValue;
-            $lastModified  = new \DateTime($updated . ' +24 hour GMT');
-
             $options = [
-              'http' => [
-                  'method'  => 'GET',
-                  'timeout' => 30,
-                  'header' => [
-                      'If-Modified-Since: ' . $lastModified->format("r") . "\r\n"
-                  ]
-              ],
+                'http' => [
+                    'method'  => 'GET',
+                    'timeout' => 30,
+                ],
             ];
 
             $contents = file_get_contents(
@@ -97,38 +91,46 @@ class ResponseTest extends TestCase
                 stream_context_create($options)
             );
 
-            $http_status = 0;
-            $remoteLastModified = $lastModified;
-
             if ($http_response_header) {
-                for ($i = 0; $i < count($http_response_header); $i++) {
-                    if (preg_match('/^HTTP\/[0-9\.]+\s*([0-9]+)\s*.+$/i', $http_response_header[$i], $matches) > 0) {
-                        $http_status = $matches[1];
-                    } elseif (preg_match('/^Last-Modified\s*:\s*(.+)$/i', $http_response_header[$i], $matches) > 0) {
-                        $remoteLastModified = new \DateTime($matches[1]);
-                    }
+                if (preg_match('/^HTTP\/[0-9\.]+\s*([0-9]+)\s*.+$/i', $http_response_header[0], $matches) > 0) {
+                    $http_status = $matches[1];
                 }
             }
 
-            if ($http_status == 200 && $remoteLastModified > $lastModified) {
+            if ($http_status == 200) {
                 $ianaHttpStatusCodes->loadXml($contents);
                 $validXml = $ianaHttpStatusCodes->relaxNGValidate(__DIR__ . '/TestAsset/http-status-codes.rng');
 
                 if ($validXml) {
                     file_put_contents(__DIR__ . '/TestAsset/http-status-codes.xml', $contents);
                     print 'IANA "http-status-codes.xml" updated successful' . "\n";
-                } else {
-                    $ianaHttpStatusCodes->load(__DIR__ . '/TestAsset/http-status-codes.xml');
                 }
             }
         } catch (\Exception $e) {
-            $updateError = $e->getMessage();
+            $errorMessage = $e->getMessage();
+        }
+
+
+        if (! $validXml) {
+            if ($errorMessage) {
+                print 'Error on IANA "http-status-codes.xml" update. Error: ' . $errorMessage . "\n";
+            }
+
+            try {
+                $ianaHttpStatusCodes->load(__DIR__ . '/TestAsset/http-status-codes.xml');
+                $validXml = $ianaHttpStatusCodes->relaxNGValidate(__DIR__ . '/TestAsset/http-status-codes.rng');
+            } catch (\Exception $e) {
+                $errorMessage = $e->getMessage();
+            }
         }
 
         restore_error_handler();
 
-        if ($updateError) {
-            print 'Error on IANA "http-status-codes.xml" update. Error: ' . $updateError . "\n";
+        if (! $validXml) {
+            $this->markTestIncomplete(
+                'Invalid IANA "http-status-codes.xml". Error: ' . $errorMessage
+            );
+            $ianaHttpStatusCodes = null;
         }
 
         return $ianaHttpStatusCodes;
@@ -136,29 +138,11 @@ class ResponseTest extends TestCase
 
     public function ianaCodesReasonPhrasesProvider()
     {
-        set_error_handler(function ($errno, $errstr) {
-            throw new \ErrorException($errstr, 0, $errno);
-        });
+        $ianaHttpStatusCodes = $this->updateAndLoadIanaHttpStatusCodes();
 
-        try {
-            $ianaHttpStatusCodes = new \DOMDocument();
-            $ianaHttpStatusCodes->load(__DIR__ . '/TestAsset/http-status-codes.xml');
-            $validXml = $ianaHttpStatusCodes->relaxNGValidate(__DIR__ . '/TestAsset/http-status-codes.rng');
-        } catch (\Exception $e) {
-            $xmlError = $e->getMessage();
-            $validXml = false;
-        }
-
-        restore_error_handler();
-
-        if (! $validXml) {
-            $this->markTestIncomplete(
-                'Invalid IANA "http-status-codes.xml". Error: ' . $xmlError
-            );
+        if (! $ianaHttpStatusCodes) {
             return null;
         }
-
-        $ianaHttpStatusCodes = $this->checkNewVersionIanaHttpStatusCodes($ianaHttpStatusCodes);
 
         $ianaCodesReasonPhrases = [];
 
