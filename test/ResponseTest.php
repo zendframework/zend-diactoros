@@ -75,7 +75,7 @@ class ResponseTest extends TestCase
         $ianaHttpStatusCodes = new \DOMDocument();
         $validXml = false;
         $errorMessage = null;
-        $http_status = 0;
+        $httpStatus = 0;
 
         try {
             $options = [
@@ -93,11 +93,11 @@ class ResponseTest extends TestCase
 
             if ($http_response_header) {
                 if (preg_match('/^HTTP\/[0-9\.]+\s*([0-9]+)\s*.+$/i', $http_response_header[0], $matches) > 0) {
-                    $http_status = $matches[1];
+                    $httpStatus = $matches[1];
                 }
             }
 
-            if ($http_status == 200) {
+            if ($httpStatus == 200) {
                 $ianaHttpStatusCodes->loadXml($contents);
                 $validXml = $ianaHttpStatusCodes->relaxNGValidate(__DIR__ . '/TestAsset/http-status-codes.rng');
 
