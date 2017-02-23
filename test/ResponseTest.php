@@ -66,82 +66,25 @@ class ResponseTest extends TestCase
         $this->assertEquals('Unprocessable Entity', $response->getReasonPhrase());
     }
 
-    protected function updateAndLoadIanaHttpStatusCodes()
-    {
-        set_error_handler(function ($errno, $errstr) {
-            throw new \ErrorException($errstr, 0, $errno);
-        });
-
-        $ianaHttpStatusCodes = new \DOMDocument();
-        $validXml = false;
-        $errorMessage = null;
-        $httpStatus = 0;
-
-        try {
-            $options = [
-                'http' => [
-                    'method'  => 'GET',
-                    'timeout' => 30,
-                ],
-            ];
-
-            $contents = file_get_contents(
-                'https://www.iana.org/assignments/http-status-codes/http-status-codes.xml',
-                false,
-                stream_context_create($options)
-            );
-
-            if ($http_response_header) {
-                if (preg_match('/^HTTP\/[0-9\.]+\s*([0-9]+)\s*.+$/i', $http_response_header[0], $matches) > 0) {
-                    $httpStatus = $matches[1];
-                }
-            }
-
-            if ($httpStatus == 200) {
-                $ianaHttpStatusCodes->loadXml($contents);
-                $validXml = $ianaHttpStatusCodes->relaxNGValidate(__DIR__ . '/TestAsset/http-status-codes.rng');
-
-                if ($validXml) {
-                    file_put_contents(__DIR__ . '/TestAsset/http-status-codes.xml', $contents);
-                    print 'IANA "http-status-codes.xml" updated successful' . "\n";
-                }
-            }
-        } catch (\Exception $e) {
-            $errorMessage = $e->getMessage();
-        }
-
-
-        if (! $validXml) {
-            if ($errorMessage) {
-                print 'Error on IANA "http-status-codes.xml" update. Error: ' . $errorMessage . "\n";
-            }
-
-            try {
-                $ianaHttpStatusCodes->load(__DIR__ . '/TestAsset/http-status-codes.xml');
-                $validXml = $ianaHttpStatusCodes->relaxNGValidate(__DIR__ . '/TestAsset/http-status-codes.rng');
-            } catch (\Exception $e) {
-                $errorMessage = $e->getMessage();
-            }
-        }
-
-        restore_error_handler();
-
-        if (! $validXml) {
-            $this->markTestIncomplete(
-                'Invalid IANA "http-status-codes.xml". Error: ' . $errorMessage
-            );
-            $ianaHttpStatusCodes = null;
-        }
-
-        return $ianaHttpStatusCodes;
-    }
-
     public function ianaCodesReasonPhrasesProvider()
     {
-        $ianaHttpStatusCodes = $this->updateAndLoadIanaHttpStatusCodes();
+        $ianaHttpStatusCodes = new \DOMDocument();
 
-        if (! $ianaHttpStatusCodes) {
-            return null;
+        libxml_set_streams_context(
+            stream_context_create(
+                [
+                    'http' => [
+                        'method'  => 'GET',
+                        'timeout' => 30,
+                    ],
+                ]
+            )
+        );
+
+        $ianaHttpStatusCodes->load('https://www.iana.org/assignments/http-status-codes/http-status-codes.xml');
+
+        if (! $ianaHttpStatusCodes->relaxNGValidate(__DIR__ . '/TestAsset/http-status-codes.rng')) {
+            self::fail();
         }
 
         $ianaCodesReasonPhrases = [];
