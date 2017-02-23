@@ -98,18 +98,16 @@ class ResponseTest extends TestCase
             $value = $xpath->query('.//ns:value', $record)->item(0)->nodeValue;
             $description = $xpath->query('.//ns:description', $record)->item(0)->nodeValue;
 
-            if ($description === 'Unassigned' || $description === '(Unused)') {
+            if (in_array($description, ['Unassigned', '(Unused)'])) {
                 continue;
             }
 
-            $range = preg_match('/^([0-9]+)\s*\-\s*([0-9]+)$/', $value, $matches);
-
-            if (! $range) {
-                $ianaCodesReasonPhrases[] = [$value, $description];
-            } else {
+            if (preg_match('/^([0-9]+)\s*\-\s*([0-9]+)$/', $value, $matches)) {
                 for ($value = $matches[1]; $value <= $matches[2]; $value++) {
                     $ianaCodesReasonPhrases[] = [$value, $description];
                 }
+            } else {
+                $ianaCodesReasonPhrases[] = [$value, $description];
             }
         }
 
