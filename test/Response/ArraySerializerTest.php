@@ -53,7 +53,7 @@ class ArraySerializerTest extends TestCase
 
         return (new Response())
             ->withStatus(201, 'Custom')
-            ->withProtocolVersion('2.0')
+            ->withProtocolVersion('1.1')
             ->withAddedHeader('Accept', 'application/json')
             ->withAddedHeader('X-Foo-Bar', 'Baz')
             ->withAddedHeader('X-Foo-Bar', 'Bat')
@@ -65,7 +65,7 @@ class ArraySerializerTest extends TestCase
         return [
             'status_code' => 201,
             'reason_phrase' => 'Custom',
-            'protocol_version' => '2.0',
+            'protocol_version' => '1.1',
             'headers' => [
                 'Accept' => [
                     'application/json',
