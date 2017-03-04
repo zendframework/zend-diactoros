@@ -46,13 +46,13 @@
   },
   "scripts": {
     "check": [
-      "@cs",
+      "@cs-check",
       "@test"
     ],
-    "coveralls": "coveralls",
-    "cs": "phpcs",
+    "upload-coverage": "coveralls -v",
+    "cs-check": "phpcs",
     "cs-fix": "phpcbf",
-    "test": "phpunit",
-    "test-coverage": "phpunit --coverage-clover clover.xml"
+    "test": "phpunit --colors=always",
+    "test-coverage": "phpunit --colors=always --coverage-clover clover.xml"
   }
 }

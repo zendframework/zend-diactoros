@@ -2,6 +2,69 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 1.4.0 - TBD
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
+## 1.3.8 - TBD
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
+## 1.3.7 - 2016-10-11
+
+### Added
+
+- [#208](https://github.com/zendframework/zend-diactoros/pull/208) adds several
+  missing response codes to `Zend\Diactoros\Response`, including:
+  - 226 ('IM used')
+  - 308 ('Permanent Redirect')
+  - 444 ('Connection Closed Without Response')
+  - 499 ('Client Closed Request')
+  - 510 ('Not Extended')
+  - 599 ('Network Connect Timeout Error')
+- [#211](https://github.com/zendframework/zend-diactoros/pull/211) adds support
+  for UTF-8 characters in query strings handled by `Zend\Diactoros\Uri`.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
 ## 1.3.6 - 2016-09-07
 
 ### Added
