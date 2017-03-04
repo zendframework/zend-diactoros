@@ -49,7 +49,7 @@ final class ArraySerializer
      *
      * @return Request
      *
-     * @throws UnexpectedValueException when missing parameters in array.
+     * @throws UnexpectedValueException when cannot deserialize response
      */
     public static function fromArray(array $serializedRequest)
     {
