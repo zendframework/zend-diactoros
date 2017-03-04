@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @see       http://github.com/zendframework/zend-diactoros for the canonical source repository
- * @copyright Copyright (c) 2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
@@ -43,6 +43,15 @@ class UriTest extends TestCase
         $this->assertEquals('http://user:pass@local.example.com:3001/foo?bar=baz#quz', (string) $new);
     }
 
+    public function testWithSchemeReturnsNewInstanceWithSameScheme()
+    {
+        $uri = new Uri('https://user:pass@local.example.com:3001/foo?bar=baz#quz');
+        $new = $uri->withScheme('https');
+        $this->assertNotSame($uri, $new);
+        $this->assertEquals('https', $new->getScheme());
+        $this->assertEquals('https://user:pass@local.example.com:3001/foo?bar=baz#quz', (string) $new);
+    }
+
     public function testWithUserInfoReturnsNewInstanceWithProvidedUser()
     {
         $uri = new Uri('https://user:pass@local.example.com:3001/foo?bar=baz#quz');
@@ -61,6 +70,23 @@ class UriTest extends TestCase
         $this->assertEquals('https://matthew:zf2@local.example.com:3001/foo?bar=baz#quz', (string) $new);
     }
 
+    public function testWithUserInfoThrowExceptionIfPasswordIsNotString()
+    {
+        $uri = new Uri('https://user:pass@local.example.com:3001/foo?bar=baz#quz');
+
+        $this->setExpectedException('InvalidArgumentException');
+        $uri->withUserInfo('matthew', 1);
+    }
+
+    public function testWithUserInfoReturnsNewInstanceIfUserAndPasswordAreSameAsBefore()
+    {
+        $uri = new Uri('https://user:pass@local.example.com:3001/foo?bar=baz#quz');
+        $new = $uri->withUserInfo('user', 'pass');
+        $this->assertNotSame($uri, $new);
+        $this->assertEquals('user:pass', $new->getUserInfo());
+        $this->assertEquals('https://user:pass@local.example.com:3001/foo?bar=baz#quz', (string) $new);
+    }
+
     public function testWithHostReturnsNewInstanceWithProvidedHost()
     {
         $uri = new Uri('https://user:pass@local.example.com:3001/foo?bar=baz#quz');
@@ -70,12 +96,22 @@ class UriTest extends TestCase
         $this->assertEquals('https://user:pass@framework.zend.com:3001/foo?bar=baz#quz', (string) $new);
     }
 
+    public function testWithHostReturnsNewInstanceWithProvidedHostIsSameAsBefore()
+    {
+        $uri = new Uri('https://user:pass@local.example.com:3001/foo?bar=baz#quz');
+        $new = $uri->withHost('local.example.com');
+        $this->assertNotSame($uri, $new);
+        $this->assertEquals('local.example.com', $new->getHost());
+        $this->assertEquals('https://user:pass@local.example.com:3001/foo?bar=baz#quz', (string) $new);
+    }
+
     public function validPorts()
     {
         return [
-            'null'      => [ null ],
-            'int'       => [ 3000 ],
-            'string'    => [ "3000" ]
+            'null'         => [ null ],
+            'int'          => [ 3000 ],
+            'string'       => [ "3000" ],
+            'sameasbefore' => [ "3001" ],
         ];
     }
 
@@ -125,6 +161,15 @@ class UriTest extends TestCase
         $this->assertNotSame($uri, $new);
         $this->assertEquals('/bar/baz', $new->getPath());
         $this->assertEquals('https://user:pass@local.example.com:3001/bar/baz?bar=baz#quz', (string) $new);
+    }
+
+    public function testWithPathReturnsNewInstanceWithProvidedPathSameAsBefore()
+    {
+        $uri = new Uri('https://user:pass@local.example.com:3001/foo?bar=baz#quz');
+        $new = $uri->withPath('/foo');
+        $this->assertNotSame($uri, $new);
+        $this->assertEquals('/foo', $new->getPath());
+        $this->assertEquals('https://user:pass@local.example.com:3001/foo?bar=baz#quz', (string) $new);
     }
 
     public function invalidPaths()
@@ -188,6 +233,15 @@ class UriTest extends TestCase
         $this->assertNotSame($uri, $new);
         $this->assertEquals('qat', $new->getFragment());
         $this->assertEquals('https://user:pass@local.example.com:3001/foo?bar=baz#qat', (string) $new);
+    }
+
+    public function testWithFragmentReturnsNewInstanceWithProvidedFragmentSameAsBefore()
+    {
+        $uri = new Uri('https://user:pass@local.example.com:3001/foo?bar=baz#quz');
+        $new = $uri->withFragment('quz');
+        $this->assertNotSame($uri, $new);
+        $this->assertEquals('quz', $new->getFragment());
+        $this->assertEquals('https://user:pass@local.example.com:3001/foo?bar=baz#quz', (string) $new);
     }
 
     public function authorityInfo()
@@ -276,6 +330,13 @@ class UriTest extends TestCase
         $this->assertEquals('https', $new->getScheme());
     }
 
+    public function testESchemeStripsOffDelimiter()
+    {
+        $uri = new Uri('https://example.com');
+        $new = $uri->withScheme('://');
+        $this->assertEquals('', $new->getScheme());
+    }
+
     public function invalidSchemes()
     {
         return [
@@ -327,11 +388,11 @@ class UriTest extends TestCase
         $this->assertEquals('foo=bar', $new->getQuery());
     }
 
-    public function testStripsFragmentPrefixIfPresent()
+    public function testEncodeFragmentPrefixIfPresent()
     {
         $uri = new Uri('http://example.com');
         $new = $uri->withFragment('#/foo/bar');
-        $this->assertEquals('/foo/bar', $new->getFragment());
+        $this->assertEquals('%23/foo/bar', $new->getFragment());
     }
 
     public function standardSchemePortCombinations()
@@ -499,5 +560,55 @@ class UriTest extends TestCase
         $uri = new Uri('https://example.com/');
         $this->setExpectedException('InvalidArgumentException');
         $uri->$method($value);
+    }
+
+    public function testUtf8Uri()
+    {
+        $uri = new Uri('http://ουτοπία.δπθ.gr/');
+
+        $this->assertEquals('ουτοπία.δπθ.gr', $uri->getHost());
+    }
+
+    /**
+     * @dataProvider utf8PathsDataProvider
+     */
+    public function testUtf8Path($url, $result)
+    {
+        $uri = new Uri($url);
+
+        $this->assertEquals($result, $uri->getPath());
+    }
+
+
+    public function utf8PathsDataProvider()
+    {
+        return [
+            ['http://example.com/тестовый_путь/', '/тестовый_путь/'],
+            ['http://example.com/ουτοπία/', '/ουτοπία/']
+        ];
+    }
+
+    /**
+     * @dataProvider utf8QueryStringsDataProvider
+     */
+    public function testUtf8Query($url, $result)
+    {
+        $uri = new Uri($url);
+
+        $this->assertEquals($result, $uri->getQuery());
+    }
+
+    public function utf8QueryStringsDataProvider()
+    {
+        return [
+            ['http://example.com/?q=тестовый_путь', 'q=тестовый_путь'],
+            ['http://example.com/?q=ουτοπία', 'q=ουτοπία'],
+        ];
+    }
+
+    public function testUriDoesNotAppendColonToHostIfPortIsEmpty()
+    {
+        $uri = (new Uri())->withHost('google.com');
+        $this->assertEquals('google.com', (string) $uri);
     }
 }

@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @see       http://github.com/zendframework/zend-diactoros for the canonical source repository
- * @copyright Copyright (c) 2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
@@ -24,6 +24,7 @@ final class HeaderSecurity
 {
     /**
      * Private constructor; non-instantiable.
+     * @codeCoverageIgnore
      */
     private function __construct()
     {
@@ -129,7 +130,10 @@ final class HeaderSecurity
     public static function assertValid($value)
     {
         if (! self::isValid($value)) {
-            throw new InvalidArgumentException('Invalid header value');
+            throw new InvalidArgumentException(sprintf(
+                '"%s" is not valid header value',
+                $value
+            ));
         }
     }
 
@@ -143,7 +147,10 @@ final class HeaderSecurity
     public static function assertValidName($name)
     {
         if (! preg_match('/^[a-zA-Z0-9\'`#$%&*+.^_|~!-]+$/', $name)) {
-            throw new InvalidArgumentException('Invalid header name');
+            throw new InvalidArgumentException(sprintf(
+                '"%s" is not valid header name',
+                $name
+            ));
         }
     }
 }

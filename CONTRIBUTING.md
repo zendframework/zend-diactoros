@@ -102,7 +102,7 @@ pull your work into the master repository. We recommend using
 3. Clone the canonical repository locally and enter it.
 
    ```console
-   $ git clone git://github.com:zendframework/zend-diactoros.git
+   $ git clone git://github.com/zendframework/zend-diactoros.git
    $ cd zend-diactoros
    ```
 
@@ -221,3 +221,8 @@ repository, we suggest doing some cleanup of these branches.
    ```console
    $ git push {username} :<branchname>
    ```
+
+
+## Conduct
+
+Please see our [CONDUCT.md](CONDUCT.md) to understand expected behavior when interacting with others in the project.

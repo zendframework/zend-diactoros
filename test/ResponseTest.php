@@ -3,12 +3,13 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @see       http://github.com/zendframework/zend-diactoros for the canonical source repository
- * @copyright Copyright (c) 2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
 namespace ZendTest\Diactoros;
 
+use InvalidArgumentException;
 use PHPUnit_Framework_TestCase as TestCase;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Stream;
@@ -135,29 +136,38 @@ class ResponseTest extends TestCase
         new Response($body);
     }
 
-    public function testConstructorIgonoresInvalidHeaders()
+
+    public function invalidHeaderTypes()
     {
-        $headers = [
-            [ 'INVALID' ],
-            'x-invalid-null' => null,
-            'x-invalid-true' => true,
-            'x-invalid-false' => false,
-            'x-invalid-int' => 1,
-            'x-invalid-object' => (object) ['INVALID'],
-            'x-valid-string' => 'VALID',
-            'x-valid-array' => [ 'VALID' ],
+        return [
+            'indexed-array' => [[['INVALID']], 'header name'],
+            'null' => [['x-invalid-null' => null]],
+            'true' => [['x-invalid-true' => true]],
+            'false' => [['x-invalid-false' => false]],
+            'object' => [['x-invalid-object' => (object) ['INVALID']]],
         ];
-        $expected = [
-            'x-valid-string' => [ 'VALID' ],
-            'x-valid-array' => [ 'VALID' ],
-        ];
-        $response = new Response('php://memory', null, $headers);
-        $this->assertEquals($expected, $response->getHeaders());
+    }
+
+    /**
+     * @dataProvider invalidHeaderTypes
+     * @group 99
+     */
+    public function testConstructorRaisesExceptionForInvalidHeaders($headers, $contains = 'header value type')
+    {
+        $this->setExpectedException('InvalidArgumentException', $contains);
+        new Response('php://memory', 200, $headers);
+    }
+
+    public function testInvalidStatusCodeInConstructor()
+    {
+        $this->setExpectedException('InvalidArgumentException');
+
+        new Response('php://memory', null);
     }
 
     public function testReasonPhraseCanBeEmpty()
     {
-        $response = $this->response->withStatus(599);
+        $response = $this->response->withStatus(555);
         $this->assertInternalType('string', $response->getReasonPhrase());
         $this->assertEmpty($response->getReasonPhrase());
     }

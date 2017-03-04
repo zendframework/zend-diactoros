@@ -56,7 +56,7 @@ $response = new HtmlResponse($htmlContent, 200, [ 'Content-Type' => ['applicatio
 ```
 
 Headers must be in the same format as you would provide to the
-[Response constructor][api.md#response-message].
+[Response constructor](api.md#response-message).
 
 ## JSON Responses
 

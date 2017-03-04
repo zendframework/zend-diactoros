@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @see       http://github.com/zendframework/zend-diactoros for the canonical source repository
- * @copyright Copyright (c) 2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
@@ -14,6 +14,7 @@ use Zend\Diactoros\Request;
 use Zend\Diactoros\Request\Serializer;
 use Zend\Diactoros\Stream;
 use Zend\Diactoros\Uri;
+use UnexpectedValueException;
 
 class SerializerTest extends TestCase
 {
@@ -324,5 +325,15 @@ class SerializerTest extends TestCase
 
         $stream = Serializer::fromStream($stream);
         $this->assertInstanceOf('Zend\Diactoros\RelativeStream', $stream->getBody());
+    }
+
+    /**
+     * @expectedException UnexpectedValueException
+     */
+    public function testToStringRaisesExceptionOnEmptyMethod()
+    {
+        $request = (new Request())
+            ->withUri(new Uri('http://example.com/foo/bar?baz=bat'));
+        $message = Serializer::toString($request);
     }
 }

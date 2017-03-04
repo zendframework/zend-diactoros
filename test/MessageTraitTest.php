@@ -3,14 +3,16 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @see       http://github.com/zendframework/zend-diactoros for the canonical source repository
- * @copyright Copyright (c) 2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
 namespace ZendTest\Diactoros;
 
+use InvalidArgumentException;
 use PHPUnit_Framework_TestCase as TestCase;
 use Psr\Http\Message\MessageInterface;
+use ReflectionMethod;
 use Zend\Diactoros\Request;
 
 class MessageTraitTest extends TestCase
@@ -22,7 +24,7 @@ class MessageTraitTest extends TestCase
 
     public function setUp()
     {
-        $this->message = new Request(null, null, $this->getMock('Psr\Http\Message\StreamInterface'));
+        $this->message = new Request(null, null, $this->getMockBuilder('Psr\Http\Message\StreamInterface')->getMock());
     }
 
     public function testProtocolHasAcceptableDefault()
@@ -37,16 +39,44 @@ class MessageTraitTest extends TestCase
         $this->assertEquals('1.0', $message->getProtocolVersion());
     }
 
+
+    public function invalidProtocolVersionProvider()
+    {
+        return [
+            'null'                 => [ null ],
+            'true'                 => [ true ],
+            'false'                => [ false ],
+            'int'                  => [ 1 ],
+            'float'                => [ 1.1 ],
+            'array'                => [ ['1.1'] ],
+            'stdClass'             => [ (object) [ 'version' => '1.0'] ],
+            '1-without-minor'      => [ '1' ],
+            '1-with-invalid-minor' => [ '1.2' ],
+            '1-with-hotfix'        => [ '1.2.3' ],
+            '2-with-minor'         => [ '2.0' ],
+        ];
+    }
+
+    /**
+     * @dataProvider invalidProtocolVersionProvider
+     */
+    public function testWithProtocolVersionRaisesExceptionForInvalidVersion($version)
+    {
+        $this->setExpectedException('InvalidArgumentException');
+        $request = new Request();
+        $request->withProtocolVersion($version);
+    }
+
     public function testUsesStreamProvidedInConstructorAsBody()
     {
-        $stream  = $this->getMock('Psr\Http\Message\StreamInterface');
+        $stream  = $this->getMockBuilder('Psr\Http\Message\StreamInterface')->getMock();
         $message = new Request(null, null, $stream);
         $this->assertSame($stream, $message->getBody());
     }
 
     public function testBodyMutatorReturnsCloneWithChanges()
     {
-        $stream  = $this->getMock('Psr\Http\Message\StreamInterface');
+        $stream  = $this->getMockBuilder('Psr\Http\Message\StreamInterface')->getMock();
         $message = $this->message->withBody($stream);
         $this->assertNotSame($this->message, $message);
         $this->assertSame($stream, $message->getBody());
@@ -175,6 +205,14 @@ class MessageTraitTest extends TestCase
         $message = $this->message->withHeader('X-Foo', $value);
     }
 
+    public function testWithHeaderReplacesDifferentCapitalization()
+    {
+        $this->message = $this->message->withHeader('X-Foo', ['foo']);
+        $new = $this->message->withHeader('X-foo', ['bar']);
+        $this->assertEquals(['bar'], $new->getHeader('x-foo'));
+        $this->assertEquals(['X-foo' => ['bar']], $new->getHeaders());
+    }
+
     /**
      * @dataProvider invalidGeneralHeaderValues
      */
@@ -257,5 +295,85 @@ class MessageTraitTest extends TestCase
     {
         $message = $this->message->withAddedHeader('X-Foo-Bar', "value,\r\n second value");
         $this->assertEquals("value,\r\n second value", $message->getHeaderLine('X-Foo-Bar'));
+    }
+
+    public function testNumericHeaderValues()
+    {
+        return [
+            'integer' => [ 123 ],
+            'float'   => [ 12.3 ],
+        ];
+    }
+
+    /**
+     * @dataProvider testNumericHeaderValues
+     * @group 99
+     */
+    public function testFilterHeadersShouldAllowIntegersAndFloats($value)
+    {
+        $filter = new ReflectionMethod($this->message, 'filterHeaders');
+        $filter->setAccessible(true);
+        $headers = [
+            'X-Test-Array'  => [ $value ],
+            'X-Test-Scalar' => $value,
+        ];
+        $test = $filter->invoke($this->message, $headers);
+        $this->assertEquals([
+            [
+                'x-test-array'  => 'X-Test-Array',
+                'x-test-scalar' => 'X-Test-Scalar',
+            ],
+            [
+                'X-Test-Array'  => [ $value ],
+                'X-Test-Scalar' => [ $value ],
+            ]
+        ], $test);
+    }
+
+    public function invalidHeaderValueTypes()
+    {
+        return [
+            'null'   => [null],
+            'true'   => [true],
+            'false'  => [false],
+            'object' => [(object) ['header' => ['foo', 'bar']]],
+        ];
+    }
+
+    public function invalidArrayHeaderValues()
+    {
+        $values = $this->invalidHeaderValueTypes();
+        $values['array'] = [['INVALID']];
+        return $values;
+    }
+
+    /**
+     * @dataProvider invalidArrayHeaderValues
+     * @group 99
+     */
+    public function testFilterHeadersShouldRaiseExceptionForInvalidHeaderValuesInArrays($value)
+    {
+        $filter = new ReflectionMethod($this->message, 'filterHeaders');
+        $filter->setAccessible(true);
+        $headers = [
+            'X-Test-Array'  => [ $value ],
+        ];
+        $this->setExpectedException('InvalidArgumentException', 'header value type');
+        $filter->invoke($this->message, $headers);
+    }
+
+    /**
+     * @dataProvider invalidHeaderValueTypes
+     * @group 99
+     */
+    public function testFilterHeadersShouldRaiseExceptionForInvalidHeaderScalarValues($value)
+    {
+        $filter = new ReflectionMethod($this->message, 'filterHeaders');
+        $filter->setAccessible(true);
+        $headers = [
+            'X-Test-Scalar' => $value,
+        ];
+        $this->setExpectedException('InvalidArgumentException', 'header value type');
+        $filter->invoke($this->message, $headers);
     }
 }

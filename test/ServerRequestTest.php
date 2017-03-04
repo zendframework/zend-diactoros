@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @see       http://github.com/zendframework/zend-diactoros for the canonical source repository
- * @copyright Copyright (c) 2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
@@ -135,6 +135,14 @@ class ServerRequestTest extends TestCase
         $headers = [
             'host' => ['example.com'],
         ];
+        $cookies = [
+            'boo' => 'foo',
+        ];
+        $queryParams = [
+            'bar' => 'bat',
+        ];
+        $parsedBody = 'bazbar';
+        $protocol = '1.2';
 
         $request = new ServerRequest(
             $server,
@@ -142,15 +150,23 @@ class ServerRequestTest extends TestCase
             $uri,
             $parameterMethod,
             'php://memory',
-            $headers
+            $headers,
+            $cookies,
+            $queryParams,
+            $parsedBody,
+            $protocol
         );
 
-        $this->assertEquals($server, $request->getServerParams());
-        $this->assertEquals($files, $request->getUploadedFiles());
+        $this->assertSame($server, $request->getServerParams());
+        $this->assertSame($files, $request->getUploadedFiles());
 
         $this->assertSame($uri, $request->getUri());
-        $this->assertEquals($methodReturned, $request->getMethod());
-        $this->assertEquals($headers, $request->getHeaders());
+        $this->assertSame($methodReturned, $request->getMethod());
+        $this->assertSame($headers, $request->getHeaders());
+        $this->assertSame($cookies, $request->getCookieParams());
+        $this->assertSame($queryParams, $request->getQueryParams());
+        $this->assertSame($parsedBody, $request->getParsedBody());
+        $this->assertSame($protocol, $request->getProtocolVersion());
 
         $body = $request->getBody();
         $r = new ReflectionProperty($body, 'stream');
@@ -186,5 +202,43 @@ class ServerRequestTest extends TestCase
     {
         $request = new ServerRequest();
         $this->assertNull($request->getParsedBody());
+    }
+
+    public function testAllowsRemovingAttributeWithNullValue()
+    {
+        $request = new ServerRequest();
+        $request = $request->withAttribute('boo', null);
+        $request = $request->withoutAttribute('boo');
+        $this->assertSame([], $request->getAttributes());
+    }
+
+    public function testAllowsRemovingNonExistentAttribute()
+    {
+        $request = new ServerRequest();
+        $request = $request->withoutAttribute('boo');
+        $this->assertSame([], $request->getAttributes());
+    }
+
+    public function testTryToAddInvalidUploadedFiles()
+    {
+        $request = new ServerRequest();
+        $this->setExpectedException('InvalidArgumentException');
+        $request->withUploadedFiles([null]);
+    }
+
+    public function testNestedUploadedFiles()
+    {
+        $request = new ServerRequest();
+
+        $uploadedFiles = [
+            [
+                new UploadedFile('php://temp', 0, 0),
+                new UploadedFile('php://temp', 0, 0),
+            ]
+        ];
+
+        $request = $request->withUploadedFiles($uploadedFiles);
+
+        $this->assertSame($uploadedFiles, $request->getUploadedFiles());
     }
 }

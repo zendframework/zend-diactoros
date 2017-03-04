@@ -3,14 +3,16 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @see       http://github.com/zendframework/zend-diactoros for the canonical source repository
- * @copyright Copyright (c) 2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
 namespace ZendTest\Diactoros;
 
 use PHPUnit_Framework_TestCase as TestCase;
+use ReflectionMethod;
 use ReflectionProperty;
+use UnexpectedValueException;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\ServerRequestFactory;
 use Zend\Diactoros\UploadedFile;
@@ -67,12 +69,30 @@ class ServerRequestFactoryTest extends TestCase
         ];
 
         $expected = [
+            'cookie' => 'COOKIE',
             'authorization' => 'token',
             'content-type' => 'application/json',
             'accept' => 'application/json',
             'x-foo-bar' => 'FOOBAR',
             'content-md5' => 'CONTENT-MD5',
             'content-length' => 'UNSPECIFIED',
+        ];
+
+        $this->assertEquals($expected, ServerRequestFactory::marshalHeaders($server));
+    }
+
+    public function testMarshalsVariablesPrefixedByApacheFromServerArray()
+    {
+        // Non-prefixed versions will be preferred
+        $server = [
+            'HTTP_X_FOO_BAR' => 'nonprefixed',
+            'REDIRECT_HTTP_AUTHORIZATION' => 'token',
+            'REDIRECT_HTTP_X_FOO_BAR' => 'prefixed',
+        ];
+
+        $expected = [
+            'authorization' => 'token',
+            'x-foo-bar' => 'nonprefixed',
         ];
 
         $this->assertEquals($expected, ServerRequestFactory::marshalHeaders($server));
@@ -336,6 +356,21 @@ class ServerRequestFactoryTest extends TestCase
         $this->assertEquals('bar=baz', $uri->getQuery());
     }
 
+    public function testMarshalUriInjectsFragmentFromServer()
+    {
+        $request = new ServerRequest();
+        $request = $request->withUri(new Uri('http://example.com/'));
+        $request = $request->withHeader('Host', 'example.com');
+
+        $server = [
+            'REQUEST_URI' => '/foo/bar#foo',
+        ];
+
+        $uri = ServerRequestFactory::marshalUriFromServer($server, $request->getHeaders());
+        $this->assertInstanceOf('Zend\Diactoros\Uri', $uri);
+        $this->assertEquals('foo', $uri->getFragment());
+    }
+
     public function testCanCreateServerRequestViaFromGlobalsMethod()
     {
         $server = [
@@ -372,6 +407,7 @@ class ServerRequestFactoryTest extends TestCase
         $this->assertEquals($body, $request->getParsedBody());
         $this->assertEquals($expectedFiles, $request->getUploadedFiles());
         $this->assertEmpty($request->getAttributes());
+        $this->assertEquals('1.1', $request->getProtocolVersion());
     }
 
     public function testNormalizeServerUsesMixedCaseAuthorizationHeaderFromApacheWhenPresent()
@@ -433,5 +469,41 @@ class ServerRequestFactoryTest extends TestCase
         $normalizedFiles = ServerRequestFactory::normalizeFiles($files);
 
         $this->assertCount(1, $normalizedFiles['fooFiles']);
+    }
+
+    public function testMarshalProtocolVersionRisesExceptionIfVersionIsNotRecognized()
+    {
+        $method = new ReflectionMethod('Zend\Diactoros\ServerRequestFactory', 'marshalProtocolVersion');
+        $method->setAccessible(true);
+        $this->setExpectedException('UnexpectedValueException');
+        $method->invoke(null, ['SERVER_PROTOCOL' => 'dadsa/1.0']);
+    }
+
+    public function testMarshalProtocolReturnsDefaultValueIfHeaderIsNotPresent()
+    {
+        $method = new ReflectionMethod('Zend\Diactoros\ServerRequestFactory', 'marshalProtocolVersion');
+        $method->setAccessible(true);
+        $version = $method->invoke(null, []);
+        $this->assertEquals('1.1', $version);
+    }
+
+    /**
+     * @dataProvider marshalProtocolVersionProvider
+     */
+    public function testMarshalProtocolVersionReturnsHttpVersions($protocol, $expected)
+    {
+        $method = new ReflectionMethod('Zend\Diactoros\ServerRequestFactory', 'marshalProtocolVersion');
+        $method->setAccessible(true);
+        $version = $method->invoke(null, ['SERVER_PROTOCOL' => $protocol]);
+        $this->assertEquals($expected, $version);
+    }
+
+    public function marshalProtocolVersionProvider()
+    {
+        return [
+            'HTTP/1.0' => ['HTTP/1.0', '1.0'],
+            'HTTP/1.1' => ['HTTP/1.1', '1.1'],
+            'HTTP/2'   => ['HTTP/2', '2'],
+        ];
     }
 }

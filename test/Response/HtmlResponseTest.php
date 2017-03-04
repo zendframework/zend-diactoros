@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @see       http://github.com/zendframework/zend-diactoros for the canonical source repository
- * @copyright Copyright (c) 2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
@@ -78,5 +78,14 @@ class HtmlResponseTest extends TestCase
     public function testRaisesExceptionforNonStringNonStreamBodyContent($body)
     {
         $response = new HtmlResponse($body);
+    }
+
+    public function testConstructorRewindsBodyStream()
+    {
+        $html = '<p>test data</p>';
+        $response = new HtmlResponse($html);
+
+        $actual = $response->getBody()->getContents();
+        $this->assertEquals($html, $actual);
     }
 }

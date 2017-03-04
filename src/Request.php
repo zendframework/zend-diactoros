@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @see       http://github.com/zendframework/zend-diactoros for the canonical source repository
- * @copyright Copyright (c) 2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
@@ -11,6 +11,7 @@ namespace Zend\Diactoros;
 
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\StreamInterface;
+use Psr\Http\Message\UriInterface;
 
 /**
  * HTTP Request encapsulation
@@ -24,7 +25,7 @@ class Request implements RequestInterface
     use MessageTrait, RequestTrait;
 
     /**
-     * @param null|string $uri URI for the request, if any.
+     * @param null|string|UriInterface $uri URI for the request, if any.
      * @param null|string $method HTTP method for the request, if any.
      * @param string|resource|StreamInterface $body Message body, if any.
      * @param array $headers Headers for the message, if any.

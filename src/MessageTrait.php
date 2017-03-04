@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @see       http://github.com/zendframework/zend-diactoros for the canonical source repository
- * @copyright Copyright (c) 2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
@@ -70,6 +70,7 @@ trait MessageTrait
      */
     public function withProtocolVersion($version)
     {
+        $this->validateProtocolVersion($version);
         $new = clone $this;
         $new->protocol = $version;
         return $new;
@@ -204,6 +205,9 @@ trait MessageTrait
         $normalized = strtolower($header);
 
         $new = clone $this;
+        if ($new->hasHeader($header)) {
+            unset($new->headers[$new->headerNames[$normalized]]);
+        }
         $new->headerNames[$normalized] = $header;
         $new->headers[$header]         = $value;
 
@@ -310,6 +314,23 @@ trait MessageTrait
         return $new;
     }
 
+    private function getStream($stream, $modeIfNotInstance)
+    {
+        if ($stream instanceof StreamInterface) {
+            return $stream;
+        }
+
+        if (! is_string($stream) && ! is_resource($stream)) {
+            throw new InvalidArgumentException(
+                'Stream must be a string stream resource identifier, '
+                . 'an actual stream resource, '
+                . 'or a Psr\Http\Message\StreamInterface implementation'
+            );
+        }
+
+        return new Stream($stream, $modeIfNotInstance);
+    }
+
     /**
      * Test that an array contains only strings
      *
@@ -334,11 +355,28 @@ trait MessageTrait
         $headerNames = $headers = [];
         foreach ($originalHeaders as $header => $value) {
             if (! is_string($header)) {
-                continue;
+                throw new InvalidArgumentException(sprintf(
+                    'Invalid header name; expected non-empty string, received %s',
+                    gettype($header)
+                ));
             }
 
-            if (! is_array($value) && ! is_string($value)) {
-                continue;
+            if (! is_array($value) && ! is_string($value) && ! is_numeric($value)) {
+                throw new InvalidArgumentException(sprintf(
+                    'Invalid header value type; expected number, string, or array; received %s',
+                    (is_object($value) ? get_class($value) : gettype($value))
+                ));
+            }
+
+            if (is_array($value)) {
+                array_walk($value, function ($item) {
+                    if (! is_string($item) && ! is_numeric($item)) {
+                        throw new InvalidArgumentException(sprintf(
+                            'Invalid header value type; expected number, string, or array; received %s',
+                            (is_object($item) ? get_class($item) : gettype($item))
+                        ));
+                    }
+                });
             }
 
             if (! is_array($value)) {
@@ -379,5 +417,35 @@ trait MessageTrait
     private static function assertValidHeaderValue(array $values)
     {
         array_walk($values, __NAMESPACE__ . '\HeaderSecurity::assertValid');
+    }
+
+    /**
+     * Validate the HTTP protocol version
+     *
+     * @param string $version
+     * @throws InvalidArgumentException on invalid HTTP protocol version
+     */
+    private function validateProtocolVersion($version)
+    {
+        if (empty($version)) {
+            throw new InvalidArgumentException(sprintf(
+                'HTTP protocol version can not be empty'
+            ));
+        }
+        if (! is_string($version)) {
+            throw new InvalidArgumentException(sprintf(
+                'Unsupported HTTP protocol version; must be a string, received %s',
+                (is_object($version) ? get_class($version) : gettype($version))
+            ));
+        }
+
+        // HTTP/1 uses a "<major>.<minor>" numbering scheme to indicate
+        // versions of the protocol, while HTTP/2 does not.
+        if (! preg_match('#^(1\.[01]|2)$#', $version)) {
+            throw new InvalidArgumentException(sprintf(
+                'Unsupported HTTP protocol version "%s" provided',
+                $version
+            ));
+        }
     }
 }

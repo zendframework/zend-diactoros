@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @see       http://github.com/zendframework/zend-diactoros for the canonical source repository
- * @copyright Copyright (c) 2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
@@ -36,7 +36,7 @@ class Uri implements UriInterface
      *
      * @const string
      */
-    const CHAR_UNRESERVED = 'a-zA-Z0-9_\-\.~';
+    const CHAR_UNRESERVED = 'a-zA-Z0-9_\-\.~\pL';
 
     /**
      * @var int[] Array indexed by valid scheme names to their corresponding ports.
@@ -507,6 +507,9 @@ class Uri implements UriInterface
     private function isNonStandardPort($scheme, $host, $port)
     {
         if (! $scheme) {
+            if ($host && ! $port) {
+                return false;
+            }
             return true;
         }
 
@@ -553,7 +556,7 @@ class Uri implements UriInterface
     private function filterPath($path)
     {
         $path = preg_replace_callback(
-            '/(?:[^' . self::CHAR_UNRESERVED . ':@&=\+\$,\/;%]+|%(?![A-Fa-f0-9]{2}))/',
+            '/(?:[^' . self::CHAR_UNRESERVED . ':@&=\+\$,\/;%]+|%(?![A-Fa-f0-9]{2}))/u',
             [$this, 'urlEncodeChar'],
             $path
         );
@@ -627,7 +630,7 @@ class Uri implements UriInterface
     private function filterFragment($fragment)
     {
         if (! empty($fragment) && strpos($fragment, '#') === 0) {
-            $fragment = substr($fragment, 1);
+            $fragment = '%23' . substr($fragment, 1);
         }
 
         return $this->filterQueryOrFragment($fragment);
@@ -642,7 +645,7 @@ class Uri implements UriInterface
     private function filterQueryOrFragment($value)
     {
         return preg_replace_callback(
-            '/(?:[^' . self::CHAR_UNRESERVED . self::CHAR_SUB_DELIMS . '%:@\/\?]+|%(?![A-Fa-f0-9]{2}))/',
+            '/(?:[^' . self::CHAR_UNRESERVED . self::CHAR_SUB_DELIMS . '%:@\/\?]+|%(?![A-Fa-f0-9]{2}))/u',
             [$this, 'urlEncodeChar'],
             $value
         );

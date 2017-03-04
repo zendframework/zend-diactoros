@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @see       http://github.com/zendframework/zend-diactoros for the canonical source repository
- * @copyright Copyright (c) 2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
@@ -21,6 +21,7 @@ class RelativeStreamTest extends TestCase
     public function testToString()
     {
         $decorated = $this->prophesize('Zend\Diactoros\Stream');
+        $decorated->tell()->willReturn(100);
         $decorated->seek(100, SEEK_SET)->shouldBeCalled();
         $decorated->getContents()->shouldBeCalled()->willReturn('foobarbaz');
 
@@ -112,6 +113,7 @@ class RelativeStreamTest extends TestCase
     public function testWrite()
     {
         $decorated = $this->prophesize('Zend\Diactoros\Stream');
+        $decorated->tell()->willReturn(100);
         $decorated->write("foobaz")->shouldBeCalled()->willReturn(6);
         $stream = new RelativeStream($decorated->reveal(), 100);
         $ret = $stream->write("foobaz");
@@ -121,6 +123,7 @@ class RelativeStreamTest extends TestCase
     public function testRead()
     {
         $decorated = $this->prophesize('Zend\Diactoros\Stream');
+        $decorated->tell()->willReturn(100);
         $decorated->read(3)->shouldBeCalled()->willReturn("foo");
         $stream = new RelativeStream($decorated->reveal(), 100);
         $ret = $stream->read(3);
@@ -130,6 +133,7 @@ class RelativeStreamTest extends TestCase
     public function testGetContents()
     {
         $decorated = $this->prophesize('Zend\Diactoros\Stream');
+        $decorated->tell()->willReturn(100);
         $decorated->getContents()->shouldBeCalled()->willReturn("foo");
         $stream = new RelativeStream($decorated->reveal(), 100);
         $ret = $stream->getContents();
@@ -143,5 +147,35 @@ class RelativeStreamTest extends TestCase
         $stream = new RelativeStream($decorated->reveal(), 100);
         $ret = $stream->getMetadata("bar");
         $this->assertEquals("foo", $ret);
+    }
+
+    public function testWriteRaisesExceptionWhenPointerIsBehindOffset()
+    {
+        $this->setExpectedException('RuntimeException', 'Invalid pointer position');
+        $decorated = $this->prophesize('Zend\Diactoros\Stream');
+        $decorated->tell()->shouldBeCalled()->willReturn(0);
+        $decorated->write("foobaz")->shouldNotBeCalled();
+        $stream = new RelativeStream($decorated->reveal(), 100);
+        $stream->write("foobaz");
+    }
+
+    public function testReadRaisesExceptionWhenPointerIsBehindOffset()
+    {
+        $this->setExpectedException('RuntimeException', 'Invalid pointer position');
+        $decorated = $this->prophesize('Zend\Diactoros\Stream');
+        $decorated->tell()->shouldBeCalled()->willReturn(0);
+        $decorated->read(3)->shouldNotBeCalled();
+        $stream = new RelativeStream($decorated->reveal(), 100);
+        $stream->read(3);
+    }
+
+    public function testGetContentsRaisesExceptionWhenPointerIsBehindOffset()
+    {
+        $this->setExpectedException('RuntimeException', 'Invalid pointer position');
+        $decorated = $this->prophesize('Zend\Diactoros\Stream');
+        $decorated->tell()->shouldBeCalled()->willReturn(0);
+        $decorated->getContents()->shouldNotBeCalled();
+        $stream = new RelativeStream($decorated->reveal(), 100);
+        $stream->getContents();
     }
 }

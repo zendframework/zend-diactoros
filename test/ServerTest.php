@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @see       http://github.com/zendframework/zend-diactoros for the canonical source repository
- * @copyright Copyright (c) 2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
@@ -40,8 +40,8 @@ class ServerTest extends TestCase
         $this->callback   = function ($req, $res, $done) {
             //  Intentionally empty
         };
-        $this->request = $this->getMock('Psr\Http\Message\ServerRequestInterface');
-        $this->response = $this->getMock('Psr\Http\Message\ResponseInterface');
+        $this->request = $this->getMockBuilder('Psr\Http\Message\ServerRequestInterface')->getMock();
+        $this->response = $this->getMockBuilder('Psr\Http\Message\ResponseInterface')->getMock();
     }
 
     public function tearDown()
@@ -84,6 +84,23 @@ class ServerTest extends TestCase
         $prop = uniqid();
         $this->setExpectedException('OutOfBoundsException');
         $server->$prop;
+    }
+
+    public function testEmmiterSetter()
+    {
+        $server = new Server(
+            $this->callback,
+            $this->request,
+            $this->response
+        );
+        $emmiter = $this->getMockBuilder('Zend\Diactoros\Response\EmitterInterface')->getMock();
+        $emmiter->expects($this->once())->method('emit');
+
+        $server->setEmitter($emmiter);
+
+        $this->expectOutputString('');
+        $server->listen();
+        ob_end_flush();
     }
 
     public function testCreateServerWillCreateDefaultInstancesForRequestAndResponse()

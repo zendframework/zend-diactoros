@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @see       http://github.com/zendframework/zend-diactoros for the canonical source repository
- * @copyright Copyright (c) 2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
@@ -78,6 +78,13 @@ class UploadedFileTest extends TestCase
         new UploadedFile(fopen('php://temp', 'wb+'), $size, UPLOAD_ERR_OK);
     }
 
+    public function testValidSize()
+    {
+        $uploaded = new UploadedFile(fopen('php://temp', 'wb+'), 123, UPLOAD_ERR_OK);
+
+        $this->assertSame(123, $uploaded->getSize());
+    }
+
     public function invalidErrorStatuses()
     {
         return [
@@ -123,6 +130,18 @@ class UploadedFileTest extends TestCase
         new UploadedFile(fopen('php://temp', 'wb+'), 0, UPLOAD_ERR_OK, $filename);
     }
 
+    public function testValidClientFilename()
+    {
+        $file = new UploadedFile(fopen('php://temp', 'wb+'), 0, UPLOAD_ERR_OK, 'boo.txt');
+        $this->assertSame('boo.txt', $file->getClientFilename());
+    }
+
+    public function testValidNullClientFilename()
+    {
+        $file = new UploadedFile(fopen('php://temp', 'wb+'), 0, UPLOAD_ERR_OK, null);
+        $this->assertSame(null, $file->getClientFilename());
+    }
+
     /**
      * @dataProvider invalidFilenamesAndMediaTypes
      */
@@ -130,6 +149,12 @@ class UploadedFileTest extends TestCase
     {
         $this->setExpectedException('InvalidArgumentException', 'media type');
         new UploadedFile(fopen('php://temp', 'wb+'), 0, UPLOAD_ERR_OK, 'foobar.baz', $mediaType);
+    }
+
+    public function testValidClientMediaType()
+    {
+        $file = new UploadedFile(fopen('php://temp', 'wb+'), 0, UPLOAD_ERR_OK, 'foobar.baz', 'mediatype');
+        $this->assertSame('mediatype', $file->getClientMediaType());
     }
 
     public function testGetStreamReturnsOriginalStreamObject()

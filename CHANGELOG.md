@@ -2,18 +2,316 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 1.2.0 - TBD
+## 1.4.0 - TBD
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
+## 1.3.8 - TBD
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
+## 1.3.7 - 2016-10-11
+
+### Added
+
+- [#208](https://github.com/zendframework/zend-diactoros/pull/208) adds several
+  missing response codes to `Zend\Diactoros\Response`, including:
+  - 226 ('IM used')
+  - 308 ('Permanent Redirect')
+  - 444 ('Connection Closed Without Response')
+  - 499 ('Client Closed Request')
+  - 510 ('Not Extended')
+  - 599 ('Network Connect Timeout Error')
+- [#211](https://github.com/zendframework/zend-diactoros/pull/211) adds support
+  for UTF-8 characters in query strings handled by `Zend\Diactoros\Uri`.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
+## 1.3.6 - 2016-09-07
+
+### Added
+
+- [#170](https://github.com/zendframework/zend-diactoros/pull/170) prepared
+  documentation for publication at https://zendframework.github.io/zend-diactoros/
+- [#165](https://github.com/zendframework/zend-diactoros/pull/165) adds support
+  for Apache `REDIRECT_HTTP_*` header detection in the `ServerRequestFactory`.
+- [#166](https://github.com/zendframework/zend-diactoros/pull/166) adds support
+  for UTF-8 characters in URI paths.
+- [#204](https://github.com/zendframework/zend-diactoros/pull/204) adds testing
+  against PHP 7.1 release-candidate builds.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#186](https://github.com/zendframework/zend-diactoros/pull/186) fixes a typo
+  in a variable name within the `SapiStreamEmitter`.
+- [#200](https://github.com/zendframework/zend-diactoros/pull/200) updates the
+  `SapiStreamEmitter` to implement a check for `isSeekable()` prior to attempts
+  to rewind; this allows it to work with non-seekable streams such as the
+  `CallbackStream`.
+- [#169](https://github.com/zendframework/zend-diactoros/pull/169) ensures that
+  response serialization always provides a `\r\n\r\n` sequence following the
+  headers, even when no message body is present, to ensure it conforms with RFC
+  7230.
+- [#175](https://github.com/zendframework/zend-diactoros/pull/175) updates the
+  `Request` class to set the `Host` header from the URI host if no header is
+  already present. (Ensures conformity with PSR-7 specification.)
+- [#197](https://github.com/zendframework/zend-diactoros/pull/197) updates the
+  `Uri` class to ensure that string serialization does not include a colon after
+  the host name if no port is present in the instance.
+
+## 1.3.5 - 2016-03-17
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#160](https://github.com/zendframework/zend-diactoros/pull/160) fixes HTTP
+  protocol detection in the `ServerRequestFactory` to work correctly with HTTP/2.
+
+## 1.3.4 - 2016-03-17
+
+### Added
+
+- [#119](https://github.com/zendframework/zend-diactoros/pull/119) adds the 451
+  (Unavailable for Legal Reasons) status code to the `Response` class.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#117](https://github.com/zendframework/zend-diactoros/pull/117) provides
+  validation of the HTTP protocol version.
+- [#127](https://github.com/zendframework/zend-diactoros/pull/127) now properly
+  removes attributes with `null` values when calling `withoutAttribute()`.
+- [#132](https://github.com/zendframework/zend-diactoros/pull/132) updates the
+  `ServerRequestFactory` to marshal the request path fragment, if present.
+- [#142](https://github.com/zendframework/zend-diactoros/pull/142) updates the
+  exceptions thrown by `HeaderSecurity` to include the header name and/or
+  value.
+- [#148](https://github.com/zendframework/zend-diactoros/pull/148) fixes several
+  stream operations to ensure they raise exceptions when the internal pointer
+  is at an invalid position.
+- [#151](https://github.com/zendframework/zend-diactoros/pull/151) ensures
+  URI fragments are properly encoded.
+
+## 1.3.3 - 2016-01-04
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#135](https://github.com/zendframework/zend-diactoros/pull/135) fixes the
+  behavior of `ServerRequestFactory::marshalHeaders()` to no longer omit
+  `Cookie` headers from the aggregated headers. While the values are parsed and
+  injected into the cookie params, it's useful to have access to the raw headers
+  as well.
+
+## 1.3.2 - 2015-12-22
+
+### Added
+
+- [#124](https://github.com/zendframework/zend-diactoros/pull/124) adds four
+  more optional arguments to the `ServerRequest` constructor:
+  - `array $cookies`
+  - `array $queryParams`
+  - `null|array|object $parsedBody`
+  - `string $protocolVersion`
+  `ServerRequestFactory` was updated to pass values for each of these parameters
+  when creating an instance, instead of using the related `with*()` methods on
+  an instance.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#122](https://github.com/zendframework/zend-diactoros/pull/122) updates the
+  `ServerRequestFactory` to retrieve the HTTP protocol version and inject it in
+  the generated `ServerRequest`, which previously was not performed.
+
+## 1.3.1 - 2015-12-16
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#113](https://github.com/zendframework/zend-diactoros/pull/113) fixes an
+  issue in the response serializer, ensuring that the status code in the
+  deserialized response is an integer.
+- [#115](https://github.com/zendframework/zend-diactoros/pull/115) fixes an
+  issue in the various text-basd response types (`TextResponse`, `HtmlResponse`,
+  and `JsonResponse`); due to the fact that the constructor was not
+  rewinding the message body stream, `getContents()` was thus returning `null`,
+  as the pointer was at the end of the stream. The constructor now rewinds the
+  stream after populating it in the constructor.
+
+## 1.3.0 - 2015-12-15
+
+### Added
+
+- [#110](https://github.com/zendframework/zend-diactoros/pull/110) adds
+  `Zend\Diactoros\Response\SapiEmitterTrait`, which provides the following
+  private method definitions:
+  - `injectContentLength()`
+  - `emitStatusLine()`
+  - `emitHeaders()`
+  - `flush()`
+  - `filterHeader()`
+  The `SapiEmitter` implementation has been updated to remove those methods and
+  instead compose the trait.
+- [#111](https://github.com/zendframework/zend-diactoros/pull/111) adds
+  a new emitter implementation, `SapiStreamEmitter`; this emitter type will
+  loop through the stream instead of emitting it in one go, and supports content
+  ranges.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
+## 1.2.1 - 2015-12-15
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#101](https://github.com/zendframework/zend-diactoros/pull/101) fixes the
+  `withHeader()` implementation to ensure that if the header existed previously
+  but using a different casing strategy, the previous version will be removed
+  in the cloned instance.
+- [#103](https://github.com/zendframework/zend-diactoros/pull/103) fixes the
+  constructor of `Response` to ensure that null status codes are not possible.
+- [#99](https://github.com/zendframework/zend-diactoros/pull/99) fixes
+  validation of header values submitted via request and response constructors as
+  follows:
+  - numeric (integer and float) values are now properly allowed (this solves
+    some reported issues with setting Content-Length headers)
+  - invalid header names (non-string values or empty strings) now raise an
+    exception.
+  - invalid individual header values (non-string, non-numeric) now raise an
+    exception.
+
+## 1.2.0 - 2015-11-24
 
 ### Added
 
 - [#88](https://github.com/zendframework/zend-diactoros/pull/88) updates the
   `SapiEmitter` to emit a `Content-Length` header with the content length as
-  reported by the response body stream.
+  reported by the response body stream, assuming that
+  `StreamInterface::getSize()` returns an integer.
 - [#77](https://github.com/zendframework/zend-diactoros/pull/77) adds a new
   response type, `Zend\Diactoros\Response\TextResponse`, for returning plain
   text responses. By default, it sets the content type to `text/plain;
   charset=utf-8`; per the other response types, the signature is `new
-  TextResponse($text, $status = 200, array $headers = []`.
+  TextResponse($text, $status = 200, array $headers = [])`.
+- [#90](https://github.com/zendframework/zend-diactoros/pull/90) adds a new
+  `Zend\Diactoros\CallbackStream`, allowing you to back a stream with a PHP
+  callable (such as a generator) to generate the message content. Its
+  constructor accepts the callable: `$stream = new CallbackStream($callable);`
 
 ### Deprecated
 
@@ -28,24 +326,6 @@ All notable changes to this project will be documented in this file, in reverse 
 - [#77](https://github.com/zendframework/zend-diactoros/pull/77) updates the
   `HtmlResponse` to set the charset to utf-8 by default (if no content type
   header is provided at instantiation).
-
-## 1.1.5 - TBD
-
-### Added
-
-- Nothing.
-
-### Deprecated
-
-- Nothing.
-
-### Removed
-
-- Nothing.
-
-### Fixed
-
-- Nothing.
 
 ## 1.1.4 - 2015-10-16
 

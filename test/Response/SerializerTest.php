@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @see       http://github.com/zendframework/zend-diactoros for the canonical source repository
- * @copyright Copyright (c) 2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
@@ -27,6 +27,19 @@ class SerializerTest extends TestCase
         $message = Serializer::toString($response);
         $this->assertEquals(
             "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nX-Foo-Bar: Baz\r\n\r\nContent!",
+            $message
+        );
+    }
+
+    public function testSerializesResponseWithoutBodyCorrectly()
+    {
+        $response = (new Response())
+            ->withStatus(200)
+            ->withAddedHeader('Content-Type', 'text/plain');
+
+        $message = Serializer::toString($response);
+        $this->assertEquals(
+            "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\n",
             $message
         );
     }
@@ -212,5 +225,15 @@ class SerializerTest extends TestCase
             ->will($this->returnValue(false));
 
         Serializer::fromStream($stream);
+    }
+
+    /**
+     * @group 113
+     */
+    public function testDeserializeCorrectlyCastsStatusCodeToInteger()
+    {
+        $response = Response\Serializer::fromString('HTTP/1.0 204');
+        // according to interface the int is expected
+        $this->assertSame(204, $response->getStatusCode());
     }
 }
