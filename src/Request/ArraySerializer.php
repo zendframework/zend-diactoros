@@ -53,17 +53,21 @@ final class ArraySerializer
      */
     public static function fromArray(array $serializedRequest)
     {
-        $uri = self::getValueFromKey($serializedRequest, 'uri');
-        $method = self::getValueFromKey($serializedRequest, 'method');
-        $body = new Stream('php://memory', 'wb+');
-        $body->write(self::getValueFromKey($serializedRequest, 'body'));
-        $headers = self::getValueFromKey($serializedRequest, 'headers');
-        $requestTarget = self::getValueFromKey($serializedRequest, 'request_target');
-        $protocolVersion = self::getValueFromKey($serializedRequest, 'protocol_version');
+        try {
+            $uri = self::getValueFromKey($serializedRequest, 'uri');
+            $method = self::getValueFromKey($serializedRequest, 'method');
+            $body = new Stream('php://memory', 'wb+');
+            $body->write(self::getValueFromKey($serializedRequest, 'body'));
+            $headers = self::getValueFromKey($serializedRequest, 'headers');
+            $requestTarget = self::getValueFromKey($serializedRequest, 'request_target');
+            $protocolVersion = self::getValueFromKey($serializedRequest, 'protocol_version');
 
-        return (new Request($uri, $method, $body, $headers))
-            ->withRequestTarget($requestTarget)
-            ->withProtocolVersion($protocolVersion);
+            return (new Request($uri, $method, $body, $headers))
+                ->withRequestTarget($requestTarget)
+                ->withProtocolVersion($protocolVersion);
+        } catch (\Exception $exception) {
+            throw new UnexpectedValueException('Cannot deserialize request', null, $exception);
+        }
     }
 
     /**
