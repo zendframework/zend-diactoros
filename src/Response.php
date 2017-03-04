@@ -24,6 +24,9 @@ class Response implements ResponseInterface
 {
     use MessageTrait;
 
+    const MIN_STATUS_CODE_VALUE = 100;
+    const MAX_STATUS_CODE_VALUE = 599;
+
     /**
      * Map of standard HTTP status code/reason phrases
      *
@@ -154,21 +157,23 @@ class Response implements ResponseInterface
     }
 
     /**
-     * Validate a status code.
+     * Set a valid status code.
      *
-     * @param int|string $code
+     * @param int $code
      * @throws InvalidArgumentException on an invalid status code.
      */
     private function setStatusCode($code)
     {
         if (! is_numeric($code)
             || is_float($code)
-            || $code < 100
-            || $code >= 600
+            || $code < static::MIN_STATUS_CODE_VALUE
+            || $code > static::MAX_STATUS_CODE_VALUE
         ) {
             throw new InvalidArgumentException(sprintf(
-                'Invalid status code "%s"; must be an integer between 100 and 599, inclusive',
-                (is_scalar($code) ? $code : gettype($code))
+                'Invalid status code "%s"; must be an integer between %d and %d, inclusive',
+                (is_scalar($code) ? $code : gettype($code)),
+                static::MIN_STATUS_CODE_VALUE,
+                static::MAX_STATUS_CODE_VALUE
             ));
         }
         $this->statusCode = $code;
