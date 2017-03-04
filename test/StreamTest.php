@@ -288,7 +288,7 @@ class StreamTest extends TestCase
     {
         while (true) {
             $tmpnam = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'diac' . uniqid();
-            if (!file_exists(sys_get_temp_dir() . $tmpnam)) {
+            if (! file_exists(sys_get_temp_dir() . $tmpnam)) {
                 break;
             }
         }

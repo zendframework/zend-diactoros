@@ -468,7 +468,7 @@ class RequestTest extends TestCase
     public function testConstructorRaisesExceptionForHeadersWithCRLFVectors($name, $value)
     {
         $this->setExpectedException('InvalidArgumentException');
-        $request = new Request(null, null, 'php://memory', [$name =>  $value]);
+        $request = new Request(null, null, 'php://memory', [$name => $value]);
     }
 
     public function hostHeaderKeys()
