@@ -410,6 +410,70 @@ class ServerRequestFactoryTest extends TestCase
         $this->assertEquals('1.1', $request->getProtocolVersion());
     }
 
+    public function testFromGlobalsUsesCookieHeaderInsteadOfCookieSuperGlobal()
+    {
+        $_COOKIE = [
+            'foo_bar' => 'bat',
+        ];
+        $_SERVER['HTTP_COOKIE'] = 'foo_bar=baz';
+
+        $request = ServerRequestFactory::fromGlobals();
+        $this->assertSame(['foo_bar' => 'baz'], $request->getCookieParams());
+    }
+
+    public function testFromGlobalsUsesCookieSuperGlobalWhenCookieHeaderIsNotSet()
+    {
+        $_COOKIE = [
+            'foo_bar' => 'bat',
+        ];
+
+        $request = ServerRequestFactory::fromGlobals();
+        $this->assertSame(['foo_bar' => 'bat'], $request->getCookieParams());
+    }
+
+    public function cookieHeaderValues()
+    {
+        return [
+            'ows-without-fold' => [
+                "\tfoo=bar ",
+                ['foo' => 'bar'],
+            ],
+            'url-encoded-value' => [
+                'foo=bar%3B+',
+                ['foo' => 'bar; '],
+            ],
+            'double-quoted-value' => [
+                'foo="bar"',
+                ['foo' => 'bar'],
+            ],
+            'multiple-pairs' => [
+                'foo=bar; baz="bat"; bau=bai',
+                ['foo' => 'bar', 'baz' => 'bat', 'bau' => 'bai'],
+            ],
+            'same-name-pairs' => [
+                'foo=bar; foo="bat"',
+                ['foo' => 'bat'],
+            ],
+            'period-in-name' => [
+                'foo.bar=baz',
+                ['foo.bar' => 'baz'],
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider cookieHeaderValues
+     * @param string $cookieHeader
+     * @param array $expectedCookies
+     */
+    public function testCookieHeaderVariations($cookieHeader, array $expectedCookies)
+    {
+        $_SERVER['HTTP_COOKIE'] = $cookieHeader;
+
+        $request = ServerRequestFactory::fromGlobals();
+        $this->assertSame($expectedCookies, $request->getCookieParams());
+    }
+
     public function testNormalizeServerUsesMixedCaseAuthorizationHeaderFromApacheWhenPresent()
     {
         $r = new ReflectionProperty('Zend\Diactoros\ServerRequestFactory', 'apacheRequestHeaders');
