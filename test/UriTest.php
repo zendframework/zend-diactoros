@@ -609,6 +609,12 @@ class UriTest extends TestCase
     public function testUriDoesNotAppendColonToHostIfPortIsEmpty()
     {
         $uri = (new Uri())->withHost('google.com');
-        $this->assertEquals('google.com', (string) $uri);
+        $this->assertEquals('//google.com', (string) $uri);
+    }
+
+    public function testAuthorityIsPrefixedByDoubleSlashIfPresent()
+    {
+        $uri = (new Uri())->withHost('example.com');
+        $this->assertEquals('//example.com', (string) $uri);
     }
 }
