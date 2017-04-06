@@ -122,9 +122,7 @@ class Response implements ResponseInterface
     {
         $this->setStatusCode($status);
         $this->stream = $this->getStream($body, 'wb+');
-        list($this->headerNames, $headers) = $this->filterHeaders($headers);
-        $this->assertHeaders($headers);
-        $this->headers = $headers;
+        $this->setHeaders($headers);
     }
 
     /**
@@ -179,19 +177,5 @@ class Response implements ResponseInterface
             ));
         }
         $this->statusCode = $code;
-    }
-
-    /**
-     * Ensure header names and values are valid.
-     *
-     * @param array $headers
-     * @throws InvalidArgumentException
-     */
-    private function assertHeaders(array $headers)
-    {
-        foreach ($headers as $name => $headerValues) {
-            HeaderSecurity::assertValidName($name);
-            array_walk($headerValues, __NAMESPACE__ . '\HeaderSecurity::assertValid');
-        }
     }
 }
