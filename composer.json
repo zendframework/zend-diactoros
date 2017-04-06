@@ -25,7 +25,9 @@
   },
   "require-dev": {
     "phpunit/phpunit": "^4.6 || ^5.5",
-    "zendframework/zend-coding-standard": "~1.0.0"
+    "zendframework/zend-coding-standard": "~1.0.0",
+    "ext-dom": "*",
+    "ext-libxml": "*"
   },
   "provide": {
     "psr/http-message-implementation": "~1.0.0"

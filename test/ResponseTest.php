@@ -66,6 +66,63 @@ class ResponseTest extends TestCase
         $this->assertEquals('Unprocessable Entity', $response->getReasonPhrase());
     }
 
+    public function ianaCodesReasonPhrasesProvider()
+    {
+        $ianaHttpStatusCodes = new \DOMDocument();
+
+        libxml_set_streams_context(
+            stream_context_create(
+                [
+                    'http' => [
+                        'method'  => 'GET',
+                        'timeout' => 30,
+                    ],
+                ]
+            )
+        );
+
+        $ianaHttpStatusCodes->load('https://www.iana.org/assignments/http-status-codes/http-status-codes.xml');
+
+        if (! $ianaHttpStatusCodes->relaxNGValidate(__DIR__ . '/TestAsset/http-status-codes.rng')) {
+            self::fail();
+        }
+
+        $ianaCodesReasonPhrases = [];
+
+        $xpath = new \DomXPath($ianaHttpStatusCodes);
+        $xpath->registerNamespace('ns', 'http://www.iana.org/assignments');
+
+        $records = $xpath->query('//ns:record');
+
+        foreach ($records as $record) {
+            $value = $xpath->query('.//ns:value', $record)->item(0)->nodeValue;
+            $description = $xpath->query('.//ns:description', $record)->item(0)->nodeValue;
+
+            if (in_array($description, ['Unassigned', '(Unused)'])) {
+                continue;
+            }
+
+            if (preg_match('/^([0-9]+)\s*\-\s*([0-9]+)$/', $value, $matches)) {
+                for ($value = $matches[1]; $value <= $matches[2]; $value++) {
+                    $ianaCodesReasonPhrases[] = [$value, $description];
+                }
+            } else {
+                $ianaCodesReasonPhrases[] = [$value, $description];
+            }
+        }
+
+        return $ianaCodesReasonPhrases;
+    }
+
+    /**
+     * @dataProvider ianaCodesReasonPhrasesProvider
+     */
+    public function testReasonPhraseDefaultsAgainstIana($code, $reasonPhrase)
+    {
+        $response = $this->response->withStatus($code);
+        $this->assertEquals($reasonPhrase, $response->getReasonPhrase());
+    }
+
     public function testCanSetCustomReasonPhrase()
     {
         $response = $this->response->withStatus(422, 'Foo Bar!');
