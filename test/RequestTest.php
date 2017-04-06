@@ -9,7 +9,6 @@
 
 namespace ZendTest\Diactoros;
 
-use InvalidArgumentException;
 use PHPUnit_Framework_TestCase as TestCase;
 use Zend\Diactoros\Request;
 use Zend\Diactoros\Stream;
@@ -322,6 +321,17 @@ class RequestTest extends TestCase
     /**
      * @group 39
      */
+    public function testGetHeadersContainsHostHeaderIfUriWithHostIsDeleted()
+    {
+        $request = (new Request('http://example.com'))->withoutHeader('host');
+        $headers = $request->getHeaders();
+        $this->assertArrayHasKey('Host', $headers);
+        $this->assertContains('example.com', $headers['Host']);
+    }
+
+    /**
+     * @group 39
+     */
     public function testGetHeadersContainsNoHostHeaderIfNoUriPresent()
     {
         $request = new Request();
@@ -345,6 +355,16 @@ class RequestTest extends TestCase
     public function testGetHostHeaderReturnsUriHostWhenPresent()
     {
         $request = new Request('http://example.com');
+        $header = $request->getHeader('host');
+        $this->assertEquals(['example.com'], $header);
+    }
+
+    /**
+     * @group 39
+     */
+    public function testGetHostHeaderReturnsUriHostWhenHostHeaderDeleted()
+    {
+        $request = (new Request('http://example.com'))->withoutHeader('host');
         $header = $request->getHeader('host');
         $this->assertEquals(['example.com'], $header);
     }
