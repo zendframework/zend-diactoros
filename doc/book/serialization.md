@@ -27,7 +27,7 @@ the following static methods:
 - `fromArray(array $message)` will create either a `Request` or `Response` instance (based on the
   serializer used) from the array message.
 - `toArray(Psr\Http\Message\RequestInterface|Psr\Http\Message\ResponseInterface $message)` will
-  create either a array from the provided message.
+  create an array from the provided message.
 
 The deserialization methods (`fromArray()`) will raise exceptions if errors occur while parsing the
 message.
