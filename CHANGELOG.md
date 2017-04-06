@@ -23,6 +23,12 @@ All notable changes to this project will be documented in this file, in reverse 
   their names (PHP's built-in cookie handling renames these to replace `.` with
   `_`, which can lead to synchronization issues with clients).
 
+- [#235](https://github.com/zendframework/zend-diactoros/pull/235) changes the
+  behavior of `Uri::__toString()` to better follow proscribed behavior in PSR-7.
+  In particular, prior to this release, if a scheme was missing but an authority
+  was present, the class was incorrectly returning a value that did not include
+  a `//` prefix. As of this release, it now does this correctly.
+
 ### Deprecated
 
 - Nothing.
