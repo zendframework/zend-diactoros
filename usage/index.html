@@ -16,6 +16,7 @@
     <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,400,300,600,700&subset=latin-ext,latin" rel="stylesheet" type="text/css">
     <link href="//fonts.googleapis.com/css?family=Libre+Baskerville:400,400italic,700&subset=latin,latin-ext" rel="stylesheet" type="text/css">
     <link href="../css/base.css" rel="stylesheet">
+    <link href="../css/zf-web.css" rel="stylesheet">
     <link href="../css/zf.css" rel="stylesheet">
     <link href="../css/prism-zf.css" rel="stylesheet">
 
@@ -56,7 +57,7 @@
 
             <!-- Main title -->
             <span class="navbar-brand">
-              <a class="logo-link" href="http://framework.zend.com" data-toggle="tooltip" data-placement="bottom" title="Zend Framework"><img src="../img/zf-logo-mark.png" height="28" alt="Zend Framework" /></a>
+              <a class="logo-link" href="http://framework.zend.com" data-toggle="tooltip" data-placement="bottom" title="Zend Framework"><img src="../img/zf-logo-mark.svg" height="28" alt="Zend Framework" /></a>
               <a href="..">zend-diactoros</a>
             </span>
         </div>
@@ -155,7 +156,7 @@
 </div>
 
     <!-- content:begin -->
-    <div class="container">
+    <div id="page-top" class="container docs">
         
         <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
@@ -183,7 +184,7 @@
         <div class="col-md-9" role="main">
 
 <ol class="breadcrumb" role="navigation" aria-label="breadcrumbs navigation">
-  <li><a href="..">Docs</a> &raquo;</li>
+  <li><a href="..">zend-diactoros</a> &raquo;</li>
   
     
   
@@ -201,7 +202,7 @@ return a <code>Response</code> instance.</p>
 <em>populate</em> the request, and then <em>introspect</em> the response.  Both requests and responses are
 immutable; if you make changes &mdash; e.g., by calling setter methods &mdash; you must capture the return
 value, as it is a new instance.</p>
-<pre class="codehilite"><code class="language-php">// Create a request
+<pre class="codehilite"><code class="language-php linenums">// Create a request
 $request = (new Zend\Diactoros\Request())
     -&gt;withUri(new Zend\Diactoros\Uri('http://example.com'))
     -&gt;withMethod('PATCH')
@@ -236,7 +237,6 @@ foreach ($response-&gt;getHeaders() as $header =&gt; $values) {
 }
 printf(&quot;Message:\n%s\n&quot;, $response-&gt;getBody());</code></pre>
 
-
 <p>(Note: <code>zend-diactoros</code> does NOT ship with a client implementation; the above is just an
 illustration of a possible implementation.)</p>
 <h2 id="server-side-applications">Server-Side Applications</h2>
@@ -256,7 +256,7 @@ that information into a request instance.</p>
 </ul>
 <p>The method will then return a <code>Zend\Diactoros\ServerRequest</code> instance. If any argument is omitted,
 the associated superglobal will be used.</p>
-<pre class="codehilite"><code class="language-php">$request = Zend\Diactoros\ServerRequestFactory::fromGlobals(
+<pre class="codehilite"><code class="language-php linenums">$request = Zend\Diactoros\ServerRequestFactory::fromGlobals(
     $_SERVER,
     $_GET,
     $_POST,
@@ -264,12 +264,11 @@ the associated superglobal will be used.</p>
     $_FILES
 );</code></pre>
 
-
 <h3 id="manipulating-the-response">Manipulating the response</h3>
 <p>Use the response object to add headers and provide content for the response.  Writing to the body
 does not create a state change in the response, so it can be done without capturing the return
 value. Manipulating headers does, however.</p>
-<pre class="codehilite"><code class="language-php">$response = new Zend\Diactoros\Response();
+<pre class="codehilite"><code class="language-php linenums">$response = new Zend\Diactoros\Response();
 
 // Write to the response body:
 $response-&gt;getBody()-&gt;write(&quot;some content\n&quot;);
@@ -283,13 +282,12 @@ $response = $response
     -&gt;withHeader('Content-Type', 'text/plain')
     -&gt;withAddedHeader('X-Show-Something', 'something');</code></pre>
 
-
 <h3 id="serving-an-application">"Serving" an application</h3>
 <p><code>Zend\Diactoros\Server</code> mimics a portion of the API of node's <code>http.Server</code> class. It invokes a
 callback, passing it an <code>ServerRequest</code>, an <code>Response</code>, and optionally a callback to use for
 incomplete/unhandled requests.</p>
 <p>You can create a server in one of three ways:</p>
-<pre class="codehilite"><code class="language-php">// Direct instantiation, with a callback handler, request, and response
+<pre class="codehilite"><code class="language-php linenums">// Direct instantiation, with a callback handler, request, and response
 $server = new Zend\Diactoros\Server(
     function ($request, $response, $done) {
         $response-&gt;getBody()-&gt;write(&quot;Hello world!&quot;);
@@ -318,7 +316,6 @@ $server = Zend\Diactoros\Server::createServerFromRequest(
   $request
 );</code></pre>
 
-
 <p>Server callbacks can expect up to three arguments, in the following order:</p>
 <ul>
 <li><code>$request</code> - the request object</li>
@@ -326,18 +323,16 @@ $server = Zend\Diactoros\Server::createServerFromRequest(
 <li><code>$done</code> - an optional callback to call when complete</li>
 </ul>
 <p>Once you have your server instance, you must instruct it to listen:</p>
-<pre class="codehilite"><code class="language-php">$server-&gt;listen();</code></pre>
-
+<pre class="codehilite"><code class="language-php linenums">$server-&gt;listen();</code></pre>
 
 <p>At this time, you can optionally provide a callback to <code>listen()</code>; this will be passed to the
 handler as the third argument (<code>$done</code>):</p>
-<pre class="codehilite"><code class="language-php">$server-&gt;listen(function ($request, $response, $error = null) {
+<pre class="codehilite"><code class="language-php linenums">$server-&gt;listen(function ($request, $response, $error = null) {
     if (! $error) {
         return;
     }
     // do something with the error...
 });</code></pre>
-
 
 <p>Typically, the <code>listen</code> callback will be an error handler, and can expect to receive the request,
 response, and error as its arguments (though the error may be null).</p>
@@ -360,13 +355,49 @@ response, and error as its arguments (though the error may be null).</p>
     </div>
     <!-- content:end -->
 
-    <footer class="col-md-12 text-center">
-        <hr>
-        <p>
-        <small>Copyright (c) 2016 <a href="http://www.zend.com/">Zend Technologies USA Inc.</a><br></small>
-        </p>
-        <p><small><a href="http://framework.zend.com">Learn more about Zend Framework</a></small></p>
-    </footer>
+    <div id="footerwrap">
+    <div class="container">
+        <div class="row site-map">
+            <div class="col-lg-3">
+              <p>
+                <strong>Zend Framework</strong><br />
+                <a href="http://framework.zend.com/">framework.zend.com</a><br />
+                <a href="https://docs.zendframework.com">docs.zendframework.com</a><br />
+                <a href="https://packages.zendframework.com">packages.zendframework.com</a><br />
+                <a href="https://apigility.org">apigility.org</a><br />
+              </p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12 centered">
+                <a class="back-to-top" href="#page-top"><i class="fa fa-chevron-circle-up fa-4" aria-hidden="true"></i></a>
+            </div>
+        </div>
+
+        <div class="spacing"></div>
+
+        <div class="row">
+            <div class="col-lg-8">
+                <h4>Copyright</h4>
+                <div class="hline-w"></div>
+
+                <p>&copy; 2006-2016 by <a href="http://www.zend.com">Zend</a>, a <a href="http://www.roguewave.com/">Rogue Wave Company</a>.</p>
+            </div>
+
+            <div class="col-lg-4">
+                <h4>Contacts</h4>
+                <div class="hline-w"></div>
+                <p>
+                    <a href="irc://irc.freenode.net/zftalk" class="btn-social btn-outline" alt="IRC" title="IRC"><i class="fa fa-comment"></i></a>
+                    <a href="https://github.com/zendframework" class="btn-social btn-outline" alt="Github" title="Github"><i class="fa fa-github"></i></a>
+                    <a href="https://twitter.com/zfdevteam" class="btn-social btn-outline" alt="Twitter" title="Twitter"><i class="fa fa-twitter"></i></a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
 
     <script src="../js/jquery-1.10.2.min.js"></script>
     <script src="../js/bootstrap-3.0.3.min.js"></script>
@@ -406,7 +437,7 @@ response, and error as its arguments (though the error may be null).</p>
     <div class="zf-components">
   <div class="zf-components-grid">
     <div class="zf-logo">
-      <a href="http://framework.zend.com" data-toggle="tooltip" data-placement="bottom" title="Go to the ZF homepage"><img src="http://framework.zend.com/images/logos/zf-logo-mark.png" alt="Zend Framework" width="250" /></a>
+      <a href="http://framework.zend.com" data-toggle="tooltip" data-placement="bottom" title="Go to the ZF homepage"><img src="../img/zf-logo-mark.svg" alt="Zend Framework" width="250" /></a>
     </div>
 
     <div class="component-list"></div>
@@ -511,7 +542,7 @@ response, and error as its arguments (though the error may be null).</p>
     // Fetch the component list and display it.
     function loadComponentList () {
       $.ajax({
-        url: "//zendframework.github.io/zf-mkdoc-theme/scripts/zf-component-list.json",
+        url: "//docs.zendframework.com/zf-mkdoc-theme/scripts/zf-component-list.json",
         dataType: "text json",
         success: parseComponentList,
         error: function (e) {
