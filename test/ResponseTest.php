@@ -9,6 +9,8 @@
 
 namespace ZendTest\Diactoros;
 
+use DOMDocument;
+use DOMXPath;
 use InvalidArgumentException;
 use PHPUnit_Framework_TestCase as TestCase;
 use Zend\Diactoros\Response;
@@ -68,7 +70,7 @@ class ResponseTest extends TestCase
 
     public function ianaCodesReasonPhrasesProvider()
     {
-        $ianaHttpStatusCodes = new \DOMDocument();
+        $ianaHttpStatusCodes = new DOMDocument();
 
         libxml_set_streams_context(
             stream_context_create(
@@ -84,12 +86,12 @@ class ResponseTest extends TestCase
         $ianaHttpStatusCodes->load('https://www.iana.org/assignments/http-status-codes/http-status-codes.xml');
 
         if (! $ianaHttpStatusCodes->relaxNGValidate(__DIR__ . '/TestAsset/http-status-codes.rng')) {
-            self::fail();
+            self::fail('Unable to retrieve IANA response status codes due to timeout or invalid XML');
         }
 
         $ianaCodesReasonPhrases = [];
 
-        $xpath = new \DomXPath($ianaHttpStatusCodes);
+        $xpath = new DOMXPath($ianaHttpStatusCodes);
         $xpath->registerNamespace('ns', 'http://www.iana.org/assignments');
 
         $records = $xpath->query('//ns:record');
