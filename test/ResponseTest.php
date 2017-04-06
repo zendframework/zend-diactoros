@@ -40,28 +40,6 @@ class ResponseTest extends TestCase
         $this->assertEquals(400, $response->getStatusCode());
     }
 
-    public function invalidStatusCodes()
-    {
-        return [
-            'too-low' => [99],
-            'too-high' => [600],
-            'null' => [null],
-            'bool' => [true],
-            'string' => ['foo'],
-            'array' => [[200]],
-            'object' => [(object) [200]],
-        ];
-    }
-
-    /**
-     * @dataProvider invalidStatusCodes
-     */
-    public function testCannotSetInvalidStatusCode($code)
-    {
-        $this->setExpectedException('InvalidArgumentException');
-        $response = $this->response->withStatus($code);
-    }
-
     public function testReasonPhraseDefaultsToStandards()
     {
         $response = $this->response->withStatus(422);
@@ -151,27 +129,58 @@ class ResponseTest extends TestCase
         $this->assertEquals($headers, $response->getHeaders());
     }
 
-    public function invalidStatus()
+    /**
+     * @dataProvider validStatusCodes
+     */
+    public function testCreateWithValidStatusCodes($code)
+    {
+        $response = $this->response->withStatus($code);
+
+        $this->assertEquals($code, $response->getStatusCode());
+    }
+
+    public function validStatusCodes()
     {
         return [
-            'true' => [ true ],
-            'false' => [ false ],
-            'float' => [ 100.1 ],
-            'bad-string' => [ 'Two hundred' ],
-            'array' => [ [ 200 ] ],
-            'object' => [ (object) [ 'statusCode' => 200 ] ],
-            'too-small' => [ 1 ],
-            'too-big' => [ 600 ],
+            'minimum' => [100],
+            'middle' => [300],
+            'maximum' => [599],
         ];
     }
 
     /**
-     * @dataProvider invalidStatus
+     * @dataProvider invalidStatusCodes
      */
     public function testConstructorRaisesExceptionForInvalidStatus($code)
     {
         $this->setExpectedException('InvalidArgumentException', 'Invalid status code');
+
         new Response('php://memory', $code);
+    }
+
+    /**
+     * @dataProvider invalidStatusCodes
+     */
+    public function testCannotSetInvalidStatusCode($code)
+    {
+        $this->setExpectedException('InvalidArgumentException');
+
+        $this->response->withStatus($code);
+    }
+
+    public function invalidStatusCodes()
+    {
+        return [
+            'true' => [ true ],
+            'false' => [ false ],
+            'array' => [ [ 200 ] ],
+            'object' => [ (object) [ 'statusCode' => 200 ] ],
+            'too-low' => [99],
+            'float' => [400.5],
+            'too-high' => [600],
+            'null' => [null],
+            'string' => ['foo'],
+        ];
     }
 
     public function invalidResponseBody()
