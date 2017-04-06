@@ -8,6 +8,17 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - Nothing.
 
+### Changes
+
+- [#240](https://github.com/zendframework/zend-diactoros/pull/240) changes the
+  behavior of `ServerRequestFactory::fromGlobals()` when no `$cookies` argument
+  is present. Previously, it would use `$_COOKIES`; now, if a `Cookie` header is
+  present, it will parse and use that to populate the instance instead.
+
+  This change allows utilizing cookies that contain period characters (`.`) in
+  their names (PHP's built-in cookie handling renames these to replace `.` with
+  `_`, which can lead to synchronization issues with clients).
+
 ### Deprecated
 
 - Nothing.
