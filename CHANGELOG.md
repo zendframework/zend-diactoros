@@ -6,7 +6,11 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- Nothing.
+- [#219](https://github.com/zendframework/zend-diactoros/pull/219) adds two new
+  classes, `Zend\Diactoros\Request\ArraySerializer` and
+  `Zend\Diactoros\Response\ArraySerializer`. Each exposes the static methods
+  `toArray()` and `fromArray()`, allowing de/serialization of messages from and
+  to arrays.
 
 ### Changes
 
