@@ -163,6 +163,10 @@
     
         <li class="main active"><a href="#serialization">Serialization</a></li>
         
+            <li><a href="#string">String</a></li>
+        
+            <li><a href="#array">Array</a></li>
+        
     
     </ul>
 
@@ -192,6 +196,7 @@
 </ol>
 
 <h1 id="serialization">Serialization</h1>
+<h2 id="string">String</h2>
 <p>At times, it's useful to either create a string representation of a message (serialization), or to
 cast a string or stream message to an object (deserialization). This package provides features for
 this in <code>Zend\Diactoros\Request\Serializer</code> and <code>Zend\Diactoros\Response\Serializer</code>; each provides
@@ -207,6 +212,39 @@ the following static methods:</p>
 <p>The deserialization methods (<code>from*()</code>) will raise exceptions if errors occur while parsing the
 message. The serialization methods (<code>toString()</code>) will raise exceptions if required data for
 serialization is not present in the message instance.</p>
+<h2 id="array">Array</h2>
+<p>This package also provides features for array serialization using
+<code>Zend\Diactoros\Request\ArraySerializer</code> and <code>Zend\Diactoros\Response\ArraySerializer</code>; each provides
+the following static methods:</p>
+<ul>
+<li><code>fromArray(array $message)</code> will create either a <code>Request</code> or <code>Response</code> instance (based on the
+  serializer used) from the array message.</li>
+<li><code>toArray(Psr\Http\Message\RequestInterface|Psr\Http\Message\ResponseInterface $message)</code> will
+  create an array from the provided message.</li>
+</ul>
+<p>The deserialization methods (<code>fromArray()</code>) will raise exceptions if errors occur while parsing the
+message.</p>
+<h3 id="example-usage">Example usage</h3>
+<p>Array serialization can be usesful for log messages:</p>
+<pre class="codehilite"><code class="language-php linenums">class LoggerMiddleware
+{
+    /**
+     * @var \Psr\Log\LoggerInterface
+     */
+    protected $logger;
+
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next)
+    {
+        $response = $next($request, $response);
+
+        $this-&gt;logger-&gt;debug('Request/Response', [
+            'request' =&gt; \Zend\Diactoros\Request\ArraySerializer::toArray($request),
+            'response' =&gt; \Zend\Diactoros\Response\ArraySerializer::toArray($response),
+        ]);
+
+        return $response;
+    }
+}</code></pre>
 
 <hr />
 
