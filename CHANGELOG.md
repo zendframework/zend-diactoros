@@ -2,6 +2,49 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 1.4.0 - TBD
+
+### Added
+
+- [#219](https://github.com/zendframework/zend-diactoros/pull/219) adds two new
+  classes, `Zend\Diactoros\Request\ArraySerializer` and
+  `Zend\Diactoros\Response\ArraySerializer`. Each exposes the static methods
+  `toArray()` and `fromArray()`, allowing de/serialization of messages from and
+  to arrays.
+
+- [#236](https://github.com/zendframework/zend-diactoros/pull/236) adds two new
+  constants to the `Response` class: `MIN_STATUS_CODE_VALUE` and
+  `MAX_STATUS_CODE_VALUE`.
+
+### Changes
+
+- [#240](https://github.com/zendframework/zend-diactoros/pull/240) changes the
+  behavior of `ServerRequestFactory::fromGlobals()` when no `$cookies` argument
+  is present. Previously, it would use `$_COOKIES`; now, if a `Cookie` header is
+  present, it will parse and use that to populate the instance instead.
+
+  This change allows utilizing cookies that contain period characters (`.`) in
+  their names (PHP's built-in cookie handling renames these to replace `.` with
+  `_`, which can lead to synchronization issues with clients).
+
+- [#235](https://github.com/zendframework/zend-diactoros/pull/235) changes the
+  behavior of `Uri::__toString()` to better follow proscribed behavior in PSR-7.
+  In particular, prior to this release, if a scheme was missing but an authority
+  was present, the class was incorrectly returning a value that did not include
+  a `//` prefix. As of this release, it now does this correctly.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
 ## 1.3.11 - 2017-04-06
 
 ### Added
