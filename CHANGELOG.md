@@ -8,6 +8,13 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - Nothing.
 
+### Changes
+
+- [#241](https://github.com/zendframework/zend-diactoros/pull/241) changes the
+  constraint by which the package provides `psr/http-message-implementation` to
+  simply `1.0` instead of `~1.0.0`, to follow how other implementations provide
+  PSR-7.
+
 ### Deprecated
 
 - Nothing.
