@@ -12,6 +12,10 @@ All notable changes to this project will be documented in this file, in reverse 
   `toArray()` and `fromArray()`, allowing de/serialization of messages from and
   to arrays.
 
+- [#236](https://github.com/zendframework/zend-diactoros/pull/236) adds two new
+  constants to the `Response` class: `MIN_STATUS_CODE_VALUE` and
+  `MAX_STATUS_CODE_VALUE`.
+
 ### Changes
 
 - [#240](https://github.com/zendframework/zend-diactoros/pull/240) changes the
