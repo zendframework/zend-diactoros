@@ -12,7 +12,6 @@ namespace ZendTest\Diactoros;
 use InvalidArgumentException;
 use PHPUnit_Framework_TestCase as TestCase;
 use Psr\Http\Message\MessageInterface;
-use ReflectionMethod;
 use Zend\Diactoros\Request;
 
 class MessageTraitTest extends TestCase
@@ -133,6 +132,22 @@ class MessageTraitTest extends TestCase
         $this->assertEquals('Foo,Bar', $message2->getHeaderLine('X-Foo'));
     }
 
+    public function testHeaderExistsIfWithNoValues()
+    {
+        $message = $this->message->withHeader('X-Foo', []);
+
+        $this->assertTrue($message->hasHeader('X-Foo'));
+    }
+
+    public function testHeaderWithNoValues()
+    {
+        $message = $this->message->withHeader('X-Foo', []);
+
+        $this->assertSame([], $message->getHeader('X-Foo'));
+        $this->assertSame('', $message->getHeaderLine('X-Foo'));
+    }
+
+
     public function testCanRemoveHeaders()
     {
         $message = $this->message->withHeader('X-Foo', 'Foo');
@@ -168,8 +183,6 @@ class MessageTraitTest extends TestCase
             'null'   => [null],
             'true'   => [true],
             'false'  => [false],
-            'int'    => [1],
-            'float'  => [1.1],
             'array'  => [[ 'foo' => [ 'bar' ] ]],
             'object' => [(object) [ 'foo' => 'bar' ]],
         ];
@@ -190,8 +203,6 @@ class MessageTraitTest extends TestCase
             'null'   => [null],
             'true'   => [true],
             'false'  => [false],
-            'int'    => [1],
-            'float'  => [1.1],
             'object' => [(object) [ 'foo' => 'bar' ]],
         ];
     }
@@ -309,25 +320,16 @@ class MessageTraitTest extends TestCase
      * @dataProvider testNumericHeaderValues
      * @group 99
      */
-    public function testFilterHeadersShouldAllowIntegersAndFloats($value)
+    public function testWithHeaderShouldAllowIntegersAndFloats($value)
     {
-        $filter = new ReflectionMethod($this->message, 'filterHeaders');
-        $filter->setAccessible(true);
-        $headers = [
-            'X-Test-Array'  => [ $value ],
-            'X-Test-Scalar' => $value,
-        ];
-        $test = $filter->invoke($this->message, $headers);
-        $this->assertEquals([
-            [
-                'x-test-array'  => 'X-Test-Array',
-                'x-test-scalar' => 'X-Test-Scalar',
-            ],
-            [
-                'X-Test-Array'  => [ $value ],
-                'X-Test-Scalar' => [ $value ],
-            ]
-        ], $test);
+        $message = $this->message
+            ->withHeader('X-Test-Array', [ $value ])
+            ->withHeader('X-Test-Scalar', $value);
+
+        $this->assertSame([
+            'X-Test-Array'  => [ (string) $value ],
+            'X-Test-Scalar' => [ (string) $value ],
+        ], $message->getHeaders());
     }
 
     public function invalidHeaderValueTypes()
@@ -351,29 +353,21 @@ class MessageTraitTest extends TestCase
      * @dataProvider invalidArrayHeaderValues
      * @group 99
      */
-    public function testFilterHeadersShouldRaiseExceptionForInvalidHeaderValuesInArrays($value)
+    public function testWithHeaderShouldRaiseExceptionForInvalidHeaderValuesInArrays($value)
     {
-        $filter = new ReflectionMethod($this->message, 'filterHeaders');
-        $filter->setAccessible(true);
-        $headers = [
-            'X-Test-Array'  => [ $value ],
-        ];
         $this->setExpectedException('InvalidArgumentException', 'header value type');
-        $filter->invoke($this->message, $headers);
+
+        $this->message->withHeader('X-Test-Array', [ $value ]);
     }
 
     /**
      * @dataProvider invalidHeaderValueTypes
      * @group 99
      */
-    public function testFilterHeadersShouldRaiseExceptionForInvalidHeaderScalarValues($value)
+    public function testWithHeaderShouldRaiseExceptionForInvalidHeaderScalarValues($value)
     {
-        $filter = new ReflectionMethod($this->message, 'filterHeaders');
-        $filter->setAccessible(true);
-        $headers = [
-            'X-Test-Scalar' => $value,
-        ];
         $this->setExpectedException('InvalidArgumentException', 'header value type');
-        $filter->invoke($this->message, $headers);
+
+        $this->message->withHeader('X-Test-Scalar', $value);
     }
 }

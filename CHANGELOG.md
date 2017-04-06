@@ -18,7 +18,9 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#161](https://github.com/zendframework/zend-diactoros/pull/161) adds
+  additional validations to header names and values to ensure no malformed values
+  are provided.
 
 ## 1.3.10 - 2017-01-23
 
