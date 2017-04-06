@@ -22,6 +22,10 @@ All notable changes to this project will be documented in this file, in reverse 
   additional validations to header names and values to ensure no malformed values
   are provided.
 
+- [#234](https://github.com/zendframework/zend-diactoros/pull/234) fixes a
+  number of reason phrases in the `Response` instance, and adds automation from
+  the canonical IANA sources to ensure any new phrases added are correct.
+
 ## 1.3.10 - 2017-01-23
 
 ### Added
