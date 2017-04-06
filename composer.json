@@ -28,7 +28,7 @@
     "zendframework/zend-coding-standard": "~1.0.0"
   },
   "provide": {
-    "psr/http-message-implementation": "~1.0.0"
+    "psr/http-message-implementation": "1.0"
   },
   "autoload": {
     "psr-4": {
