@@ -269,6 +269,6 @@ class ResponseTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $request = new Response('php://memory', 200, [$name => $value]);
+        new Response('php://memory', 200, [$name => $value]);
     }
 }

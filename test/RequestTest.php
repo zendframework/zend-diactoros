@@ -497,7 +497,7 @@ class RequestTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new Request(null, null, 'php://memory', [$name =>  $value]);
+        new Request(null, null, 'php://memory', [$name => $value]);
     }
 
     public function hostHeaderKeys()
