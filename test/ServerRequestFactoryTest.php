@@ -9,7 +9,7 @@
 
 namespace ZendTest\Diactoros;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
 use ReflectionProperty;
 use UnexpectedValueException;
@@ -20,6 +20,18 @@ use Zend\Diactoros\Uri;
 
 class ServerRequestFactoryTest extends TestCase
 {
+    protected $globalServer;
+
+    protected function setUp() 
+    {
+        $this->globalServer = $_SERVER;
+    }
+    
+    protected function tearDown()
+    {
+        $_SERVER = $this->globalServer;
+    }
+    
     public function testGetWillReturnValueIfPresentInArray()
     {
         $array = [

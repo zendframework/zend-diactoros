@@ -9,7 +9,8 @@
 
 namespace ZendTest\Diactoros;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use InvalidArgumentException;
+use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\UriInterface;
 use Zend\Diactoros\Request;
 use Zend\Diactoros\Stream;
@@ -311,8 +312,9 @@ class RequestTest extends TestCase
     public function testSettingNewUriResetsRequestTarget()
     {
         $request = (new Request())->withUri(new Uri('https://example.com/foo/bar'));
-        $original = $request->getRequestTarget();
         $newRequest = $request->withUri(new Uri('http://mwop.net/bar/baz'));
+
+        $this->assertNotEquals($request->getRequestTarget(), $newRequest->getRequestTarget());
     }
 
     /**

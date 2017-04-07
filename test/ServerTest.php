@@ -11,7 +11,7 @@ namespace ZendTest\Diactoros;
 
 use OutOfBoundsException;
 use PHPUnit_Framework_MockObject_MockObject;
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response;

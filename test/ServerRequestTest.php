@@ -10,7 +10,7 @@
 namespace ZendTest\Diactoros;
 
 use InvalidArgumentException;
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use ReflectionProperty;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\UploadedFile;

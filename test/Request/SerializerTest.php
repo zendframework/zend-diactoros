@@ -10,7 +10,7 @@
 namespace ZendTest\Diactoros\Request;
 
 use InvalidArgumentException;
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\StreamInterface;
 use UnexpectedValueException;

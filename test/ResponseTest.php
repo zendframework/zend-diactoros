@@ -12,7 +12,7 @@ namespace ZendTest\Diactoros;
 use DOMDocument;
 use DOMXPath;
 use InvalidArgumentException;
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Stream;
 

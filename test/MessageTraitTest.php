@@ -10,7 +10,7 @@
 namespace ZendTest\Diactoros;
 
 use InvalidArgumentException;
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\StreamInterface;
 use ReflectionMethod;
@@ -317,7 +317,7 @@ class MessageTraitTest extends TestCase
         $this->assertEquals("value,\r\n second value", $message->getHeaderLine('X-Foo-Bar'));
     }
 
-    public function testNumericHeaderValues()
+    public function numericHeaderValuesProvider()
     {
         return [
             'integer' => [ 123 ],
@@ -326,7 +326,7 @@ class MessageTraitTest extends TestCase
     }
 
     /**
-     * @dataProvider testNumericHeaderValues
+     * @dataProvider numericHeaderValuesProvider
      * @group 99
      */
     public function testWithHeaderShouldAllowIntegersAndFloats($value)
