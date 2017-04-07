@@ -22,16 +22,16 @@ class ServerRequestFactoryTest extends TestCase
 {
     protected $globalServer;
 
-    protected function setUp() 
+    protected function setUp()
     {
         $this->globalServer = $_SERVER;
     }
-    
+
     protected function tearDown()
     {
         $_SERVER = $this->globalServer;
     }
-    
+
     public function testGetWillReturnValueIfPresentInArray()
     {
         $array = [
