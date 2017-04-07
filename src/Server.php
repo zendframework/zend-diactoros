@@ -167,7 +167,13 @@ class Server
         if (! $response instanceof ResponseInterface) {
             $response = $this->response;
         }
-        $this->getEmitter()->emit($response, $bufferLevel);
+
+        $emitter = $this->getEmitter();
+        if ($emitter instanceof Response\SapiEmitter) {
+            $emitter->emit($response, $bufferLevel);
+        } else {
+            $emitter->emit($response);
+        }
     }
 
     /**
