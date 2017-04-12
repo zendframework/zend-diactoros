@@ -305,4 +305,21 @@ class ServerTest extends TestCase
         ob_end_flush();
         $this->assertTrue($invoked);
     }
+
+    public function testSapiEmmiterCallWithBufferLevel()
+    {
+        $server = new Server(
+            $this->callback,
+            $this->request,
+            $this->response
+        );
+        $emmiter = $this->getMockBuilder('Zend\Diactoros\Response\SapiEmitter')->getMock();
+        $emmiter->expects($this->once())
+            ->method('emit')
+            ->with($this->equalTo($this->response), $this->equalTo(2));
+
+        $server->setEmitter($emmiter);
+        $server->listen();
+        ob_end_flush();
+    }
 }
