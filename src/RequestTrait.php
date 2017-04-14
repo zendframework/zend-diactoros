@@ -61,7 +61,14 @@ trait RequestTrait
 
         $this->method = $method ?: '';
         $this->uri    = $this->createUri($uri);
-        $this->stream = $this->getStream($body, 'wb+');
+        try {
+            $this->stream = $this->getStream($body, 'wb+');
+        } catch (\InvalidArgumentException $e) {
+            $stream = fopen('php://memory', 'r+');
+            fwrite($stream, $body);
+            rewind($stream);
+            $this->stream = $stream;
+        }
 
         $this->setHeaders($headers);
 
