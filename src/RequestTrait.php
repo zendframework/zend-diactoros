@@ -106,6 +106,17 @@ trait RequestTrait
     }
 
     /**
+     * If some one intend to "clone $request" object uri class should be 
+     * clonable otherwise request object cannot clone completely.
+     * 
+     * This feature also allow to us create our HMVC design pattern.
+     */
+    public function __clone()
+    {
+        $this->uri = clone $this->uri;
+    }
+
+    /**
      * Retrieves the message's request target.
      *
      * Retrieves the message's request-target either as it will appear (for
