@@ -32,6 +32,14 @@ class ServerRequestTest extends TestCase
         $this->assertEmpty($this->request->getServerParams());
     }
 
+    public function testServerParamsMutatorReturnsCloneWithChanges()
+    {
+        $value = ['foo' => 'bar'];
+        $request = $this->request->withServerParams($value);
+        $this->assertNotSame($this->request, $request);
+        $this->assertEquals($value, $request->getServerParams());
+    }
+
     public function testQueryParamsAreEmptyByDefault()
     {
         $this->assertEmpty($this->request->getQueryParams());

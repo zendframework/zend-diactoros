@@ -111,6 +111,13 @@ class ServerRequest implements ServerRequestInterface
         return $this->serverParams;
     }
 
+    public function withServerParams(array $serverParams)
+    {
+        $new = clone $this;
+        $new->serverParams = $serverParams;
+        return $new;
+    }
+
     /**
      * {@inheritdoc}
      */
