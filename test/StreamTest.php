@@ -597,7 +597,7 @@ class StreamTest extends TestCase
         file_put_contents($this->tmpnam, 'FOO BAR');
         $resource = fopen($this->tmpnam, 'r');
         $stream = $this
-            ->getMockBuilder(Stream::class)
+            ->getMockBuilder('Zend\Diactoros\Stream')
             ->setConstructorArgs([$resource])
             ->setMethods(['isSeekable'])
             ->getMock();
