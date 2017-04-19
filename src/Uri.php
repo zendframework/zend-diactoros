@@ -158,7 +158,7 @@ class Uri implements UriInterface
             $authority = $this->userInfo . '@' . $authority;
         }
 
-        if ($this->isNonStandardPort($this->scheme, $this->host, $this->port)) {
+        if ($this->port && $this->isNonStandardPort($this->scheme, $this->host, $this->port)) {
             $authority .= ':' . $this->port;
         }
 
