@@ -25,14 +25,14 @@ use Psr\Http\Message\UriInterface;
 class Uri implements UriInterface
 {
     /**
-     * Sub-delimiters used in query strings and fragments.
+     * Sub-delimiters used in user info, query strings and fragments.
      *
      * @const string
      */
     const CHAR_SUB_DELIMS = '!\$&\'\(\)\*\+,;=';
 
     /**
-     * Unreserved characters used in paths, query strings, and fragments.
+     * Unreserved characters used in user info, paths, query strings, and fragments.
      *
      * @const string
      */
@@ -261,9 +261,9 @@ class Uri implements UriInterface
             ));
         }
 
-        $info = $user;
+        $info = $this->filterUserInfoPart($user);
         if ($password) {
-            $info .= ':' . $password;
+            $info .= ':' . $this->filterUserInfoPart($password);
         }
 
         if ($info === $this->userInfo) {
@@ -545,6 +545,21 @@ class Uri implements UriInterface
         }
 
         return $scheme;
+    }
+
+    /**
+     * Filters a part of user info in a URI to ensure it is properly encoded.
+     *
+     * @param string $part
+     * @return string
+     */
+    private function filterUserInfoPart($part)
+    {
+        return preg_replace_callback(
+            '/(?:[^' . self::CHAR_UNRESERVED . self::CHAR_SUB_DELIMS . ']+|%(?![A-Fa-f0-9]{2}))/u',
+            [$this, 'urlEncodeChar'],
+            $part
+        );
     }
 
     /**

@@ -89,6 +89,14 @@ class UriTest extends TestCase
         $this->assertEquals('https://user:pass@local.example.com:3001/foo?bar=baz#quz', (string) $new);
     }
 
+    public function testWithUserInfoEncodesUsernameAndPassword()
+    {
+        $uri = new Uri('https://user:pass@local.example.com:3001/foo?bar=baz#quz');
+        $new = $uri->withUserInfo('foo:bar', 'baz:bat');
+
+        $this->assertSame('foo%3Abar:baz%3Abat', $new->getUserInfo());
+    }
+
     public function testWithHostReturnsNewInstanceWithProvidedHost()
     {
         $uri = new Uri('https://user:pass@local.example.com:3001/foo?bar=baz#quz');
