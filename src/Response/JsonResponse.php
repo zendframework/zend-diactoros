@@ -81,16 +81,6 @@ class JsonResponse extends Response
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function getBody()
-    {
-        $body = parent::getBody();
-
-        return $body;
-    }
-
-    /**
      * @return mixed
      */
     public function getPayload()
@@ -188,8 +178,6 @@ class JsonResponse extends Response
 
     /**
      * @param $data
-     *
-     * @return mixed
      */
     private function setPayload($data)
     {
