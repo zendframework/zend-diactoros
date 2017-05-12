@@ -140,7 +140,7 @@ class JsonResponseTest extends TestCase
     {
         $payload = ['test' => 'data'];
         $response = new JsonResponse($payload);
-        $this->assertSame($payload, $response->getPayload());
+        $this->assertEquals($payload, $response->getPayload());
     }
 
     public function testWithPayload()
@@ -149,7 +149,7 @@ class JsonResponseTest extends TestCase
         $json = [ 'foo' => 'bar'];
         $response = $response->withPayload($json);
 
-        $this->assertSame($json, $response->getPayload());
+        $this->assertEquals($json, $response->getPayload());
         $decodedBody = json_decode($response->getBody()->getContents(), true);
         $this->assertEquals($json, $decodedBody);
     }
@@ -178,5 +178,19 @@ JSON;
 JSON;
 
         $this->assertSame($expected, $response->getBody()->getContents());
+    }
+
+    public function testModifyingThePayloadDoesntMutateResponseInstance()
+    {
+        $payload = new \stdClass();
+        $payload->foo = 'bar';
+
+        $response = new JsonResponse($payload);
+
+        $originalPayload = clone $payload;
+        $payload->bar = 'baz';
+
+        $this->assertEquals($originalPayload, $response->getPayload());
+        $this->assertNotEquals($payload, $response->getPayload());
     }
 }

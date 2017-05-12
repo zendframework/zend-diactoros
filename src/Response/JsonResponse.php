@@ -69,7 +69,7 @@ class JsonResponse extends Response
         array $headers = [],
         $encodingOptions = self::DEFAULT_JSON_FLAGS
     ) {
-        $this->payload = $data;
+        $this->setPayload($data);
         $this->encodingOptions = $encodingOptions;
 
         $json = $this->jsonEncode($data, $this->encodingOptions);
@@ -106,7 +106,8 @@ class JsonResponse extends Response
     public function withPayload($data)
     {
         $new = clone $this;
-        $new->payload = $data;
+
+        $new->setPayload($data);
 
         $json = $this->jsonEncode($new->payload, $new->encodingOptions);
         $body = $this->createBodyFromJson($json);
@@ -183,5 +184,19 @@ class JsonResponse extends Response
         }
 
         return $json;
+    }
+
+    /**
+     * @param $data
+     *
+     * @return mixed
+     */
+    private function setPayload($data)
+    {
+        if (is_object($data)) {
+            $data = clone $data;
+        }
+
+        $this->payload = $data;
     }
 }
