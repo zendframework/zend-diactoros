@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- Nothing.
+- adds new API to `JsonResponse` to avoid having to decode the body to make changes to the underlying content: `getPayload()`, `withPayload()`, `getEncodingOptions()`, `withEncodingOptions()`.
 
 ### Deprecated
 
