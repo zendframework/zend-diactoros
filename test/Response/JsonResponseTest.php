@@ -135,4 +135,48 @@ class JsonResponseTest extends TestCase
         $actual = json_decode($response->getBody()->getContents(), true);
         $this->assertEquals($json, $actual);
     }
+
+    public function testPayloadGetter()
+    {
+        $payload = ['test' => 'data'];
+        $response = new JsonResponse($payload);
+        $this->assertSame($payload, $response->getPayload());
+    }
+
+    public function testWithPayload()
+    {
+        $response = new JsonResponse(['test' => 'data']);
+        $json = [ 'foo' => 'bar'];
+        $response = $response->withPayload($json);
+
+        $this->assertSame($json, $response->getPayload());
+        $decodedBody = json_decode($response->getBody()->getContents(), true);
+        $this->assertEquals($json, $decodedBody);
+    }
+
+    public function testEncodingOptionsGetter()
+    {
+        $response = new JsonResponse([]);
+        $this->assertSame(JsonResponse::DEFAULT_JSON_FLAGS, $response->getEncodingOptions());
+    }
+
+    public function testWithEncodingOptions()
+    {
+        $response = new JsonResponse([ 'foo' => 'bar']);
+        $expected = <<<JSON
+{"foo":"bar"}
+JSON;
+
+        $this->assertSame($expected, $response->getBody()->getContents());
+
+        $response = $response->withEncodingOptions(JSON_PRETTY_PRINT);
+
+        $expected = <<<JSON
+{
+    "foo": "bar"
+}
+JSON;
+
+        $this->assertSame($expected, $response->getBody()->getContents());
+    }
 }
