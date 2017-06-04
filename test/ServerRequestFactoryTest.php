@@ -410,6 +410,9 @@ class ServerRequestFactoryTest extends TestCase
         $this->assertEquals('1.1', $request->getProtocolVersion());
     }
 
+    /**
+     * @backupGlobals enabled
+     */
     public function testFromGlobalsUsesCookieHeaderInsteadOfCookieSuperGlobal()
     {
         $_COOKIE = [
@@ -421,6 +424,9 @@ class ServerRequestFactoryTest extends TestCase
         $this->assertSame(['foo_bar' => 'baz'], $request->getCookieParams());
     }
 
+    /**
+     * @backupGlobals enabled
+     */
     public function testFromGlobalsUsesCookieSuperGlobalWhenCookieHeaderIsNotSet()
     {
         $_COOKIE = [
