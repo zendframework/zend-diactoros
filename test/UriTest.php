@@ -9,7 +9,7 @@
 
 namespace ZendTest\Diactoros;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Zend\Diactoros\Uri;
 
 class UriTest extends TestCase
@@ -74,7 +74,7 @@ class UriTest extends TestCase
     {
         $uri = new Uri('https://user:pass@local.example.com:3001/foo?bar=baz#quz');
 
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException('InvalidArgumentException');
         $uri->withUserInfo('matthew', 1);
     }
 
@@ -150,7 +150,8 @@ class UriTest extends TestCase
     public function testWithPortRaisesExceptionForInvalidPorts($port)
     {
         $uri = new Uri('https://user:pass@local.example.com:3001/foo?bar=baz#quz');
-        $this->setExpectedException('InvalidArgumentException', 'Invalid port');
+        $this->expectException('InvalidArgumentException');
+        $this->expectExceptionMessage('Invalid port');
         $new = $uri->withPort($port);
     }
 
@@ -191,7 +192,8 @@ class UriTest extends TestCase
     public function testWithPathRaisesExceptionForInvalidPaths($path)
     {
         $uri = new Uri('https://user:pass@local.example.com:3001/foo?bar=baz#quz');
-        $this->setExpectedException('InvalidArgumentException', 'Invalid path');
+        $this->expectException('InvalidArgumentException');
+        $this->expectExceptionMessage('Invalid path');
         $new = $uri->withPath($path);
     }
 
@@ -222,7 +224,8 @@ class UriTest extends TestCase
     public function testWithQueryRaisesExceptionForInvalidQueryStrings($query)
     {
         $uri = new Uri('https://user:pass@local.example.com:3001/foo?bar=baz#quz');
-        $this->setExpectedException('InvalidArgumentException', 'Query string');
+        $this->expectException('InvalidArgumentException');
+        $this->expectExceptionMessage('Query string');
         $new = $uri->withQuery($query);
     }
 
@@ -313,13 +316,13 @@ class UriTest extends TestCase
      */
     public function testConstructorRaisesExceptionForNonStringURI($uri)
     {
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException('InvalidArgumentException');
         new Uri($uri);
     }
 
     public function testConstructorRaisesExceptionForSeriouslyMalformedURI()
     {
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException('InvalidArgumentException');
         new Uri('http:///www.php-fig.org/');
     }
 
@@ -353,7 +356,8 @@ class UriTest extends TestCase
      */
     public function testConstructWithUnsupportedSchemeRaisesAnException($scheme)
     {
-        $this->setExpectedException('InvalidArgumentException', 'Unsupported scheme');
+        $this->expectException('InvalidArgumentException');
+        $this->expectExceptionMessage('Unsupported scheme');
         $uri = new Uri($scheme . '://example.com');
     }
 
@@ -363,7 +367,8 @@ class UriTest extends TestCase
     public function testMutatingWithUnsupportedSchemeRaisesAnException($scheme)
     {
         $uri = new Uri('http://example.com');
-        $this->setExpectedException('InvalidArgumentException', 'Unsupported scheme');
+        $this->expectException('InvalidArgumentException');
+        $this->expectExceptionMessage('Unsupported scheme');
         $uri->withScheme($scheme);
     }
 
@@ -558,7 +563,7 @@ class UriTest extends TestCase
     public function testPassingInvalidValueToWithMethodRaisesException($method, $value)
     {
         $uri = new Uri('https://example.com/');
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException('InvalidArgumentException');
         $uri->$method($value);
     }
 

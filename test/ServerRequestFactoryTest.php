@@ -9,7 +9,7 @@
 
 namespace ZendTest\Diactoros;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
 use ReflectionProperty;
 use UnexpectedValueException;
@@ -539,7 +539,7 @@ class ServerRequestFactoryTest extends TestCase
     {
         $method = new ReflectionMethod('Zend\Diactoros\ServerRequestFactory', 'marshalProtocolVersion');
         $method->setAccessible(true);
-        $this->setExpectedException('UnexpectedValueException');
+        $this->expectException('UnexpectedValueException');
         $method->invoke(null, ['SERVER_PROTOCOL' => 'dadsa/1.0']);
     }
 

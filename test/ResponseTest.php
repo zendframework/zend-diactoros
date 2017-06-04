@@ -12,7 +12,7 @@ namespace ZendTest\Diactoros;
 use DOMDocument;
 use DOMXPath;
 use InvalidArgumentException;
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Stream;
 
@@ -111,7 +111,7 @@ class ResponseTest extends TestCase
 
     public function testConstructorRaisesExceptionForInvalidStream()
     {
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException('InvalidArgumentException');
         new Response([ 'TOTALLY INVALID' ]);
     }
 
@@ -153,7 +153,8 @@ class ResponseTest extends TestCase
      */
     public function testConstructorRaisesExceptionForInvalidStatus($code)
     {
-        $this->setExpectedException('InvalidArgumentException', 'Invalid status code');
+        $this->expectException('InvalidArgumentException');
+        $this->expectExceptionMessage('Invalid status code');
 
         new Response('php://memory', $code);
     }
@@ -163,7 +164,7 @@ class ResponseTest extends TestCase
      */
     public function testCannotSetInvalidStatusCode($code)
     {
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException('InvalidArgumentException');
 
         $this->response->withStatus($code);
     }
@@ -200,7 +201,8 @@ class ResponseTest extends TestCase
      */
     public function testConstructorRaisesExceptionForInvalidBody($body)
     {
-        $this->setExpectedException('InvalidArgumentException', 'stream');
+        $this->expectException('InvalidArgumentException');
+        $this->expectExceptionMessage('stream');
         new Response($body);
     }
 
@@ -222,13 +224,14 @@ class ResponseTest extends TestCase
      */
     public function testConstructorRaisesExceptionForInvalidHeaders($headers, $contains = 'header value type')
     {
-        $this->setExpectedException('InvalidArgumentException', $contains);
+        $this->expectException('InvalidArgumentException');
+        $this->expectExceptionMessage($contains);
         new Response('php://memory', 200, $headers);
     }
 
     public function testInvalidStatusCodeInConstructor()
     {
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException('InvalidArgumentException');
 
         new Response('php://memory', null);
     }
@@ -264,7 +267,7 @@ class ResponseTest extends TestCase
      */
     public function testConstructorRaisesExceptionForHeadersWithCRLFVectors($name, $value)
     {
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException('InvalidArgumentException');
         $request = new Response('php://memory', 200, [$name => $value]);
     }
 }

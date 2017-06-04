@@ -9,7 +9,7 @@
 
 namespace ZendTest\Diactoros;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Zend\Diactoros\Request;
 use Zend\Diactoros\Stream;
 use Zend\Diactoros\Uri;
@@ -54,7 +54,7 @@ class RequestTest extends TestCase
 
     public function testConstructorRaisesExceptionForInvalidStream()
     {
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException('InvalidArgumentException');
         new Request(['TOTALLY INVALID']);
     }
 
@@ -117,7 +117,8 @@ class RequestTest extends TestCase
      */
     public function testConstructorRaisesExceptionForInvalidUri($uri)
     {
-        $this->setExpectedException('InvalidArgumentException', 'Invalid URI');
+        $this->expectException('InvalidArgumentException');
+        $this->expectExceptionMessage('Invalid URI');
         new Request($uri);
     }
 
@@ -139,7 +140,8 @@ class RequestTest extends TestCase
      */
     public function testConstructorRaisesExceptionForInvalidMethod($method)
     {
-        $this->setExpectedException('InvalidArgumentException', 'Unsupported HTTP method');
+        $this->expectException('InvalidArgumentException');
+        $this->expectExceptionMessage('Unsupported HTTP method');
         new Request(null, $method);
     }
 
@@ -188,7 +190,8 @@ class RequestTest extends TestCase
      */
     public function testConstructorRaisesExceptionForInvalidBody($body)
     {
-        $this->setExpectedException('InvalidArgumentException', 'stream');
+        $this->expectException('InvalidArgumentException');
+        $this->expectExceptionMessage('stream');
         new Request(null, null, $body);
     }
 
@@ -209,7 +212,8 @@ class RequestTest extends TestCase
      */
     public function testConstructorRaisesExceptionForInvalidHeaders($headers, $contains = 'header value type')
     {
-        $this->setExpectedException('InvalidArgumentException', $contains);
+        $this->expectException('InvalidArgumentException');
+        $this->expectExceptionMessage($contains);
         new Request(null, null, 'php://memory', $headers);
     }
 
@@ -288,7 +292,8 @@ class RequestTest extends TestCase
     public function testRequestTargetCannotContainWhitespace()
     {
         $request = new Request();
-        $this->setExpectedException('InvalidArgumentException', 'Invalid request target');
+        $this->expectException('InvalidArgumentException');
+        $this->expectExceptionMessage('Invalid request target');
         $request->withRequestTarget('foo bar baz');
     }
 
@@ -487,7 +492,7 @@ class RequestTest extends TestCase
      */
     public function testConstructorRaisesExceptionForHeadersWithCRLFVectors($name, $value)
     {
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException('InvalidArgumentException');
         $request = new Request(null, null, 'php://memory', [$name => $value]);
     }
 

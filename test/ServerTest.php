@@ -9,7 +9,7 @@
 
 namespace ZendTest\Diactoros;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Server;
@@ -82,7 +82,7 @@ class ServerTest extends TestCase
             $this->response
         );
         $prop = uniqid();
-        $this->setExpectedException('OutOfBoundsException');
+        $this->expectException('OutOfBoundsException');
         $server->$prop;
     }
 

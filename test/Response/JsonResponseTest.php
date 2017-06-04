@@ -9,7 +9,7 @@
 
 namespace ZendTest\Diactoros\Response;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Zend\Diactoros\Response\JsonResponse;
 
 class JsonResponseTest extends TestCase
@@ -95,7 +95,8 @@ class JsonResponseTest extends TestCase
             'stream' => fopen('php://memory', 'r'),
         ];
 
-        $this->setExpectedException('InvalidArgumentException', 'Unable to encode');
+        $this->expectException('InvalidArgumentException');
+        $this->expectExceptionMessage('Unable to encode');
         new JsonResponse($data);
     }
 
