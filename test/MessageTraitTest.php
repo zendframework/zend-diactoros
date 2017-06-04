@@ -311,7 +311,7 @@ class MessageTraitTest extends TestCase
         $this->assertEquals("value,\r\n second value", $message->getHeaderLine('X-Foo-Bar'));
     }
 
-    public function testNumericHeaderValues()
+    public function providerNumericHeaderValues()
     {
         return [
             'integer' => [ 123 ],
@@ -320,7 +320,7 @@ class MessageTraitTest extends TestCase
     }
 
     /**
-     * @dataProvider testNumericHeaderValues
+     * @dataProvider providerNumericHeaderValues
      * @group 99
      */
     public function testWithHeaderShouldAllowIntegersAndFloats($value)

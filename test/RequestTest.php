@@ -310,6 +310,7 @@ class RequestTest extends TestCase
         $request = (new Request())->withUri(new Uri('https://example.com/foo/bar'));
         $original = $request->getRequestTarget();
         $newRequest = $request->withUri(new Uri('http://mwop.net/bar/baz'));
+        $this->addToAssertionCount(1);
     }
 
     /**
