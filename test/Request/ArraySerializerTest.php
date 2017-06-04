@@ -7,7 +7,7 @@
 
 namespace ZendTest\Diactoros\Request;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Zend\Diactoros\Request;
 use Zend\Diactoros\Request\ArraySerializer;
 use Zend\Diactoros\Stream;
@@ -110,7 +110,7 @@ class ArraySerializerTest extends TestCase
             ],
         ];
 
-        $this->setExpectedException('UnexpectedValueException');
+        $this->expectException('UnexpectedValueException');
 
         ArraySerializer::fromArray($serializedRequest);
     }

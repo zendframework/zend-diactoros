@@ -9,7 +9,7 @@
 
 namespace ZendTest\Diactoros;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Zend\Diactoros\RelativeStream;
 use Zend\Diactoros\CallbackStream;
 

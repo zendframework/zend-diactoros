@@ -9,7 +9,7 @@
 
 namespace ZendTest\Diactoros\Request;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Zend\Diactoros\Request;
 use Zend\Diactoros\Request\Serializer;
 use Zend\Diactoros\Stream;
@@ -204,7 +204,7 @@ class SerializerTest extends TestCase
     public function testRaisesExceptionDuringDeserializationForInvalidRequestLine($line)
     {
         $message = $line . "\r\nX-Foo-Bar: Baz\r\n\r\nContent";
-        $this->setExpectedException('UnexpectedValueException');
+        $this->expectException('UnexpectedValueException');
         Serializer::fromString($message);
     }
 
@@ -266,13 +266,14 @@ class SerializerTest extends TestCase
      */
     public function testDeserializationRaisesExceptionForMalformedHeaders($message, $exceptionMessage)
     {
-        $this->setExpectedException('UnexpectedValueException', $exceptionMessage);
+        $this->expectException('UnexpectedValueException');
+        $this->expectExceptionMessage($exceptionMessage);
         $request = Serializer::fromString($message);
     }
 
     public function testFromStreamThrowsExceptionWhenStreamIsNotReadable()
     {
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException('InvalidArgumentException');
         $stream = $this
             ->getMockBuilder('Psr\Http\Message\StreamInterface')
             ->getMock();
@@ -285,7 +286,7 @@ class SerializerTest extends TestCase
 
     public function testFromStreamThrowsExceptionWhenStreamIsNotSeekable()
     {
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException('InvalidArgumentException');
         $stream = $this
             ->getMockBuilder('Psr\Http\Message\StreamInterface')
             ->getMock();

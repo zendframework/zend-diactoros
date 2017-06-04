@@ -9,7 +9,7 @@
 
 namespace ZendTest\Diactoros\Response;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use Zend\Diactoros\Response;

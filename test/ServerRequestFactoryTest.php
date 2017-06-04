@@ -9,7 +9,7 @@
 
 namespace ZendTest\Diactoros;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
 use ReflectionProperty;
 use UnexpectedValueException;
@@ -410,6 +410,9 @@ class ServerRequestFactoryTest extends TestCase
         $this->assertEquals('1.1', $request->getProtocolVersion());
     }
 
+    /**
+     * @backupGlobals enabled
+     */
     public function testFromGlobalsUsesCookieHeaderInsteadOfCookieSuperGlobal()
     {
         $_COOKIE = [
@@ -421,6 +424,9 @@ class ServerRequestFactoryTest extends TestCase
         $this->assertSame(['foo_bar' => 'baz'], $request->getCookieParams());
     }
 
+    /**
+     * @backupGlobals enabled
+     */
     public function testFromGlobalsUsesCookieSuperGlobalWhenCookieHeaderIsNotSet()
     {
         $_COOKIE = [
@@ -539,7 +545,7 @@ class ServerRequestFactoryTest extends TestCase
     {
         $method = new ReflectionMethod('Zend\Diactoros\ServerRequestFactory', 'marshalProtocolVersion');
         $method->setAccessible(true);
-        $this->setExpectedException('UnexpectedValueException');
+        $this->expectException('UnexpectedValueException');
         $method->invoke(null, ['SERVER_PROTOCOL' => 'dadsa/1.0']);
     }
 

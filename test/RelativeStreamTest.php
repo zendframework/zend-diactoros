@@ -9,7 +9,7 @@
 
 namespace ZendTest\Diactoros;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Zend\Diactoros\RelativeStream;
 use Zend\Diactoros\Stream;
 
@@ -151,7 +151,8 @@ class RelativeStreamTest extends TestCase
 
     public function testWriteRaisesExceptionWhenPointerIsBehindOffset()
     {
-        $this->setExpectedException('RuntimeException', 'Invalid pointer position');
+        $this->expectException('RuntimeException');
+        $this->expectExceptionMessage('Invalid pointer position');
         $decorated = $this->prophesize('Zend\Diactoros\Stream');
         $decorated->tell()->shouldBeCalled()->willReturn(0);
         $decorated->write("foobaz")->shouldNotBeCalled();
@@ -161,7 +162,8 @@ class RelativeStreamTest extends TestCase
 
     public function testReadRaisesExceptionWhenPointerIsBehindOffset()
     {
-        $this->setExpectedException('RuntimeException', 'Invalid pointer position');
+        $this->expectException('RuntimeException');
+        $this->expectExceptionMessage('Invalid pointer position');
         $decorated = $this->prophesize('Zend\Diactoros\Stream');
         $decorated->tell()->shouldBeCalled()->willReturn(0);
         $decorated->read(3)->shouldNotBeCalled();
@@ -171,7 +173,8 @@ class RelativeStreamTest extends TestCase
 
     public function testGetContentsRaisesExceptionWhenPointerIsBehindOffset()
     {
-        $this->setExpectedException('RuntimeException', 'Invalid pointer position');
+        $this->expectException('RuntimeException');
+        $this->expectExceptionMessage('Invalid pointer position');
         $decorated = $this->prophesize('Zend\Diactoros\Stream');
         $decorated->tell()->shouldBeCalled()->willReturn(0);
         $decorated->getContents()->shouldNotBeCalled();
