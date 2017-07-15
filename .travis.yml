@@ -68,15 +68,6 @@ matrix:
     - php: 7.1
       env:
         - DEPS=latest
-    - php: hhvm
-      env:
-        - DEPS=lowest
-    - php: hhvm
-      env:
-        - DEPS=locked
-    - php: hhvm
-      env:
-        - DEPS=latest
 
 before_install:
   - travis_retry composer self-update
