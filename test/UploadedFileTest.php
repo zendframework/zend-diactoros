@@ -11,6 +11,7 @@ namespace ZendTest\Diactoros;
 
 use PHPUnit_Framework_TestCase as TestCase;
 use ReflectionProperty;
+use RuntimeException;
 use Zend\Diactoros\Stream;
 use Zend\Diactoros\UploadedFile;
 
@@ -310,5 +311,39 @@ class UploadedFileTest extends TestCase
         $test     = file_get_contents($this->tmpFile);
 
         $this->assertEquals($original, $test);
+    }
+
+    public function errorConstantsAndMessages()
+    {
+        foreach (UploadedFile::ERROR_MESSAGES as $constant => $message) {
+            if ($constant === \UPLOAD_ERR_OK) {
+                continue;
+            }
+            yield $constant => [$constant, $message];
+        }
+    }
+
+    /**
+     * @dataProvider errorConstantsAndMessages
+     * @param int $constant Upload error constant
+     * @param string $message Associated error message
+     */
+    public function testGetStreamRaisesExceptionWithAppropriateMessageWhenUploadErrorDetected($constant, $message)
+    {
+        $uploadedFile = new UploadedFile(__FILE__, 100, $constant);
+        $this->setExpectedException(RuntimeException::class, $message);
+        $uploadedFile->getStream();
+    }
+
+    /**
+     * @dataProvider errorConstantsAndMessages
+     * @param int $constant Upload error constant
+     * @param string $message Associated error message
+     */
+    public function testMoveToRaisesExceptionWithAppropriateMessageWhenUploadErrorDetected($constant, $message)
+    {
+        $uploadedFile = new UploadedFile(__FILE__, 100, $constant);
+        $this->setExpectedException(RuntimeException::class, $message);
+        $uploadedFile->moveTo('/tmp/foo');
     }
 }
