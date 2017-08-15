@@ -8,13 +8,20 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - Nothing.
 
+### Changed
+
+- [#243](https://github.com/zendframework/zend-diactoros/pull/243) changes the
+  exception messages thrown by `UploadedFile::getStream()` and `moveTo()` when
+  an upload error exists to include details about the upload error.
+
 ### Deprecated
 
 - Nothing.
 
 ### Removed
 
-- Nothing.
+- [#243](https://github.com/zendframework/zend-diactoros/pull/243) **removes
+  support for PHP versions prior to 5.6**.
 
 ### Fixed
 
