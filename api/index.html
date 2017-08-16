@@ -4,36 +4,15 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="zend-diactoros: PSR-7 HTTP message implementation">  
     <link rel="shortcut icon" href="../img/favicon.ico">
 
     <title>API - zend-diactoros</title>
 
-    <link href="../css/bootstrap-custom.min.css" rel="stylesheet">
-    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/font-hack/2.018/css/hack.min.css">
-    <link href="//fonts.googleapis.com/css?family=PT+Sans:400,400italic,700,700italic&subset=latin-ext,latin" rel="stylesheet" type="text/css">
-    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,400,300,600,700&subset=latin-ext,latin" rel="stylesheet" type="text/css">
-    <link href="//fonts.googleapis.com/css?family=Libre+Baskerville:400,400italic,700&subset=latin,latin-ext" rel="stylesheet" type="text/css">
-    <link href="../css/base.css" rel="stylesheet">
-    <link href="../css/zf-web.css" rel="stylesheet">
-    <link href="../css/zf.css" rel="stylesheet">
-    <link href="../css/prism-zf.css" rel="stylesheet">
-
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
-        <![endif]-->
-
-    <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.5.18/webfont.js"></script>
-    <script>
-    WebFont.load({
-        google: {
-            families: ['Open Sans', 'PT Sans']
-        }
-    });
-    </script>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha256-7s5uDGW3AHqw6xtJmNNtr+OBRJUlgkNJEo78P4b0yRw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/fontawesome/4.6.3/css/font-awesome.min.css" integrity="sha256-AIodEDkC8V/bHBkfyxzolUMw57jeQ9CauwhVW6YJ9CA=" crossorigin="anonymous">
+    <link rel="stylesheet" href="../css/styles-482aa2add1.css">
 
     
 </head>
@@ -183,24 +162,15 @@
     </ul>
 
     
-    <ul class="pager hidden-print">
-      <li class="previous">
-        <a rel="prev" href="../serialization/"><i class="fa fa-arrow-left"></i> Previous</a>
-      </li>
-      <li class="next disabled ">
-        <a rel="next" >Next <i class="fa fa-arrow-right"></i></a>
-      </li>
-    </ul>
-    
 </div></div>
         <div class="col-md-9" role="main">
 
 <ol class="breadcrumb" role="navigation" aria-label="breadcrumbs navigation">
-  <li><a href="..">zend-diactoros</a> &raquo;</li>
+  <li><a href="..">zend-diactoros</a></li>
   
     
       
-        <li>Reference &raquo;</li>
+        <li>Reference</li>
       
     
   
@@ -211,7 +181,7 @@
 <h2 id="request-message">Request Message</h2>
 <p><code>Zend\Diactoros\Request</code> implements <a href="https://github.com/php-fig/http-message/blob/master/src/RequestInterface.php"><code>Psr\Http\Message\RequestInterface</code></a>,
 and is intended for client-side requests. It includes the following methods:</p>
-<pre class="codehilite"><code class="language-php linenums">class Request
+<pre class="codehilite"><code class="language-php">class Request
 {
     public function __construct(
         $uri = null,
@@ -230,7 +200,7 @@ and is intended for client-side requests. It includes the following methods:</p>
 <a href="https://github.com/php-fig/http-message/blob/master/src/ServerRequestInterface.php"><code>Psr\Http\Message\ServerRequestInterface</code></a>,
 which provides access to the elements of an HTTP request, as well as uniform access to the various
 elements of incoming data. The methods included are:</p>
-<pre class="codehilite"><code class="language-php linenums">class ServerRequest
+<pre class="codehilite"><code class="language-php">class ServerRequest
 {
     public function __construct(
         array $serverParams = [],
@@ -253,7 +223,7 @@ for other values.</p>
 <a href="https://github.com/php-fig/http-message/blob/master/src/ResponseInterface.php"><code>Psr\Http\Message\ResponseInterface</code></a>,
 an object to be used to aggregate response information for both HTTP clients and server-side
 applications, including headers and message body content. It includes the following:</p>
-<pre class="codehilite"><code class="language-php linenums">class Response
+<pre class="codehilite"><code class="language-php">class Response
 {
     public function __construct(
         $body = 'php://memory',
@@ -273,7 +243,7 @@ applications, including headers and message body content. It includes the follow
 <p>The most common use case in server-side applications for generating responses is to provide a string
 to use for the response, typically HTML or data to serialize as JSON.  <code>Zend\Diactoros\Response\StringResponse</code>
 exists to facilitate these use cases:</p>
-<pre class="codehilite"><code class="language-php linenums">$htmlResponse = StringResponse::html($html);
+<pre class="codehilite"><code class="language-php">$htmlResponse = StringResponse::html($html);
 
 $jsonResponse = StringResponse::json($data);</code></pre>
 
@@ -283,7 +253,7 @@ stream containing the JSON-serialized <code>$data</code>, and have a <code>Conte
 <code>application/json</code>.</p>
 <p>Both factory methods allow passing the HTTP status, as well as any headers you want to specify,
 including the <code>Content-Type</code> header:</p>
-<pre class="codehilite"><code class="language-php linenums">$htmlResponse = StringResponse::html($html, 404, [
+<pre class="codehilite"><code class="language-php">$htmlResponse = StringResponse::html($html, 404, [
     'Content-Type' =&gt; [ 'application/xhtml+xml' ],
 ]);
 
@@ -296,7 +266,7 @@ $jsonResponse = StringResponse::json($data, 422, [
 primary entry point is <code>Zend\Diactoros\ServerRequestFactory::fromGlobals(array $server, array
 $query, array $body, array $cookies, array $files)</code>. This method will create a new <code>ServerRequest</code>
 instance with the data provided. Examples of usage are:</p>
-<pre class="codehilite"><code class="language-php linenums">// Returns new ServerRequest instance, using values from superglobals:
+<pre class="codehilite"><code class="language-php">// Returns new ServerRequest instance, using values from superglobals:
 $request = ServerRequestFactory::fromGlobals();
 
 // or
@@ -316,7 +286,7 @@ $request = RequestFactory::fromGlobals(
 <a href="https://github.com/php-fig/http-message/blob/master/src/UriInterface.php"><code>Psr\Http\Message\UriInterface</code></a>,
 and models and validates URIs. It implements <code>__toString()</code>, allowing it to be represented as a
 string and <code>echo()</code>'d directly. The following methods are pertinent:</p>
-<pre class="codehilite"><code class="language-php linenums">class Uri
+<pre class="codehilite"><code class="language-php">class Uri
 {
     public function __construct($uri = '');
 
@@ -348,7 +318,7 @@ as a stream or moving it to a filesystem location.</p>
 <p>In most cases, you will only use the methods defined in the <code>UploadedFileInterface</code>.</p>
 <h2 id="server">Server</h2>
 <p><code>Zend\Diactoros\Server</code> represents a server capable of executing a callback. It has four methods:</p>
-<pre class="codehilite"><code class="language-php linenums">class Server
+<pre class="codehilite"><code class="language-php">class Server
 {
     public function __construct(
         callable $callback,
@@ -384,17 +354,6 @@ argument to the <code>$callback</code> registered with the server.</p>
 
 <hr />
 
-
-<nav>
-  <ul class="pager hidden-print">
-    <li class="previous">
-      <a rel="prev" href="../serialization/"><i class="fa fa-arrow-left"></i> Previous</a>
-    </li>
-    <li class="next disabled ">
-      <a rel="next" >Next <i class="fa fa-arrow-right"></i></a>
-    </li>
-  </ul>
-</nav>
 </div>
         
     </div>
@@ -444,13 +403,11 @@ argument to the <code>$callback</code> registered with the server.</p>
 </div>
 
 
-    <script src="../js/jquery-1.10.2.min.js"></script>
-    <script src="../js/bootstrap-3.0.3.min.js"></script>
-    <script src="../js/prism-zf.js"></script>
-
+    <script src="//cdn.jsdelivr.net/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+    <script src="//cdn.jsdelivr.net/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha256-KXn5puMvxCw+dAYznun+drMdG1IFl3agK0p/pqT9KAo=" crossorigin="anonymous"></script>
     <script>var base_url = '..';</script>
+    <script src="../js/scripts-8b95ab2fc3.js"></script>
     <script data-main="../mkdocs/js/search.js" src="../mkdocs/js/require.js"></script>
-    <script src="../js/base.js"></script>
 
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
         <div class="modal-dialog">
@@ -491,112 +448,6 @@ argument to the <code>$callback</code> registered with the server.</p>
   </div>
 </div>
 
-    <script>
-  // Prepare the component list dropdown for display
-  $(function () {
-    var components = $(".zf-components"),
-        componentList = components.find(".component-list"),
-        sidebar = $(".bs-sidebar.affix"),
-        sidebarInitialPos = sidebar.css("position"),
-        hidden,
-        componentToggle = $(".component-toggle"),
-        navbar = $(".navbar-fixed-top"),
-        rollUpLink = $(".zf-components-rollup a");
-
-    // Initial setup on document load
-    components.insertBefore(navbar);
-    $(".zf-logo a").tooltip();
-    componentToggle.tooltip();
-    rollUpLink.attr({ href: "#", alt: "Hide component list" });
-
-    // Cast initial sidebar position value
-    if (undefined === sidebarInitialPos) {
-      sidebarInitialPos = "fixed";
-    }
-
-    // Setup onclick events to toggle list
-    componentToggle.click(toggleComponentList);
-    rollUpLink.click(toggleComponentList);
-
-    // Toggle the component list display
-    function toggleComponentList(event) {
-      event.preventDefault();
-
-      if (hidden === undefined) {
-        // Not loaded yet; load and display.
-        loadComponentList();
-        return;
-      }
-
-      if (hidden) {
-        // Hidden; display.
-        showComponentList();
-        return;
-      }
-
-      // Currently visible; hide
-      hideComponentList();
-    }
-
-    // Show the component list
-    function showComponentList() {
-      navbar.css({position: "relative"});
-      sidebar.css({position: "relative"});
-      components
-        .css({"margin-top": "-" + components.outerHeight() + "px"})
-        .show()
-        .animate({"margin-top": 0}, {
-          complete: function () {
-            componentToggle
-              .data("placement", "top")
-              .attr("data-original-title", "Hide component list");
-            hidden = false;
-          },
-          queue: false
-        });
-    }
-
-    // Hide the component list
-    function hideComponentList() {
-      components.animate({"margin-top": "-" + components.outerHeight() + "px"}, {
-        complete: function () {
-          navbar.css({position: "fixed"});
-          sidebar.css({position: sidebarInitialPos});
-          componentToggle
-            .data("placement", "bottom")
-            .attr("data-original-title", "Show component list");
-          components.hide();
-          hidden = true;
-        },
-        queue: false
-      });
-      sidebar.animate({ top: sidebarInitialTop + "px" }, { queue: false});
-    }
-
-    // Inject a component into the componet list DOM.
-    function injectComponent(index, component) {
-      componentList.append('<div class="component"><h4><a href="' + component.url + '">' + component.name + '</a></h4><p>' + component.description + '</p></div>');
-    }
-
-    // Parse the component list, build the DOM, and display it.
-    function parseComponentList(components) {
-      $.each(components, injectComponent);
-      showComponentList();
-    }
-
-    // Fetch the component list and display it.
-    function loadComponentList () {
-      $.ajax({
-        url: "//docs.zendframework.com/zf-mkdoc-theme/scripts/zf-component-list.json",
-        dataType: "text json",
-        success: parseComponentList,
-        error: function (e) {
-          console.log("Error occurred with XHR call", e);
-        }
-      });
-    }
-  });
-</script>
-    </body>
+</body>
 
 </html>
