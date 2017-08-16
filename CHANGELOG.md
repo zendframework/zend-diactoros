@@ -18,7 +18,11 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#247](https://github.com/zendframework/zend-diactoros/pull/247) fixes the
+  `Stream` and `RelativeStream` `__toString()` method implementations to check
+  if the stream `isSeekable()` before attempting to `rewind()` it, ensuring that
+  the method does not raise exceptions (PHP does not allow exceptions in that
+  method). In particular, this fixes an issue when using AWS S3 streams.
 
 ## 1.4.0 - 2017-04-06
 
