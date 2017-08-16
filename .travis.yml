@@ -8,6 +8,8 @@ cache:
     - $HOME/.local
     - zf-mkdoc-theme
 
+dist: trusty
+
 env:
   global:
     - COMPOSER_ARGS="--no-interaction"

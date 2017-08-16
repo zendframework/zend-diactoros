@@ -10,6 +10,7 @@
 namespace ZendTest\Diactoros;
 
 use PHPUnit_Framework_TestCase as TestCase;
+use Prophecy\Argument;
 use Zend\Diactoros\RelativeStream;
 use Zend\Diactoros\Stream;
 
@@ -21,6 +22,7 @@ class RelativeStreamTest extends TestCase
     public function testToString()
     {
         $decorated = $this->prophesize('Zend\Diactoros\Stream');
+        $decorated->isSeekable()->willReturn(true);
         $decorated->tell()->willReturn(100);
         $decorated->seek(100, SEEK_SET)->shouldBeCalled();
         $decorated->getContents()->shouldBeCalled()->willReturn('foobarbaz');
@@ -177,5 +179,17 @@ class RelativeStreamTest extends TestCase
         $decorated->getContents()->shouldNotBeCalled();
         $stream = new RelativeStream($decorated->reveal(), 100);
         $stream->getContents();
+    }
+
+    public function testCanReadContentFromNotSeekableResource()
+    {
+        $decorated = $this->prophesize('Zend\Diactoros\Stream');
+        $decorated->isSeekable()->willReturn(false);
+        $decorated->seek(Argument::any())->shouldNotBeCalled();
+        $decorated->tell()->willReturn(3);
+        $decorated->getContents()->willReturn('CONTENTS');
+
+        $stream = new RelativeStream($decorated->reveal(), 3);
+        $this->assertEquals('CONTENTS', $stream->__toString());
     }
 }
