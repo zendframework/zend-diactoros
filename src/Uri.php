@@ -232,7 +232,7 @@ class Uri implements UriInterface
 
         if ($scheme === $this->scheme) {
             // Do nothing if no change was made.
-            return clone $this;
+            return $this;
         }
 
         $new = clone $this;
@@ -268,7 +268,7 @@ class Uri implements UriInterface
 
         if ($info === $this->userInfo) {
             // Do nothing if no change was made.
-            return clone $this;
+            return $this;
         }
 
         $new = clone $this;
@@ -292,7 +292,7 @@ class Uri implements UriInterface
 
         if ($host === $this->host) {
             // Do nothing if no change was made.
-            return clone $this;
+            return $this;
         }
 
         $new = clone $this;
@@ -319,7 +319,7 @@ class Uri implements UriInterface
 
         if ($port === $this->port) {
             // Do nothing if no change was made.
-            return clone $this;
+            return $this;
         }
 
         if ($port !== null && $port < 1 || $port > 65535) {
@@ -362,7 +362,7 @@ class Uri implements UriInterface
 
         if ($path === $this->path) {
             // Do nothing if no change was made.
-            return clone $this;
+            return $this;
         }
 
         $new = clone $this;
@@ -392,7 +392,7 @@ class Uri implements UriInterface
 
         if ($query === $this->query) {
             // Do nothing if no change was made.
-            return clone $this;
+            return $this;
         }
 
         $new = clone $this;
@@ -418,7 +418,7 @@ class Uri implements UriInterface
 
         if ($fragment === $this->fragment) {
             // Do nothing if no change was made.
-            return clone $this;
+            return $this;
         }
 
         $new = clone $this;
