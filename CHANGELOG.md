@@ -39,7 +39,8 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Removed
 
-- Nothing.
+- [#260](https://github.com/zendframework/zend-diactoros/pull/260) removes
+  support for HHVM, as tests have failed against it for some time.
 
 ### Fixed
 
