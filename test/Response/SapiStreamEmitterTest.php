@@ -19,7 +19,7 @@ use Zend\Diactoros\Response\SapiStreamEmitter;
 use Zend\Diactoros\Response\TextResponse;
 use ZendTest\Diactoros\TestAsset\HeaderStack;
 
-class SapiStreamEmitterTest extends SapiEmitterTest
+class SapiStreamEmitterTest extends AbstractEmitterTest
 {
     public function setUp()
     {
