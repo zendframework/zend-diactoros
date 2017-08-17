@@ -225,42 +225,6 @@ class ServerRequest implements ServerRequestInterface
     }
 
     /**
-     * Proxy to receive the request method.
-     *
-     * This overrides the parent functionality to ensure the method is never
-     * empty; if no method is present, it returns 'GET'.
-     *
-     * @return string
-     */
-    public function getMethod()
-    {
-        if (empty($this->method)) {
-            return 'GET';
-        }
-        return $this->method;
-    }
-
-    /**
-     * Set the request method.
-     *
-     * Unlike the regular Request implementation, the server-side
-     * normalizes the method to uppercase to ensure consistency
-     * and make checking the method simpler.
-     *
-     * This methods returns a new instance.
-     *
-     * @param string $method
-     * @return self
-     */
-    public function withMethod($method)
-    {
-        $this->validateMethod($method);
-        $new = clone $this;
-        $new->method = $method;
-        return $new;
-    }
-
-    /**
      * Recursively validate the structure in an uploaded files array.
      *
      * @param array $uploadedFiles

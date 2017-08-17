@@ -30,7 +30,7 @@ trait RequestTrait
     /**
      * @var string
      */
-    private $method = '';
+    private $method = 'GET';
 
     /**
      * The request-target, if it has been provided or calculated.
@@ -57,9 +57,10 @@ trait RequestTrait
      */
     private function initialize($uri = null, $method = null, $body = 'php://memory', array $headers = [])
     {
-        $this->validateMethod($method);
+        if ($method !== null) {
+            $this->setMethod($method);
+        }
 
-        $this->method = $method ?: '';
         $this->uri    = $this->createUri($uri);
         $this->stream = $this->getStream($body, 'wb+');
 
@@ -197,9 +198,8 @@ trait RequestTrait
      */
     public function withMethod($method)
     {
-        $this->validateMethod($method);
         $new = clone $this;
-        $new->method = $method;
+        $new->setMethod($method);
         return $new;
     }
 
@@ -277,17 +277,13 @@ trait RequestTrait
     }
 
     /**
-     * Validate the HTTP method
+     * Set and validate the HTTP method
      *
-     * @param null|string $method
+     * @param string $method
      * @throws InvalidArgumentException on invalid HTTP method.
      */
-    private function validateMethod($method)
+    private function setMethod($method)
     {
-        if (null === $method) {
-            return;
-        }
-
         if (! is_string($method)) {
             throw new InvalidArgumentException(sprintf(
                 'Unsupported HTTP method; must be a string, received %s',
@@ -301,6 +297,7 @@ trait RequestTrait
                 $method
             ));
         }
+        $this->method = $method;
     }
 
     /**
