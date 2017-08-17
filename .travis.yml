@@ -5,19 +5,10 @@ language: php
 cache:
   directories:
     - $HOME/.composer/cache
-    - $HOME/.local
-    - zf-mkdoc-theme
-
-dist: trusty
 
 env:
   global:
     - COMPOSER_ARGS="--no-interaction"
-    - SITE_URL="https://zendframework.github.io/zend-diactoros"
-    - GH_USER_NAME="Matthew Weier O'Phinney"
-    - GH_USER_EMAIL="matthew@weierophinney.net"
-    - GH_REF="github.com/zendframework/zend-diactoros.git"
-    - secure: "abqt51VvId/3EvfymODyivOye2YNlTXPMNk297kM3G5bMxB7ILPUwwSTxfMHoiW9BHjJpdKi+IGBF4GKeYElQHdIwleyLow8dTCpUiJS3RogwaTcm2FbwEJDCFbkV4WRm/HHjriji/wBfBmaAJEfYYlLQAHQWTT7AK7dAgQmiAzaItStl2TV5D/XZU9GLNXay3nH0cDygf+g4t6rFcf3VsI5weHb3WhjATfN+mU82XXkwm2z8Pc1IglBYHskdlwUgbsz8ppTdXplXdKjnf6YdxPapYDKd7TecIV3BWtueC2i48rqblPaSWOzx7qMCA/4aJjzEBmuqqSlYXka2SdGPdBPbpGwcKv09e273xqWQ9sF3d8YhEsSrJBpMpgu4RN+ucLRa15Xcj0oF4aVxrFqxtC7wud7hC0pg6q48dY7PlQh/wTO2biuXcGACcGqMcjPgmE3HJYpK5HoWHUBoWi1VHqbTPRx1jIQD1ILibu9WkuTEtdAi5IXSYAmVSknfyZ7UYJuJgOjhmmkMOcYzD5JJuRGEJASzQk1tX5DItX8mH/LIW942bVOQ+fwsmL/Z+tJDnMpJXLd6tXtyYs99lxFSBSSjqNGAG5HUFjVczvQy9GeeDd2p70IA80NuQNjfXrsyQ9tg8d1keNTOpPCJUwZm7S6IEsvrWAGO6lZ+q7DPQk="
 
 matrix:
   include:
@@ -27,8 +18,6 @@ matrix:
     - php: 5.6
       env:
         - DEPS=locked
-        - DEPLOY_DOCS="$(if [[ $TRAVIS_BRANCH == 'master' && $TRAVIS_PULL_REQUEST == 'false' ]]; then echo -n 'true' ; else echo -n 'false' ; fi)"
-        - PATH="$HOME/.local/bin:$PATH"
         - TEST_COVERAGE=true
     - php: 5.6
       env:
@@ -62,28 +51,14 @@ install:
   - if [[ $DEPS == 'lowest' ]]; then travis_retry composer update --prefer-lowest --prefer-stable $COMPOSER_ARGS ; fi
   - if [[ $TEST_COVERAGE == 'true' ]]; then travis_retry composer require --dev $COMPOSER_ARGS satooshi/php-coveralls:^1.0 ; fi
   - travis_retry composer install $COMPOSER_ARGS
-  - composer show
+  - stty cols 120 && composer show
 
 script:
   - if [[ $TEST_COVERAGE == 'true' ]]; then composer test-coverage ; else composer test ; fi
   - if [[ $CHECK_CS == 'true' ]]; then composer cs-check ; fi
-  - if [[ $DEPLOY_DOCS == "true" && "$TRAVIS_TEST_RESULT" == "0" ]]; then travis_retry curl -sSL https://raw.githubusercontent.com/zendframework/zf-mkdoc-theme/master/theme-installer.sh | bash ; fi
 
 after_script:
   - if [[ $TEST_COVERAGE == 'true' ]]; then travis_retry composer upload-coverage ; fi
 
-after_success:
-  - if [[ $DEPLOY_DOCS == "true" ]]; then ./zf-mkdoc-theme/deploy.sh ; fi
-
 notifications:
   email: false
-  irc:
-    channels:
-      - "irc.freenode.org#zftalk.dev"
-    on_success: change
-    on_failure: always
-  slack:
-    rooms:
-      - secure: "ZAuRmzfa+3KhaRS8h9HnDBvbPtToLMe2dXU5T8WiMLh+7CKcn035p8JvX0popIIsI+ue0uNP2YBDbfO/VtN6IiZnwmf6I2PqjVWmrSQEStyqMdJWetONISNBpQc1iinf2lp9Pp6DS2/622nB8/DVPthJvyCEOjgZZjzoPCfUWjpijHDr9vvw4aWhLuPDuJl58hfTjolkbA9O844VS40/Pr6ADOBs9ZZHRjMN0xg/0RyPe5B5+i1ppWGYFFmPwRGQMnV/MSwYpFiEKP8oqLINXpSHFutNr+al/RpZhDooxRmq8w+nUVrlHaL1740gO5lbXUijLqBp/tfX/y4rMg+c7F02k6oHvulbKMw6v2bC5Pn2TvubQC+Ix9bUvmRnW9Q6QxeVhT0Q0y7A8Glw0EoaggxNY6RmDUJJ/zRyNbSWFEGLUb19T6IveuUqxT+0NbJc8juI1yfGYskUHepY/5UYzW7y5qLsB7SdNVz8HU2LWH9To6BWTJwkkvSdcQwsLXGej+opYRjwCqYSj8rk7RvKN0pt22N/HfiC8ZUbPRNBFkA6TKv7ZXUY5O83IXEVOKU16KkZNlL1CjlJFNOEM07M9Nx+j0ujeBKFiBk2U2O7oyo2UCI4O5Q8lY2WRPa1gqNJ0lAqy3lGIYHeAyfra5kdnfUdXDN/+XMmPKVNWAIN3ic="
-    on_success: change
-    on_failure: always
