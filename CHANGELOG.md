@@ -58,6 +58,11 @@ All notable changes to this project will be documented in this file, in reverse 
   fix for the `PhpInputStream::read()` method to ensure string content that
   evaluates as empty (including `0`) is still cached.
 
+- [#258](https://github.com/zendframework/zend-diactoros/pull/258) updates the
+  `Uri::filterPath()` method to allow parens within a URI path, per [RFC 3986
+  section 3.3](https://tools.ietf.org/html/rfc3986#section-3.3) (parens are
+  within the character set "sub-delims").
+
 ## 1.4.0 - 2017-04-06
 
 ### Added

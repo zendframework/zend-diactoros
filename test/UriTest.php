@@ -617,4 +617,14 @@ class UriTest extends TestCase
         $uri = (new Uri())->withHost('example.com');
         $this->assertEquals('//example.com', (string) $uri);
     }
+
+    public function testReservedCharsInPathUnencoded()
+    {
+        $uri = (new Uri())
+            ->withScheme('https')
+            ->withHost('api.linkedin.com')
+            ->withPath('/v1/people/~:(first-name,last-name,email-address,picture-url)');
+
+        $this->assertContains('/v1/people/~:(first-name,last-name,email-address,picture-url)', (string) $uri);
+    }
 }
