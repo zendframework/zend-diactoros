@@ -54,6 +54,10 @@ All notable changes to this project will be documented in this file, in reverse 
   response instance do not override those set by PHP when a session is created
   and/or regenerated.
 
+- [#257](https://github.com/zendframework/zend-diactoros/pull/257) provides a
+  fix for the `PhpInputStream::read()` method to ensure string content that
+  evaluates as empty (including `0`) is still cached.
+
 ## 1.4.0 - 2017-04-06
 
 ### Added
