@@ -24,6 +24,11 @@ All notable changes to this project will be documented in this file, in reverse 
   the method does not raise exceptions (PHP does not allow exceptions in that
   method). In particular, this fixes an issue when using AWS S3 streams.
 
+- [#252](https://github.com/zendframework/zend-diactoros/pull/252) provides a
+  fix to the `SapiEmitterTrait` to ensure that any `Set-Cookie` headers in the
+  response instance do not override those set by PHP when a session is created
+  and/or regenerated.
+
 ## 1.4.0 - 2017-04-06
 
 ### Added
