@@ -14,6 +14,16 @@ All notable changes to this project will be documented in this file, in reverse 
   exception messages thrown by `UploadedFile::getStream()` and `moveTo()` when
   an upload error exists to include details about the upload error.
 
+- [#233](https://github.com/zendframework/zend-diactoros/pull/233) adds a new
+  argument to `SapiStreamEmitter::emit`, `$maxBufferLevel` **between** the
+  `$response` and `$maxBufferLength` arguments. This was done because the
+  `Server::listen()` method passes only the response and `$maxBufferLevel` to
+  emitters; previously, this often meant that streams were being chunked 2 bytes
+  at a time versus the expected default of 8kb.
+
+  If you were calling the `SapiStreamEmitter::emit()` method manually
+  previously, you will need to update your code.
+
 ### Deprecated
 
 - Nothing.
