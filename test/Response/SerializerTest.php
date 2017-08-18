@@ -171,7 +171,8 @@ class SerializerTest extends TestCase
     {
         $text = "This is an invalid status line\r\nX-Foo-Bar: Baz\r\n\r\nContent!";
 
-        $this->expectException(UnexpectedValueException::class, 'status line');
+        $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage('status line');
 
         Serializer::fromString($text);
     }
@@ -199,18 +200,18 @@ class SerializerTest extends TestCase
      */
     public function testDeserializationRaisesExceptionForMalformedHeaders($message, $exceptionMessage)
     {
-        $this->expectException(UnexpectedValueException::class, $exceptionMessage);
+        $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage($exceptionMessage);
 
         Serializer::fromString($message);
     }
 
     public function testFromStreamThrowsExceptionWhenStreamIsNotReadable()
     {
-        $stream = $this
-            ->getMockBuilder(StreamInterface::class)
-            ->getMock();
-
-        $stream->method('isReadable')
+        $stream = $this->createMock(StreamInterface::class);
+        $stream
+            ->expects($this->once())
+            ->method('isReadable')
             ->will($this->returnValue(false));
 
         $this->expectException(InvalidArgumentException::class);
@@ -220,14 +221,14 @@ class SerializerTest extends TestCase
 
     public function testFromStreamThrowsExceptionWhenStreamIsNotSeekable()
     {
-        $stream = $this
-            ->getMockBuilder(StreamInterface::class)
-            ->getMock();
-
-        $stream->method('isReadable')
+        $stream = $this->createMock(StreamInterface::class);
+        $stream
+            ->expects($this->once())
+            ->method('isReadable')
             ->will($this->returnValue(true));
-
-        $stream->method('isSeekable')
+        $stream
+            ->expects($this->once())
+            ->method('isSeekable')
             ->will($this->returnValue(false));
 
         $this->expectException(InvalidArgumentException::class);

@@ -159,7 +159,8 @@ class RelativeStreamTest extends TestCase
         $decorated->write("foobaz")->shouldNotBeCalled();
         $stream = new RelativeStream($decorated->reveal(), 100);
 
-        $this->expectException(RuntimeException::class, 'Invalid pointer position');
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Invalid pointer position');
 
         $stream->write("foobaz");
     }
@@ -171,7 +172,8 @@ class RelativeStreamTest extends TestCase
         $decorated->read(3)->shouldNotBeCalled();
         $stream = new RelativeStream($decorated->reveal(), 100);
 
-        $this->expectException(RuntimeException::class, 'Invalid pointer position');
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Invalid pointer position');
 
         $stream->read(3);
     }
@@ -183,14 +185,15 @@ class RelativeStreamTest extends TestCase
         $decorated->getContents()->shouldNotBeCalled();
         $stream = new RelativeStream($decorated->reveal(), 100);
 
-        $this->expectException(RuntimeException::class, 'Invalid pointer position');
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Invalid pointer position');
 
         $stream->getContents();
     }
 
     public function testCanReadContentFromNotSeekableResource()
     {
-        $decorated = $this->prophesize('Zend\Diactoros\Stream');
+        $decorated = $this->prophesize(Stream::class);
         $decorated->isSeekable()->willReturn(false);
         $decorated->seek(Argument::any())->shouldNotBeCalled();
         $decorated->tell()->willReturn(3);

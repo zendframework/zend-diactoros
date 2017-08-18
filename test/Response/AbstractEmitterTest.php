@@ -9,7 +9,7 @@
 
 namespace ZendTest\Diactoros\Response;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\SapiEmitter;
 use ZendTest\Diactoros\TestAsset\HeaderStack;

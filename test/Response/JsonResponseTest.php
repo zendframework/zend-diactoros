@@ -88,7 +88,8 @@ class JsonResponseTest extends TestCase
             'stream' => fopen('php://memory', 'r'),
         ];
 
-        $this->expectException(InvalidArgumentException::class, 'Unable to encode');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Unable to encode');
 
         new JsonResponse($data);
     }

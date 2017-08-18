@@ -25,7 +25,7 @@ class MessageTraitTest extends TestCase
 
     public function setUp()
     {
-        $this->message = new Request(null, null, $this->getMockBuilder(StreamInterface::class)->getMock());
+        $this->message = new Request(null, null, $this->createMock(StreamInterface::class));
     }
 
     public function testProtocolHasAcceptableDefault()
@@ -72,14 +72,14 @@ class MessageTraitTest extends TestCase
 
     public function testUsesStreamProvidedInConstructorAsBody()
     {
-        $stream  = $this->getMockBuilder(StreamInterface::class)->getMock();
+        $stream  = $this->createMock(StreamInterface::class);
         $message = new Request(null, null, $stream);
         $this->assertSame($stream, $message->getBody());
     }
 
     public function testBodyMutatorReturnsCloneWithChanges()
     {
-        $stream  = $this->getMockBuilder(StreamInterface::class)->getMock();
+        $stream  = $this->createMock(StreamInterface::class);
         $message = $this->message->withBody($stream);
         $this->assertNotSame($this->message, $message);
         $this->assertSame($stream, $message->getBody());
@@ -197,7 +197,8 @@ class MessageTraitTest extends TestCase
      */
     public function testWithHeaderRaisesExceptionForInvalidNestedHeaderValue($value)
     {
-        $this->expectException(InvalidArgumentException::class, 'Invalid header value');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid header value');
 
         $this->message->withHeader('X-Foo', [ $value ]);
     }
@@ -217,7 +218,8 @@ class MessageTraitTest extends TestCase
      */
     public function testWithHeaderRaisesExceptionForInvalidValueType($value)
     {
-        $this->expectException(InvalidArgumentException::class, 'Invalid header value');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid header value');
 
         $this->message->withHeader('X-Foo', $value);
     }
@@ -235,7 +237,8 @@ class MessageTraitTest extends TestCase
      */
     public function testWithAddedHeaderRaisesExceptionForNonStringNonArrayValue($value)
     {
-        $this->expectException(InvalidArgumentException::class, 'must be a string');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('must be a string');
 
         $this->message->withAddedHeader('X-Foo', $value);
     }
@@ -364,7 +367,8 @@ class MessageTraitTest extends TestCase
      */
     public function testWithHeaderShouldRaiseExceptionForInvalidHeaderValuesInArrays($value)
     {
-        $this->setExpectedException(InvalidArgumentException::class, 'header value type');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('header value type');
 
         $this->message->withHeader('X-Test-Array', [ $value ]);
     }
@@ -375,7 +379,8 @@ class MessageTraitTest extends TestCase
      */
     public function testWithHeaderShouldRaiseExceptionForInvalidHeaderScalarValues($value)
     {
-        $this->setExpectedException(InvalidArgumentException::class, 'header value type');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('header value type');
 
         $this->message->withHeader('X-Test-Scalar', $value);
     }

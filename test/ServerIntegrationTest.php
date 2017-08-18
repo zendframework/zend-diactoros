@@ -7,7 +7,7 @@
 
 namespace ZendTest\Diactoros;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -43,5 +43,7 @@ class ServerIntegrationTest extends TestCase
         );
         $server->setEmitter($emitter->reveal());
         $server->listen();
+
+        ob_end_clean();
     }
 }

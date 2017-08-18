@@ -120,7 +120,8 @@ class RequestTest extends TestCase
      */
     public function testConstructorRaisesExceptionForInvalidUri($uri)
     {
-        $this->expectException(InvalidArgumentException::class, 'Invalid URI');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid URI');
 
         new Request($uri);
     }
@@ -143,7 +144,8 @@ class RequestTest extends TestCase
      */
     public function testConstructorRaisesExceptionForInvalidMethod($method)
     {
-        $this->expectException(InvalidArgumentException::class, 'Unsupported HTTP method');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Unsupported HTTP method');
 
         new Request(null, $method);
     }
@@ -193,7 +195,8 @@ class RequestTest extends TestCase
      */
     public function testConstructorRaisesExceptionForInvalidBody($body)
     {
-        $this->expectException(InvalidArgumentException::class, 'stream');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('stream');
 
         new Request(null, null, $body);
     }
@@ -215,7 +218,8 @@ class RequestTest extends TestCase
      */
     public function testConstructorRaisesExceptionForInvalidHeaders($headers, $contains = 'header value type')
     {
-        $this->expectException(InvalidArgumentException::class, $contains);
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage($contains);
 
         new Request(null, null, 'php://memory', $headers);
     }
@@ -296,7 +300,8 @@ class RequestTest extends TestCase
     {
         $request = new Request();
 
-        $this->expectException(InvalidArgumentException::class, 'Invalid request target');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid request target');
 
         $request->withRequestTarget('foo bar baz');
     }

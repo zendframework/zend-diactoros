@@ -153,7 +153,8 @@ class UriTest extends TestCase
     {
         $uri = new Uri('https://user:pass@local.example.com:3001/foo?bar=baz#quz');
 
-        $this->expectException(InvalidArgumentException::class, 'Invalid port');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid port');
 
         $uri->withPort($port);
     }
@@ -196,7 +197,8 @@ class UriTest extends TestCase
     {
         $uri = new Uri('https://user:pass@local.example.com:3001/foo?bar=baz#quz');
 
-        $this->expectException(InvalidArgumentException::class, 'Invalid path');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid path');
 
         $uri->withPath($path);
     }
@@ -229,7 +231,8 @@ class UriTest extends TestCase
     {
         $uri = new Uri('https://user:pass@local.example.com:3001/foo?bar=baz#quz');
 
-        $this->expectException(InvalidArgumentException::class, 'Query string');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Query string');
 
         $uri->withQuery($query);
     }
@@ -363,7 +366,8 @@ class UriTest extends TestCase
      */
     public function testConstructWithUnsupportedSchemeRaisesAnException($scheme)
     {
-        $this->expectException(InvalidArgumentException::class, 'Unsupported scheme');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Unsupported scheme');
 
         new Uri($scheme . '://example.com');
     }
@@ -375,7 +379,8 @@ class UriTest extends TestCase
     {
         $uri = new Uri('http://example.com');
 
-        $this->expectException(InvalidArgumentException::class, 'Unsupported scheme');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Unsupported scheme');
 
         $uri->withScheme($scheme);
     }

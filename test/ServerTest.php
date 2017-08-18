@@ -45,8 +45,8 @@ class ServerTest extends TestCase
         $this->callback   = function ($req, $res, $done) {
             //  Intentionally empty
         };
-        $this->request = $this->getMockBuilder(ServerRequestInterface::class)->getMock();
-        $this->response = $this->getMockBuilder(ResponseInterface::class)->getMock();
+        $this->request = $this->createMock(ServerRequestInterface::class);
+        $this->response = $this->createMock(ResponseInterface::class);
     }
 
     public function tearDown()
@@ -95,14 +95,14 @@ class ServerTest extends TestCase
         $server->$prop;
     }
 
-    public function testEmmiterSetter()
+    public function testEmitterSetter()
     {
         $server = new Server(
             $this->callback,
             $this->request,
             $this->response
         );
-        $emmiter = $this->getMockBuilder(EmitterInterface::class)->getMock();
+        $emmiter = $this->createMock(EmitterInterface::class);
         $emmiter->expects($this->once())->method('emit');
 
         $server->setEmitter($emmiter);
@@ -277,14 +277,17 @@ class ServerTest extends TestCase
         $response = $this->response;
 
         $this->response
+            ->expects($this->once())
             ->method('getHeaders')
             ->will($this->returnValue([]));
 
         $responseBody = new Stream('php://temp');
         $this->response
+            ->expects($this->any())
             ->method('getBody')
             ->willReturn($responseBody);
         $this->response
+            ->expects($this->any())
             ->method('withHeader')
             ->willReturnSelf();
 

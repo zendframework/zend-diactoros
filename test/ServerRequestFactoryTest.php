@@ -20,18 +20,6 @@ use Zend\Diactoros\Uri;
 
 class ServerRequestFactoryTest extends TestCase
 {
-    protected $globalServer;
-
-    protected function setUp()
-    {
-        $this->globalServer = $_SERVER;
-    }
-
-    protected function tearDown()
-    {
-        $_SERVER = $this->globalServer;
-    }
-
     public function testGetWillReturnValueIfPresentInArray()
     {
         $array = [
@@ -439,6 +427,10 @@ class ServerRequestFactoryTest extends TestCase
         $this->assertSame(['foo_bar' => 'baz'], $request->getCookieParams());
     }
 
+    /**
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
     public function testFromGlobalsUsesCookieSuperGlobalWhenCookieHeaderIsNotSet()
     {
         $_COOKIE = [
