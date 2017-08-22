@@ -11,6 +11,12 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Changed
 
+- [#248](https://github.com/zendframework/zend-diactoros/pull/248) changes the
+  behavior of `Uri::getUserInfo()` slightly: it now (correctly) returns the
+  percent-encoded values for the user and/or password, per RFC 3986 Section
+  3.2.1. `withUserInfo()` will percent-encode values, using a mechanism that
+  prevents double-encoding.
+
 - [#243](https://github.com/zendframework/zend-diactoros/pull/243) changes the
   exception messages thrown by `UploadedFile::getStream()` and `moveTo()` when
   an upload error exists to include details about the upload error.
@@ -37,7 +43,9 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#248](https://github.com/zendframework/zend-diactoros/pull/248) fixes how the
+  `Uri` class provides user-info within the URI authority; the value is now
+  correctly percent-encoded , per RFC 3986 Section 3.2.1.
 
 ## 1.4.2 - TBD
 
