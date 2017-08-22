@@ -96,15 +96,8 @@ class JsonResponse extends Response
     public function withPayload($data)
     {
         $new = clone $this;
-
         $new->setPayload($data);
-
-        $json = $this->jsonEncode($new->payload, $new->encodingOptions);
-        $body = $this->createBodyFromJson($json);
-
-        $new = $new->withBody($body);
-
-        return $new;
+        return $this->updateBodyFor($new);
     }
 
     /**
@@ -124,12 +117,7 @@ class JsonResponse extends Response
     {
         $new = clone $this;
         $new->encodingOptions = $encodingOptions;
-
-        $json = $this->jsonEncode($new->payload, $new->encodingOptions);
-        $body = $this->createBodyFromJson($json);
-        $new = $new->withBody($body);
-
-        return $new;
+        return $this->updateBodyFor($new);
     }
 
     /**
@@ -186,5 +174,18 @@ class JsonResponse extends Response
         }
 
         $this->payload = $data;
+    }
+
+    /**
+     * Update the response body for the given instance.
+     *
+     * @param self $toUpdate Instance to update.
+     * @return JsonResponse Returns a new instance with an updated body.
+     */
+    private function updateBodyFor(self $toUpdate)
+    {
+        $json = $this->jsonEncode($toUpdate->payload, $toUpdate->encodingOptions);
+        $body = $this->createBodyFromJson($json);
+        return $toUpdate->withBody($body);
     }
 }
