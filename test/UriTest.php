@@ -97,7 +97,8 @@ class UriTest extends TestCase
             'valid-chars' => ['foo',              'bar',      'foo:bar'],
             'colon'       => ['foo:bar',          'baz:bat',  'foo%3Abar:baz%3Abat'],
             'at'          => ['user@example.com', 'cred@foo', 'user%40example.com:cred%40foo'],
-            'percent'     => ['%25',              '%25',      '%2525:%2525'],
+            'percent'     => ['%25',              '%25',      '%25:%25'],
+            'invalid-enc' => ['%ZZ',              '%GG',      '%25ZZ:%25GG'],
         ];
         // @codingStandardsIgnoreEnd
     }

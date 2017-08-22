@@ -443,7 +443,7 @@ class Uri implements UriInterface
         }
 
         $this->scheme    = isset($parts['scheme']) ? $this->filterScheme($parts['scheme']) : '';
-        $this->userInfo  = isset($parts['user']) ? $parts['user'] : '';
+        $this->userInfo  = isset($parts['user']) ? $this->filterUserInfoPart($parts['user']) : '';
         $this->host      = isset($parts['host']) ? $parts['host'] : '';
         $this->port      = isset($parts['port']) ? $parts['port'] : null;
         $this->path      = isset($parts['path']) ? $this->filterPath($parts['path']) : '';
@@ -555,8 +555,10 @@ class Uri implements UriInterface
      */
     private function filterUserInfoPart($part)
     {
+        // Note the addition of `%` to initial charset; this allows `|` portion
+        // to match and thus prevent double-encoding.
         return preg_replace_callback(
-            '/(?:[^' . self::CHAR_UNRESERVED . self::CHAR_SUB_DELIMS . ']+|%(?![A-Fa-f0-9]{2}))/u',
+            '/(?:[^%' . self::CHAR_UNRESERVED . self::CHAR_SUB_DELIMS . ']+|%(?![A-Fa-f0-9]{2}))/u',
             [$this, 'urlEncodeChar'],
             $part
         );
