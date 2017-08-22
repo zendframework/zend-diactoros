@@ -9,10 +9,15 @@
 
 namespace ZendTest\Diactoros;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use OutOfBoundsException;
+use PHPUnit_Framework_MockObject_MockObject;
+use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Zend\Diactoros\Response;
+use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\Server;
+use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\Stream;
 use ZendTest\Diactoros\TestAsset\HeaderStack;
 
@@ -24,12 +29,12 @@ class ServerTest extends TestCase
     protected $callback;
 
     /**
-     * @var ServerRequestInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var ServerRequestInterface|PHPUnit_Framework_MockObject_MockObject
      */
     protected $request;
 
     /**
-     * @var ResponseInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var ResponseInterface|PHPUnit_Framework_MockObject_MockObject
      */
     protected $response;
 
@@ -40,8 +45,8 @@ class ServerTest extends TestCase
         $this->callback   = function ($req, $res, $done) {
             //  Intentionally empty
         };
-        $this->request = $this->getMockBuilder('Psr\Http\Message\ServerRequestInterface')->getMock();
-        $this->response = $this->getMockBuilder('Psr\Http\Message\ResponseInterface')->getMock();
+        $this->request = $this->createMock(ServerRequestInterface::class);
+        $this->response = $this->createMock(ResponseInterface::class);
     }
 
     public function tearDown()
@@ -56,7 +61,8 @@ class ServerTest extends TestCase
             $this->request,
             $this->response
         );
-        $this->assertInstanceOf('Zend\Diactoros\Server', $server);
+
+        $this->assertInstanceOf(Server::class, $server);
         $this->assertSame($this->callback, $server->callback);
         $this->assertSame($this->request, $server->request);
         $this->assertSame($this->response, $server->response);
@@ -68,10 +74,11 @@ class ServerTest extends TestCase
             $this->callback,
             $this->request
         );
-        $this->assertInstanceOf('Zend\Diactoros\Server', $server);
+
+        $this->assertInstanceOf(Server::class, $server);
         $this->assertSame($this->callback, $server->callback);
         $this->assertSame($this->request, $server->request);
-        $this->assertInstanceOf('Zend\Diactoros\Response', $server->response);
+        $this->assertInstanceOf(Response::class, $server->response);
     }
 
     public function testCannotAccessArbitraryProperties()
@@ -82,18 +89,20 @@ class ServerTest extends TestCase
             $this->response
         );
         $prop = uniqid();
-        $this->setExpectedException('OutOfBoundsException');
+
+        $this->expectException(OutOfBoundsException::class);
+
         $server->$prop;
     }
 
-    public function testEmmiterSetter()
+    public function testEmitterSetter()
     {
         $server = new Server(
             $this->callback,
             $this->request,
             $this->response
         );
-        $emmiter = $this->getMockBuilder('Zend\Diactoros\Response\EmitterInterface')->getMock();
+        $emmiter = $this->createMock(EmitterInterface::class);
         $emmiter->expects($this->once())->method('emit');
 
         $server->setEmitter($emmiter);
@@ -113,16 +122,16 @@ class ServerTest extends TestCase
             'QUERY_STRING' => 'bar=baz',
         ];
         $server = Server::createServer($this->callback, $server, [], [], [], []);
-        $this->assertInstanceOf('Zend\Diactoros\Server', $server);
+        $this->assertInstanceOf(Server::class, $server);
         $this->assertSame($this->callback, $server->callback);
 
-        $this->assertInstanceOf('Zend\Diactoros\ServerRequest', $server->request);
+        $this->assertInstanceOf(ServerRequest::class, $server->request);
         $request = $server->request;
         $this->assertEquals('POST', $request->getMethod());
         $this->assertEquals('/foo/bar', $request->getUri()->getPath());
         $this->assertTrue($request->hasHeader('Accept'));
 
-        $this->assertInstanceOf('Zend\Diactoros\Response', $server->response);
+        $this->assertInstanceOf(Response::class, $server->response);
     }
 
     public function testListenInvokesCallbackAndSendsResponse()

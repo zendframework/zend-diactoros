@@ -10,6 +10,7 @@
 namespace ZendTest\Diactoros\Response;
 
 use Prophecy\Argument;
+use Psr\Http\Message\StreamInterface;
 use Zend\Diactoros\CallbackStream;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\EmptyResponse;
@@ -42,7 +43,7 @@ class SapiStreamEmitterTest extends AbstractEmitterTest
 
     public function testDoesNotInjectContentLengthHeaderIfStreamSizeIsUnknown()
     {
-        $stream = $this->prophesize('Psr\Http\Message\StreamInterface');
+        $stream = $this->prophesize(StreamInterface::class);
         $stream->__toString()->willReturn('Content!');
         $stream->isSeekable()->willReturn(false);
         $stream->isReadable()->willReturn(false);

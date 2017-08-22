@@ -9,7 +9,8 @@
 
 namespace ZendTest\Diactoros\Response;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use InvalidArgumentException;
+use PHPUnit\Framework\TestCase;
 use Zend\Diactoros\Response\JsonResponse;
 
 class JsonResponseTest extends TestCase
@@ -70,28 +71,26 @@ class JsonResponseTest extends TestCase
         $this->assertEquals('foo/json', $response->getHeaderLine('content-type'));
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     */
     public function testJsonErrorHandlingOfResources()
     {
         // Serializing something that is not serializable.
         $resource = fopen('php://memory', 'r');
+
+        $this->expectException(InvalidArgumentException::class);
+
         new JsonResponse($resource);
     }
 
     public function testJsonErrorHandlingOfBadEmbeddedData()
     {
-        if (version_compare(PHP_VERSION, '5.5', 'lt')) {
-            $this->markTestSkipped('Skipped as PHP versions prior to 5.5 are noisy about JSON errors');
-        }
-
         // Serializing something that is not serializable.
         $data = [
             'stream' => fopen('php://memory', 'r'),
         ];
 
-        $this->setExpectedException('InvalidArgumentException', 'Unable to encode');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Unable to encode');
+
         new JsonResponse($data);
     }
 
