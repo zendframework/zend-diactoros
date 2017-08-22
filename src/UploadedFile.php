@@ -29,12 +29,12 @@ class UploadedFile implements UploadedFileInterface
     ];
 
     /**
-     * @var string
+     * @var string|null
      */
     private $clientFilename;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $clientMediaType;
 

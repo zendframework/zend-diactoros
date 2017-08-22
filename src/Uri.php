@@ -650,7 +650,7 @@ class Uri implements UriInterface
     /**
      * Filter a fragment value to ensure it is properly encoded.
      *
-     * @param null|string $fragment
+     * @param string $fragment
      * @return string
      */
     private function filterFragment($fragment)
