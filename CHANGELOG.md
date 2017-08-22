@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 1.5.0 - TBD
+## 1.5.0 - 2017-08-22
 
 ### Added
 
@@ -61,28 +61,6 @@ All notable changes to this project will be documented in this file, in reverse 
 - [#248](https://github.com/zendframework/zend-diactoros/pull/248) fixes how the
   `Uri` class provides user-info within the URI authority; the value is now
   correctly percent-encoded , per RFC 3986 Section 3.2.1.
-
-## 1.4.2 - TBD
-
-### Added
-
-- Nothing.
-
-### Changed
-
-- Nothing.
-
-### Deprecated
-
-- Nothing.
-
-### Removed
-
-- Nothing.
-
-### Fixed
-
-- Nothing.
 
 ## 1.4.1 - 2017-08-17
 
