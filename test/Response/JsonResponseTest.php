@@ -130,4 +130,65 @@ class JsonResponseTest extends TestCase
         $actual = json_decode($response->getBody()->getContents(), true);
         $this->assertEquals($json, $actual);
     }
+
+    public function testPayloadGetter()
+    {
+        $payload = ['test' => 'data'];
+        $response = new JsonResponse($payload);
+        $this->assertEquals($payload, $response->getPayload());
+    }
+
+    public function testWithPayload()
+    {
+        $response = new JsonResponse(['test' => 'data']);
+        $json = [ 'foo' => 'bar'];
+        $newResponse = $response->withPayload($json);
+        $this->assertNotSame($response, $newResponse);
+
+        $this->assertEquals($json, $newResponse->getPayload());
+        $decodedBody = json_decode($newResponse->getBody()->getContents(), true);
+        $this->assertEquals($json, $decodedBody);
+    }
+
+    public function testEncodingOptionsGetter()
+    {
+        $response = new JsonResponse([]);
+        $this->assertSame(JsonResponse::DEFAULT_JSON_FLAGS, $response->getEncodingOptions());
+    }
+
+    public function testWithEncodingOptions()
+    {
+        $response = new JsonResponse([ 'foo' => 'bar']);
+        $expected = <<<JSON
+{"foo":"bar"}
+JSON;
+
+        $this->assertSame($expected, $response->getBody()->getContents());
+
+        $newResponse = $response->withEncodingOptions(JSON_PRETTY_PRINT);
+
+        $this->assertNotSame($response, $newResponse);
+
+        $expected = <<<JSON
+{
+    "foo": "bar"
+}
+JSON;
+
+        $this->assertSame($expected, $newResponse->getBody()->getContents());
+    }
+
+    public function testModifyingThePayloadDoesntMutateResponseInstance()
+    {
+        $payload = new \stdClass();
+        $payload->foo = 'bar';
+
+        $response = new JsonResponse($payload);
+
+        $originalPayload = clone $payload;
+        $payload->bar = 'baz';
+
+        $this->assertEquals($originalPayload, $response->getPayload());
+        $this->assertNotEquals($payload, $response->getPayload());
+    }
 }

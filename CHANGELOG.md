@@ -9,6 +9,16 @@ All notable changes to this project will be documented in this file, in reverse 
 - [#205](https://github.com/zendframework/zend-diactoros/pull/205) adds support
   for PHP 7.2.
 
+- [#250](https://github.com/zendframework/zend-diactoros/pull/250) adds a new
+  API to `JsonResponse` to avoid the need for decoding the response body in
+  order to make changes to the underlying content. New methods include:
+  - `getPayload()`: retrieve the unencoded payload.
+  - `withPayload($data)`: create a new instance with the given data.
+  - `getEncodingOptions()`: retrieve the flags to use when encoding the payload
+    to JSON.
+  - `withEncodingOptions(int $encodingOptions)`: create a new instance that uses
+    the provided flags when encoding the payload to JSON.
+
 ### Changed
 
 - [#249](https://github.com/zendframework/zend-diactoros/pull/249) changes the

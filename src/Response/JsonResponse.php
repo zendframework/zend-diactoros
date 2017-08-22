@@ -36,6 +36,16 @@ class JsonResponse extends Response
     const DEFAULT_JSON_FLAGS = 79;
 
     /**
+     * @var mixed
+     */
+    private $payload;
+
+    /**
+     * @var int
+     */
+    private $encodingOptions;
+
+    /**
      * Create a JSON response with the given data.
      *
      * Default JSON encoding is performed with the following options, which
@@ -59,13 +69,81 @@ class JsonResponse extends Response
         array $headers = [],
         $encodingOptions = self::DEFAULT_JSON_FLAGS
     ) {
-        $body = new Stream('php://temp', 'wb+');
-        $body->write($this->jsonEncode($data, $encodingOptions));
-        $body->rewind();
+        $this->setPayload($data);
+        $this->encodingOptions = $encodingOptions;
+
+        $json = $this->jsonEncode($data, $this->encodingOptions);
+        $body = $this->createBodyFromJson($json);
 
         $headers = $this->injectContentType('application/json', $headers);
 
         parent::__construct($body, $status, $headers);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPayload()
+    {
+        return $this->payload;
+    }
+
+    /**
+     * @param $data
+     *
+     * @return JsonResponse
+     */
+    public function withPayload($data)
+    {
+        $new = clone $this;
+
+        $new->setPayload($data);
+
+        $json = $this->jsonEncode($new->payload, $new->encodingOptions);
+        $body = $this->createBodyFromJson($json);
+
+        $new = $new->withBody($body);
+
+        return $new;
+    }
+
+    /**
+     * @return int
+     */
+    public function getEncodingOptions()
+    {
+        return $this->encodingOptions;
+    }
+
+    /**
+     * @param int $encodingOptions
+     *
+     * @return JsonResponse
+     */
+    public function withEncodingOptions($encodingOptions)
+    {
+        $new = clone $this;
+        $new->encodingOptions = $encodingOptions;
+
+        $json = $this->jsonEncode($new->payload, $new->encodingOptions);
+        $body = $this->createBodyFromJson($json);
+        $new = $new->withBody($body);
+
+        return $new;
+    }
+
+    /**
+     * @param string $json
+     *
+     * @return Stream
+     */
+    private function createBodyFromJson($json)
+    {
+        $body = new Stream('php://temp', 'wb+');
+        $body->write($json);
+        $body->rewind();
+
+        return $body;
     }
 
     /**
@@ -96,5 +174,17 @@ class JsonResponse extends Response
         }
 
         return $json;
+    }
+
+    /**
+     * @param $data
+     */
+    private function setPayload($data)
+    {
+        if (is_object($data)) {
+            $data = clone $data;
+        }
+
+        $this->payload = $data;
     }
 }
