@@ -166,6 +166,10 @@ class Uri implements UriInterface
     }
 
     /**
+     * Retrieve the user-info part of the URI.
+     *
+     * This value is percent-encoded, per RFC 3986 Section 3.2.1.
+     *
      * {@inheritdoc}
      */
     public function getUserInfo()
@@ -242,6 +246,11 @@ class Uri implements UriInterface
     }
 
     /**
+     * Create and return a new instance containing the provided user credentials.
+     *
+     * The value will be percent-encoded in the new instance, but with measures
+     * taken to prevent double-encoding.
+     *
      * {@inheritdoc}
      */
     public function withUserInfo($user, $password = null)
