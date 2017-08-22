@@ -6,7 +6,8 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- Nothing.
+- [#205](https://github.com/zendframework/zend-diactoros/pull/205) adds support
+  for PHP 7.2.
 
 ### Changed
 
@@ -30,8 +31,9 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Removed
 
-- [#243](https://github.com/zendframework/zend-diactoros/pull/243) **removes
-  support for PHP versions prior to 5.6**.
+- [#205](https://github.com/zendframework/zend-diactoros/pull/205) and
+  [#243](https://github.com/zendframework/zend-diactoros/pull/243) **remove
+  support for PHP versions prior to 5.6 as well as HHVM**.
 
 ### Fixed
 
