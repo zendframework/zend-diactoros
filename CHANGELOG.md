@@ -11,6 +11,11 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Changed
 
+- [#249](https://github.com/zendframework/zend-diactoros/pull/249) changes the
+  behavior of the various `Uri::with*()` methods slightly: if the value
+  represents no change, these methods will return the same instance instead of a
+  new one.
+
 - [#248](https://github.com/zendframework/zend-diactoros/pull/248) changes the
   behavior of `Uri::getUserInfo()` slightly: it now (correctly) returns the
   percent-encoded values for the user and/or password, per RFC 3986 Section
