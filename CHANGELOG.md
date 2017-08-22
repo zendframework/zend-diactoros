@@ -2,6 +2,66 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 1.5.0 - TBD
+
+### Added
+
+- [#205](https://github.com/zendframework/zend-diactoros/pull/205) adds support
+  for PHP 7.2.
+
+- [#250](https://github.com/zendframework/zend-diactoros/pull/250) adds a new
+  API to `JsonResponse` to avoid the need for decoding the response body in
+  order to make changes to the underlying content. New methods include:
+  - `getPayload()`: retrieve the unencoded payload.
+  - `withPayload($data)`: create a new instance with the given data.
+  - `getEncodingOptions()`: retrieve the flags to use when encoding the payload
+    to JSON.
+  - `withEncodingOptions(int $encodingOptions)`: create a new instance that uses
+    the provided flags when encoding the payload to JSON.
+
+### Changed
+
+- [#249](https://github.com/zendframework/zend-diactoros/pull/249) changes the
+  behavior of the various `Uri::with*()` methods slightly: if the value
+  represents no change, these methods will return the same instance instead of a
+  new one.
+
+- [#248](https://github.com/zendframework/zend-diactoros/pull/248) changes the
+  behavior of `Uri::getUserInfo()` slightly: it now (correctly) returns the
+  percent-encoded values for the user and/or password, per RFC 3986 Section
+  3.2.1. `withUserInfo()` will percent-encode values, using a mechanism that
+  prevents double-encoding.
+
+- [#243](https://github.com/zendframework/zend-diactoros/pull/243) changes the
+  exception messages thrown by `UploadedFile::getStream()` and `moveTo()` when
+  an upload error exists to include details about the upload error.
+
+- [#233](https://github.com/zendframework/zend-diactoros/pull/233) adds a new
+  argument to `SapiStreamEmitter::emit`, `$maxBufferLevel` **between** the
+  `$response` and `$maxBufferLength` arguments. This was done because the
+  `Server::listen()` method passes only the response and `$maxBufferLevel` to
+  emitters; previously, this often meant that streams were being chunked 2 bytes
+  at a time versus the expected default of 8kb.
+
+  If you were calling the `SapiStreamEmitter::emit()` method manually
+  previously, you will need to update your code.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- [#205](https://github.com/zendframework/zend-diactoros/pull/205) and
+  [#243](https://github.com/zendframework/zend-diactoros/pull/243) **remove
+  support for PHP versions prior to 5.6 as well as HHVM**.
+
+### Fixed
+
+- [#248](https://github.com/zendframework/zend-diactoros/pull/248) fixes how the
+  `Uri` class provides user-info within the URI authority; the value is now
+  correctly percent-encoded , per RFC 3986 Section 3.2.1.
+
 ## 1.4.2 - TBD
 
 ### Added

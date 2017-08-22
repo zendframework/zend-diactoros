@@ -9,27 +9,11 @@ cache:
 env:
   global:
     - COMPOSER_ARGS="--no-interaction"
+    - COVERAGE_DEPS="satooshi/php-coveralls"
+    - LEGACY_DEPS="phpunit/phpunit"
 
 matrix:
   include:
-    - php: 5.4
-      env:
-        - DEPS=lowest
-    - php: 5.4
-      env:
-        - DEPS=locked
-    - php: 5.4
-      env:
-        - DEPS=latest
-    - php: 5.5
-      env:
-        - DEPS=lowest
-    - php: 5.5
-      env:
-        - DEPS=locked
-    - php: 5.5
-      env:
-        - DEPS=latest
     - php: 5.6
       env:
         - DEPS=lowest
@@ -59,16 +43,29 @@ matrix:
     - php: 7.1
       env:
         - DEPS=latest
+    - php: 7.2
+      env:
+        - DEPS=lowest
+    - php: 7.2
+      env:
+        - DEPS=locked
+        - TEST_COVERAGE=true
+    - php: 7.2
+      env:
+        - DEPS=latest
+  allow_failures:
+    - php: 7.2
 
 before_install:
   - travis_retry composer self-update
   - if [[ $TEST_COVERAGE != 'true' && "$(php --version | grep xdebug -ci)" -ge 1 ]]; then phpenv config-rm xdebug.ini ; fi
 
 install:
+  - travis_retry composer install $COMPOSER_ARGS --ignore-platform-reqs
+  - if [[ $TRAVIS_PHP_VERSION =~ ^5.6 ]]; then travis_retry composer update $COMPOSER_ARGS --with-dependencies $LEGACY_DEPS ; fi
   - if [[ $DEPS == 'latest' ]]; then travis_retry composer update $COMPOSER_ARGS ; fi
   - if [[ $DEPS == 'lowest' ]]; then travis_retry composer update --prefer-lowest --prefer-stable $COMPOSER_ARGS ; fi
-  - if [[ $TEST_COVERAGE == 'true' ]]; then travis_retry composer require --dev $COMPOSER_ARGS satooshi/php-coveralls:^1.0 ; fi
-  - travis_retry composer install $COMPOSER_ARGS
+  - if [[ $TEST_COVERAGE == 'true' ]]; then travis_retry composer require --dev $COMPOSER_ARGS $COVERAGE_DEPS ; fi
   - stty cols 120 && composer show
 
 script:

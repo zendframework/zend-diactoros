@@ -9,7 +9,9 @@
 
 namespace ZendTest\Diactoros\Response;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use InvalidArgumentException;
+use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\StreamInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 
 class HtmlResponseTest extends TestCase
@@ -50,7 +52,7 @@ class HtmlResponseTest extends TestCase
 
     public function testAllowsStreamsForResponseBody()
     {
-        $stream = $this->prophesize('Psr\Http\Message\StreamInterface');
+        $stream = $this->prophesize(StreamInterface::class);
         $body   = $stream->reveal();
         $response = new HtmlResponse($body);
         $this->assertSame($body, $response->getBody());
@@ -73,11 +75,12 @@ class HtmlResponseTest extends TestCase
 
     /**
      * @dataProvider invalidHtmlContent
-     * @expectedException InvalidArgumentException
      */
     public function testRaisesExceptionforNonStringNonStreamBodyContent($body)
     {
-        $response = new HtmlResponse($body);
+        $this->expectException(InvalidArgumentException::class);
+
+        new HtmlResponse($body);
     }
 
     public function testConstructorRewindsBodyStream()

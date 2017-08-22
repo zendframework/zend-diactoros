@@ -9,7 +9,8 @@
 
 namespace ZendTest\Diactoros\Response;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use InvalidArgumentException;
+use PHPUnit\Framework\TestCase;
 use Zend\Diactoros\Response\RedirectResponse;
 use Zend\Diactoros\Uri;
 
@@ -67,10 +68,12 @@ class RedirectResponseTest extends TestCase
 
     /**
      * @dataProvider invalidUris
-     * @expectedException InvalidArgumentException Uri
      */
     public function testConstructorRaisesExceptionOnInvalidUri($uri)
     {
-        $response = new RedirectResponse($uri);
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Uri');
+
+        new RedirectResponse($uri);
     }
 }

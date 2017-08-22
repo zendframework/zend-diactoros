@@ -10,6 +10,7 @@
 namespace ZendTest\Diactoros\Response;
 
 use Prophecy\Argument;
+use Psr\Http\Message\StreamInterface;
 use Zend\Diactoros\CallbackStream;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\EmptyResponse;
@@ -19,7 +20,7 @@ use Zend\Diactoros\Response\SapiStreamEmitter;
 use Zend\Diactoros\Response\TextResponse;
 use ZendTest\Diactoros\TestAsset\HeaderStack;
 
-class SapiStreamEmitterTest extends SapiEmitterTest
+class SapiStreamEmitterTest extends AbstractEmitterTest
 {
     public function setUp()
     {
@@ -42,7 +43,7 @@ class SapiStreamEmitterTest extends SapiEmitterTest
 
     public function testDoesNotInjectContentLengthHeaderIfStreamSizeIsUnknown()
     {
-        $stream = $this->prophesize('Psr\Http\Message\StreamInterface');
+        $stream = $this->prophesize(StreamInterface::class);
         $stream->__toString()->willReturn('Content!');
         $stream->isSeekable()->willReturn(false);
         $stream->isReadable()->willReturn(false);
@@ -209,7 +210,7 @@ class SapiStreamEmitterTest extends SapiEmitterTest
             ->withBody($stream->reveal());
 
         ob_start();
-        $this->emitter->emit($response, $maxBufferLength);
+        $this->emitter->emit($response, null, $maxBufferLength);
         $emittedContents = ob_get_clean();
 
         if ($seekable) {
@@ -350,7 +351,7 @@ class SapiStreamEmitterTest extends SapiEmitterTest
             ->withBody($stream->reveal());
 
         ob_start();
-        $this->emitter->emit($response, $maxBufferLength);
+        $this->emitter->emit($response, null, $maxBufferLength);
         $emittedContents = ob_get_clean();
 
         $stream->rewind()->shouldNotBeCalled();
@@ -496,7 +497,7 @@ class SapiStreamEmitterTest extends SapiEmitterTest
 
         gc_disable();
 
-        $this->emitter->emit($response, $maxBufferLength);
+        $this->emitter->emit($response, null, $maxBufferLength);
 
         ob_end_flush();
 

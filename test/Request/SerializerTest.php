@@ -9,12 +9,16 @@
 
 namespace ZendTest\Diactoros\Request;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use InvalidArgumentException;
+use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\StreamInterface;
+use UnexpectedValueException;
+use Zend\Diactoros\RelativeStream;
 use Zend\Diactoros\Request;
 use Zend\Diactoros\Request\Serializer;
 use Zend\Diactoros\Stream;
 use Zend\Diactoros\Uri;
-use UnexpectedValueException;
 
 class SerializerTest extends TestCase
 {
@@ -204,7 +208,9 @@ class SerializerTest extends TestCase
     public function testRaisesExceptionDuringDeserializationForInvalidRequestLine($line)
     {
         $message = $line . "\r\nX-Foo-Bar: Baz\r\n\r\nContent";
-        $this->setExpectedException('UnexpectedValueException');
+
+        $this->expectException(UnexpectedValueException::class);
+
         Serializer::fromString($message);
     }
 
@@ -213,8 +219,8 @@ class SerializerTest extends TestCase
         $text = "POST /foo HTTP/1.0\r\nContent-Type: text/plain\r\nX-Foo-Bar: Baz\r\nX-Foo-Bar: Bat\r\n\r\nContent!";
         $request = Serializer::fromString($text);
 
-        $this->assertInstanceOf('Psr\Http\Message\RequestInterface', $request);
-        $this->assertInstanceOf('Zend\Diactoros\Request', $request);
+        $this->assertInstanceOf(RequestInterface::class, $request);
+        $this->assertInstanceOf(Request::class, $request);
 
         $this->assertTrue($request->hasHeader('X-Foo-Bar'));
         $values = $request->getHeader('X-Foo-Bar');
@@ -236,8 +242,8 @@ class SerializerTest extends TestCase
     {
         $request = Serializer::fromString($text);
 
-        $this->assertInstanceOf('Psr\Http\Message\RequestInterface', $request);
-        $this->assertInstanceOf('Zend\Diactoros\Request', $request);
+        $this->assertInstanceOf(RequestInterface::class, $request);
+        $this->assertInstanceOf(Request::class, $request);
 
         $this->assertTrue($request->hasHeader('X-Foo-Bar'));
         $this->assertEquals('Baz;Bat', $request->getHeaderLine('X-Foo-Bar'));
@@ -266,35 +272,38 @@ class SerializerTest extends TestCase
      */
     public function testDeserializationRaisesExceptionForMalformedHeaders($message, $exceptionMessage)
     {
-        $this->setExpectedException('UnexpectedValueException', $exceptionMessage);
-        $request = Serializer::fromString($message);
+        $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage($exceptionMessage);
+
+        Serializer::fromString($message);
     }
 
     public function testFromStreamThrowsExceptionWhenStreamIsNotReadable()
     {
-        $this->setExpectedException('InvalidArgumentException');
-        $stream = $this
-            ->getMockBuilder('Psr\Http\Message\StreamInterface')
-            ->getMock();
-
-        $stream->expects($this->once())->method('isReadable')
+        $stream = $this->createMock(StreamInterface::class);
+        $stream
+            ->expects($this->once())
+            ->method('isReadable')
             ->will($this->returnValue(false));
+
+        $this->expectException(InvalidArgumentException::class);
 
         Serializer::fromStream($stream);
     }
 
     public function testFromStreamThrowsExceptionWhenStreamIsNotSeekable()
     {
-        $this->setExpectedException('InvalidArgumentException');
-        $stream = $this
-            ->getMockBuilder('Psr\Http\Message\StreamInterface')
-            ->getMock();
-
-        $stream->expects($this->once())->method('isReadable')
+        $stream = $this->createMock(StreamInterface::class);
+        $stream
+            ->expects($this->once())
+            ->method('isReadable')
             ->will($this->returnValue(true));
-
-        $stream->expects($this->once())->method('isSeekable')
+        $stream
+            ->expects($this->once())
+            ->method('isSeekable')
             ->will($this->returnValue(false));
+
+        $this->expectException(InvalidArgumentException::class);
 
         Serializer::fromStream($stream);
     }
@@ -304,14 +313,14 @@ class SerializerTest extends TestCase
         $headers = "POST /foo HTTP/1.0\r\nContent-Type: text/plain\r\nX-Foo-Bar: Baz;\r\n Bat\r\n\r\n";
         $payload = $headers . "Content!";
 
-        $stream = $this
-            ->getMockBuilder('Psr\Http\Message\StreamInterface')
-            ->getMock();
-
-        $stream->expects($this->once())->method('isReadable')
+        $stream = $this->createMock(StreamInterface::class);
+        $stream
+            ->expects($this->once())
+            ->method('isReadable')
             ->will($this->returnValue(true));
-
-        $stream->expects($this->once())->method('isSeekable')
+        $stream
+            ->expects($this->once())
+            ->method('isSeekable')
             ->will($this->returnValue(true));
 
         // assert that full request body is not read, and returned as RelativeStream instead
@@ -324,16 +333,17 @@ class SerializerTest extends TestCase
             }));
 
         $stream = Serializer::fromStream($stream);
-        $this->assertInstanceOf('Zend\Diactoros\RelativeStream', $stream->getBody());
+
+        $this->assertInstanceOf(RelativeStream::class, $stream->getBody());
     }
 
-    /**
-     * @expectedException UnexpectedValueException
-     */
     public function testToStringRaisesExceptionOnEmptyMethod()
     {
         $request = (new Request())
             ->withUri(new Uri('http://example.com/foo/bar?baz=bat'));
-        $message = Serializer::toString($request);
+
+        $this->expectException(UnexpectedValueException::class);
+
+        Serializer::toString($request);
     }
 }
