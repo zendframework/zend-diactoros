@@ -89,6 +89,31 @@ class UriTest extends TestCase
         $this->assertEquals('https://user:pass@local.example.com:3001/foo?bar=baz#quz', (string) $new);
     }
 
+    public function userInfoProvider()
+    {
+        // @codingStandardsIgnoreStart
+        return [
+            // name       => [ user,              credential, expected ]
+            'valid-chars' => ['foo',              'bar',      'foo:bar'],
+            'colon'       => ['foo:bar',          'baz:bat',  'foo%3Abar:baz%3Abat'],
+            'at'          => ['user@example.com', 'cred@foo', 'user%40example.com:cred%40foo'],
+            'percent'     => ['%25',              '%25',      '%25:%25'],
+            'invalid-enc' => ['%ZZ',              '%GG',      '%25ZZ:%25GG'],
+        ];
+        // @codingStandardsIgnoreEnd
+    }
+
+    /**
+     * @dataProvider userInfoProvider
+     */
+    public function testWithUserInfoEncodesUsernameAndPassword($user, $credential, $expected)
+    {
+        $uri = new Uri('https://user:pass@local.example.com:3001/foo?bar=baz#quz');
+        $new = $uri->withUserInfo($user, $credential);
+
+        $this->assertSame($expected, $new->getUserInfo());
+    }
+
     public function testWithHostReturnsNewInstanceWithProvidedHost()
     {
         $uri = new Uri('https://user:pass@local.example.com:3001/foo?bar=baz#quz');

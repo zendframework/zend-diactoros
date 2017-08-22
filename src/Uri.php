@@ -25,14 +25,14 @@ use Psr\Http\Message\UriInterface;
 class Uri implements UriInterface
 {
     /**
-     * Sub-delimiters used in query strings and fragments.
+     * Sub-delimiters used in user info, query strings and fragments.
      *
      * @const string
      */
     const CHAR_SUB_DELIMS = '!\$&\'\(\)\*\+,;=';
 
     /**
-     * Unreserved characters used in paths, query strings, and fragments.
+     * Unreserved characters used in user info, paths, query strings, and fragments.
      *
      * @const string
      */
@@ -166,6 +166,10 @@ class Uri implements UriInterface
     }
 
     /**
+     * Retrieve the user-info part of the URI.
+     *
+     * This value is percent-encoded, per RFC 3986 Section 3.2.1.
+     *
      * {@inheritdoc}
      */
     public function getUserInfo()
@@ -242,6 +246,11 @@ class Uri implements UriInterface
     }
 
     /**
+     * Create and return a new instance containing the provided user credentials.
+     *
+     * The value will be percent-encoded in the new instance, but with measures
+     * taken to prevent double-encoding.
+     *
      * {@inheritdoc}
      */
     public function withUserInfo($user, $password = null)
@@ -261,9 +270,9 @@ class Uri implements UriInterface
             ));
         }
 
-        $info = $user;
+        $info = $this->filterUserInfoPart($user);
         if ($password) {
-            $info .= ':' . $password;
+            $info .= ':' . $this->filterUserInfoPart($password);
         }
 
         if ($info === $this->userInfo) {
@@ -443,7 +452,7 @@ class Uri implements UriInterface
         }
 
         $this->scheme    = isset($parts['scheme']) ? $this->filterScheme($parts['scheme']) : '';
-        $this->userInfo  = isset($parts['user']) ? $parts['user'] : '';
+        $this->userInfo  = isset($parts['user']) ? $this->filterUserInfoPart($parts['user']) : '';
         $this->host      = isset($parts['host']) ? $parts['host'] : '';
         $this->port      = isset($parts['port']) ? $parts['port'] : null;
         $this->path      = isset($parts['path']) ? $this->filterPath($parts['path']) : '';
@@ -545,6 +554,23 @@ class Uri implements UriInterface
         }
 
         return $scheme;
+    }
+
+    /**
+     * Filters a part of user info in a URI to ensure it is properly encoded.
+     *
+     * @param string $part
+     * @return string
+     */
+    private function filterUserInfoPart($part)
+    {
+        // Note the addition of `%` to initial charset; this allows `|` portion
+        // to match and thus prevent double-encoding.
+        return preg_replace_callback(
+            '/(?:[^%' . self::CHAR_UNRESERVED . self::CHAR_SUB_DELIMS . ']+|%(?![A-Fa-f0-9]{2}))/u',
+            [$this, 'urlEncodeChar'],
+            $part
+        );
     }
 
     /**
