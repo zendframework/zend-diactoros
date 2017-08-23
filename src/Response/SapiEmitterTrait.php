@@ -10,9 +10,30 @@
 namespace Zend\Diactoros\Response;
 
 use Psr\Http\Message\ResponseInterface;
+use RuntimeException;
 
 trait SapiEmitterTrait
 {
+    /**
+     * Checks to see if content has previously been sent.
+     *
+     * If either headers have been sent, or the current output buffer contains
+     * content, raises an exception.
+     *
+     * @throws RuntimeException if headers have already been sent.
+     * @throws RuntimeException if the current output buffer is not empty.
+     */
+    private function checkForPreviousOutput()
+    {
+        if (headers_sent()) {
+            throw new RuntimeException('Unable to emit response; headers already sent');
+        }
+        $bufferContents = ob_get_contents();
+        if (! empty($bufferContents)) {
+            throw new RuntimeException('Output has been emitted previously; cannot emit response: ' . $bufferContents);
+        }
+    }
+
     /**
      * Inject the Content-Length header if is not already present.
      *
@@ -74,23 +95,6 @@ trait SapiEmitterTrait
                 ), $first);
                 $first = false;
             }
-        }
-    }
-
-    /**
-     * Loops through the output buffer, flushing each, before emitting
-     * the response.
-     *
-     * @param int|null $maxBufferLevel Flush up to this buffer level.
-     */
-    private function flush($maxBufferLevel = null)
-    {
-        if (null === $maxBufferLevel) {
-            $maxBufferLevel = ob_get_level();
-        }
-
-        while (ob_get_level() > $maxBufferLevel) {
-            ob_end_flush();
         }
     }
 
