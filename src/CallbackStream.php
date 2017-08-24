@@ -172,10 +172,10 @@ class CallbackStream implements StreamInterface
             return $metadata;
         }
 
-        if (! array_key_exists($key, $metadata)) {
-            return null;
+        if (isset($metadata[$key])) {
+            return $metadata[$key];
         }
 
-        return $metadata[$key];
+        return null;
     }
 }

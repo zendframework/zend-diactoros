@@ -285,11 +285,11 @@ class Stream implements StreamInterface
         }
 
         $metadata = stream_get_meta_data($this->resource);
-        if (! array_key_exists($key, $metadata)) {
-            return null;
+        if (isset($metadata[$key])) {
+            return $metadata[$key];
         }
 
-        return $metadata[$key];
+        return null;
     }
 
     /**

@@ -60,7 +60,7 @@ abstract class ServerRequestFactory
         $files   = static::normalizeFiles($files ?: $_FILES);
         $headers = static::marshalHeaders($server);
 
-        if (null === $cookies && array_key_exists('cookie', $headers)) {
+        if (null === $cookies && isset($headers['cookie'])) {
             $cookies = self::parseCookieHeader($headers['cookie']);
         }
 
@@ -206,7 +206,7 @@ abstract class ServerRequestFactory
 
                 // We will not overwrite existing variables with the
                 // prefixed versions, though
-                if (array_key_exists($key, $server)) {
+                if (isset($server[$key])) {
                     continue;
                 }
             }
@@ -335,7 +335,7 @@ abstract class ServerRequestFactory
         // (double slash problem).
         $iisUrlRewritten = self::get('IIS_WasUrlRewritten', $server);
         $unencodedUrl    = self::get('UNENCODED_URL', $server, '');
-        if ('1' == $iisUrlRewritten && ! empty($unencodedUrl)) {
+        if ('1' === $iisUrlRewritten && ! empty($unencodedUrl)) {
             return $unencodedUrl;
         }
 

@@ -107,7 +107,7 @@ final class RelativeStream implements StreamInterface
      */
     public function seek($offset, $whence = SEEK_SET)
     {
-        if ($whence == SEEK_SET) {
+        if ($whence === SEEK_SET) {
             return $this->decoratedStream->seek($offset + $this->offset, $whence);
         }
         return $this->decoratedStream->seek($offset, $whence);
