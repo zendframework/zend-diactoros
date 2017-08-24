@@ -641,7 +641,7 @@ class Uri implements UriInterface
     private function splitQueryValue($value)
     {
         $data = explode('=', $value, 2);
-        if (!isset($data[1])) {
+        if (! isset($data[1])) {
             $data[] = null;
         }
         return $data;
