@@ -153,7 +153,7 @@ class Stream implements StreamInterface
     /**
      * {@inheritdoc}
      */
-    public function seek($offset, $whence = SEEK_SET)
+    public function seek($offset, $whence = \SEEK_SET)
     {
         if (! $this->resource) {
             throw new RuntimeException('No resource available; cannot seek position');
@@ -307,7 +307,7 @@ class Stream implements StreamInterface
         if (is_string($stream)) {
             set_error_handler(function ($e) use (&$error) {
                 $error = $e;
-            }, E_WARNING);
+            }, \E_WARNING);
             $resource = fopen($stream, $mode);
             restore_error_handler();
         }

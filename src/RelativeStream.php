@@ -32,8 +32,6 @@ final class RelativeStream implements StreamInterface
     private $offset;
 
     /**
-     * Class constructor
-     *
      * @param StreamInterface $decoratedStream
      * @param int $offset
      */
@@ -105,9 +103,9 @@ final class RelativeStream implements StreamInterface
     /**
      * {@inheritdoc}
      */
-    public function seek($offset, $whence = SEEK_SET)
+    public function seek($offset, $whence = \SEEK_SET)
     {
-        if ($whence === SEEK_SET) {
+        if ($whence === \SEEK_SET) {
             return $this->decoratedStream->seek($offset + $this->offset, $whence);
         }
         return $this->decoratedStream->seek($offset, $whence);
