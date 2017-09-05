@@ -38,7 +38,7 @@ class SapiStreamEmitterTest extends AbstractEmitterTest
             ->withBody($stream);
         ob_start();
         $this->emitter->emit($response);
-        $this->assertEquals('it works', ob_get_clean());
+        $this->assertSame('it works', ob_get_clean());
     }
 
     public function testDoesNotInjectContentLengthHeaderIfStreamSizeIsUnknown()
@@ -249,9 +249,9 @@ class SapiStreamEmitterTest extends AbstractEmitterTest
 
         $stream->checkProphecyMethodsPredictions();
 
-        $this->assertEquals($seekable, $rewindCalled);
-        $this->assertEquals(! $readable, $fullContentsCalled);
-        $this->assertEquals($contents, $emittedContents);
+        $this->assertSame($seekable, $rewindCalled);
+        $this->assertSame(! $readable, $fullContentsCalled);
+        $this->assertSame($contents, $emittedContents);
         $this->assertLessThanOrEqual($maxBufferLength, $peakBufferLength);
     }
 
@@ -381,8 +381,8 @@ class SapiStreamEmitterTest extends AbstractEmitterTest
 
         $stream->checkProphecyMethodsPredictions();
 
-        $this->assertEquals($seekable, $seekCalled);
-        $this->assertEquals(substr($contents, $first, $last - $first + 1), $emittedContents);
+        $this->assertSame($seekable, $seekCalled);
+        $this->assertSame(substr($contents, $first, $last - $first + 1), $emittedContents);
         $this->assertLessThanOrEqual($maxBufferLength, $peakBufferLength);
     }
 
@@ -536,8 +536,8 @@ class SapiStreamEmitterTest extends AbstractEmitterTest
 
         ob_start();
         $this->emitter->emit($response);
-        $this->assertEquals('text/html; charset=utf-8', $response->getHeaderLine('content-type'));
-        $this->assertEquals($contents, ob_get_clean());
+        $this->assertSame('text/html; charset=utf-8', $response->getHeaderLine('content-type'));
+        $this->assertSame($contents, ob_get_clean());
     }
 
     public function emitJsonResponseProvider()
@@ -564,8 +564,8 @@ class SapiStreamEmitterTest extends AbstractEmitterTest
 
         ob_start();
         $this->emitter->emit($response);
-        $this->assertEquals('application/json', $response->getHeaderLine('content-type'));
-        $this->assertEquals(json_encode($contents), ob_get_clean());
+        $this->assertSame('application/json', $response->getHeaderLine('content-type'));
+        $this->assertSame(json_encode($contents), ob_get_clean());
     }
 
     public function testEmitTextResponse()
@@ -577,8 +577,8 @@ class SapiStreamEmitterTest extends AbstractEmitterTest
 
         ob_start();
         $this->emitter->emit($response);
-        $this->assertEquals('text/plain; charset=utf-8', $response->getHeaderLine('content-type'));
-        $this->assertEquals($contents, ob_get_clean());
+        $this->assertSame('text/plain; charset=utf-8', $response->getHeaderLine('content-type'));
+        $this->assertSame($contents, ob_get_clean());
     }
 
     public function contentRangeProvider()
@@ -602,7 +602,7 @@ class SapiStreamEmitterTest extends AbstractEmitterTest
 
         ob_start();
         $this->emitter->emit($response);
-        $this->assertEquals($expected, ob_get_clean());
+        $this->assertSame($expected, ob_get_clean());
     }
 
     public function testContentRangeUnseekableBody()
@@ -616,6 +616,6 @@ class SapiStreamEmitterTest extends AbstractEmitterTest
 
         ob_start();
         $this->emitter->emit($response);
-        $this->assertEquals('lo w', ob_get_clean());
+        $this->assertSame('lo w', ob_get_clean());
     }
 }

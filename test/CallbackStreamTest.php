@@ -45,7 +45,7 @@ class CallbackStreamTest extends TestCase
         });
 
         $ret = $stream->__toString();
-        $this->assertEquals('foobarbaz', $ret);
+        $this->assertSame('foobarbaz', $ret);
     }
 
     public function testClose()
@@ -170,7 +170,7 @@ class CallbackStreamTest extends TestCase
         });
 
         $ret = $stream->getContents();
-        $this->assertEquals('foobarbaz', $ret);
+        $this->assertSame('foobarbaz', $ret);
     }
 
     public function testGetMetadata()
@@ -179,7 +179,7 @@ class CallbackStreamTest extends TestCase
         });
 
         $ret = $stream->getMetadata('stream_type');
-        $this->assertEquals('callback', $ret);
+        $this->assertSame('callback', $ret);
 
         $ret = $stream->getMetadata('seekable');
         $this->assertFalse($ret);
@@ -217,6 +217,6 @@ class CallbackStreamTest extends TestCase
     {
         $stream = new CallbackStream($callback);
         $contents = $stream->getContents();
-        $this->assertEquals($expected, $contents);
+        $this->assertSame($expected, $contents);
     }
 }

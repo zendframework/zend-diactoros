@@ -22,7 +22,7 @@ class TextResponseTest extends TestCase
 
         $response = new TextResponse($body);
         $this->assertSame($body, (string) $response->getBody());
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
     }
 
     public function testConstructorAllowsPassingStatus()
@@ -31,7 +31,7 @@ class TextResponseTest extends TestCase
         $status = 404;
 
         $response = new TextResponse($body, $status);
-        $this->assertEquals(404, $response->getStatusCode());
+        $this->assertSame(404, $response->getStatusCode());
         $this->assertSame($body, (string) $response->getBody());
     }
 
@@ -44,9 +44,9 @@ class TextResponseTest extends TestCase
         ];
 
         $response = new TextResponse($body, $status, $headers);
-        $this->assertEquals(['foo-bar'], $response->getHeader('x-custom'));
-        $this->assertEquals('text/plain; charset=utf-8', $response->getHeaderLine('content-type'));
-        $this->assertEquals(404, $response->getStatusCode());
+        $this->assertSame(['foo-bar'], $response->getHeader('x-custom'));
+        $this->assertSame('text/plain; charset=utf-8', $response->getHeaderLine('content-type'));
+        $this->assertSame(404, $response->getStatusCode());
         $this->assertSame($body, (string) $response->getBody());
     }
 
@@ -92,6 +92,6 @@ class TextResponseTest extends TestCase
         $response = new TextResponse($text);
 
         $actual = $response->getBody()->getContents();
-        $this->assertEquals($text, $actual);
+        $this->assertSame($text, $actual);
     }
 }

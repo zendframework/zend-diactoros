@@ -30,20 +30,20 @@ class ResponseTest extends TestCase
 
     public function testStatusCodeIs200ByDefault()
     {
-        $this->assertEquals(200, $this->response->getStatusCode());
+        $this->assertSame(200, $this->response->getStatusCode());
     }
 
     public function testStatusCodeMutatorReturnsCloneWithChanges()
     {
         $response = $this->response->withStatus(400);
         $this->assertNotSame($this->response, $response);
-        $this->assertEquals(400, $response->getStatusCode());
+        $this->assertSame(400, $response->getStatusCode());
     }
 
     public function testReasonPhraseDefaultsToStandards()
     {
         $response = $this->response->withStatus(422);
-        $this->assertEquals('Unprocessable Entity', $response->getReasonPhrase());
+        $this->assertSame('Unprocessable Entity', $response->getReasonPhrase());
     }
 
     public function ianaCodesReasonPhrasesProvider()
@@ -100,13 +100,13 @@ class ResponseTest extends TestCase
     public function testReasonPhraseDefaultsAgainstIana($code, $reasonPhrase)
     {
         $response = $this->response->withStatus($code);
-        $this->assertEquals($reasonPhrase, $response->getReasonPhrase());
+        $this->assertSame($reasonPhrase, $response->getReasonPhrase());
     }
 
     public function testCanSetCustomReasonPhrase()
     {
         $response = $this->response->withStatus(422, 'Foo Bar!');
-        $this->assertEquals('Foo Bar!', $response->getReasonPhrase());
+        $this->assertSame('Foo Bar!', $response->getReasonPhrase());
     }
 
     public function testConstructorRaisesExceptionForInvalidStream()
@@ -126,8 +126,8 @@ class ResponseTest extends TestCase
 
         $response = new Response($body, $status, $headers);
         $this->assertSame($body, $response->getBody());
-        $this->assertEquals(302, $response->getStatusCode());
-        $this->assertEquals($headers, $response->getHeaders());
+        $this->assertSame(302, $response->getStatusCode());
+        $this->assertSame($headers, $response->getHeaders());
     }
 
     /**
@@ -137,7 +137,7 @@ class ResponseTest extends TestCase
     {
         $response = $this->response->withStatus($code);
 
-        $this->assertEquals($code, $response->getStatusCode());
+        $this->assertSame($code, $response->getStatusCode());
     }
 
     public function validStatusCodes()

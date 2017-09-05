@@ -203,7 +203,7 @@ class UploadedFileTest extends TestCase
         $upload->moveTo($to);
         $this->assertTrue(file_exists($to));
         $contents = file_get_contents($to);
-        $this->assertEquals($stream->__toString(), $contents);
+        $this->assertSame($stream->__toString(), $contents);
     }
 
     public function invalidMovePaths()
@@ -333,7 +333,7 @@ class UploadedFileTest extends TestCase
         $original = file_get_contents(__FILE__);
         $test     = file_get_contents($this->tmpFile);
 
-        $this->assertEquals($original, $test);
+        $this->assertSame($original, $test);
     }
 
     public function errorConstantsAndMessages()
