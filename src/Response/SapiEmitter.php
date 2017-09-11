@@ -26,9 +26,7 @@ class SapiEmitter implements EmitterInterface
      */
     public function emit(ResponseInterface $response)
     {
-        $this->checkForPreviousOutput();
-
-        $response = $this->injectContentLength($response);
+        $this->assertNoPreviousOutput();
 
         $this->emitStatusLine($response);
         $this->emitHeaders($response);

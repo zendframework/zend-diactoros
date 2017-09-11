@@ -251,7 +251,6 @@ class ServerTest extends TestCase
      */
     public function testHeaderOrderIsHonoredWhenEmitted($stack)
     {
-        array_pop($stack); // ignore "Content-Length" automatically set by the response emitter
         $header = array_pop($stack);
         $this->assertContains(
             'Set-Cookie: bar=baz; expires=Wed, 8 Oct 2014 10:30; path=/foo/bar; domain=example.com',

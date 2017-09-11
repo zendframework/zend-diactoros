@@ -28,10 +28,7 @@ class SapiStreamEmitter implements EmitterInterface
      */
     public function emit(ResponseInterface $response, $maxBufferLength = 8192)
     {
-        $this->checkForPreviousOutput();
-
-        $response = $this->injectContentLength($response);
-
+        $this->assertNoPreviousOutput();
         $this->emitStatusLine($response);
         $this->emitHeaders($response);
 

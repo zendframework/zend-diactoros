@@ -17,40 +17,21 @@ trait SapiEmitterTrait
     /**
      * Checks to see if content has previously been sent.
      *
-     * If either headers have been sent, or the current output buffer contains
-     * content, raises an exception.
+     * If either headers have been sent or the output buffer contains content,
+     * raises an exception.
      *
      * @throws RuntimeException if headers have already been sent.
-     * @throws RuntimeException if the current output buffer is not empty.
+     * @throws RuntimeException if output is present in the output buffer.
      */
-    private function checkForPreviousOutput()
+    private function assertNoPreviousOutput()
     {
         if (headers_sent()) {
             throw new RuntimeException('Unable to emit response; headers already sent');
         }
-        $bufferContents = ob_get_contents();
-        if (! empty($bufferContents)) {
-            throw new RuntimeException('Output has been emitted previously; cannot emit response: ' . $bufferContents);
-        }
-    }
 
-    /**
-     * Inject the Content-Length header if is not already present.
-     *
-     * @param ResponseInterface $response
-     * @return ResponseInterface
-     */
-    private function injectContentLength(ResponseInterface $response)
-    {
-        if (! $response->hasHeader('Content-Length')) {
-            // PSR-7 indicates int OR null for the stream size; for null values,
-            // we will not auto-inject the Content-Length.
-            if (null !== $response->getBody()->getSize()) {
-                return $response->withHeader('Content-Length', (string) $response->getBody()->getSize());
-            }
+        if (ob_get_level() > 0 && ob_get_length() > 0) {
+            throw new RuntimeException('Output has been emitted previously; cannot emit response');
         }
-
-        return $response;
     }
 
     /**
