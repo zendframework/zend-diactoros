@@ -12,6 +12,8 @@ namespace Zend\Diactoros;
 use InvalidArgumentException;
 use RuntimeException;
 use Psr\Http\Message\StreamInterface;
+use const E_WARNING;
+use const SEEK_SET;
 
 /**
  * Implementation of PSR HTTP streams
@@ -153,7 +155,7 @@ class Stream implements StreamInterface
     /**
      * {@inheritdoc}
      */
-    public function seek($offset, $whence = \SEEK_SET)
+    public function seek($offset, $whence = SEEK_SET)
     {
         if (! $this->resource) {
             throw new RuntimeException('No resource available; cannot seek position');
@@ -193,11 +195,11 @@ class Stream implements StreamInterface
         $mode = $meta['mode'];
 
         return (
-            strstr($mode, 'x')
-            || strstr($mode, 'w')
-            || strstr($mode, 'c')
-            || strstr($mode, 'a')
-            || strstr($mode, '+')
+            strpos($mode, 'x') !== false
+            || strpos($mode, 'w') !== false
+            || strpos($mode, 'c') !== false
+            || strpos($mode, 'a') !== false
+            || strpos($mode, '+') !== false
         );
     }
 
@@ -234,7 +236,7 @@ class Stream implements StreamInterface
         $meta = stream_get_meta_data($this->resource);
         $mode = $meta['mode'];
 
-        return (strstr($mode, 'r') || strstr($mode, '+'));
+        return (strpos($mode, 'r') !== false || strpos($mode, '+') !== false);
     }
 
     /**
@@ -307,7 +309,7 @@ class Stream implements StreamInterface
         if (is_string($stream)) {
             set_error_handler(function ($e) use (&$error) {
                 $error = $e;
-            }, \E_WARNING);
+            }, E_WARNING);
             $resource = fopen($stream, $mode);
             restore_error_handler();
         }
