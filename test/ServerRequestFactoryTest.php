@@ -494,6 +494,8 @@ class ServerRequestFactoryTest extends TestCase
 
     /**
      * @dataProvider cookieHeaderValues
+     * @preserveGlobalState disabled
+     * @runInSeparateProcess
      * @param string $cookieHeader
      * @param array $expectedCookies
      */
