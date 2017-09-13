@@ -20,7 +20,6 @@ matrix:
     - php: 5.6
       env:
         - DEPS=locked
-        - TEST_COVERAGE=true
     - php: 5.6
       env:
         - DEPS=latest
@@ -31,6 +30,7 @@ matrix:
       env:
         - DEPS=locked
         - CHECK_CS=true
+        - TEST_COVERAGE=true
     - php: 7
       env:
         - DEPS=latest
@@ -49,7 +49,6 @@ matrix:
     - php: 7.2
       env:
         - DEPS=locked
-        - TEST_COVERAGE=true
     - php: 7.2
       env:
         - DEPS=latest
@@ -57,8 +56,8 @@ matrix:
     - php: 7.2
 
 before_install:
+  - if [[ $TEST_COVERAGE != 'true' ]]; then phpenv config-rm xdebug.ini || return 0 ; fi
   - travis_retry composer self-update
-  - if [[ $TEST_COVERAGE != 'true' && "$(php --version | grep xdebug -ci)" -ge 1 ]]; then phpenv config-rm xdebug.ini ; fi
 
 install:
   - travis_retry composer install $COMPOSER_ARGS --ignore-platform-reqs
