@@ -27,12 +27,12 @@ class SapiEmitterTest extends AbstractEmitterTest
         $response->getBody()->write('Content!');
         ob_start();
         $this->emitter->emit($response);
-        $this->assertEquals('Content!', ob_get_contents());
+        $this->assertSame('Content!', ob_get_contents());
         ob_end_clean();
-        $this->assertEquals('level4 ', ob_get_contents(), 'current buffer level string must remains after emit');
+        $this->assertSame('level4 ', ob_get_contents(), 'current buffer level string must remains after emit');
         ob_end_clean();
         $this->emitter->emit($response, 2);
-        $this->assertEquals('level2 level3 Content!', ob_get_contents(), 'must buffer until specified level');
+        $this->assertSame('level2 level3 Content!', ob_get_contents(), 'must buffer until specified level');
         ob_end_clean();
     }
 }

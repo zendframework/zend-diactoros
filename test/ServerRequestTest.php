@@ -43,7 +43,7 @@ class ServerRequestTest extends TestCase
         $value = ['foo' => 'bar'];
         $request = $this->request->withQueryParams($value);
         $this->assertNotSame($this->request, $request);
-        $this->assertEquals($value, $request->getQueryParams());
+        $this->assertSame($value, $request->getQueryParams());
     }
 
     public function testCookiesAreEmptyByDefault()
@@ -56,7 +56,7 @@ class ServerRequestTest extends TestCase
         $value = ['foo' => 'bar'];
         $request = $this->request->withCookieParams($value);
         $this->assertNotSame($this->request, $request);
-        $this->assertEquals($value, $request->getCookieParams());
+        $this->assertSame($value, $request->getCookieParams());
     }
 
     public function testUploadedFilesAreEmptyByDefault()
@@ -74,7 +74,7 @@ class ServerRequestTest extends TestCase
         $value = ['foo' => 'bar'];
         $request = $this->request->withParsedBody($value);
         $this->assertNotSame($this->request, $request);
-        $this->assertEquals($value, $request->getParsedBody());
+        $this->assertSame($value, $request->getParsedBody());
     }
 
     public function testAttributesAreEmptyByDefault()
@@ -93,7 +93,7 @@ class ServerRequestTest extends TestCase
     {
         $request = $this->request->withAttribute('foo', 'bar');
         $this->assertNotSame($this->request, $request);
-        $this->assertEquals('bar', $request->getAttribute('foo'));
+        $this->assertSame('bar', $request->getAttribute('foo'));
         return $request;
     }
 
@@ -173,7 +173,7 @@ class ServerRequestTest extends TestCase
         $r = new ReflectionProperty($body, 'stream');
         $r->setAccessible(true);
         $stream = $r->getValue($body);
-        $this->assertEquals('php://memory', $stream);
+        $this->assertSame('php://memory', $stream);
     }
 
     /**

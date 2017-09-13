@@ -66,7 +66,7 @@ class StreamTest extends TestCase
     {
         $message = 'foo bar';
         $this->stream->write($message);
-        $this->assertEquals($message, (string) $this->stream);
+        $this->assertSame($message, (string) $this->stream);
     }
 
     public function testDetachReturnsResource()
@@ -89,7 +89,7 @@ class StreamTest extends TestCase
         file_put_contents($this->tmpnam, 'FOO BAR');
         $stream = new Stream($this->tmpnam, 'w');
 
-        $this->assertEquals('', $stream->__toString());
+        $this->assertSame('', $stream->__toString());
     }
 
     public function testCloseClosesResource()
@@ -141,7 +141,7 @@ class StreamTest extends TestCase
 
         fseek($resource, 2);
 
-        $this->assertEquals(2, $stream->tell());
+        $this->assertSame(2, $stream->tell());
     }
 
     public function testTellRaisesExceptionIfResourceIsDetached()
@@ -222,7 +222,7 @@ class StreamTest extends TestCase
         $resource = fopen($this->tmpnam, 'wb+');
         $stream = new Stream($resource);
         $this->assertTrue($stream->seek(2));
-        $this->assertEquals(2, $stream->tell());
+        $this->assertSame(2, $stream->tell());
     }
 
     public function testRewindResetsToStartOfStream()
@@ -233,7 +233,7 @@ class StreamTest extends TestCase
         $stream = new Stream($resource);
         $this->assertTrue($stream->seek(2));
         $stream->rewind();
-        $this->assertEquals(0, $stream->tell());
+        $this->assertSame(0, $stream->tell());
     }
 
     public function testSeekRaisesExceptionWhenStreamIsDetached()
@@ -318,7 +318,7 @@ class StreamTest extends TestCase
         }
         $resource = fopen($this->tmpnam, $mode);
         $stream = new Stream($resource);
-        $this->assertEquals($flag, $stream->isWritable());
+        $this->assertSame($flag, $stream->isWritable());
     }
 
     public function provideDataForIsReadable()
@@ -362,7 +362,7 @@ class StreamTest extends TestCase
         }
         $resource = fopen($this->tmpnam, $mode);
         $stream = new Stream($resource);
-        $this->assertEquals($flag, $stream->isReadable());
+        $this->assertSame($flag, $stream->isReadable());
     }
 
     public function testWriteRaisesExceptionWhenStreamIsDetached()
@@ -423,7 +423,7 @@ class StreamTest extends TestCase
         while (! feof($resource)) {
             fread($resource, 4096);
         }
-        $this->assertEquals('', $stream->read(4096));
+        $this->assertSame('', $stream->read(4096));
     }
 
     public function testGetContentsRisesExceptionIfStreamIsNotReadable()
@@ -486,7 +486,7 @@ class StreamTest extends TestCase
 
         $this->stream->rewind();
         $test = (string) $this->stream;
-        $this->assertEquals('FooBar', $test);
+        $this->assertSame('FooBar', $test);
     }
 
     public function testGetContentsShouldGetFullStreamContents()
@@ -500,7 +500,7 @@ class StreamTest extends TestCase
         // rewind, because current pointer is at end of stream!
         $this->stream->rewind();
         $test = $this->stream->getContents();
-        $this->assertEquals('FooBar', $test);
+        $this->assertSame('FooBar', $test);
     }
 
     public function testGetContentsShouldReturnStreamContentsFromCurrentPointer()
@@ -514,7 +514,7 @@ class StreamTest extends TestCase
         // seek to position 3
         $this->stream->seek(3);
         $test = $this->stream->getContents();
-        $this->assertEquals('Bar', $test);
+        $this->assertSame('Bar', $test);
     }
 
     public function testGetMetadataReturnsAllMetadataWhenNoKeyPresent()
@@ -526,7 +526,7 @@ class StreamTest extends TestCase
         $expected = stream_get_meta_data($resource);
         $test     = $this->stream->getMetadata();
 
-        $this->assertEquals($expected, $test);
+        $this->assertSame($expected, $test);
     }
 
     public function testGetMetadataReturnsDataForSpecifiedKey()
@@ -540,7 +540,7 @@ class StreamTest extends TestCase
 
         $test     = $this->stream->getMetadata('uri');
 
-        $this->assertEquals($expected, $test);
+        $this->assertSame($expected, $test);
     }
 
     public function testGetMetadataReturnsNullIfNoDataExistsForKey()
@@ -560,7 +560,7 @@ class StreamTest extends TestCase
         $resource = fopen(__FILE__, 'r');
         $expected = fstat($resource);
         $stream = new Stream($resource);
-        $this->assertEquals($expected['size'], $stream->getSize());
+        $this->assertSame($expected['size'], $stream->getSize());
     }
 
     /**
@@ -632,6 +632,6 @@ class StreamTest extends TestCase
         $stream->expects($this->any())->method('isSeekable')
             ->will($this->returnValue(false));
 
-        $this->assertEquals('FOO BAR', $stream->__toString());
+        $this->assertSame('FOO BAR', $stream->__toString());
     }
 }

@@ -50,7 +50,7 @@ class HeaderSecurityTest extends TestCase
      */
     public function testFiltersValuesPerRfc7230($value, $expected)
     {
-        $this->assertEquals($expected, HeaderSecurity::filter($value));
+        $this->assertSame($expected, HeaderSecurity::filter($value));
     }
 
     public function validateValues()

@@ -127,8 +127,8 @@ class ServerTest extends TestCase
 
         $this->assertInstanceOf(ServerRequest::class, $server->request);
         $request = $server->request;
-        $this->assertEquals('POST', $request->getMethod());
-        $this->assertEquals('/foo/bar', $request->getUri()->getPath());
+        $this->assertSame('POST', $request->getMethod());
+        $this->assertSame('/foo/bar', $request->getUri()->getPath());
         $this->assertTrue($request->hasHeader('Accept'));
 
         $this->assertInstanceOf(Response::class, $server->response);

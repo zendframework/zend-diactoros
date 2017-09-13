@@ -30,14 +30,14 @@ class MessageTraitTest extends TestCase
 
     public function testProtocolHasAcceptableDefault()
     {
-        $this->assertEquals('1.1', $this->message->getProtocolVersion());
+        $this->assertSame('1.1', $this->message->getProtocolVersion());
     }
 
     public function testProtocolMutatorReturnsCloneWithChanges()
     {
         $message = $this->message->withProtocolVersion('1.0');
         $this->assertNotSame($this->message, $message);
-        $this->assertEquals('1.0', $message->getProtocolVersion());
+        $this->assertSame('1.0', $message->getProtocolVersion());
     }
 
 
@@ -89,21 +89,21 @@ class MessageTraitTest extends TestCase
     {
         $message = $this->message->withHeader('X-Foo', ['Foo', 'Bar']);
         $this->assertNotSame($this->message, $message);
-        $this->assertEquals(['Foo', 'Bar'], $message->getHeader('X-Foo'));
+        $this->assertSame(['Foo', 'Bar'], $message->getHeader('X-Foo'));
     }
 
     public function testGetHeaderLineReturnsHeaderValueAsCommaConcatenatedString()
     {
         $message = $this->message->withHeader('X-Foo', ['Foo', 'Bar']);
         $this->assertNotSame($this->message, $message);
-        $this->assertEquals('Foo,Bar', $message->getHeaderLine('X-Foo'));
+        $this->assertSame('Foo,Bar', $message->getHeaderLine('X-Foo'));
     }
 
     public function testGetHeadersKeepsHeaderCaseSensitivity()
     {
         $message = $this->message->withHeader('X-Foo', ['Foo', 'Bar']);
         $this->assertNotSame($this->message, $message);
-        $this->assertEquals([ 'X-Foo' => [ 'Foo', 'Bar' ] ], $message->getHeaders());
+        $this->assertSame([ 'X-Foo' => [ 'Foo', 'Bar' ] ], $message->getHeaders());
     }
 
     public function testGetHeadersReturnsCaseWithWhichHeaderFirstRegistered()
@@ -112,7 +112,7 @@ class MessageTraitTest extends TestCase
             ->withHeader('X-Foo', 'Foo')
             ->withAddedHeader('x-foo', 'Bar');
         $this->assertNotSame($this->message, $message);
-        $this->assertEquals([ 'X-Foo' => [ 'Foo', 'Bar' ] ], $message->getHeaders());
+        $this->assertSame([ 'X-Foo' => [ 'Foo', 'Bar' ] ], $message->getHeaders());
     }
 
     public function testHasHeaderReturnsFalseIfHeaderIsNotPresent()
@@ -133,7 +133,7 @@ class MessageTraitTest extends TestCase
         $this->assertNotSame($this->message, $message);
         $message2 = $message->withAddedHeader('X-Foo', 'Bar');
         $this->assertNotSame($message, $message2);
-        $this->assertEquals('Foo,Bar', $message2->getHeaderLine('X-Foo'));
+        $this->assertSame('Foo,Bar', $message2->getHeaderLine('X-Foo'));
     }
 
     public function testHeaderExistsIfWithNoValues()
@@ -178,7 +178,7 @@ class MessageTraitTest extends TestCase
         $this->assertFalse($message2->hasHeader('X-Foo'));
 
         $headers = $message2->getHeaders();
-        $this->assertEquals(0, count($headers));
+        $this->assertSame(0, count($headers));
     }
 
     public function invalidGeneralHeaderValues()
@@ -228,8 +228,8 @@ class MessageTraitTest extends TestCase
     {
         $this->message = $this->message->withHeader('X-Foo', ['foo']);
         $new = $this->message->withHeader('X-foo', ['bar']);
-        $this->assertEquals(['bar'], $new->getHeader('x-foo'));
-        $this->assertEquals(['X-foo' => ['bar']], $new->getHeaders());
+        $this->assertSame(['bar'], $new->getHeader('x-foo'));
+        $this->assertSame(['X-foo' => ['bar']], $new->getHeaders());
     }
 
     /**
@@ -311,13 +311,13 @@ class MessageTraitTest extends TestCase
     public function testWithHeaderAllowsHeaderContinuations()
     {
         $message = $this->message->withHeader('X-Foo-Bar', "value,\r\n second value");
-        $this->assertEquals("value,\r\n second value", $message->getHeaderLine('X-Foo-Bar'));
+        $this->assertSame("value,\r\n second value", $message->getHeaderLine('X-Foo-Bar'));
     }
 
     public function testWithAddedHeaderAllowsHeaderContinuations()
     {
         $message = $this->message->withAddedHeader('X-Foo-Bar', "value,\r\n second value");
-        $this->assertEquals("value,\r\n second value", $message->getHeaderLine('X-Foo-Bar'));
+        $this->assertSame("value,\r\n second value", $message->getHeaderLine('X-Foo-Bar'));
     }
 
     public function numericHeaderValuesProvider()
