@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 1.6.0 - TBD
+## 1.6.0 - 2017-09-13
 
 ### Added
 
@@ -27,28 +27,6 @@ All notable changes to this project will be documented in this file, in reverse 
     catching PHP errors or exceptions, you will need to either fix your
     application to always work with a PSR-7 response, or provide your own
     emitters that allow mixed output mechanisms.
-
-### Deprecated
-
-- Nothing.
-
-### Removed
-
-- Nothing.
-
-### Fixed
-
-- Nothing.
-
-## 1.5.1 - TBD
-
-### Added
-
-- Nothing.
-
-### Changed
-
-- Nothing.
 
 ### Deprecated
 
