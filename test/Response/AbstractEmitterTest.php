@@ -44,7 +44,6 @@ abstract class AbstractEmitterTest extends TestCase
         ob_end_clean();
         $this->assertContains('HTTP/1.1 200 OK', HeaderStack::stack());
         $this->assertContains('Content-Type: text/plain', HeaderStack::stack());
-        $this->assertContains('Content-Length: 8', HeaderStack::stack());
     }
 
     public function testEmitsMessageBody()

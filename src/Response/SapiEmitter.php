@@ -23,19 +23,13 @@ class SapiEmitter implements EmitterInterface
      * body content via the output buffer.
      *
      * @param ResponseInterface $response
-     * @param null|int $maxBufferLevel Maximum output buffering level to unwrap.
      */
-    public function emit(ResponseInterface $response, $maxBufferLevel = null)
+    public function emit(ResponseInterface $response)
     {
-        if (headers_sent()) {
-            throw new RuntimeException('Unable to emit response; headers already sent');
-        }
-
-        $response = $this->injectContentLength($response);
+        $this->assertNoPreviousOutput();
 
         $this->emitStatusLine($response);
         $this->emitHeaders($response);
-        $this->flush($maxBufferLevel);
         $this->emitBody($response);
     }
 
