@@ -109,7 +109,6 @@ class ServerTest extends TestCase
 
         $this->expectOutputString('');
         $server->listen();
-        ob_end_flush();
     }
 
     public function testCreateServerWillCreateDefaultInstancesForRequestAndResponse()
@@ -153,7 +152,6 @@ class ServerTest extends TestCase
 
         $this->expectOutputString('FOOBAR');
         $server->listen();
-        ob_end_flush();
 
         $this->assertContains('HTTP/1.1 200 OK', HeaderStack::stack());
         $this->assertContains('Content-Type: text/plain', HeaderStack::stack());
@@ -179,7 +177,6 @@ class ServerTest extends TestCase
 
         $this->expectOutputString('FOOBAR');
         $server->listen();
-        ob_end_flush();
 
         $this->assertContains('HTTP/1.1 299', HeaderStack::stack());
         $this->assertContains('Content-Type: text/plain', HeaderStack::stack());
@@ -204,7 +201,6 @@ class ServerTest extends TestCase
 
         $this->expectOutputString('100%');
         $server->listen();
-        ob_end_flush();
 
         $this->assertContains('HTTP/1.1 200 OK', HeaderStack::stack());
         $this->assertContains('Content-Type: text/plain', HeaderStack::stack());
@@ -233,7 +229,6 @@ class ServerTest extends TestCase
         $server = Server::createServer($callback, $server, [], [], [], []);
 
         $server->listen();
-        ob_end_flush();
 
         $this->assertContains('HTTP/1.1 200 OK', HeaderStack::stack());
         $this->assertContains('Content-Type: text/plain', HeaderStack::stack());
@@ -256,7 +251,6 @@ class ServerTest extends TestCase
      */
     public function testHeaderOrderIsHonoredWhenEmitted($stack)
     {
-        array_pop($stack); // ignore "Content-Length" automatically set by the response emitter
         $header = array_pop($stack);
         $this->assertContains(
             'Set-Cookie: bar=baz; expires=Wed, 8 Oct 2014 10:30; path=/foo/bar; domain=example.com',
@@ -311,7 +305,6 @@ class ServerTest extends TestCase
             $this->response
         );
         $server->listen($final);
-        ob_end_flush();
         $this->assertTrue($invoked);
     }
 }
