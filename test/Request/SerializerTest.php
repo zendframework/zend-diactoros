@@ -30,7 +30,7 @@ class SerializerTest extends TestCase
             ->withAddedHeader('Accept', 'text/html');
 
         $message = Serializer::toString($request);
-        $this->assertEquals(
+        $this->assertSame(
             "GET /foo/bar?baz=bat HTTP/1.1\r\nHost: example.com\r\nAccept: text/html",
             $message
         );
@@ -91,12 +91,12 @@ class SerializerTest extends TestCase
         $message = $line . "\r\nX-Foo-Bar: Baz\r\n\r\nContent";
         $request = Serializer::fromString($message);
 
-        $this->assertEquals('GET', $request->getMethod());
-        $this->assertEquals($requestTarget, $request->getRequestTarget());
+        $this->assertSame('GET', $request->getMethod());
+        $this->assertSame($requestTarget, $request->getRequestTarget());
 
         $uri = $request->getUri();
         foreach ($expectations as $method => $expect) {
-            $this->assertEquals($expect, $uri->{$method}());
+            $this->assertSame($expect, $uri->{$method}());
         }
     }
 
@@ -156,13 +156,13 @@ class SerializerTest extends TestCase
         $message = $line . "\r\nX-Foo-Bar: Baz\r\n\r\nContent";
         $request = Serializer::fromString($message);
 
-        $this->assertEquals('GET', $request->getMethod());
+        $this->assertSame('GET', $request->getMethod());
 
-        $this->assertEquals($requestTarget, $request->getRequestTarget());
+        $this->assertSame($requestTarget, $request->getRequestTarget());
 
         $uri = $request->getUri();
         foreach ($expectations as $method => $expect) {
-            $this->assertEquals($expect, $uri->{$method}());
+            $this->assertSame($expect, $uri->{$method}());
         }
     }
 
@@ -170,26 +170,26 @@ class SerializerTest extends TestCase
     {
         $message = "CONNECT www.example.com:80 HTTP/1.1\r\nX-Foo-Bar: Baz";
         $request = Serializer::fromString($message);
-        $this->assertEquals('CONNECT', $request->getMethod());
-        $this->assertEquals('www.example.com:80', $request->getRequestTarget());
+        $this->assertSame('CONNECT', $request->getMethod());
+        $this->assertSame('www.example.com:80', $request->getRequestTarget());
 
         $uri = $request->getUri();
-        $this->assertNotEquals('www.example.com', $uri->getHost());
-        $this->assertNotEquals(80, $uri->getPort());
+        $this->assertNotSame('www.example.com', $uri->getHost());
+        $this->assertNotSame(80, $uri->getPort());
     }
 
     public function testCanDeserializeRequestWithAsteriskForm()
     {
         $message = "OPTIONS * HTTP/1.1\r\nHost: www.example.com";
         $request = Serializer::fromString($message);
-        $this->assertEquals('OPTIONS', $request->getMethod());
-        $this->assertEquals('*', $request->getRequestTarget());
+        $this->assertSame('OPTIONS', $request->getMethod());
+        $this->assertSame('*', $request->getRequestTarget());
 
         $uri = $request->getUri();
-        $this->assertNotEquals('www.example.com', $uri->getHost());
+        $this->assertNotSame('www.example.com', $uri->getHost());
 
         $this->assertTrue($request->hasHeader('Host'));
-        $this->assertEquals('www.example.com', $request->getHeaderLine('Host'));
+        $this->assertSame('www.example.com', $request->getHeaderLine('Host'));
     }
 
     public function invalidRequestLines()
@@ -224,7 +224,7 @@ class SerializerTest extends TestCase
 
         $this->assertTrue($request->hasHeader('X-Foo-Bar'));
         $values = $request->getHeader('X-Foo-Bar');
-        $this->assertEquals(['Baz', 'Bat'], $values);
+        $this->assertSame(['Baz', 'Bat'], $values);
     }
 
     public function headersWithContinuationLines()
@@ -246,7 +246,7 @@ class SerializerTest extends TestCase
         $this->assertInstanceOf(Request::class, $request);
 
         $this->assertTrue($request->hasHeader('X-Foo-Bar'));
-        $this->assertEquals('Baz;Bat', $request->getHeaderLine('X-Foo-Bar'));
+        $this->assertSame('Baz;Bat', $request->getHeaderLine('X-Foo-Bar'));
     }
 
     public function messagesWithInvalidHeaders()

@@ -27,8 +27,8 @@ class JsonResponseTest extends TestCase
         $json = '{"nested":{"json":["tree"]}}';
 
         $response = new JsonResponse($data);
-        $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals('application/json', $response->getHeaderLine('content-type'));
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame('application/json', $response->getHeaderLine('content-type'));
         $this->assertSame($json, (string) $response->getBody());
     }
 
@@ -53,8 +53,8 @@ class JsonResponseTest extends TestCase
     public function testScalarValuePassedToConstructorJsonEncodesDirectly($value)
     {
         $response = new JsonResponse($value);
-        $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals('application/json', $response->getHeaderLine('content-type'));
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame('application/json', $response->getHeaderLine('content-type'));
         // 15 is the default mask used by JsonResponse
         $this->assertSame(json_encode($value, 15), (string) $response->getBody());
     }
@@ -62,13 +62,13 @@ class JsonResponseTest extends TestCase
     public function testCanProvideStatusCodeToConstructor()
     {
         $response = new JsonResponse(null, 404);
-        $this->assertEquals(404, $response->getStatusCode());
+        $this->assertSame(404, $response->getStatusCode());
     }
 
     public function testCanProvideAlternateContentTypeViaHeadersPassedToConstructor()
     {
         $response = new JsonResponse(null, 200, ['content-type' => 'foo/json']);
-        $this->assertEquals('foo/json', $response->getHeaderLine('content-type'));
+        $this->assertSame('foo/json', $response->getHeaderLine('content-type'));
     }
 
     public function testJsonErrorHandlingOfResources()
@@ -128,14 +128,14 @@ class JsonResponseTest extends TestCase
         $response = new JsonResponse($json);
 
         $actual = json_decode($response->getBody()->getContents(), true);
-        $this->assertEquals($json, $actual);
+        $this->assertSame($json, $actual);
     }
 
     public function testPayloadGetter()
     {
         $payload = ['test' => 'data'];
         $response = new JsonResponse($payload);
-        $this->assertEquals($payload, $response->getPayload());
+        $this->assertSame($payload, $response->getPayload());
     }
 
     public function testWithPayload()
@@ -145,9 +145,9 @@ class JsonResponseTest extends TestCase
         $newResponse = $response->withPayload($json);
         $this->assertNotSame($response, $newResponse);
 
-        $this->assertEquals($json, $newResponse->getPayload());
+        $this->assertSame($json, $newResponse->getPayload());
         $decodedBody = json_decode($newResponse->getBody()->getContents(), true);
-        $this->assertEquals($json, $decodedBody);
+        $this->assertSame($json, $decodedBody);
     }
 
     public function testEncodingOptionsGetter()
@@ -189,6 +189,6 @@ JSON;
         $payload->bar = 'baz';
 
         $this->assertEquals($originalPayload, $response->getPayload());
-        $this->assertNotEquals($payload, $response->getPayload());
+        $this->assertNotSame($payload, $response->getPayload());
     }
 }

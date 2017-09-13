@@ -38,7 +38,7 @@ class PhpInputStreamTest extends TestCase
     public function assertStreamContents($test, $message = null)
     {
         $content = $this->getFileContents();
-        $this->assertEquals($content, $test, $message);
+        $this->assertSame($content, $test, $message);
     }
 
     public function testStreamIsNeverWritable()
@@ -61,7 +61,7 @@ class PhpInputStreamTest extends TestCase
         $remainder = $this->stream->getContents();
 
         $contents = $this->getFileContents();
-        $this->assertEquals(substr($contents, 128), $remainder);
+        $this->assertSame(substr($contents, 128), $remainder);
     }
 
     public function testGetContentsReturnCacheWhenReachedEof()
