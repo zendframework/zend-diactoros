@@ -37,7 +37,7 @@ class RequestTest extends TestCase
     {
         $request = $this->request->withMethod('GET');
         $this->assertNotSame($this->request, $request);
-        $this->assertEquals('GET', $request->getMethod());
+        $this->assertSame('GET', $request->getMethod());
     }
 
     public function testReturnsUnpopulatedUriByDefault()
@@ -68,7 +68,7 @@ class RequestTest extends TestCase
         $request2 = $request->withUri(new Uri('/baz/bat?foo=bar'));
         $this->assertNotSame($this->request, $request2);
         $this->assertNotSame($request, $request2);
-        $this->assertEquals('/baz/bat?foo=bar', (string) $request2->getUri());
+        $this->assertSame('/baz/bat?foo=bar', (string) $request2->getUri());
     }
 
     public function testConstructorCanAcceptAllMessageParts()
@@ -86,12 +86,12 @@ class RequestTest extends TestCase
         );
 
         $this->assertSame($uri, $request->getUri());
-        $this->assertEquals('POST', $request->getMethod());
+        $this->assertSame('POST', $request->getMethod());
         $this->assertSame($body, $request->getBody());
         $testHeaders = $request->getHeaders();
         foreach ($headers as $key => $value) {
             $this->assertArrayHasKey($key, $testHeaders);
-            $this->assertEquals($value, $testHeaders[$key]);
+            $this->assertSame($value, $testHeaders[$key]);
         }
     }
 
@@ -227,14 +227,14 @@ class RequestTest extends TestCase
     public function testRequestTargetIsSlashWhenNoUriPresent()
     {
         $request = new Request();
-        $this->assertEquals('/', $request->getRequestTarget());
+        $this->assertSame('/', $request->getRequestTarget());
     }
 
     public function testRequestTargetIsSlashWhenUriHasNoPathOrQuery()
     {
         $request = (new Request())
             ->withUri(new Uri('http://example.com'));
-        $this->assertEquals('/', $request->getRequestTarget());
+        $this->assertSame('/', $request->getRequestTarget());
     }
 
     public function requestsWithUri()
@@ -272,7 +272,7 @@ class RequestTest extends TestCase
      */
     public function testReturnsRequestTargetWhenUriIsPresent($request, $expected)
     {
-        $this->assertEquals($expected, $request->getRequestTarget());
+        $this->assertSame($expected, $request->getRequestTarget());
     }
 
     public function validRequestTargets()
@@ -293,7 +293,7 @@ class RequestTest extends TestCase
     public function testCanProvideARequestTarget($requestTarget)
     {
         $request = (new Request())->withRequestTarget($requestTarget);
-        $this->assertEquals($requestTarget, $request->getRequestTarget());
+        $this->assertSame($requestTarget, $request->getRequestTarget());
     }
 
     public function testRequestTargetCannotContainWhitespace()
@@ -311,7 +311,7 @@ class RequestTest extends TestCase
         $request = (new Request())->withUri(new Uri('https://example.com/foo/bar'));
         $original = $request->getRequestTarget();
         $newRequest = $request->withUri(new Uri('http://mwop.net/bar/baz'));
-        $this->assertNotEquals($original, $newRequest->getRequestTarget());
+        $this->assertNotSame($original, $newRequest->getRequestTarget());
     }
 
     public function testSettingNewUriResetsRequestTarget()
@@ -319,7 +319,7 @@ class RequestTest extends TestCase
         $request = (new Request())->withUri(new Uri('https://example.com/foo/bar'));
         $newRequest = $request->withUri(new Uri('http://mwop.net/bar/baz'));
 
-        $this->assertNotEquals($request->getRequestTarget(), $newRequest->getRequestTarget());
+        $this->assertNotSame($request->getRequestTarget(), $newRequest->getRequestTarget());
     }
 
     /**
@@ -371,7 +371,7 @@ class RequestTest extends TestCase
     {
         $request = new Request('http://example.com');
         $header = $request->getHeader('host');
-        $this->assertEquals(['example.com'], $header);
+        $this->assertSame(['example.com'], $header);
     }
 
     /**
@@ -381,7 +381,7 @@ class RequestTest extends TestCase
     {
         $request = (new Request('http://example.com'))->withoutHeader('host');
         $header = $request->getHeader('host');
-        $this->assertEquals(['example.com'], $header);
+        $this->assertSame(['example.com'], $header);
     }
 
     /**
@@ -434,13 +434,13 @@ class RequestTest extends TestCase
     {
         $request = new Request('http://www.example.com');
         $this->assertTrue($request->hasHeader('Host'));
-        $this->assertEquals('www.example.com', $request->getHeaderLine('host'));
+        $this->assertSame('www.example.com', $request->getHeaderLine('host'));
     }
 
     public function testHostHeaderNotSetFromUriOnCreationIfHostHeaderSpecified()
     {
         $request = new Request('http://www.example.com', null, 'php://memory', ['Host' => 'www.test.com']);
-        $this->assertEquals('www.test.com', $request->getHeaderLine('host'));
+        $this->assertSame('www.test.com', $request->getHeaderLine('host'));
     }
 
     public function testPassingPreserveHostFlagWhenUpdatingUriDoesNotUpdateHostHeader()
@@ -451,7 +451,7 @@ class RequestTest extends TestCase
         $uri = (new Uri())->withHost('www.example.com');
         $new = $request->withUri($uri, true);
 
-        $this->assertEquals('example.com', $new->getHeaderLine('Host'));
+        $this->assertSame('example.com', $new->getHeaderLine('Host'));
     }
 
     public function testNotPassingPreserveHostFlagWhenUpdatingUriWithoutHostDoesNotUpdateHostHeader()
@@ -462,7 +462,7 @@ class RequestTest extends TestCase
         $uri = new Uri();
         $new = $request->withUri($uri);
 
-        $this->assertEquals('example.com', $new->getHeaderLine('Host'));
+        $this->assertSame('example.com', $new->getHeaderLine('Host'));
     }
 
     public function testHostHeaderUpdatesToUriHostAndPortWhenPreserveHostDisabledAndNonStandardPort()
@@ -475,7 +475,7 @@ class RequestTest extends TestCase
             ->withPort(10081);
         $new = $request->withUri($uri);
 
-        $this->assertEquals('www.example.com:10081', $new->getHeaderLine('Host'));
+        $this->assertSame('www.example.com:10081', $new->getHeaderLine('Host'));
     }
 
     public function headersWithInjectionVectors()
@@ -541,7 +541,7 @@ class RequestTest extends TestCase
         $uri  = new Uri('http://example.org/foo/bar');
         $new  = $request->withUri($uri);
         $host = $new->getHeaderLine('host');
-        $this->assertEquals('example.org', $host);
+        $this->assertSame('example.org', $host);
         $headers = $new->getHeaders();
         $this->assertArrayHasKey('Host', $headers);
         if ($hostKey !== 'Host') {

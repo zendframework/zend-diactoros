@@ -18,21 +18,21 @@ class UriTest extends TestCase
     public function testConstructorSetsAllProperties()
     {
         $uri = new Uri('https://user:pass@local.example.com:3001/foo?bar=baz#quz');
-        $this->assertEquals('https', $uri->getScheme());
-        $this->assertEquals('user:pass', $uri->getUserInfo());
-        $this->assertEquals('local.example.com', $uri->getHost());
-        $this->assertEquals(3001, $uri->getPort());
-        $this->assertEquals('user:pass@local.example.com:3001', $uri->getAuthority());
-        $this->assertEquals('/foo', $uri->getPath());
-        $this->assertEquals('bar=baz', $uri->getQuery());
-        $this->assertEquals('quz', $uri->getFragment());
+        $this->assertSame('https', $uri->getScheme());
+        $this->assertSame('user:pass', $uri->getUserInfo());
+        $this->assertSame('local.example.com', $uri->getHost());
+        $this->assertSame(3001, $uri->getPort());
+        $this->assertSame('user:pass@local.example.com:3001', $uri->getAuthority());
+        $this->assertSame('/foo', $uri->getPath());
+        $this->assertSame('bar=baz', $uri->getQuery());
+        $this->assertSame('quz', $uri->getFragment());
     }
 
     public function testCanSerializeToString()
     {
         $url = 'https://user:pass@local.example.com:3001/foo?bar=baz#quz';
         $uri = new Uri($url);
-        $this->assertEquals($url, (string) $uri);
+        $this->assertSame($url, (string) $uri);
     }
 
     public function testWithSchemeReturnsNewInstanceWithNewScheme()
@@ -40,8 +40,8 @@ class UriTest extends TestCase
         $uri = new Uri('https://user:pass@local.example.com:3001/foo?bar=baz#quz');
         $new = $uri->withScheme('http');
         $this->assertNotSame($uri, $new);
-        $this->assertEquals('http', $new->getScheme());
-        $this->assertEquals('http://user:pass@local.example.com:3001/foo?bar=baz#quz', (string) $new);
+        $this->assertSame('http', $new->getScheme());
+        $this->assertSame('http://user:pass@local.example.com:3001/foo?bar=baz#quz', (string) $new);
     }
 
     public function testWithSchemeReturnsSameInstanceWithSameScheme()
@@ -49,8 +49,8 @@ class UriTest extends TestCase
         $uri = new Uri('https://user:pass@local.example.com:3001/foo?bar=baz#quz');
         $new = $uri->withScheme('https');
         $this->assertSame($uri, $new);
-        $this->assertEquals('https', $new->getScheme());
-        $this->assertEquals('https://user:pass@local.example.com:3001/foo?bar=baz#quz', (string) $new);
+        $this->assertSame('https', $new->getScheme());
+        $this->assertSame('https://user:pass@local.example.com:3001/foo?bar=baz#quz', (string) $new);
     }
 
     public function testWithUserInfoReturnsNewInstanceWithProvidedUser()
@@ -58,8 +58,8 @@ class UriTest extends TestCase
         $uri = new Uri('https://user:pass@local.example.com:3001/foo?bar=baz#quz');
         $new = $uri->withUserInfo('matthew');
         $this->assertNotSame($uri, $new);
-        $this->assertEquals('matthew', $new->getUserInfo());
-        $this->assertEquals('https://matthew@local.example.com:3001/foo?bar=baz#quz', (string) $new);
+        $this->assertSame('matthew', $new->getUserInfo());
+        $this->assertSame('https://matthew@local.example.com:3001/foo?bar=baz#quz', (string) $new);
     }
 
     public function testWithUserInfoReturnsNewInstanceWithProvidedUserAndPassword()
@@ -67,8 +67,8 @@ class UriTest extends TestCase
         $uri = new Uri('https://user:pass@local.example.com:3001/foo?bar=baz#quz');
         $new = $uri->withUserInfo('matthew', 'zf2');
         $this->assertNotSame($uri, $new);
-        $this->assertEquals('matthew:zf2', $new->getUserInfo());
-        $this->assertEquals('https://matthew:zf2@local.example.com:3001/foo?bar=baz#quz', (string) $new);
+        $this->assertSame('matthew:zf2', $new->getUserInfo());
+        $this->assertSame('https://matthew:zf2@local.example.com:3001/foo?bar=baz#quz', (string) $new);
     }
 
     public function testWithUserInfoThrowExceptionIfPasswordIsNotString()
@@ -85,8 +85,8 @@ class UriTest extends TestCase
         $uri = new Uri('https://user:pass@local.example.com:3001/foo?bar=baz#quz');
         $new = $uri->withUserInfo('user', 'pass');
         $this->assertSame($uri, $new);
-        $this->assertEquals('user:pass', $new->getUserInfo());
-        $this->assertEquals('https://user:pass@local.example.com:3001/foo?bar=baz#quz', (string) $new);
+        $this->assertSame('user:pass', $new->getUserInfo());
+        $this->assertSame('https://user:pass@local.example.com:3001/foo?bar=baz#quz', (string) $new);
     }
 
     public function userInfoProvider()
@@ -119,8 +119,8 @@ class UriTest extends TestCase
         $uri = new Uri('https://user:pass@local.example.com:3001/foo?bar=baz#quz');
         $new = $uri->withHost('framework.zend.com');
         $this->assertNotSame($uri, $new);
-        $this->assertEquals('framework.zend.com', $new->getHost());
-        $this->assertEquals('https://user:pass@framework.zend.com:3001/foo?bar=baz#quz', (string) $new);
+        $this->assertSame('framework.zend.com', $new->getHost());
+        $this->assertSame('https://user:pass@framework.zend.com:3001/foo?bar=baz#quz', (string) $new);
     }
 
     public function testWithHostReturnsSameInstanceWithProvidedHostIsSameAsBefore()
@@ -128,8 +128,8 @@ class UriTest extends TestCase
         $uri = new Uri('https://user:pass@local.example.com:3001/foo?bar=baz#quz');
         $new = $uri->withHost('local.example.com');
         $this->assertSame($uri, $new);
-        $this->assertEquals('local.example.com', $new->getHost());
-        $this->assertEquals('https://user:pass@local.example.com:3001/foo?bar=baz#quz', (string) $new);
+        $this->assertSame('local.example.com', $new->getHost());
+        $this->assertSame('https://user:pass@local.example.com:3001/foo?bar=baz#quz', (string) $new);
     }
 
     public function validPorts()
@@ -150,7 +150,7 @@ class UriTest extends TestCase
         $new = $uri->withPort($port);
         $this->assertNotSame($uri, $new);
         $this->assertEquals($port, $new->getPort());
-        $this->assertEquals(
+        $this->assertSame(
             sprintf('https://user:pass@local.example.com%s/foo?bar=baz#quz', $port === null ? '' : ':' . $port),
             (string) $new
         );
@@ -196,8 +196,8 @@ class UriTest extends TestCase
         $uri = new Uri('https://user:pass@local.example.com:3001/foo?bar=baz#quz');
         $new = $uri->withPath('/bar/baz');
         $this->assertNotSame($uri, $new);
-        $this->assertEquals('/bar/baz', $new->getPath());
-        $this->assertEquals('https://user:pass@local.example.com:3001/bar/baz?bar=baz#quz', (string) $new);
+        $this->assertSame('/bar/baz', $new->getPath());
+        $this->assertSame('https://user:pass@local.example.com:3001/bar/baz?bar=baz#quz', (string) $new);
     }
 
     public function testWithPathReturnsSameInstanceWithProvidedPathSameAsBefore()
@@ -205,8 +205,8 @@ class UriTest extends TestCase
         $uri = new Uri('https://user:pass@local.example.com:3001/foo?bar=baz#quz');
         $new = $uri->withPath('/foo');
         $this->assertSame($uri, $new);
-        $this->assertEquals('/foo', $new->getPath());
-        $this->assertEquals('https://user:pass@local.example.com:3001/foo?bar=baz#quz', (string) $new);
+        $this->assertSame('/foo', $new->getPath());
+        $this->assertSame('https://user:pass@local.example.com:3001/foo?bar=baz#quz', (string) $new);
     }
 
     public function invalidPaths()
@@ -240,8 +240,8 @@ class UriTest extends TestCase
         $uri = new Uri('https://user:pass@local.example.com:3001/foo?bar=baz#quz');
         $new = $uri->withQuery('baz=bat');
         $this->assertNotSame($uri, $new);
-        $this->assertEquals('baz=bat', $new->getQuery());
-        $this->assertEquals('https://user:pass@local.example.com:3001/foo?baz=bat#quz', (string) $new);
+        $this->assertSame('baz=bat', $new->getQuery());
+        $this->assertSame('https://user:pass@local.example.com:3001/foo?baz=bat#quz', (string) $new);
     }
 
     public function invalidQueryStrings()
@@ -274,8 +274,8 @@ class UriTest extends TestCase
         $uri = new Uri('https://user:pass@local.example.com:3001/foo?bar=baz#quz');
         $new = $uri->withFragment('qat');
         $this->assertNotSame($uri, $new);
-        $this->assertEquals('qat', $new->getFragment());
-        $this->assertEquals('https://user:pass@local.example.com:3001/foo?bar=baz#qat', (string) $new);
+        $this->assertSame('qat', $new->getFragment());
+        $this->assertSame('https://user:pass@local.example.com:3001/foo?bar=baz#qat', (string) $new);
     }
 
     public function testWithFragmentReturnsSameInstanceWithProvidedFragmentSameAsBefore()
@@ -283,8 +283,8 @@ class UriTest extends TestCase
         $uri = new Uri('https://user:pass@local.example.com:3001/foo?bar=baz#quz');
         $new = $uri->withFragment('quz');
         $this->assertSame($uri, $new);
-        $this->assertEquals('quz', $new->getFragment());
-        $this->assertEquals('https://user:pass@local.example.com:3001/foo?bar=baz#quz', (string) $new);
+        $this->assertSame('quz', $new->getFragment());
+        $this->assertSame('https://user:pass@local.example.com:3001/foo?bar=baz#quz', (string) $new);
     }
 
     public function authorityInfo()
@@ -303,39 +303,39 @@ class UriTest extends TestCase
     public function testRetrievingAuthorityReturnsExpectedValues($url, $expected)
     {
         $uri = new Uri($url);
-        $this->assertEquals($expected, $uri->getAuthority());
+        $this->assertSame($expected, $uri->getAuthority());
     }
 
     public function testCanEmitOriginFormUrl()
     {
         $url = '/foo/bar?baz=bat';
         $uri = new Uri($url);
-        $this->assertEquals($url, (string) $uri);
+        $this->assertSame($url, (string) $uri);
     }
 
     public function testSettingEmptyPathOnAbsoluteUriReturnsAnEmptyPath()
     {
         $uri = new Uri('http://example.com/foo');
         $new = $uri->withPath('');
-        $this->assertEquals('', $new->getPath());
+        $this->assertSame('', $new->getPath());
     }
 
     public function testStringRepresentationOfAbsoluteUriWithNoPathSetsAnEmptyPath()
     {
         $uri = new Uri('http://example.com');
-        $this->assertEquals('http://example.com', (string) $uri);
+        $this->assertSame('http://example.com', (string) $uri);
     }
 
     public function testEmptyPathOnOriginFormRemainsAnEmptyPath()
     {
         $uri = new Uri('?foo=bar');
-        $this->assertEquals('', $uri->getPath());
+        $this->assertSame('', $uri->getPath());
     }
 
     public function testStringRepresentationOfOriginFormWithNoPathRetainsEmptyPath()
     {
         $uri = new Uri('?foo=bar');
-        $this->assertEquals('?foo=bar', (string) $uri);
+        $this->assertSame('?foo=bar', (string) $uri);
     }
 
     public function invalidConstructorUris()
@@ -372,14 +372,14 @@ class UriTest extends TestCase
     {
         $uri = new Uri('http://example.com');
         $new = $uri->withScheme('https://');
-        $this->assertEquals('https', $new->getScheme());
+        $this->assertSame('https', $new->getScheme());
     }
 
     public function testESchemeStripsOffDelimiter()
     {
         $uri = new Uri('https://example.com');
         $new = $uri->withScheme('://');
-        $this->assertEquals('', $new->getScheme());
+        $this->assertSame('', $new->getScheme());
     }
 
     public function invalidSchemes()
@@ -421,28 +421,28 @@ class UriTest extends TestCase
     {
         $uri = new Uri('http://example.com');
         $new = $uri->withPath('foo/bar');
-        $this->assertEquals('foo/bar', $new->getPath());
+        $this->assertSame('foo/bar', $new->getPath());
     }
 
     public function testPathNotSlashPrefixedIsEmittedWithSlashDelimiterWhenUriIsCastToString()
     {
         $uri = new Uri('http://example.com');
         $new = $uri->withPath('foo/bar');
-        $this->assertEquals('http://example.com/foo/bar', $new->__toString());
+        $this->assertSame('http://example.com/foo/bar', $new->__toString());
     }
 
     public function testStripsQueryPrefixIfPresent()
     {
         $uri = new Uri('http://example.com');
         $new = $uri->withQuery('?foo=bar');
-        $this->assertEquals('foo=bar', $new->getQuery());
+        $this->assertSame('foo=bar', $new->getQuery());
     }
 
     public function testEncodeFragmentPrefixIfPresent()
     {
         $uri = new Uri('http://example.com');
         $new = $uri->withFragment('#/foo/bar');
-        $this->assertEquals('%23/foo/bar', $new->getFragment());
+        $this->assertSame('%23/foo/bar', $new->getFragment());
     }
 
     public function standardSchemePortCombinations()
@@ -462,7 +462,7 @@ class UriTest extends TestCase
             ->withHost('example.com')
             ->withScheme($scheme)
             ->withPort($port);
-        $this->assertEquals('example.com', $uri->getAuthority());
+        $this->assertSame('example.com', $uri->getAuthority());
     }
 
     public function mutations()
@@ -486,10 +486,10 @@ class UriTest extends TestCase
     {
         $uri = new Uri('http://example.com/path?query=string#fragment');
         $string = (string) $uri;
-        $this->assertAttributeEquals($string, 'uriString', $uri);
+        $this->assertAttributeSame($string, 'uriString', $uri);
         $test = $uri->{$method}($value);
         $this->assertAttributeInternalType('null', 'uriString', $test);
-        $this->assertAttributeEquals($string, 'uriString', $uri);
+        $this->assertAttributeSame($string, 'uriString', $uri);
     }
 
     /**
@@ -499,14 +499,14 @@ class UriTest extends TestCase
     {
         $uri = (new Uri())->withPath('/foo^bar');
         $expected = '/foo%5Ebar';
-        $this->assertEquals($expected, $uri->getPath());
+        $this->assertSame($expected, $uri->getPath());
     }
 
     public function testPathDoesNotBecomeDoubleEncoded()
     {
         $uri = (new Uri())->withPath('/foo%5Ebar');
         $expected = '/foo%5Ebar';
-        $this->assertEquals($expected, $uri->getPath());
+        $this->assertSame($expected, $uri->getPath());
     }
 
     public function queryStringsForEncoding()
@@ -527,7 +527,7 @@ class UriTest extends TestCase
     public function testQueryIsProperlyEncoded($query, $expected)
     {
         $uri = (new Uri())->withQuery($query);
-        $this->assertEquals($expected, $uri->getQuery());
+        $this->assertSame($expected, $uri->getQuery());
     }
 
     /**
@@ -537,7 +537,7 @@ class UriTest extends TestCase
     public function testQueryIsNotDoubleEncoded($query, $expected)
     {
         $uri = (new Uri())->withQuery($expected);
-        $this->assertEquals($expected, $uri->getQuery());
+        $this->assertSame($expected, $uri->getQuery());
     }
 
     /**
@@ -547,7 +547,7 @@ class UriTest extends TestCase
     {
         $uri = (new Uri())->withFragment('/p^th?key^=`bar#b@z');
         $expected = '/p%5Eth?key%5E=%60bar%23b@z';
-        $this->assertEquals($expected, $uri->getFragment());
+        $this->assertSame($expected, $uri->getFragment());
     }
 
     /**
@@ -557,14 +557,14 @@ class UriTest extends TestCase
     {
         $expected = '/p%5Eth?key%5E=%60bar%23b@z';
         $uri = (new Uri())->withFragment($expected);
-        $this->assertEquals($expected, $uri->getFragment());
+        $this->assertSame($expected, $uri->getFragment());
     }
 
     public function testProperlyTrimsLeadingSlashesToPreventXSS()
     {
         $url = 'http://example.org//zend.com';
         $uri = new Uri($url);
-        $this->assertEquals('http://example.org/zend.com', (string) $uri);
+        $this->assertSame('http://example.org/zend.com', (string) $uri);
     }
 
     public function invalidStringComponentValues()
@@ -618,7 +618,7 @@ class UriTest extends TestCase
     {
         $uri = new Uri('http://ουτοπία.δπθ.gr/');
 
-        $this->assertEquals('ουτοπία.δπθ.gr', $uri->getHost());
+        $this->assertSame('ουτοπία.δπθ.gr', $uri->getHost());
     }
 
     /**
@@ -628,7 +628,7 @@ class UriTest extends TestCase
     {
         $uri = new Uri($url);
 
-        $this->assertEquals($result, $uri->getPath());
+        $this->assertSame($result, $uri->getPath());
     }
 
 
@@ -647,7 +647,7 @@ class UriTest extends TestCase
     {
         $uri = new Uri($url);
 
-        $this->assertEquals($result, $uri->getQuery());
+        $this->assertSame($result, $uri->getQuery());
     }
 
     public function utf8QueryStringsDataProvider()
@@ -661,13 +661,13 @@ class UriTest extends TestCase
     public function testUriDoesNotAppendColonToHostIfPortIsEmpty()
     {
         $uri = (new Uri())->withHost('google.com');
-        $this->assertEquals('//google.com', (string) $uri);
+        $this->assertSame('//google.com', (string) $uri);
     }
 
     public function testAuthorityIsPrefixedByDoubleSlashIfPresent()
     {
         $uri = (new Uri())->withHost('example.com');
-        $this->assertEquals('//example.com', (string) $uri);
+        $this->assertSame('//example.com', (string) $uri);
     }
 
     public function testReservedCharsInPathUnencoded()
