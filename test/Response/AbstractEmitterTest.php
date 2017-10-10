@@ -40,8 +40,9 @@ abstract class AbstractEmitterTest extends TestCase
         ob_start();
         $this->emitter->emit($response);
         ob_end_clean();
-        $this->assertContains('HTTP/1.1 200 OK', HeaderStack::stack());
-        $this->assertContains('Content-Type: text/plain', HeaderStack::stack());
+
+        $this->assertTrue(HeaderStack::has('HTTP/1.1 200 OK'));
+        $this->assertTrue(HeaderStack::has('Content-Type: text/plain'));
     }
 
     public function testEmitsMessageBody()
@@ -68,7 +69,7 @@ abstract class AbstractEmitterTest extends TestCase
         $this->emitter->emit($response);
         ob_end_clean();
         foreach (HeaderStack::stack() as $header) {
-            $this->assertNotContains('Content-Length:', $header);
+            $this->assertNotContains('Content-Length:', $header['header']);
         }
     }
 }
