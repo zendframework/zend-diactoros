@@ -56,6 +56,24 @@ abstract class AbstractEmitterTest extends TestCase
         $this->emitter->emit($response);
     }
 
+    public function testMultipleSetCookieHeadersAreNotReplaced()
+    {
+        $response = (new Response())
+            ->withStatus(200)
+            ->withAddedHeader('Set-Cookie', 'foo=bar')
+            ->withAddedHeader('Set-Cookie', 'bar=baz');
+
+        $this->emitter->emit($response);
+
+        $expectedStack = [
+            ['header' => 'HTTP/1.1 200 OK', 'replace' => true, 'status_code' => null],
+            ['header' => 'Set-Cookie: foo=bar', 'replace' => false, 'status_code' => null],
+            ['header' => 'Set-Cookie: bar=baz', 'replace' => false, 'status_code' => null],
+        ];
+
+        $this->assertSame($expectedStack, HeaderStack::stack());
+    }
+
     public function testDoesNotInjectContentLengthHeaderIfStreamSizeIsUnknown()
     {
         $stream = $this->prophesize('Psr\Http\Message\StreamInterface');
