@@ -66,9 +66,27 @@ abstract class AbstractEmitterTest extends TestCase
         $this->emitter->emit($response);
 
         $expectedStack = [
-            ['header' => 'HTTP/1.1 200 OK', 'replace' => true, 'status_code' => null],
-            ['header' => 'Set-Cookie: foo=bar', 'replace' => false, 'status_code' => null],
-            ['header' => 'Set-Cookie: bar=baz', 'replace' => false, 'status_code' => null],
+            ['header' => 'HTTP/1.1 200 OK', 'replace' => true, 'status_code' => 200],
+            ['header' => 'Set-Cookie: foo=bar', 'replace' => false, 'status_code' => 200],
+            ['header' => 'Set-Cookie: bar=baz', 'replace' => false, 'status_code' => 200],
+        ];
+
+        $this->assertSame($expectedStack, HeaderStack::stack());
+    }
+
+    public function testDoesNotLetResponseCodeBeOverriddenByPHP()
+    {
+        $response = (new Response())
+            ->withStatus(202)
+            ->withAddedHeader('Location', 'http://api.my-service.com/12345678')
+            ->withAddedHeader('Content-Type', 'text/plain');
+
+        $this->emitter->emit($response);
+
+        $expectedStack = [
+            ['header' => 'HTTP/1.1 202 Accepted', 'replace' => true, 'status_code' => 202],
+            ['header' => 'Location: http://api.my-service.com/12345678', 'replace' => true, 'status_code' => 202],
+            ['header' => 'Content-Type: text/plain', 'replace' => true, 'status_code' => 202],
         ];
 
         $this->assertSame($expectedStack, HeaderStack::stack());

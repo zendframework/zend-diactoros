@@ -43,12 +43,14 @@ trait SapiEmitterTrait
     private function emitStatusLine(ResponseInterface $response)
     {
         $reasonPhrase = $response->getReasonPhrase();
+        $statusCode   = $response->getStatusCode();
+
         header(sprintf(
             'HTTP/%s %d%s',
             $response->getProtocolVersion(),
-            $response->getStatusCode(),
+            $statusCode,
             ($reasonPhrase ? ' ' . $reasonPhrase : '')
-        ));
+        ), true, $statusCode);
     }
 
     /**
@@ -63,6 +65,8 @@ trait SapiEmitterTrait
      */
     private function emitHeaders(ResponseInterface $response)
     {
+        $statusCode = $response->getStatusCode();
+
         foreach ($response->getHeaders() as $header => $values) {
             $name  = $this->filterHeader($header);
             $first = $name === 'Set-Cookie' ? false : true;
@@ -71,7 +75,7 @@ trait SapiEmitterTrait
                     '%s: %s',
                     $name,
                     $value
-                ), $first);
+                ), $first, $statusCode);
                 $first = false;
             }
         }
