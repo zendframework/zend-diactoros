@@ -56,7 +56,7 @@ class SapiStreamEmitterTest extends AbstractEmitterTest
         $this->emitter->emit($response);
         ob_end_clean();
         foreach (HeaderStack::stack() as $header) {
-            $this->assertNotContains('Content-Length:', $header);
+            $this->assertNotContains('Content-Length:', $header['header']);
         }
     }
 
