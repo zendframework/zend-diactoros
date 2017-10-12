@@ -151,8 +151,8 @@ class ServerTest extends TestCase
         $this->expectOutputString('FOOBAR');
         $server->listen();
 
-        $this->assertContains('HTTP/1.1 200 OK', HeaderStack::stack());
-        $this->assertContains('Content-Type: text/plain', HeaderStack::stack());
+        $this->assertTrue(HeaderStack::has('HTTP/1.1 200 OK'));
+        $this->assertTrue(HeaderStack::has('Content-Type: text/plain'));
     }
 
     public function testListenEmitsStatusHeaderWithoutReasonPhraseIfNoReasonPhrase()
@@ -176,8 +176,8 @@ class ServerTest extends TestCase
         $this->expectOutputString('FOOBAR');
         $server->listen();
 
-        $this->assertContains('HTTP/1.1 299', HeaderStack::stack());
-        $this->assertContains('Content-Type: text/plain', HeaderStack::stack());
+        $this->assertTrue(HeaderStack::has('HTTP/1.1 299'));
+        $this->assertTrue(HeaderStack::has('Content-Type: text/plain'));
     }
 
     public function testEnsurePercentCharactersDoNotResultInOutputError()
@@ -200,8 +200,8 @@ class ServerTest extends TestCase
         $this->expectOutputString('100%');
         $server->listen();
 
-        $this->assertContains('HTTP/1.1 200 OK', HeaderStack::stack());
-        $this->assertContains('Content-Type: text/plain', HeaderStack::stack());
+        $this->assertTrue(HeaderStack::has('HTTP/1.1 200 OK'));
+        $this->assertTrue(HeaderStack::has('Content-Type: text/plain'));
     }
 
     public function testEmitsHeadersWithMultipleValuesMultipleTimes()
@@ -228,19 +228,16 @@ class ServerTest extends TestCase
 
         $server->listen();
 
-        $this->assertContains('HTTP/1.1 200 OK', HeaderStack::stack());
-        $this->assertContains('Content-Type: text/plain', HeaderStack::stack());
-        $this->assertContains(
-            'Set-Cookie: foo=bar; expires=Wed, 1 Oct 2014 10:30; path=/foo; domain=example.com',
-            HeaderStack::stack()
+        $this->assertTrue(HeaderStack::has('HTTP/1.1 200 OK'));
+        $this->assertTrue(HeaderStack::has('Content-Type: text/plain'));
+        $this->assertTrue(
+            HeaderStack::has('Set-Cookie: foo=bar; expires=Wed, 1 Oct 2014 10:30; path=/foo; domain=example.com')
         );
-        $this->assertContains(
-            'Set-Cookie: bar=baz; expires=Wed, 8 Oct 2014 10:30; path=/foo/bar; domain=example.com',
-            HeaderStack::stack()
+        $this->assertTrue(
+            HeaderStack::has('Set-Cookie: bar=baz; expires=Wed, 8 Oct 2014 10:30; path=/foo/bar; domain=example.com')
         );
 
-        $stack  = HeaderStack::stack();
-        return $stack;
+        return HeaderStack::stack();
     }
 
     /**
@@ -250,15 +247,22 @@ class ServerTest extends TestCase
     public function testHeaderOrderIsHonoredWhenEmitted($stack)
     {
         $header = array_pop($stack);
+        $this->assertContains('Content-Type: text/plain', $header);
+
+        $header = array_pop($stack);
         $this->assertContains(
             'Set-Cookie: bar=baz; expires=Wed, 8 Oct 2014 10:30; path=/foo/bar; domain=example.com',
             $header
         );
+
         $header = array_pop($stack);
         $this->assertContains(
             'Set-Cookie: foo=bar; expires=Wed, 1 Oct 2014 10:30; path=/foo; domain=example.com',
             $header
         );
+
+        $header = array_pop($stack);
+        $this->assertContains('HTTP/1.1 200 OK', $header);
     }
 
     public function testListenPassesCallableArgumentToCallback()
