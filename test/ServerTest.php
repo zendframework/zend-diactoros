@@ -247,15 +247,22 @@ class ServerTest extends TestCase
     public function testHeaderOrderIsHonoredWhenEmitted($stack)
     {
         $header = array_pop($stack);
+        $this->assertContains('Content-Type: text/plain', $header);
+
+        $header = array_pop($stack);
         $this->assertContains(
             'Set-Cookie: bar=baz; expires=Wed, 8 Oct 2014 10:30; path=/foo/bar; domain=example.com',
             $header
         );
+
         $header = array_pop($stack);
         $this->assertContains(
             'Set-Cookie: foo=bar; expires=Wed, 1 Oct 2014 10:30; path=/foo; domain=example.com',
             $header
         );
+
+        $header = array_pop($stack);
+        $this->assertContains('HTTP/1.1 200 OK', $header);
     }
 
     public function testListenPassesCallableArgumentToCallback()

@@ -38,7 +38,13 @@ trait SapiEmitterTrait
      * Emits the status line using the protocol version and status code from
      * the response; if a reason phrase is available, it, too, is emitted.
      *
+     * It's important to mention that, in order to prevent PHP from changing
+     * the status code of the emitted response, this method should be called
+     * after `emitHeaders()`
+     *
      * @param ResponseInterface $response
+     *
+     * @see \Zend\Diactoros\Response\SapiEmitterTrait::emitHeaders()
      */
     private function emitStatusLine(ResponseInterface $response)
     {
