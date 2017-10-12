@@ -27,7 +27,7 @@ namespace ZendTest\Diactoros\TestAsset;
 class HeaderStack
 {
     /**
-     * @var array
+     * @var string[][]
      */
     private static $data = [];
 
@@ -42,9 +42,9 @@ class HeaderStack
     /**
      * Push a header on the stack
      *
-     * @param string $header
+     * @param string[] $header
      */
-    public static function push($header)
+    public static function push(array $header)
     {
         self::$data[] = $header;
     }
@@ -52,11 +52,29 @@ class HeaderStack
     /**
      * Return the current header stack
      *
-     * @return array
+     * @return string[][]
      */
     public static function stack()
     {
         return self::$data;
+    }
+
+    /**
+     * Verify if there's a header line on the stack
+     *
+     * @param string $header
+     *
+     * @return bool
+     */
+    public static function has($header)
+    {
+        foreach (self::$data as $item) {
+            if ($item['header'] === $header) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
 
@@ -73,9 +91,17 @@ function headers_sent()
 /**
  * Emit a header, without creating actual output artifacts
  *
- * @param string $value
+ * @param string   $string
+ * @param bool     $replace
+ * @param int|null $statusCode
  */
-function header($value)
+function header($string, $replace = true, $statusCode = null)
 {
-    HeaderStack::push($value);
+    HeaderStack::push(
+        [
+            'header'      => $string,
+            'replace'     => $replace,
+            'status_code' => $statusCode,
+        ]
+    );
 }
