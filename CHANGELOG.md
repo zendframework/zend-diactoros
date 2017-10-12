@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 1.6.1 - TBD
+## 1.6.1 - 2017-10-12
 
 ### Added
 
@@ -10,7 +10,10 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Changed
 
-- Nothing.
+- [#273](https://github.com/zendframework/zend-diactoros/pull/273) updates each
+  of the SAPI emitter implementations to emit the status line after emitting
+  other headers; this is done to ensure that the status line is not overridden
+  by PHP.
 
 ### Deprecated
 
@@ -22,7 +25,10 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#273](https://github.com/zendframework/zend-diactoros/pull/273) modifies how
+  the `SapiEmitterTrait` calls `header()` to ensure that a response code is
+  _always_ passed as the third argument; this is done to prevent PHP from
+  silently overriding it.
 
 ## 1.6.0 - 2017-09-13
 
