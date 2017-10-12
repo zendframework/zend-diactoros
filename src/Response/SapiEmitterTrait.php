@@ -38,9 +38,9 @@ trait SapiEmitterTrait
      * Emits the status line using the protocol version and status code from
      * the response; if a reason phrase is available, it, too, is emitted.
      *
-     * It's important to mention that, in order to prevent PHP from changing
-     * the status code of the emitted response, this method should be called
-     * after `emitHeaders()`
+     * It is important to mention that this method should be called after
+     * `emitHeaders()` in order to prevent PHP from changing the status code of
+     * the emitted response.
      *
      * @param ResponseInterface $response
      *
