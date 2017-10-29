@@ -91,7 +91,7 @@ the `Content-Type` header will be set to `text/html`. In the second case, the st
 stream containing the JSON-serialized `$data`, and have a `Content-Type` header set to
 `application/json`.
 
-Both factory methods allow passing the HTTP status, as well as any headers you want to specify,
+Both objects allow passing the HTTP status, as well as any headers you want to specify,
 including the `Content-Type` header:
 
 ```php
