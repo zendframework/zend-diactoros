@@ -54,26 +54,64 @@ abstract class ServerRequestFactory
         array $cookies = null,
         array $files = null
     ) {
-        $server  = static::normalizeServer($server ?: $_SERVER);
-        $files   = static::normalizeFiles($files ?: $_FILES);
-        $headers = static::marshalHeaders($server);
-
-        if (null === $cookies && array_key_exists('cookie', $headers)) {
-            $cookies = self::parseCookieHeader($headers['cookie']);
-        }
+        list(
+            $server,
+            $cookies,
+            $files,
+            $headers,
+            $uri,
+            $method,
+            $protocolVersion
+        ) = static::prepareGlobals($server, $cookies, $files);
 
         return new ServerRequest(
             $server,
             $files,
-            static::marshalUriFromServer($server, $headers),
-            static::get('REQUEST_METHOD', $server, 'GET'),
+            $uri,
+            $method,
             'php://input',
             $headers,
             $cookies ?: $_COOKIE,
             $query ?: $_GET,
             $body ?: $_POST,
-            static::marshalProtocolVersion($server)
+            $protocolVersion
         );
+    }
+
+    /**
+     * Prepare required variables to create and instance using globals.
+     *
+     * @param array $server $_SERVER superglobal
+     * @param array $cookies $_COOKIE superglobal
+     * @param array $files $_FILES superglobal
+     *
+     * @return array
+     */
+    protected static function prepareGlobals(
+        array $server = null,
+        array $cookies = null,
+        array $files = null
+    ) {
+        $server          = static::normalizeServer($server ?: $_SERVER);
+        $files           = static::normalizeFiles($files ?: $_FILES);
+        $headers         = static::marshalHeaders($server);
+        $uri             = static::marshalUriFromServer($server, $headers);
+        $method          = static::get('REQUEST_METHOD', $server, 'GET');
+        $protocolVersion = static::marshalProtocolVersion($server);
+
+        if (null === $cookies && array_key_exists('cookie', $headers)) {
+            $cookies = self::parseCookieHeader($headers['cookie']);
+        }
+
+        return [
+            $server,
+            $cookies,
+            $files,
+            $headers,
+            $uri,
+            $method,
+            $protocolVersion,
+        ];
     }
 
     /**
@@ -472,7 +510,7 @@ abstract class ServerRequestFactory
      * @param array $server
      * @return string
      */
-    private static function marshalProtocolVersion(array $server)
+    public static function marshalProtocolVersion(array $server)
     {
         if (! isset($server['SERVER_PROTOCOL'])) {
             return '1.1';
@@ -497,7 +535,7 @@ abstract class ServerRequestFactory
      * @param $cookieHeader
      * @return array
      */
-    private static function parseCookieHeader($cookieHeader)
+    public static function parseCookieHeader($cookieHeader)
     {
         preg_match_all('(
             (?:^\\n?[ \t]*|;[ ])
