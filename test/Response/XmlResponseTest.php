@@ -87,7 +87,7 @@ class XmlResponseTest extends TestCase
     public function testConstructorRewindsBodyStream()
     {
         $body = '<?xml version="1.0"?>' . PHP_EOL . '<something>Valid XML</something>';
-        $response = new XmlResponse($text);
+        $response = new XmlResponse($body);
 
         $actual = $response->getBody()->getContents();
         $this->assertSame($body, $actual);
