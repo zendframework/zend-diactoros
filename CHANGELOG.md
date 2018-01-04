@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 1.7.0 - TBD
+## 1.7.0 - 2018-01-04
 
 ### Added
 
@@ -11,26 +11,6 @@ All notable changes to this project will be documented in this file, in reverse 
   responses representing XML. Usage is the same as with the `HtmlResponse` or
   `TextResponse`; the response generated will have a `Content-Type:
   application/xml` header by default.
-
-### Changed
-
-- Nothing.
-
-### Deprecated
-
-- Nothing.
-
-### Removed
-
-- Nothing.
-
-### Fixed
-
-- Nothing.
-
-## 1.6.2 - TBD
-
-### Added
 
 - [#280](https://github.com/zendframework/zend-diactoros/pull/280) adds the
   response status code/phrase pairing "103 Early Hints" to the
