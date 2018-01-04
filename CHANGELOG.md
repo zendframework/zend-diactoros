@@ -28,7 +28,10 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- Nothing.
+- [#280](https://github.com/zendframework/zend-diactoros/pull/280) adds the
+  response status code/phrase pairing "103 Early Hints" to the
+  `Response::$phrases` property. This is a new status proposed via
+  [RFC 8297](https://datatracker.ietf.org/doc/rfc8297/).
 
 ### Changed
 
