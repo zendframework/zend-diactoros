@@ -54,7 +54,6 @@
       "@cs-check",
       "@test"
     ],
-    "upload-coverage": "coveralls -v",
     "cs-check": "phpcs",
     "cs-fix": "phpcbf",
     "test": "phpunit --colors=always",
