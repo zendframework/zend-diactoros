@@ -58,6 +58,28 @@ $response = new HtmlResponse($htmlContent, 200, [ 'Content-Type' => ['applicatio
 Headers must be in the same format as you would provide to the
 [Response constructor](api.md#response-message).
 
+## XML Responses
+
+- Since 1.7.0
+
+`Zend\Diactoros\Response\XmlResponse` allows specifying XML as a payload, and sets the
+`Content-Type` header to `application/xml` by default:
+
+```php
+$response = new XmlResponse($xml);
+```
+
+The constructor allows passing two additional arguments: a status code, and an array of headers.
+These allow you to further seed the initial state of the response, as well as to override the
+`Content-Type` header if desired:
+
+```php
+$response = new XmlResponse($xml, 200, [ 'Content-Type' => ['application/hal+xml']]);
+```
+
+Headers must be in the same format as you would provide to the
+[Response constructor](api.md#response-message).
+
 ## JSON Responses
 
 `Zend\Diactoros\Response\JsonResponse` accepts a data structure to convert to JSON, and sets
