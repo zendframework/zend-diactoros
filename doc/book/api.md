@@ -73,18 +73,17 @@ class Response
 Like the `Request` and `ServerRequest`, responses are immutable. Any methods that would change state
 &mdash; those prefixed with `with` and `without` &mdash; all return a new instance with the changes requested.
 
-### StringResponse (factory)
+### HtmlResponse and JsonResponse
 
 - Added in 1.1.0
 
 The most common use case in server-side applications for generating responses is to provide a string
-to use for the response, typically HTML or data to serialize as JSON.  `Zend\Diactoros\Response\StringResponse`
-exists to facilitate these use cases:
+to use for the response, typically HTML or data to serialize as JSON.  `Zend\Diactoros\Response\HtmlResponse` and `Zend\Diactoros\Response\JsonResponse` exist to facilitate these use cases:
 
 ```php
-$htmlResponse = StringResponse::html($html);
+$htmlResponse = new HtmlResponse($html);
 
-$jsonResponse = StringResponse::json($data);
+$jsonResponse = new JsonResponse($data);
 ```
 
 In the first example, you will receive a response with a stream containing the HTML; additionally,
@@ -92,15 +91,15 @@ the `Content-Type` header will be set to `text/html`. In the second case, the st
 stream containing the JSON-serialized `$data`, and have a `Content-Type` header set to
 `application/json`.
 
-Both factory methods allow passing the HTTP status, as well as any headers you want to specify,
+Both objects allow passing the HTTP status, as well as any headers you want to specify,
 including the `Content-Type` header:
 
 ```php
-$htmlResponse = StringResponse::html($html, 404, [
+$htmlResponse = new HtmlResponse($html, 404, [
     'Content-Type' => [ 'application/xhtml+xml' ],
 ]);
 
-$jsonResponse = StringResponse::json($data, 422, [
+$jsonResponse = new JsonResponse($data, 422, [
     'Content-Type' => [ 'application/problem+json' ],
 ]);
 ```
