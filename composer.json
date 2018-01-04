@@ -54,10 +54,10 @@
       "@cs-check",
       "@test"
     ],
-    "upload-coverage": "coveralls -v",
     "cs-check": "phpcs",
     "cs-fix": "phpcbf",
     "test": "phpunit --colors=always",
-    "test-coverage": "phpunit --colors=always --coverage-clover clover.xml"
+    "test-coverage": "phpunit --colors=always --coverage-clover clover.xml",
+    "upload-coverage": "php-coveralls -v"
   }
 }
