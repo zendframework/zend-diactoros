@@ -11,6 +11,10 @@ All notable changes to this project will be documented in this file, in reverse 
   `Response::$phrases` property. This is a new status proposed via
   [RFC 8297](https://datatracker.ietf.org/doc/rfc8297/).
 
+- [#279](https://github.com/zendframework/zend-diactoros/pull/279) adds explicit
+  support for PHP 7.2; previously, we'd allowed build failures, though none
+  occured; we now require PHP 7.2 builds to pass.
+
 ### Changed
 
 - Nothing.
