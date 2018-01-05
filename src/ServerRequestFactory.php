@@ -211,7 +211,11 @@ abstract class ServerRequestFactory
 
             if ($value && strpos($key, 'HTTP_') === 0) {
                 $name = strtr(strtolower(substr($key, 5)), '_', '-');
-                $headers[$name] = $value;
+
+                if (! is_numeric($name)) {
+                  $headers[$name] = $value;
+                }
+
                 continue;
             }
 

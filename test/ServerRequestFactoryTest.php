@@ -62,6 +62,7 @@ class ServerRequestFactoryTest extends TestCase
             'HTTP_CONTENT_TYPE' => 'application/json',
             'HTTP_ACCEPT' => 'application/json',
             'HTTP_X_FOO_BAR' => 'FOOBAR',
+            'HTTP__1' => '-1',
             'CONTENT_MD5' => 'CONTENT-MD5',
             'CONTENT_LENGTH' => 'UNSPECIFIED',
         ];
