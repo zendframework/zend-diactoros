@@ -103,7 +103,11 @@ class Stream implements StreamInterface
         }
 
         $stats = fstat($this->resource);
-        return $stats['size'];
+        if (false !=== $stats) {
+            return $stats['size'];
+        }
+
+        return null;
     }
 
     /**
