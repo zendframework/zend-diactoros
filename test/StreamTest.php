@@ -632,4 +632,25 @@ class StreamTest extends TestCase
 
         $this->assertSame('FOO BAR', $stream->__toString());
     }
+
+    /**
+     * @group 42
+     */
+    public function testSizeReportsNullForPhpInputStreams()
+    {
+        $resource = fopen('php://input', 'r');
+        $stream = new Stream($resource);
+        $this->assertNull($stream->getSize());
+    }
+
+    /**
+     * @group 42
+     */
+    public function testSizeReportsNullForRemoteResources()
+    {
+        $resource_url = 'http://www.php.net/images/logos/php-logo.png';
+        $resource = fopen($resource_url, 'r');
+        $stream = new Stream($resource);
+        $this->assertNull($stream->getSize());
+    }
 }
