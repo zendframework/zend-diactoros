@@ -677,4 +677,16 @@ class UriTest extends TestCase
 
         $this->assertContains('/v1/people/~:(first-name,last-name,email-address,picture-url)', (string) $uri);
     }
+
+    public function testHostIsLowercase()
+    {
+        $uri = new Uri('http://HOST.LOC/path?q=1');
+        $this->assertSame('host.loc', $uri->getHost());
+    }
+
+    public function testHostIsLowercaseWhenIsSetViwWithHost()
+    {
+        $uri = (new Uri())->withHost('NEW-HOST.COM');
+        $this->assertSame('new-host.com', $uri->getHost());
+    }
 }
