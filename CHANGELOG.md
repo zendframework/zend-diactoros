@@ -48,7 +48,10 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#290](https://github.com/zendframework/zend-diactoros/pull/290) fixes
+  `Stream::getSize()` such that it checks that the result of `fstat` was
+  succesful before attempting to return its `size` member; in the case of an
+  error, it now returns `null`.
 
 ## 1.7.0 - 2018-01-04
 

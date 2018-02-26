@@ -632,4 +632,14 @@ class StreamTest extends TestCase
 
         $this->assertSame('FOO BAR', $stream->__toString());
     }
+
+    /**
+     * @group 42
+     */
+    public function testSizeReportsNullForPhpInputStreams()
+    {
+        $resource = fopen('php://input', 'r');
+        $stream = new Stream($resource);
+        $this->assertNull($stream->getSize());
+    }
 }
