@@ -32,7 +32,11 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Changed
 
-- Nothing.
+- [#293](https://github.com/zendframework/zend-diactoros/pull/293) updates
+  `Uri::getHost()` to cast the value via `strtolower()` before returning it.
+  While this represents a change, it is fixing a bug in our implementation: 
+  the PSR-7 specification for the method, which follows IETF RFC 3986 section
+  3.2.2, requires that the host name be normalized to lowercase.
 
 ### Deprecated
 
