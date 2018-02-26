@@ -3,7 +3,7 @@
         {
             "location": "/",
             "text": "zend-diactoros\n\n\nMaster:\n\n\n\n\nDevelop:\n\n\n\n\n\n\n\nDiactoros (pronunciation: \n/d\u026a\u028ckt\u0252r\u0252s/\n): an epithet for Hermes, meaning literally, \"the messenger.\"\n\n\n\n\nThis package supercedes and replaces \nphly/http\n.\n\n\nzend-diactoros\n is a PHP package containing implementations of the \naccepted PSR-7 HTTP message interfaces\n, as well as a \"server\" implementation similar to \nnode's http.Server\n.\n\n\n\n\nFile issues at https://github.com/zendframework/zend-diactoros/issues\n\n\nIssue patches to https://github.com/zendframework/zend-diactoros/pulls\n\n\n\n\nDocumentation\n\n\nDocumentation is available at:\n\n\n\n\nhttps://zendframework.github.io/zend-diactoros/\n\n\n\n\nSource files for documentation are \nin the doc/ tree\n.",
-            "title": "Home"
+            "title": "zend-diactoros"
         },
         {
             "location": "/#zend-diactoros",
