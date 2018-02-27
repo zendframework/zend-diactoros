@@ -96,6 +96,23 @@ class ServerRequestFactoryTest extends TestCase
         $this->assertEquals($expected, ServerRequestFactory::marshalHeaders($server));
     }
 
+    public function testRemoveVariablesPrefixedByApacheFromServerArrayIfNull()
+    {
+        // Non-prefixed versions will be preferred
+        $server = [
+            'HTTP_X_FOO_BAR' => null,
+            'REDIRECT_HTTP_AUTHORIZATION' => 'token',
+            'REDIRECT_HTTP_X_FOO_BAR' => 'prefixed',
+        ];
+
+        $expected = [
+            'authorization' => 'token',
+            'x-foo-bar' => 'prefixed',
+        ];
+
+        $this->assertEquals($expected, ServerRequestFactory::marshalHeaders($server));
+    }
+
     public function testStripQueryStringReturnsUnchangedStringIfNoQueryStringDetected()
     {
         $path = '/foo/bar';
@@ -466,11 +483,17 @@ class ServerRequestFactoryTest extends TestCase
                 'foo.bar=baz',
                 ['foo.bar' => 'baz'],
             ],
+            'empty' => [
+                '',
+                [],
+            ]
         ];
     }
 
     /**
      * @dataProvider cookieHeaderValues
+     * @preserveGlobalState disabled
+     * @runInSeparateProcess
      * @param string $cookieHeader
      * @param array $expectedCookies
      */

@@ -9,6 +9,7 @@ namespace Zend\Diactoros;
 
 use Psr\Http\Message\StreamInterface;
 use RuntimeException;
+use const SEEK_SET;
 
 /**
  * Class RelativeStream
@@ -30,8 +31,6 @@ final class RelativeStream implements StreamInterface
     private $offset;
 
     /**
-     * Class constructor
-     *
      * @param StreamInterface $decoratedStream
      * @param int $offset
      */
@@ -105,7 +104,7 @@ final class RelativeStream implements StreamInterface
      */
     public function seek($offset, $whence = SEEK_SET)
     {
-        if ($whence == SEEK_SET) {
+        if ($whence === SEEK_SET) {
             return $this->decoratedStream->seek($offset + $this->offset, $whence);
         }
         return $this->decoratedStream->seek($offset, $whence);

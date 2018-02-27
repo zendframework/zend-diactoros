@@ -12,6 +12,7 @@ namespace Zend\Diactoros;
 use InvalidArgumentException;
 use RuntimeException;
 use Psr\Http\Message\StreamInterface;
+use const SEEK_SET;
 
 /**
  * Implementation of PSR HTTP streams
@@ -172,10 +173,10 @@ class CallbackStream implements StreamInterface
             return $metadata;
         }
 
-        if (! array_key_exists($key, $metadata)) {
-            return null;
+        if (isset($metadata[$key])) {
+            return $metadata[$key];
         }
 
-        return $metadata[$key];
+        return null;
     }
 }

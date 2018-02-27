@@ -10,6 +10,8 @@ namespace Zend\Diactoros;
 use InvalidArgumentException;
 use RuntimeException;
 use Psr\Http\Message\StreamInterface;
+use const E_WARNING;
+use const SEEK_SET;
 
 /**
  * Implementation of PSR HTTP streams
@@ -195,11 +197,11 @@ class Stream implements StreamInterface
         $mode = $meta['mode'];
 
         return (
-            strstr($mode, 'x')
-            || strstr($mode, 'w')
-            || strstr($mode, 'c')
-            || strstr($mode, 'a')
-            || strstr($mode, '+')
+            strpos($mode, 'x') !== false
+            || strpos($mode, 'w') !== false
+            || strpos($mode, 'c') !== false
+            || strpos($mode, 'a') !== false
+            || strpos($mode, '+') !== false
         );
     }
 
@@ -236,7 +238,7 @@ class Stream implements StreamInterface
         $meta = stream_get_meta_data($this->resource);
         $mode = $meta['mode'];
 
-        return (strstr($mode, 'r') || strstr($mode, '+'));
+        return (strpos($mode, 'r') !== false || strpos($mode, '+') !== false);
     }
 
     /**
@@ -287,11 +289,11 @@ class Stream implements StreamInterface
         }
 
         $metadata = stream_get_meta_data($this->resource);
-        if (! array_key_exists($key, $metadata)) {
-            return null;
+        if (isset($metadata[$key])) {
+            return $metadata[$key];
         }
 
-        return $metadata[$key];
+        return null;
     }
 
     /**

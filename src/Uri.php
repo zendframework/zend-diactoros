@@ -543,7 +543,7 @@ class Uri implements UriInterface
             return '';
         }
 
-        if (! array_key_exists($scheme, $this->allowedSchemes)) {
+        if (! isset($this->allowedSchemes[$scheme])) {
             throw new InvalidArgumentException(sprintf(
                 'Unsupported scheme "%s"; must be any empty string or in the set (%s)',
                 $scheme,
@@ -639,7 +639,7 @@ class Uri implements UriInterface
     private function splitQueryValue($value)
     {
         $data = explode('=', $value, 2);
-        if (1 === count($data)) {
+        if (! isset($data[1])) {
             $data[] = null;
         }
         return $data;
