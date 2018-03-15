@@ -10,6 +10,26 @@ namespace Zend\Diactoros;
 use InvalidArgumentException;
 use Psr\Http\Message\UriInterface;
 
+use function array_key_exists;
+use function array_keys;
+use function count;
+use function explode;
+use function get_class;
+use function gettype;
+use function implode;
+use function is_numeric;
+use function is_object;
+use function is_string;
+use function ltrim;
+use function parse_url;
+use function preg_replace;
+use function preg_replace_callback;
+use function rawurlencode;
+use function sprintf;
+use function strpos;
+use function strtolower;
+use function substr;
+
 /**
  * Implementation of Psr\Http\UriInterface.
  *

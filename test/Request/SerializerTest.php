@@ -18,6 +18,9 @@ use Zend\Diactoros\Request\Serializer;
 use Zend\Diactoros\Stream;
 use Zend\Diactoros\Uri;
 
+use function json_encode;
+use function strlen;
+
 class SerializerTest extends TestCase
 {
     public function testSerializesBasicRequest()

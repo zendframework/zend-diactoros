@@ -11,6 +11,18 @@ use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Zend\Diactoros\Response\JsonResponse;
 
+use function fopen;
+use function json_decode;
+use function json_encode;
+use function sprintf;
+
+use const JSON_HEX_AMP;
+use const JSON_HEX_APOS;
+use const JSON_HEX_QUOT;
+use const JSON_HEX_TAG;
+use const JSON_PRETTY_PRINT;
+use const JSON_UNESCAPED_SLASHES;
+
 class JsonResponseTest extends TestCase
 {
     public function testConstructorAcceptsDataAndCreatesJsonEncodedMessageBody()

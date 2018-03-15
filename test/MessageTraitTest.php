@@ -14,6 +14,8 @@ use Psr\Http\Message\StreamInterface;
 use ReflectionMethod;
 use Zend\Diactoros\Request;
 
+use function count;
+
 class MessageTraitTest extends TestCase
 {
     /**

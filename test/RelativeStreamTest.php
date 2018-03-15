@@ -13,6 +13,8 @@ use RuntimeException;
 use Zend\Diactoros\RelativeStream;
 use Zend\Diactoros\Stream;
 
+use const SEEK_SET;
+
 /**
  * @covers \Zend\Diactoros\RelativeStream
  */

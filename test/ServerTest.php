@@ -19,6 +19,9 @@ use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\Stream;
 use ZendTest\Diactoros\TestAsset\HeaderStack;
 
+use function array_pop;
+use function uniqid;
+
 class ServerTest extends TestCase
 {
     /**

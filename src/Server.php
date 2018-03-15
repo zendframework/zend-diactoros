@@ -11,6 +11,8 @@ use OutOfBoundsException;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
+use function property_exists;
+
 /**
  * "Serve" incoming HTTP requests
  *
