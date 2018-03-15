@@ -11,7 +11,6 @@ use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\StreamInterface;
-use ReflectionMethod;
 use Zend\Diactoros\Request;
 
 use function count;

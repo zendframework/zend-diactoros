@@ -7,7 +7,6 @@
 
 namespace ZendTest\Diactoros\Response;
 
-use Zend\Diactoros\Response;
 
 class SapiEmitterTest extends AbstractEmitterTest
 {

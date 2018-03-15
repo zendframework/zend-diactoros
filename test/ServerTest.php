@@ -8,8 +8,8 @@
 namespace ZendTest\Diactoros;
 
 use OutOfBoundsException;
-use PHPUnit_Framework_MockObject_MockObject;
 use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_MockObject_MockObject;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response;

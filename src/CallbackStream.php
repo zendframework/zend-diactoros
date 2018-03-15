@@ -10,8 +10,8 @@
 namespace Zend\Diactoros;
 
 use InvalidArgumentException;
-use RuntimeException;
 use Psr\Http\Message\StreamInterface;
+use RuntimeException;
 
 use function array_key_exists;
 
