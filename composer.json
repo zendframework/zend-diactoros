@@ -1,17 +1,19 @@
 {
   "name": "zendframework/zend-diactoros",
   "description": "PSR HTTP Message implementations",
-  "type": "library",
-  "license": "BSD-2-Clause",
+  "license": "BSD-3-Clause",
   "keywords": [
     "http",
     "psr",
     "psr-7"
   ],
-  "homepage": "https://github.com/zendframework/zend-diactoros",
   "support": {
+    "docs": "https://docs.zendframework.com/zend-diactoros/",
     "issues": "https://github.com/zendframework/zend-diactoros/issues",
-    "source": "https://github.com/zendframework/zend-diactoros"
+    "source": "https://github.com/zendframework/zend-diactoros",
+    "rss": "https://github.com/zendframework/zend-diactoros/releases.atom",
+    "slack": "https://zendframework-slack.herokuapp.com",
+    "forum": "https://discourse.zendframework.com/c/questions/exprssive"
   },
   "config": {
       "sort-packages": true
@@ -31,8 +33,8 @@
   "require-dev": {
     "ext-dom": "*",
     "ext-libxml": "*",
-    "phpunit/phpunit": "^5.7.16 || ^6.0.8",
-    "zendframework/zend-coding-standard": "~1.0"
+    "phpunit/phpunit": "^7.0.2",
+    "zendframework/zend-coding-standard": "~1.0.0"
   },
   "provide": {
     "psr/http-message-implementation": "1.0"
