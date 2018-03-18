@@ -10,6 +10,8 @@ namespace Zend\Diactoros;
 use OutOfBoundsException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Zend\HttpHandlerRunner\Emitter\EmitterInterface;
+use Zend\HttpHandlerRunner\Emitter\SapiEmitter;
 
 use function property_exists;
 
@@ -29,7 +31,7 @@ class Server
     /**
      * Response emitter to use; by default, uses Response\SapiEmitter.
      *
-     * @var Response\EmitterInterface
+     * @var EmitterInterface
      */
     private $emitter;
 
@@ -80,9 +82,9 @@ class Server
     /**
      * Set alternate response emitter to use.
      *
-     * @param Response\EmitterInterface $emitter
+     * @param EmitterInterface $emitter
      */
-    public function setEmitter(Response\EmitterInterface $emitter)
+    public function setEmitter(EmitterInterface $emitter)
     {
         $this->emitter = $emitter;
     }
@@ -169,12 +171,12 @@ class Server
      *
      * If none has been registered, lazy-loads a Response\SapiEmitter.
      *
-     * @return Response\EmitterInterface
+     * @return EmitterInterface
      */
     private function getEmitter()
     {
         if (! $this->emitter) {
-            $this->emitter = new Response\SapiEmitter();
+            $this->emitter = new SapiEmitter();
         }
 
         return $this->emitter;

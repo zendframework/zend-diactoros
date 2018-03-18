@@ -9,7 +9,7 @@ namespace ZendTest\Diactoros\Response;
 
 use PHPUnit\Framework\TestCase;
 use Zend\Diactoros\Response;
-use Zend\Diactoros\Response\SapiEmitter;
+use Zend\HttpHandlerRunner\Emitter\SapiEmitter;
 use ZendTest\Diactoros\TestAsset\HeaderStack;
 
 use function ob_end_clean;

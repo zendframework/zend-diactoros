@@ -13,10 +13,10 @@ use PHPUnit_Framework_MockObject_MockObject;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response;
-use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\Server;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\Stream;
+use Zend\HttpHandlerRunner\Emitter\EmitterInterface;
 use ZendTest\Diactoros\TestAsset\HeaderStack;
 
 use function array_pop;
