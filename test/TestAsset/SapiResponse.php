@@ -11,14 +11,14 @@
  *   emitted, and we can test to see their values.
  * - header(): we want to aggregate calls to this function.
  *
- * It pushes headers into the HeaderStack class defined in Functions.php.
+ * It pushes headers into the HeaderStack class defined in HeaderStack.php.
  *
  * @see       http://github.com/zendframework/zend-diactoros for the canonical source repository
- * @copyright Copyright (c) 2015-2016 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2018 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
-namespace Zend\Diactoros\Response;
+namespace Zend\HttpHandlerRunner\Emitter;
 
 use ZendTest\Diactoros\TestAsset\HeaderStack;
 

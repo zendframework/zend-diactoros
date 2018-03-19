@@ -49,7 +49,6 @@
       "ZendTest\\Diactoros\\": "test/"
     },
     "files": [
-      "test/TestAsset/Functions.php",
       "test/TestAsset/SapiResponse.php"
     ]
   },
