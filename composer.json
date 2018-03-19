@@ -27,8 +27,7 @@
   },
   "require": {
     "php": "^7.1",
-    "psr/http-message": "^1.0",
-    "zendframework/zend-httphandlerrunner": "^1.0"
+    "psr/http-message": "^1.0"
   },
   "require-dev": {
     "ext-dom": "*",
@@ -47,10 +46,7 @@
   "autoload-dev": {
     "psr-4": {
       "ZendTest\\Diactoros\\": "test/"
-    },
-    "files": [
-      "test/TestAsset/SapiResponse.php"
-    ]
+    }
   },
   "scripts": {
     "check": [
