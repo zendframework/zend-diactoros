@@ -689,4 +689,12 @@ class UriTest extends TestCase
         $uri = (new Uri())->withHost('NEW-HOST.COM');
         $this->assertSame('new-host.com', $uri->getHost());
     }
+
+
+    public function testUriDistinguishZeroFromEmptyString()
+    {
+        $expected = 'https://0:0@0:1/0?0#0';
+        $uri = new Uri($expected);
+        $this->assertSame($expected, (string) $uri);
+    }
 }
