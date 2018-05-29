@@ -23,7 +23,12 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Removed
 
-- Nothing.
+- [#295](https://github.com/zendframework/zend-diactoros/pull/295) removes `Zend\Diactoros\Server`. You can use the `RequestHandlerRunner` class from
+  [zendframework/zend-httphandlerrunner](https://docs.zendframework.com/zend-httphandlerrunner) to provide these capabilities instead.
+
+- [#295](https://github.com/zendframework/zend-diactoros/pull/295) removes `Zend\Diactoros\Response\EmitterInterface` and the various emitter implementations.
+  These can now be found in the package [zendframework/zend-httphandlerrunner](https://docs.zendframework.com/zend-httphandlerrunner/), which also provides
+  a PSR-7-implementation agnostic way of using them.
 
 ### Fixed
 
