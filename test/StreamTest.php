@@ -13,6 +13,28 @@ use ReflectionProperty;
 use RuntimeException;
 use Zend\Diactoros\Stream;
 
+use function curl_init;
+use function feof;
+use function file_exists;
+use function file_put_contents;
+use function fopen;
+use function fread;
+use function fseek;
+use function fstat;
+use function ftok;
+use function function_exists;
+use function fwrite;
+use function imagecreate;
+use function is_resource;
+use function shmop_open;
+use function stream_get_meta_data;
+use function sys_get_temp_dir;
+use function tempnam;
+use function uniqid;
+use function unlink;
+
+use const DIRECTORY_SEPARATOR;
+
 class StreamTest extends TestCase
 {
     public $tmpnam;

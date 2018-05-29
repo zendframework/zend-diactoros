@@ -12,6 +12,8 @@ use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\StreamInterface;
 use Zend\Diactoros\Response\XmlResponse;
 
+use const PHP_EOL;
+
 class XmlResponseTest extends TestCase
 {
     public function testConstructorAcceptsBodyAsString()

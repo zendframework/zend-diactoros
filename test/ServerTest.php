@@ -8,8 +8,8 @@
 namespace ZendTest\Diactoros;
 
 use OutOfBoundsException;
-use PHPUnit_Framework_MockObject_MockObject;
 use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_MockObject_MockObject;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response;
@@ -18,6 +18,9 @@ use Zend\Diactoros\Server;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\Stream;
 use ZendTest\Diactoros\TestAsset\HeaderStack;
+
+use function array_pop;
+use function uniqid;
 
 class ServerTest extends TestCase
 {

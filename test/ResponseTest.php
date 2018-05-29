@@ -14,6 +14,11 @@ use PHPUnit\Framework\TestCase;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Stream;
 
+use function in_array;
+use function libxml_set_streams_context;
+use function preg_match;
+use function stream_context_create;
+
 class ResponseTest extends TestCase
 {
     /**
