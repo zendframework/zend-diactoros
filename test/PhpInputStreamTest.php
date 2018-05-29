@@ -10,6 +10,9 @@ namespace ZendTest\Diactoros;
 use PHPUnit\Framework\TestCase;
 use Zend\Diactoros\PhpInputStream;
 
+use function file_get_contents;
+use function substr;
+
 class PhpInputStreamTest extends TestCase
 {
     /**
