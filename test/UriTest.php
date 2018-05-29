@@ -11,6 +11,8 @@ use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Zend\Diactoros\Uri;
 
+use function sprintf;
+
 class UriTest extends TestCase
 {
     public function testConstructorSetsAllProperties()

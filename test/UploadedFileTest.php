@@ -14,6 +14,25 @@ use RuntimeException;
 use Zend\Diactoros\Stream;
 use Zend\Diactoros\UploadedFile;
 
+use function basename;
+use function file_exists;
+use function file_get_contents;
+use function fopen;
+use function is_scalar;
+use function sys_get_temp_dir;
+use function tempnam;
+use function uniqid;
+use function unlink;
+
+use const UPLOAD_ERR_CANT_WRITE;
+use const UPLOAD_ERR_EXTENSION;
+use const UPLOAD_ERR_FORM_SIZE;
+use const UPLOAD_ERR_INI_SIZE;
+use const UPLOAD_ERR_NO_FILE;
+use const UPLOAD_ERR_NO_TMP_DIR;
+use const UPLOAD_ERR_OK;
+use const UPLOAD_ERR_PARTIAL;
+
 class UploadedFileTest extends TestCase
 {
     protected $tmpFile;
@@ -337,7 +356,7 @@ class UploadedFileTest extends TestCase
     public function errorConstantsAndMessages()
     {
         foreach (UploadedFile::ERROR_MESSAGES as $constant => $message) {
-            if ($constant === \UPLOAD_ERR_OK) {
+            if ($constant === UPLOAD_ERR_OK) {
                 continue;
             }
             yield $constant => [$constant, $message];
