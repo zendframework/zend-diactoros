@@ -10,7 +10,12 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Changed
 
-- Nothing.
+- [#162](https://github.com/zendframework/zend-diactoros/pull/162) modifies `Serializer\Request` such that it now no longer raises an `UnexpectedValueException` via its `toString()` method
+  when an unexpected HTTP method is encountered; this can be done safely, as the value can never
+  be invalid due to other changes in the same patch.
+
+- [#162](https://github.com/zendframework/zend-diactoros/pull/162) modifies `RequestTrait` such that it now invalidates non-string method arguments to either
+  the constructor or `withMethod()`, raising an `InvalidArgumentException` for any that do not validate.
 
 ### Deprecated
 
