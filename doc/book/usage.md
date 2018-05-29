@@ -118,6 +118,13 @@ $response = $response
 
 ### "Serving" an application
 
+> ### Deprecated
+>
+> The class `Zend\Diactoros\Server` is deprecated as of the 1.8.0 release. We
+> recommend using the class `Zend\HttpHandlerRunner\RequestHandlerRunner` via
+> the package [zendframework/zend-httphandlerrunner](https://docs.zendframework.com/zend-httphandlerrunner)
+> instead.
+
 `Zend\Diactoros\Server` mimics a portion of the API of node's `http.Server` class. It invokes a
 callback, passing it an `ServerRequest`, an `Response`, and optionally a callback to use for
 incomplete/unhandled requests.

@@ -6,7 +6,6 @@ well as a "server" implementation similar to [node's http.Server](http://nodejs.
 
 This package exists:
 
-- to provide a proof-of-concept of the accepted PSR HTTP message interfaces with relation to
-  server-side applications.
-- to provide a node-like paradigm for PHP front controllers.
+- to provide an implementation of [PSR-7 HTTP message interfaces](https://www.php-fig.org/psr/psr-7)
+- with relation to server-side applications.
 - to provide a common methodology for marshaling a request from the server environment.

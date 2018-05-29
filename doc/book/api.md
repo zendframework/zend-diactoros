@@ -177,6 +177,13 @@ In most cases, you will only use the methods defined in the `UploadedFileInterfa
 
 ## Server
 
+> ### Deprecated
+>
+> The class `Zend\Diactoros\Server` is deprecated as of the 1.8.0 release. We
+> recommend using the class `Zend\HttpHandlerRunner\RequestHandlerRunner` via
+> the package [zendframework/zend-httphandlerrunner](https://docs.zendframework.com/zend-httphandlerrunner)
+> instead.
+
 `Zend\Diactoros\Server` represents a server capable of executing a callback. It has four methods:
 
 ```php

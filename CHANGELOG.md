@@ -46,7 +46,11 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Deprecated
 
-- Nothing.
+- [#303](https://github.com/zendframework/zend-diactoros/pull/303) deprecates `Zend\Diactoros\Response\EmitterInterface` and its various implementations. These are now provided via the
+  [zendframework/zend-httphandlerrunner](https://docs.zendframework.com/zend-httphandlerrunner) package as 1:1 substitutions.
+
+- [#303](https://github.com/zendframework/zend-diactoros/pull/303) deprecates the `Zend\Diactoros\Server` class. Users are directed to the `RequestHandlerRunner` class from the
+  [zendframework/zend-httphandlerrunner](https://docs.zendframework.com/zend-httphandlerrunner) package as an alternative.
 
 ### Removed
 
