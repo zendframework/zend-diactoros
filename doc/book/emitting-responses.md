@@ -1,5 +1,12 @@
 # Emitting responses
 
+> ## Deprecated
+>
+> Emitters are deprecated from Diactoros starting with version 1.8.0. The
+> functionality is now available for any PSR-7 implementation via the package
+> [zendframework/zend-httphandlerrunner](https://docs.zendframework.com/zend-httphandlerrunner).
+> We suggest using that functionality instead.
+
 If you are using a non-SAPI PHP implementation and wish to use the `Server` class, or if you do not
 want to use the `Server` implementation but want to emit a response, this package provides an
 interface, `Zend\Diactoros\Response\EmitterInterface`, defining a method `emit()` for emitting the
