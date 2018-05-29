@@ -19,7 +19,8 @@
   "extra": {
     "branch-alias": {
       "dev-master": "1.7.x-dev",
-      "dev-develop": "1.8.x-dev"
+      "dev-develop": "1.8.x-dev",
+      "dev-release-2.0": "2.0.x-dev"
     }
   },
   "require": {
