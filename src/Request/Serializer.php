@@ -80,9 +80,6 @@ final class Serializer extends AbstractSerializer
     public static function toString(RequestInterface $request)
     {
         $httpMethod = $request->getMethod();
-        if (empty($httpMethod)) {
-            throw new UnexpectedValueException('Object can not be serialized because HTTP method is empty');
-        }
         $headers = self::serializeHeaders($request->getHeaders());
         $body    = (string) $request->getBody();
         $format  = '%s %s HTTP/%s%s%s';

@@ -337,14 +337,4 @@ class SerializerTest extends TestCase
 
         $this->assertInstanceOf(RelativeStream::class, $stream->getBody());
     }
-
-    public function testToStringRaisesExceptionOnEmptyMethod()
-    {
-        $request = (new Request())
-            ->withUri(new Uri('http://example.com/foo/bar?baz=bat'));
-
-        $this->expectException(UnexpectedValueException::class);
-
-        Serializer::toString($request);
-    }
 }
