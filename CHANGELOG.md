@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 1.7.2 - TBD
+## 1.7.2 - 2018-05-29
 
 ### Added
 
@@ -22,7 +22,8 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#301](https://github.com/zendframework/zend-diactoros/pull/301) adds stricter comparisons within the `uri` class to ensure non-empty
+  values are not treated as empty.
 
 ## 1.7.1 - 2018-02-26
 
