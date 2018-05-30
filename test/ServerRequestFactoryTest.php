@@ -10,6 +10,7 @@ namespace ZendTest\Diactoros;
 use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
 use ReflectionProperty;
+use swoole_http_request;
 use UnexpectedValueException;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\ServerRequestFactory;
@@ -579,5 +580,35 @@ class ServerRequestFactoryTest extends TestCase
             'HTTP/1.1' => ['HTTP/1.1', '1.1'],
             'HTTP/2'   => ['HTTP/2', '2'],
         ];
+    }
+
+    public function testFromSwoole()
+    {
+        if (! extension_loaded('swoole')) {
+            $this->markTestSkipped('The Swoole extesion is not available');
+        }
+
+        $swooleRequest = $this->createMock(swoole_http_request::class);
+        $swooleRequest->header['host'] = 'localhost:9501';
+        $swooleRequest->server['request_method'] = 'GET';
+        $swooleRequest->server['request_uri'] = '/';
+        $swooleRequest->server['path_info'] = '/';
+        $swooleRequest->server['request_time'] = time();
+        $swooleRequest->server['server_protocol'] = 'HTTP/1.1';
+        $swooleRequest->server['server_port'] = 9501;
+        $swooleRequest->server['remote_port'] = 45314;
+        $swooleRequest->method('rawContent')->willReturn('php://input');
+
+        $request = ServerRequestFactory::fromSwoole($swooleRequest);
+        $this->assertInstanceOf(ServerRequest::class, $request);
+        $this->assertEquals('GET', $request->getMethod());
+        $this->assertEquals('/', $request->getRequestTarget());
+        $this->assertEquals('/', $request->getUri()->getPath());
+        $this->assertEquals('1.1', $request->getProtocolVersion());
+        $this->assertEquals('', $request->getBody());
+        $this->assertEquals([], $request->getCookieParams());
+        $this->assertEquals([], $request->getQueryParams());
+        $this->assertEquals([], $request->getUploadedFiles());
+        $this->assertEquals(['host' => ['localhost:9501']], $request->getHeaders());
     }
 }

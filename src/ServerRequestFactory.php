@@ -9,7 +9,9 @@ namespace Zend\Diactoros;
 
 use InvalidArgumentException;
 use Psr\Http\Message\UploadedFileInterface;
+use RuntimeException;
 use stdClass;
+use swoole_http_request;
 use UnexpectedValueException;
 
 use function array_change_key_case;
@@ -95,6 +97,69 @@ abstract class ServerRequestFactory
             $cookies ?: $_COOKIE,
             $query ?: $_GET,
             $body ?: $_POST,
+            static::marshalProtocolVersion($server)
+        );
+    }
+
+    /**
+     * Create a request from a Swoole request
+     *
+     * @param swoole_http_request $request
+     * @return ServerRequest
+     * @throws RuntimeException if Swoole is not installed
+     */
+
+    public static function fromSwoole(swoole_http_request $request)
+    {
+        if (! extension_loaded('swoole')) {
+            throw new Exception\RuntimeException('Swoole extension is not installed!');
+        }
+        $get    = $request->get ?? [];
+        $post   = $request->post ?? [];
+        $cookie = $request->cookie ?? [];
+        $files  = $request->files ?? [];
+
+        $server = [
+            'REQUEST_METHOD' => $request->server['request_method'],
+            'REQUEST_URI' => $request->server['request_uri'],
+            'PATH_INFO' => $request->server['path_info'],
+            'REQUEST_TIME' => $request->server['request_time'],
+            'GATEWAY_INTERFACE' => 'swoole/' . SWOOLE_VERSION,
+            // Server
+            'SERVER_PROTOCOL' => $request->header['server_protocol'] ?? $request->server['server_protocol'],
+            'REQUEST_SCHEMA' => $request->header['request_scheme'] ??
+                                explode('/', $request->server['server_protocol'])[0],
+            'SERVER_NAME' => $request->header['server_name'] ?? $request->header['host'],
+            'SERVER_ADDR' => $request->header['host'],
+            'SERVER_PORT' => $request->header['server_port'] ?? $request->server['server_port'],
+            'REMOTE_ADDR' => $request->server['remote_addr'] ?? $request->header['host'],
+            'REMOTE_PORT' => $request->header['remote_port'] ?? $request->server['remote_port'],
+            'QUERY_STRING' => $request->server['query_string'] ?? '',
+            // Headers
+            'HTTP_HOST' => $request->header['host'],
+            'HTTP_USER_AGENT' => $request->header['user-agent'] ?? '',
+            'HTTP_ACCEPT' => $request->header['accept'] ?? '*/*',
+            'HTTP_ACCEPT_LANGUAGE' => $request->header['accept-language'] ?? '',
+            'HTTP_ACCEPT_ENCODING' => $request->header['accept-encoding'] ?? '',
+            'HTTP_CONNECTION' => $request->header['connection'] ?? '',
+            'HTTP_CACHE_CONTROL' => $request->header['cache-control'] ?? '',
+        ];
+
+        $headers = [];
+        foreach ($request->header as $name => $value) {
+            $headers[str_replace('-', '_', $name)] = $value;
+        }
+
+        return new ServerRequest(
+            $server,
+            static::normalizeFiles($files),
+            static::marshalUriFromServer($server, $headers),
+            $server['REQUEST_METHOD'],
+            $request->rawContent(),
+            $headers,
+            $cookie,
+            $get,
+            $post,
             static::marshalProtocolVersion($server)
         );
     }
