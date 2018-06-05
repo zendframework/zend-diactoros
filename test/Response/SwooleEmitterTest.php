@@ -16,6 +16,9 @@ class SwooleEmitterTest extends TestCase
 {
     public function setUp()
     {
+        if (! extension_loaded('swoole')) {
+            $this->markTestSkipped('The Swoole extesion is not available');
+        }
         $this->swooleResponse = $this->prophesize(swoole_http_response::class);
         $this->emitter = new SwooleEmitter($this->swooleResponse->reveal());
     }
