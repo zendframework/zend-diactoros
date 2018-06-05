@@ -1,7 +1,7 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-diactoros for the canonical source repository
- * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2018 Zend Technologies USA Inc. (https://www.zend.com)
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
@@ -17,7 +17,7 @@ class SwooleEmitterTest extends TestCase
     public function setUp()
     {
         if (! extension_loaded('swoole')) {
-            $this->markTestSkipped('The Swoole extesion is not available');
+            $this->markTestSkipped('The Swoole extension is not available');
         }
         $this->swooleResponse = $this->prophesize(swoole_http_response::class);
         $this->emitter = new SwooleEmitter($this->swooleResponse->reveal());
@@ -32,10 +32,15 @@ class SwooleEmitterTest extends TestCase
 
         $this->emitter->emit($response);
 
-        $this->swooleResponse->status(200)->shouldHaveBeenCalled();
-        $this->swooleResponse->header('Content-Type', 'text/plain')
-                             ->shouldHaveBeenCalled();
-        $this->swooleResponse->end('Content!')->shouldHaveBeenCalled();
+        $this->swooleResponse
+            ->status(200)
+            ->shouldHaveBeenCalled();
+        $this->swooleResponse
+            ->header('Content-Type', 'text/plain')
+            ->shouldHaveBeenCalled();
+        $this->swooleResponse
+            ->end('Content!')
+            ->shouldHaveBeenCalled();
     }
 
     public function testMultipleHeaders()
@@ -47,11 +52,15 @@ class SwooleEmitterTest extends TestCase
 
         $this->emitter->emit($response);
 
-        $this->swooleResponse->status(200)->shouldHaveBeenCalled();
-        $this->swooleResponse->header('Content-Type', 'text/plain')
-                             ->shouldHaveBeenCalled();
-        $this->swooleResponse->header('Content-Length', '256')
-                             ->shouldHaveBeenCalled();
+        $this->swooleResponse
+            ->status(200)
+            ->shouldHaveBeenCalled();
+        $this->swooleResponse
+            ->header('Content-Type', 'text/plain')
+            ->shouldHaveBeenCalled();
+        $this->swooleResponse
+            ->header('Content-Length', '256')
+            ->shouldHaveBeenCalled();
     }
 
     public function testMultipleSetCookieHeaders()
@@ -63,9 +72,12 @@ class SwooleEmitterTest extends TestCase
 
         $this->emitter->emit($response);
 
-        $this->swooleResponse->status(200)->shouldHaveBeenCalled();
-        $this->swooleResponse->header('Set-Cookie', 'foo=bar, bar=baz')
-                             ->shouldHaveBeenCalled();
+        $this->swooleResponse
+            ->status(200)
+            ->shouldHaveBeenCalled();
+        $this->swooleResponse
+            ->header('Set-Cookie', 'foo=bar, bar=baz')
+            ->shouldHaveBeenCalled();
     }
 
     public function testEmitWithBigContentBody()
@@ -78,13 +90,20 @@ class SwooleEmitterTest extends TestCase
 
         $this->emitter->emit($response);
 
-        $this->swooleResponse->status(200)->shouldHaveBeenCalled();
-        $this->swooleResponse->header('Content-Type', 'text/plain')
-                             ->shouldHaveBeenCalled();
-        $this->swooleResponse->write(substr($content, 0, SwooleEmitter::CHUNK_SIZE))
-                             ->shouldHaveBeenCalled();
-        $this->swooleResponse->write(substr($content, SwooleEmitter::CHUNK_SIZE))
-                             ->shouldHaveBeenCalled();
-        $this->swooleResponse->end()->shouldHaveBeenCalled();
+        $this->swooleResponse
+            ->status(200)
+            ->shouldHaveBeenCalled();
+        $this->swooleResponse
+            ->header('Content-Type', 'text/plain')
+            ->shouldHaveBeenCalled();
+        $this->swooleResponse
+            ->write(substr($content, 0, SwooleEmitter::CHUNK_SIZE))
+            ->shouldHaveBeenCalled();
+        $this->swooleResponse
+            ->write(substr($content, SwooleEmitter::CHUNK_SIZE))
+            ->shouldHaveBeenCalled();
+        $this->swooleResponse
+            ->end()
+            ->shouldHaveBeenCalled();
     }
 }

@@ -1,7 +1,7 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-diactoros for the canonical source repository
- * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2018 Zend Technologies USA Inc. (https://www.zend.com)
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
@@ -129,12 +129,16 @@ abstract class ServerRequestFactory
             $headers[str_replace('-', '_', $name)] = $value;
         }
 
+        $body = new Stream('php://temp', 'wb+');
+        $body->write($request->rawContent());
+        $body->rewind();
+
         return new ServerRequest(
             $server,
             static::normalizeFiles($files),
             static::marshalUriFromServer($server, $headers),
             $server['REQUEST_METHOD'],
-            $request->rawContent(),
+            $body,
             $headers,
             $cookie,
             $get,

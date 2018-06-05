@@ -1,7 +1,7 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-diactoros for the canonical source repository
- * @copyright Copyright (c) 2015-2018 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2018 Zend Technologies USA Inc. (https://www.zend.com)
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
@@ -18,7 +18,9 @@ class SwooleEmitter implements EmitterInterface
 {
     use SapiEmitterTrait;
 
-    // @see https://www.swoole.co.uk/docs/modules/swoole-http-server/methods-properties#swoole-http-response-write
+    /**
+     * @see https://www.swoole.co.uk/docs/modules/swoole-http-server/methods-properties#swoole-http-response-write
+     */
     const CHUNK_SIZE = 2097152; // 2 MB
 
     private $swooleResponse;
@@ -31,7 +33,7 @@ class SwooleEmitter implements EmitterInterface
     /**
      * Emits a response for the Swoole environment.
      *
-     * @param ResponseInterface $response
+     * @return void
      */
     public function emit(ResponseInterface $response)
     {
@@ -41,28 +43,19 @@ class SwooleEmitter implements EmitterInterface
     }
 
     /**
-     * Emit the message body.
+     * Emit the status code
      *
-     * @param ResponseInterface $response
+     * @return void
      */
-    private function emitBody(ResponseInterface $response)
+    private function emitStatusCode(ResponseInterface $response)
     {
-        $body = $response->getBody();
-        $body->rewind();
-        if ($body->getSize() > static::CHUNK_SIZE) {
-            while (! $body->eof()) {
-                $this->swooleResponse->write($body->read(static::CHUNK_SIZE));
-            }
-            $this->swooleResponse->end();
-        } else {
-            $this->swooleResponse->end($body->getContents());
-        }
+        $this->swooleResponse->status($response->getStatusCode());
     }
 
     /**
      * Emit the headers
      *
-     * @param ResponseInterface $response
+     * @return void
      */
     private function emitHeaders(ResponseInterface $response)
     {
@@ -73,12 +66,23 @@ class SwooleEmitter implements EmitterInterface
     }
 
     /**
-     * Emit the status code
+     * Emit the message body.
      *
-     * @param ResponseInterface $response
+     * @return void
      */
-    private function emitStatusCode(ResponseInterface $response)
+    private function emitBody(ResponseInterface $response)
     {
-        $this->swooleResponse->status($response->getStatusCode());
+        $body = $response->getBody();
+        $body->rewind();
+
+        if ($body->getSize() <= static::CHUNK_SIZE) {
+            $this->swooleResponse->end($body->getContents());
+            return;
+        }
+
+        while (! $body->eof()) {
+            $this->swooleResponse->write($body->read(static::CHUNK_SIZE));
+        }
+        $this->swooleResponse->end();
     }
 }

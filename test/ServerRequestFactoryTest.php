@@ -1,7 +1,7 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-diactoros for the canonical source repository
- * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2018 Zend Technologies USA Inc. (https://www.zend.com)
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
@@ -585,7 +585,7 @@ class ServerRequestFactoryTest extends TestCase
     public function testFromSwoole()
     {
         if (! extension_loaded('swoole')) {
-            $this->markTestSkipped('The Swoole extesion is not available');
+            $this->markTestSkipped('The Swoole extension is not available');
         }
 
         $swooleRequest = $this->createMock(swoole_http_request::class);
@@ -597,7 +597,7 @@ class ServerRequestFactoryTest extends TestCase
         $swooleRequest->server['server_protocol'] = 'HTTP/1.1';
         $swooleRequest->server['server_port'] = 9501;
         $swooleRequest->server['remote_port'] = 45314;
-        $swooleRequest->method('rawContent')->willReturn('php://input');
+        $swooleRequest->method('rawContent')->willReturn('some content');
 
         $request = ServerRequestFactory::fromSwoole($swooleRequest);
         $this->assertInstanceOf(ServerRequest::class, $request);
@@ -605,7 +605,7 @@ class ServerRequestFactoryTest extends TestCase
         $this->assertEquals('/', $request->getRequestTarget());
         $this->assertEquals('/', $request->getUri()->getPath());
         $this->assertEquals('1.1', $request->getProtocolVersion());
-        $this->assertEquals('', $request->getBody());
+        $this->assertEquals('some content', $request->getBody());
         $this->assertEquals([], $request->getCookieParams());
         $this->assertEquals([], $request->getQueryParams());
         $this->assertEquals([], $request->getUploadedFiles());
