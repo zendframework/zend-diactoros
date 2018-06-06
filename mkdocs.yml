@@ -10,6 +10,7 @@ pages:
         - "Emitting Responses": emitting-responses.md
         - Serialization: serialization.md
         - API: api.md
+        - Swoole: swoole.md
 site_name: zend-diactoros
 site_description: 'zend-diactoros: PSR-7 HTTP message implementation'
 repo_url: 'https://github.com/zendframework/zend-diactoros'
