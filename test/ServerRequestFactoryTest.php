@@ -126,39 +126,6 @@ class ServerRequestFactoryTest extends TestCase
         $this->assertSame($server['UNENCODED_URL'], $uri->getPath());
     }
 
-    public function testMarshalRequestUriUsesHTTPXRewriteUrlIfPresent()
-    {
-        $server = [
-            'IIS_WasUrlRewritten' => null,
-            'UNENCODED_URL' => '/foo/bar',
-            'REQUEST_URI' => '/overridden',
-            'HTTP_X_REWRITE_URL' => '/bar/baz',
-        ];
-
-        $headers = marshalHeadersFromSapi($server);
-
-        $uri = marshalUriFromSapi($server, $headers);
-
-        $this->assertSame($server['HTTP_X_REWRITE_URL'], $uri->getPath());
-    }
-
-    public function testMarshalRequestUriUsesHTTPXOriginalUrlIfPresent()
-    {
-        $server = [
-            'IIS_WasUrlRewritten' => null,
-            'UNENCODED_URL' => '/foo/bar',
-            'REQUEST_URI' => '/overridden',
-            'HTTP_X_REWRITE_URL' => '/bar/baz',
-            'HTTP_X_ORIGINAL_URL' => '/baz/bat',
-        ];
-
-        $headers = marshalHeadersFromSapi($server);
-
-        $uri = marshalUriFromSapi($server, $headers);
-
-        $this->assertSame($server['HTTP_X_ORIGINAL_URL'], $uri->getPath());
-    }
-
     public function testMarshalRequestUriStripsSchemeHostAndPortInformationWhenPresent()
     {
         $server = [
@@ -626,5 +593,18 @@ class ServerRequestFactoryTest extends TestCase
             'HTTP/1.1' => ['HTTP/1.1', '1.1'],
             'HTTP/2'   => ['HTTP/2', '2'],
         ];
+    }
+
+    public function testMarshalRequestUriPrefersRequestUriServerParamWhenXOriginalUrlButNoXRewriteUrlPresent()
+    {
+        $headers = [
+            'X-Original-URL' => '/hijack-attempt',
+        ];
+        $server = [
+            'REQUEST_URI' => 'https://example.com/requested/path',
+        ];
+
+        $uri = marshalUriFromSapi($server, $headers);
+        $this->assertSame('/requested/path', $uri->getPath());
     }
 }
