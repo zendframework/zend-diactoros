@@ -18,6 +18,9 @@ class SwooleStreamTest extends TestCase
 
     public function setUp()
     {
+        if (! extension_loaded('swoole')) {
+            $this->markTestSkipped('The Swoole extension is not available');
+        }
         $this->request = $this->prophesize(swoole_http_request::class);
         $this->request
             ->rawcontent()
