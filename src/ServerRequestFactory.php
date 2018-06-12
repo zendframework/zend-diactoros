@@ -137,7 +137,7 @@ abstract class ServerRequestFactory
             $server,
             static::normalizeFiles($files),
             static::marshalUriFromServer($server, $headers),
-            $server['REQUEST_METHOD'] ?? 'GET',
+            isset($server['REQUEST_METHOD']) ? $server['REQUEST_METHOD'] : 'GET',
             new SwooleStream($request),
             $headers,
             $cookie,
