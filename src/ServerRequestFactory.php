@@ -1,7 +1,7 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-diactoros for the canonical source repository
- * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2018 Zend Technologies USA Inc. (https://www.zend.com)
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
@@ -9,7 +9,9 @@ namespace Zend\Diactoros;
 
 use InvalidArgumentException;
 use Psr\Http\Message\UploadedFileInterface;
+use RuntimeException;
 use stdClass;
+use swoole_http_request;
 use UnexpectedValueException;
 
 use function array_change_key_case;
@@ -95,6 +97,52 @@ abstract class ServerRequestFactory
             $cookies ?: $_COOKIE,
             $query ?: $_GET,
             $body ?: $_POST,
+            static::marshalProtocolVersion($server)
+        );
+    }
+
+    /**
+     * Create a request from a Swoole request
+     *
+     * @param swoole_http_request $request
+     * @return ServerRequest
+     * @throws RuntimeException if Swoole is not installed
+     */
+
+    public static function fromSwoole(swoole_http_request $request)
+    {
+        if (! extension_loaded('swoole')) {
+            throw new Exception\RuntimeException('Swoole extension is not installed!');
+        }
+        $get    = isset($request->get) ? $request->get : [];
+        $post   = isset($request->post) ? $request->post : [];
+        $cookie = isset($request->cookie) ? $request->cookie : [];
+        $files  = isset($request->files) ? $request->files : [];
+
+        $server = [];
+        if (isset($request->server)) {
+            foreach ($request->server as $key => $value) {
+                $server[strtoupper($key)] = $value;
+            }
+        }
+
+        $headers = [];
+        if (isset($request->header)) {
+            foreach ($request->header as $name => $value) {
+                $headers[str_replace('-', '_', $name)] = $value;
+            }
+        }
+
+        return new ServerRequest(
+            $server,
+            static::normalizeFiles($files),
+            static::marshalUriFromServer($server, $headers),
+            isset($server['REQUEST_METHOD']) ? $server['REQUEST_METHOD'] : 'GET',
+            new SwooleStream($request),
+            $headers,
+            $cookie,
+            $get,
+            $post,
             static::marshalProtocolVersion($server)
         );
     }

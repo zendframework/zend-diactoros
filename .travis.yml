@@ -26,36 +26,45 @@ matrix:
     - php: 7
       env:
         - DEPS=lowest
+        - INSTALL_SWOOLE=true
     - php: 7
       env:
         - DEPS=locked
         - CHECK_CS=true
         - TEST_COVERAGE=true
+        - INSTALL_SWOOLE=true
     - php: 7
       env:
         - DEPS=latest
+        - INSTALL_SWOOLE=true
     - php: 7.1
       env:
         - DEPS=lowest
+        - INSTALL_SWOOLE=true
     - php: 7.1
       env:
         - DEPS=locked
+        - INSTALL_SWOOLE=true
     - php: 7.1
       env:
         - DEPS=latest
+        - INSTALL_SWOOLE=true
     - php: 7.2
       env:
         - DEPS=lowest
+        - INSTALL_SWOOLE=true
     - php: 7.2
       env:
         - DEPS=locked
+        - INSTALL_SWOOLE=true
     - php: 7.2
       env:
         - DEPS=latest
+        - INSTALL_SWOOLE=true
 
 before_install:
   - if [[ $TEST_COVERAGE != 'true' && "$(php --version | grep xdebug -ci)" -ge 1 ]]; then phpenv config-rm xdebug.ini || return 0 ; fi
-  - travis_retry composer self-update
+  - if [[ $INSTALL_SWOOLE == 'true' ]]; then ./.travis/install_swoole.sh ; fi
 
 install:
   - travis_retry composer install $COMPOSER_ARGS --ignore-platform-reqs
