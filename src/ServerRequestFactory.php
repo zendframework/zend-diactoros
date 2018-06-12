@@ -120,25 +120,25 @@ abstract class ServerRequestFactory
         $files  = isset($request->files) ? $request->files : [];
 
         $server = [];
-        foreach ($request->server as $key => $value) {
-            $server[strtoupper($key)] = $value;
+        if (isset($request->server)) {
+            foreach ($request->server as $key => $value) {
+                $server[strtoupper($key)] = $value;
+            }
         }
 
         $headers = [];
-        foreach ($request->header as $name => $value) {
-            $headers[str_replace('-', '_', $name)] = $value;
+        if (isset($request->header)) {
+            foreach ($request->header as $name => $value) {
+                $headers[str_replace('-', '_', $name)] = $value;
+            }
         }
-
-        $body = new Stream('php://temp', 'wb+');
-        $body->write($request->rawContent());
-        $body->rewind();
 
         return new ServerRequest(
             $server,
             static::normalizeFiles($files),
             static::marshalUriFromServer($server, $headers),
-            $server['REQUEST_METHOD'],
-            $body,
+            $server['REQUEST_METHOD'] ?? 'GET',
+            new SwooleStream($request),
             $headers,
             $cookie,
             $get,
