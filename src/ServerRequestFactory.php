@@ -77,7 +77,10 @@ abstract class ServerRequestFactory
         array $cookies = null,
         array $files = null
     ) {
-        $server  = static::normalizeServer($server ?: $_SERVER);
+        $server = normalizeServer(
+            $server ?: $_SERVER,
+            is_callable(self::$apacheRequestHeaders) ? self::$apacheRequestHeaders : null
+        );
         $files   = normalizeUploadedFiles($files ?: $_FILES);
         $headers = static::marshalHeaders($server);
 
@@ -143,31 +146,16 @@ abstract class ServerRequestFactory
      *
      * Pre-processes and returns the $_SERVER superglobal.
      *
+     * @deprected since 1.8.0; use Zend\Diactoros\normalizeServer() instead.
      * @param array $server
      * @return array
      */
     public static function normalizeServer(array $server)
     {
-        // This seems to be the only way to get the Authorization header on Apache
-        $apacheRequestHeaders = self::$apacheRequestHeaders;
-        if (isset($server['HTTP_AUTHORIZATION'])
-            || ! is_callable($apacheRequestHeaders)
-        ) {
-            return $server;
-        }
-
-        $apacheRequestHeaders = $apacheRequestHeaders();
-        if (isset($apacheRequestHeaders['Authorization'])) {
-            $server['HTTP_AUTHORIZATION'] = $apacheRequestHeaders['Authorization'];
-            return $server;
-        }
-
-        if (isset($apacheRequestHeaders['authorization'])) {
-            $server['HTTP_AUTHORIZATION'] = $apacheRequestHeaders['authorization'];
-            return $server;
-        }
-
-        return $server;
+        return normalizeServer(
+            $server ?: $_SERVER,
+            is_callable(self::$apacheRequestHeaders) ? self::$apacheRequestHeaders : null
+        );
     }
 
     /**
