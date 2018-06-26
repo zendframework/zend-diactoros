@@ -218,7 +218,7 @@ abstract class ServerRequestFactory
         }
 
         // URI path
-        $path = self::marshalRequestUri($server);
+        $path = marshalRequestPath($server);
         $path = self::stripQueryString($path);
 
         // URI query
@@ -260,47 +260,14 @@ abstract class ServerRequestFactory
      * Looks at a variety of criteria in order to attempt to autodetect a base
      * URI, including rewrite URIs, proxy URIs, etc.
      *
-     * From ZF2's Zend\Http\PhpEnvironment\Request class
-     * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
-     * @license   http://framework.zend.com/license/new-bsd New BSD License
      *
+     * @deprecated since 1.8.0; use Zend\Diactoros\marshalRequestPath() instead.
      * @param array $server
      * @return string
      */
     public static function marshalRequestUri(array $server)
     {
-        // IIS7 with URL Rewrite: make sure we get the unencoded url
-        // (double slash problem).
-        $iisUrlRewritten = self::get('IIS_WasUrlRewritten', $server);
-        $unencodedUrl    = self::get('UNENCODED_URL', $server, '');
-        if ('1' == $iisUrlRewritten && ! empty($unencodedUrl)) {
-            return $unencodedUrl;
-        }
-
-        $requestUri = self::get('REQUEST_URI', $server);
-
-        // Check this first so IIS will catch.
-        $httpXRewriteUrl = self::get('HTTP_X_REWRITE_URL', $server);
-        if ($httpXRewriteUrl !== null) {
-            $requestUri = $httpXRewriteUrl;
-        }
-
-        // Check for IIS 7.0 or later with ISAPI_Rewrite
-        $httpXOriginalUrl = self::get('HTTP_X_ORIGINAL_URL', $server);
-        if ($httpXOriginalUrl !== null) {
-            $requestUri = $httpXOriginalUrl;
-        }
-
-        if ($requestUri !== null) {
-            return preg_replace('#^[^/:]+://[^/]+#', '', $requestUri);
-        }
-
-        $origPathInfo = self::get('ORIG_PATH_INFO', $server);
-        if (empty($origPathInfo)) {
-            return '/';
-        }
-
-        return $origPathInfo;
+        return marshalRequestPath($server);
     }
 
     /**

@@ -19,6 +19,7 @@ use Zend\Diactoros\Uri;
 use function Zend\Diactoros\marshalHeadersFromSapi;
 use function Zend\Diactoros\marshalHostAndPort;
 use function Zend\Diactoros\marshalProtocolVersion;
+use function Zend\Diactoros\marshalRequestPath;
 use function Zend\Diactoros\normalizeServer;
 use function Zend\Diactoros\normalizeUploadedFiles;
 
@@ -121,7 +122,7 @@ class ServerRequestFactoryTest extends TestCase
             'UNENCODED_URL' => '/foo/bar',
         ];
 
-        $this->assertSame($server['UNENCODED_URL'], ServerRequestFactory::marshalRequestUri($server));
+        $this->assertSame($server['UNENCODED_URL'], marshalRequestPath($server));
     }
 
     public function testMarshalRequestUriUsesHTTPXRewriteUrlIfPresent()
@@ -133,7 +134,7 @@ class ServerRequestFactoryTest extends TestCase
             'HTTP_X_REWRITE_URL' => '/bar/baz',
         ];
 
-        $this->assertSame($server['HTTP_X_REWRITE_URL'], ServerRequestFactory::marshalRequestUri($server));
+        $this->assertSame($server['HTTP_X_REWRITE_URL'], marshalRequestPath($server));
     }
 
     public function testMarshalRequestUriUsesHTTPXOriginalUrlIfPresent()
@@ -146,7 +147,7 @@ class ServerRequestFactoryTest extends TestCase
             'HTTP_X_ORIGINAL_URL' => '/baz/bat',
         ];
 
-        $this->assertSame($server['HTTP_X_ORIGINAL_URL'], ServerRequestFactory::marshalRequestUri($server));
+        $this->assertSame($server['HTTP_X_ORIGINAL_URL'], marshalRequestPath($server));
     }
 
     public function testMarshalRequestUriStripsSchemeHostAndPortInformationWhenPresent()
@@ -155,7 +156,7 @@ class ServerRequestFactoryTest extends TestCase
             'REQUEST_URI' => 'http://example.com:8000/foo/bar',
         ];
 
-        $this->assertSame('/foo/bar', ServerRequestFactory::marshalRequestUri($server));
+        $this->assertSame('/foo/bar', marshalRequestPath($server));
     }
 
     public function testMarshalRequestUriUsesOrigPathInfoIfPresent()
@@ -164,14 +165,14 @@ class ServerRequestFactoryTest extends TestCase
             'ORIG_PATH_INFO' => '/foo/bar',
         ];
 
-        $this->assertSame('/foo/bar', ServerRequestFactory::marshalRequestUri($server));
+        $this->assertSame('/foo/bar', marshalRequestPath($server));
     }
 
     public function testMarshalRequestUriFallsBackToRoot()
     {
         $server = [];
 
-        $this->assertSame('/', ServerRequestFactory::marshalRequestUri($server));
+        $this->assertSame('/', marshalRequestPath($server));
     }
 
     public function testMarshalHostAndPortUsesHostHeaderWhenPresent()
