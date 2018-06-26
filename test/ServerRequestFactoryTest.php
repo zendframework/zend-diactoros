@@ -18,6 +18,7 @@ use Zend\Diactoros\Uri;
 
 use function Zend\Diactoros\marshalHostAndPort;
 use function Zend\Diactoros\marshalProtocolVersion;
+use function Zend\Diactoros\normalizeServer;
 use function Zend\Diactoros\normalizeUploadedFiles;
 
 class ServerRequestFactoryTest extends TestCase
@@ -55,7 +56,7 @@ class ServerRequestFactoryTest extends TestCase
             'HTTP_AUTHORIZATION' => 'token',
             'HTTP_X_Foo' => 'bar',
         ];
-        $this->assertSame($server, ServerRequestFactory::normalizeServer($server));
+        $this->assertSame($server, normalizeServer($server));
     }
 
     public function testMarshalsExpectedHeadersFromServerArray()
@@ -493,13 +494,9 @@ class ServerRequestFactoryTest extends TestCase
 
     public function testNormalizeServerUsesMixedCaseAuthorizationHeaderFromApacheWhenPresent()
     {
-        $r = new ReflectionProperty(ServerRequestFactory::class, 'apacheRequestHeaders');
-        $r->setAccessible(true);
-        $r->setValue(function () {
+        $server = normalizeServer([], function () {
             return ['Authorization' => 'foobar'];
         });
-
-        $server = ServerRequestFactory::normalizeServer([]);
 
         $this->assertArrayHasKey('HTTP_AUTHORIZATION', $server);
         $this->assertSame('foobar', $server['HTTP_AUTHORIZATION']);
@@ -507,13 +504,9 @@ class ServerRequestFactoryTest extends TestCase
 
     public function testNormalizeServerUsesLowerCaseAuthorizationHeaderFromApacheWhenPresent()
     {
-        $r = new ReflectionProperty(ServerRequestFactory::class, 'apacheRequestHeaders');
-        $r->setAccessible(true);
-        $r->setValue(function () {
+        $server = normalizeServer([], function () {
             return ['authorization' => 'foobar'];
         });
-
-        $server = ServerRequestFactory::normalizeServer([]);
 
         $this->assertArrayHasKey('HTTP_AUTHORIZATION', $server);
         $this->assertSame('foobar', $server['HTTP_AUTHORIZATION']);
@@ -521,14 +514,11 @@ class ServerRequestFactoryTest extends TestCase
 
     public function testNormalizeServerReturnsArrayUnalteredIfApacheHeadersDoNotContainAuthorization()
     {
-        $r = new ReflectionProperty(ServerRequestFactory::class, 'apacheRequestHeaders');
-        $r->setAccessible(true);
-        $r->setValue(function () {
+        $expected = ['FOO_BAR' => 'BAZ'];
+
+        $server = normalizeServer($expected, function () {
             return [];
         });
-
-        $expected = ['FOO_BAR' => 'BAZ'];
-        $server = ServerRequestFactory::normalizeServer($expected);
 
         $this->assertSame($expected, $server);
     }
