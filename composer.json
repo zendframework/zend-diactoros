@@ -37,6 +37,11 @@
     "psr/http-message-implementation": "1.0"
   },
   "autoload": {
+    "files": [
+        "src/functions/create_uploaded_file.php",
+        "src/functions/normalize_uploaded_files.php",
+        "src/functions/normalize_uploaded_file_specification.php"
+    ],
     "psr-4": {
       "Zend\\Diactoros\\": "src/"
     }

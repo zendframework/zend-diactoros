@@ -16,6 +16,8 @@ use Zend\Diactoros\ServerRequestFactory;
 use Zend\Diactoros\UploadedFile;
 use Zend\Diactoros\Uri;
 
+use function Zend\Diactoros\normalizeUploadedFiles;
+
 class ServerRequestFactoryTest extends TestCase
 {
     public function testGetWillReturnValueIfPresentInArray()
@@ -538,7 +540,7 @@ class ServerRequestFactoryTest extends TestCase
             'type'     => ['file' => 'text/plain'],
         ]];
 
-        $normalizedFiles = ServerRequestFactory::normalizeFiles($files);
+        $normalizedFiles = normalizeUploadedFiles($files);
 
         $this->assertCount(1, $normalizedFiles['fooFiles']);
     }
