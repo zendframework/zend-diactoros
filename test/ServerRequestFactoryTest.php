@@ -16,6 +16,7 @@ use Zend\Diactoros\ServerRequestFactory;
 use Zend\Diactoros\UploadedFile;
 use Zend\Diactoros\Uri;
 
+use function Zend\Diactoros\marshalHeadersFromSapi;
 use function Zend\Diactoros\marshalHostAndPort;
 use function Zend\Diactoros\marshalProtocolVersion;
 use function Zend\Diactoros\normalizeServer;
@@ -81,7 +82,7 @@ class ServerRequestFactoryTest extends TestCase
             'content-length' => 'UNSPECIFIED',
         ];
 
-        $this->assertSame($expected, ServerRequestFactory::marshalHeaders($server));
+        $this->assertSame($expected, marshalHeadersFromSapi($server));
     }
 
     public function testMarshalsVariablesPrefixedByApacheFromServerArray()
@@ -98,7 +99,7 @@ class ServerRequestFactoryTest extends TestCase
             'x-foo-bar' => 'nonprefixed',
         ];
 
-        $this->assertEquals($expected, ServerRequestFactory::marshalHeaders($server));
+        $this->assertEquals($expected, marshalHeadersFromSapi($server));
     }
 
     public function testStripQueryStringReturnsUnchangedStringIfNoQueryStringDetected()
