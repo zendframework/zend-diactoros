@@ -16,6 +16,7 @@ use Zend\Diactoros\ServerRequestFactory;
 use Zend\Diactoros\UploadedFile;
 use Zend\Diactoros\Uri;
 
+use function Zend\Diactoros\marshalProtocolVersion;
 use function Zend\Diactoros\normalizeUploadedFiles;
 
 class ServerRequestFactoryTest extends TestCase
@@ -547,19 +548,13 @@ class ServerRequestFactoryTest extends TestCase
 
     public function testMarshalProtocolVersionRisesExceptionIfVersionIsNotRecognized()
     {
-        $method = new ReflectionMethod(ServerRequestFactory::class, 'marshalProtocolVersion');
-        $method->setAccessible(true);
-
         $this->expectException(UnexpectedValueException::class);
-
-        $method->invoke(null, ['SERVER_PROTOCOL' => 'dadsa/1.0']);
+        marshalProtocolVersion(['SERVER_PROTOCOL' => 'dadsa/1.0']);
     }
 
     public function testMarshalProtocolReturnsDefaultValueIfHeaderIsNotPresent()
     {
-        $method = new ReflectionMethod(ServerRequestFactory::class, 'marshalProtocolVersion');
-        $method->setAccessible(true);
-        $version = $method->invoke(null, []);
+        $version = marshalProtocolVersion([]);
         $this->assertSame('1.1', $version);
     }
 
@@ -568,9 +563,7 @@ class ServerRequestFactoryTest extends TestCase
      */
     public function testMarshalProtocolVersionReturnsHttpVersions($protocol, $expected)
     {
-        $method = new ReflectionMethod(ServerRequestFactory::class, 'marshalProtocolVersion');
-        $method->setAccessible(true);
-        $version = $method->invoke(null, ['SERVER_PROTOCOL' => $protocol]);
+        $version = marshalProtocolVersion(['SERVER_PROTOCOL' => $protocol]);
         $this->assertSame($expected, $version);
     }
 
