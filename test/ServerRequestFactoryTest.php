@@ -16,6 +16,7 @@ use Zend\Diactoros\ServerRequestFactory;
 use Zend\Diactoros\UploadedFile;
 use Zend\Diactoros\Uri;
 
+use function Zend\Diactoros\marshalHostAndPort;
 use function Zend\Diactoros\marshalProtocolVersion;
 use function Zend\Diactoros\normalizeUploadedFiles;
 
@@ -178,10 +179,10 @@ class ServerRequestFactoryTest extends TestCase
         $request = $request->withMethod('GET');
         $request = $request->withHeader('Host', 'example.com');
 
-        $accumulator = (object) ['host' => '', 'port' => null];
-        ServerRequestFactory::marshalHostAndPortFromHeaders($accumulator, [], $request->getHeaders());
-        $this->assertSame('example.com', $accumulator->host);
-        $this->assertNull($accumulator->port);
+        list($host, $port) = marshalHostAndPort($request->getHeaders(), []);
+
+        $this->assertSame('example.com', $host);
+        $this->assertNull($port);
     }
 
     public function testMarshalHostAndPortWillDetectPortInHostHeaderWhenPresent()
@@ -191,10 +192,10 @@ class ServerRequestFactoryTest extends TestCase
         $request = $request->withMethod('GET');
         $request = $request->withHeader('Host', 'example.com:8000');
 
-        $accumulator = (object) ['host' => '', 'port' => null];
-        ServerRequestFactory::marshalHostAndPortFromHeaders($accumulator, [], $request->getHeaders());
-        $this->assertSame('example.com', $accumulator->host);
-        $this->assertSame(8000, $accumulator->port);
+        list($host, $port) = marshalHostAndPort($request->getHeaders(), []);
+
+        $this->assertSame('example.com', $host);
+        $this->assertSame(8000, $port);
     }
 
     public function testMarshalHostAndPortReturnsEmptyValuesIfNoHostHeaderAndNoServerName()
@@ -202,10 +203,10 @@ class ServerRequestFactoryTest extends TestCase
         $request = new ServerRequest();
         $request = $request->withUri(new Uri());
 
-        $accumulator = (object) ['host' => '', 'port' => null];
-        ServerRequestFactory::marshalHostAndPortFromHeaders($accumulator, [], $request->getHeaders());
-        $this->assertSame('', $accumulator->host);
-        $this->assertNull($accumulator->port);
+        list($host, $port) = marshalHostAndPort($request->getHeaders(), []);
+
+        $this->assertSame('', $host);
+        $this->assertNull($port);
     }
 
     public function testMarshalHostAndPortReturnsServerNameForHostWhenPresent()
@@ -216,10 +217,11 @@ class ServerRequestFactoryTest extends TestCase
         $server  = [
             'SERVER_NAME' => 'example.com',
         ];
-        $accumulator = (object) ['host' => '', 'port' => null];
-        ServerRequestFactory::marshalHostAndPortFromHeaders($accumulator, $server, $request->getHeaders());
-        $this->assertSame('example.com', $accumulator->host);
-        $this->assertNull($accumulator->port);
+
+        list($host, $port) = marshalHostAndPort($request->getHeaders(), $server);
+
+        $this->assertSame('example.com', $host);
+        $this->assertNull($port);
     }
 
     public function testMarshalHostAndPortReturnsServerPortForPortWhenPresentWithServerName()
@@ -231,10 +233,11 @@ class ServerRequestFactoryTest extends TestCase
             'SERVER_NAME' => 'example.com',
             'SERVER_PORT' => 8000,
         ];
-        $accumulator = (object) ['host' => '', 'port' => null];
-        ServerRequestFactory::marshalHostAndPortFromHeaders($accumulator, $server, $request->getHeaders());
-        $this->assertSame('example.com', $accumulator->host);
-        $this->assertSame(8000, $accumulator->port);
+
+        list($host, $port) = marshalHostAndPort($request->getHeaders(), $server);
+
+        $this->assertSame('example.com', $host);
+        $this->assertSame(8000, $port);
     }
 
     public function testMarshalHostAndPortReturnsServerNameForHostIfServerAddrPresentButHostIsNotIpv6Address()
@@ -246,9 +249,10 @@ class ServerRequestFactoryTest extends TestCase
             'SERVER_ADDR' => '127.0.0.1',
             'SERVER_NAME' => 'example.com',
         ];
-        $accumulator = (object) ['host' => '', 'port' => null];
-        ServerRequestFactory::marshalHostAndPortFromHeaders($accumulator, $server, $request->getHeaders());
-        $this->assertSame('example.com', $accumulator->host);
+
+        list($host, $port) = marshalHostAndPort($request->getHeaders(), $server);
+
+        $this->assertSame('example.com', $host);
     }
 
     public function testMarshalHostAndPortReturnsServerAddrForHostIfPresentAndHostIsIpv6Address()
@@ -261,10 +265,11 @@ class ServerRequestFactoryTest extends TestCase
             'SERVER_NAME' => '[FE80::0202:B3FF:FE1E:8329]',
             'SERVER_PORT' => 8000,
         ];
-        $accumulator = (object) ['host' => '', 'port' => null];
-        ServerRequestFactory::marshalHostAndPortFromHeaders($accumulator, $server, $request->getHeaders());
-        $this->assertSame('[FE80::0202:B3FF:FE1E:8329]', $accumulator->host);
-        $this->assertSame(8000, $accumulator->port);
+
+        list($host, $port) = marshalHostAndPort($request->getHeaders(), $server);
+
+        $this->assertSame('[FE80::0202:B3FF:FE1E:8329]', $host);
+        $this->assertSame(8000, $port);
     }
 
     public function testMarshalHostAndPortWillDetectPortInIpv6StyleHost()
@@ -276,10 +281,11 @@ class ServerRequestFactoryTest extends TestCase
             'SERVER_ADDR' => 'FE80::0202:B3FF:FE1E:8329',
             'SERVER_NAME' => '[FE80::0202:B3FF:FE1E:8329:80]',
         ];
-        $accumulator = (object) ['host' => '', 'port' => null];
-        ServerRequestFactory::marshalHostAndPortFromHeaders($accumulator, $server, $request->getHeaders());
-        $this->assertSame('[FE80::0202:B3FF:FE1E:8329]', $accumulator->host);
-        $this->assertSame(80, $accumulator->port);
+
+        list($host, $port) = marshalHostAndPort($request->getHeaders(), $server);
+
+        $this->assertSame('[FE80::0202:B3FF:FE1E:8329]', $host);
+        $this->assertSame(80, $port);
     }
 
     public function testMarshalUriDetectsHttpsSchemeFromServerValue()
