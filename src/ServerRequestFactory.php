@@ -91,8 +91,8 @@ abstract class ServerRequestFactory
         return new ServerRequest(
             $server,
             $files,
-            static::marshalUriFromServer($server, $headers),
-            static::get('REQUEST_METHOD', $server, 'GET'),
+            marshalUriFromSapi($server, $headers),
+            array_key_exists('REQUEST_METHOD', $server) ? $server['REQUEST_METHOD'] : 'GET',
             'php://input',
             $headers,
             $cookies ?: $_COOKIE,
@@ -105,8 +105,7 @@ abstract class ServerRequestFactory
     /**
      * Access a value in an array, returning a default value if not found
      *
-     * Will also do a case-insensitive search if a case sensitive search fails.
-     *
+     * @deprecated since 1.8.0; no longer used internally.
      * @param string $key
      * @param array $values
      * @param mixed $default
@@ -189,54 +188,14 @@ abstract class ServerRequestFactory
     /**
      * Marshal the URI from the $_SERVER array and headers
      *
+     * @deprecated since 1.8.0; use Zend\Diactoros\marshalUriFromSapi() instead.
      * @param array $server
      * @param array $headers
      * @return Uri
      */
     public static function marshalUriFromServer(array $server, array $headers)
     {
-        $uri = new Uri('');
-
-        // URI scheme
-        $scheme = 'http';
-        $https  = self::get('HTTPS', $server);
-        if (($https && 'off' !== $https)
-            || getHeaderFromArray('x-forwarded-proto', $headers, false) === 'https'
-        ) {
-            $scheme = 'https';
-        }
-        $uri = $uri->withScheme($scheme);
-
-        // Set the host
-        $accumulator = (object) ['host' => '', 'port' => null];
-        list($host, $port) = marshalHostAndPort($headers, $server);
-        if (! empty($host)) {
-            $uri = $uri->withHost($host);
-            if (! empty($port)) {
-                $uri = $uri->withPort($port);
-            }
-        }
-
-        // URI path
-        $path = marshalRequestPath($server);
-        $path = self::stripQueryString($path);
-
-        // URI query
-        $query = '';
-        if (isset($server['QUERY_STRING'])) {
-            $query = ltrim($server['QUERY_STRING'], '?');
-        }
-
-        // URI fragment
-        $fragment = '';
-        if (strpos($path, '#') !== false) {
-            list($path, $fragment) = explode('#', $path, 2);
-        }
-
-        return $uri
-            ->withPath($path)
-            ->withFragment($fragment)
-            ->withQuery($query);
+        return marshalUriFromSapi($server, $headers);
     }
 
     /**
@@ -273,6 +232,7 @@ abstract class ServerRequestFactory
     /**
      * Strip the query string from a path
      *
+     * @deprecated since 1.8.0; no longer used internally.
      * @param mixed $path
      * @return string
      */

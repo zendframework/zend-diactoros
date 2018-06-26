@@ -20,6 +20,7 @@ use function Zend\Diactoros\marshalHeadersFromSapi;
 use function Zend\Diactoros\marshalHostAndPort;
 use function Zend\Diactoros\marshalProtocolVersion;
 use function Zend\Diactoros\marshalRequestPath;
+use function Zend\Diactoros\marshalUriFromSapi;
 use function Zend\Diactoros\normalizeServer;
 use function Zend\Diactoros\normalizeUploadedFiles;
 
@@ -301,7 +302,7 @@ class ServerRequestFactoryTest extends TestCase
             'HTTPS' => true,
         ];
 
-        $uri = ServerRequestFactory::marshalUriFromServer($server, $request->getHeaders());
+        $uri = marshalUriFromSapi($server, $request->getHeaders());
 
         $this->assertInstanceOf(Uri::class, $uri);
         $this->assertSame('https', $uri->getScheme());
@@ -317,7 +318,7 @@ class ServerRequestFactoryTest extends TestCase
             'HTTPS' => 'off',
         ];
 
-        $uri = ServerRequestFactory::marshalUriFromServer($server, $request->getHeaders());
+        $uri = marshalUriFromSapi($server, $request->getHeaders());
 
         $this->assertInstanceOf(Uri::class, $uri);
         $this->assertSame('http', $uri->getScheme());
@@ -332,7 +333,7 @@ class ServerRequestFactoryTest extends TestCase
 
         $server  = [];
 
-        $uri = ServerRequestFactory::marshalUriFromServer($server, $request->getHeaders());
+        $uri = marshalUriFromSapi($server, $request->getHeaders());
 
         $this->assertInstanceOf(Uri::class, $uri);
         $this->assertSame('https', $uri->getScheme());
@@ -348,7 +349,7 @@ class ServerRequestFactoryTest extends TestCase
             'REQUEST_URI' => '/foo/bar?foo=bar',
         ];
 
-        $uri = ServerRequestFactory::marshalUriFromServer($server, $request->getHeaders());
+        $uri = marshalUriFromSapi($server, $request->getHeaders());
 
         $this->assertInstanceOf(Uri::class, $uri);
         $this->assertSame('/foo/bar', $uri->getPath());
@@ -365,7 +366,7 @@ class ServerRequestFactoryTest extends TestCase
             'QUERY_STRING' => 'bar=baz',
         ];
 
-        $uri = ServerRequestFactory::marshalUriFromServer($server, $request->getHeaders());
+        $uri = marshalUriFromSapi($server, $request->getHeaders());
 
         $this->assertInstanceOf(Uri::class, $uri);
         $this->assertSame('bar=baz', $uri->getQuery());
@@ -381,7 +382,7 @@ class ServerRequestFactoryTest extends TestCase
             'REQUEST_URI' => '/foo/bar#foo',
         ];
 
-        $uri = ServerRequestFactory::marshalUriFromServer($server, $request->getHeaders());
+        $uri = marshalUriFromSapi($server, $request->getHeaders());
 
         $this->assertInstanceOf(Uri::class, $uri);
         $this->assertSame('foo', $uri->getFragment());
