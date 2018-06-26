@@ -39,6 +39,7 @@
   "autoload": {
     "files": [
         "src/functions/create_uploaded_file.php",
+        "src/functions/marshal_protocol_version.php",
         "src/functions/normalize_uploaded_files.php",
         "src/functions/normalize_uploaded_file_specification.php"
     ],

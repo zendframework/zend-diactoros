@@ -95,7 +95,7 @@ abstract class ServerRequestFactory
             $cookies ?: $_COOKIE,
             $query ?: $_GET,
             $body ?: $_POST,
-            static::marshalProtocolVersion($server)
+            marshalProtocolVersion($server)
         );
     }
 
@@ -418,28 +418,6 @@ abstract class ServerRequestFactory
             // Unset the port so the default port can be used
             $accumulator->port = null;
         }
-    }
-
-    /**
-     * Return HTTP protocol version (X.Y)
-     *
-     * @param array $server
-     * @return string
-     */
-    private static function marshalProtocolVersion(array $server)
-    {
-        if (! isset($server['SERVER_PROTOCOL'])) {
-            return '1.1';
-        }
-
-        if (! preg_match('#^(HTTP/)?(?P<version>[1-9]\d*(?:\.\d)?)$#', $server['SERVER_PROTOCOL'], $matches)) {
-            throw new UnexpectedValueException(sprintf(
-                'Unrecognized protocol version (%s)',
-                $server['SERVER_PROTOCOL']
-            ));
-        }
-
-        return $matches['version'];
     }
 
     /**
