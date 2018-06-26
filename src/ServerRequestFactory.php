@@ -405,7 +405,7 @@ abstract class ServerRequestFactory
      * @param string|array $host
      * @return void
      */
-    private static function marshalHostAndPortFromHeader(stdClass $accumulator, $host)
+    public static function marshalHostAndPortFromHeader(stdClass $accumulator, $host)
     {
         if (is_array($host)) {
             $host = implode(', ', $host);
@@ -427,7 +427,7 @@ abstract class ServerRequestFactory
      * @param stdClass $accumulator
      * @param array $server
      */
-    private static function marshalIpv6HostAndPort(stdClass $accumulator, array $server)
+    public static function marshalIpv6HostAndPort(stdClass $accumulator, array $server)
     {
         $accumulator->host = '[' . $server['SERVER_ADDR'] . ']';
         $accumulator->port = $accumulator->port ?: 80;
@@ -447,7 +447,7 @@ abstract class ServerRequestFactory
      * @param array $value $_FILES struct
      * @return array|UploadedFileInterface
      */
-    private static function createUploadedFileFromSpec(array $value)
+    public static function createUploadedFileFromSpec(array $value)
     {
         if (is_array($value['tmp_name'])) {
             return self::normalizeNestedFileSpec($value);
@@ -471,7 +471,7 @@ abstract class ServerRequestFactory
      * @param array $files
      * @return UploadedFileInterface[]
      */
-    private static function normalizeNestedFileSpec(array $files = [])
+    public static function normalizeNestedFileSpec(array $files = [])
     {
         $normalizedFiles = [];
         foreach (array_keys($files['tmp_name']) as $key) {
@@ -493,7 +493,7 @@ abstract class ServerRequestFactory
      * @param array $server
      * @return string
      */
-    private static function marshalProtocolVersion(array $server)
+    public static function marshalProtocolVersion(array $server)
     {
         if (! isset($server['SERVER_PROTOCOL'])) {
             return '1.1';
@@ -518,7 +518,7 @@ abstract class ServerRequestFactory
      * @param $cookieHeader
      * @return array
      */
-    private static function parseCookieHeader($cookieHeader)
+    public static function parseCookieHeader($cookieHeader)
     {
         preg_match_all('(
             (?:^\\n?[ \t]*|;[ ])
