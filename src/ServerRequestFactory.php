@@ -127,6 +127,7 @@ abstract class ServerRequestFactory
      *
      * If not, the $default is returned.
      *
+     * @deprecated since 1.8.0; use Zend\Diactoros\getHeaderFromArray() instead.
      * @param string $header
      * @param array $headers
      * @param mixed $default
@@ -134,14 +135,7 @@ abstract class ServerRequestFactory
      */
     public static function getHeader($header, array $headers, $default = null)
     {
-        $header  = strtolower($header);
-        $headers = array_change_key_case($headers, CASE_LOWER);
-        if (array_key_exists($header, $headers)) {
-            $value = is_array($headers[$header]) ? implode(', ', $headers[$header]) : $headers[$header];
-            return $value;
-        }
-
-        return $default;
+        return getHeaderFromArray($header, $headers, $default);
     }
 
     /**
@@ -245,7 +239,7 @@ abstract class ServerRequestFactory
         $scheme = 'http';
         $https  = self::get('HTTPS', $server);
         if (($https && 'off' !== $https)
-            || self::getHeader('x-forwarded-proto', $headers, false) === 'https'
+            || getHeaderFromArray('x-forwarded-proto', $headers, false) === 'https'
         ) {
             $scheme = 'https';
         }
@@ -253,9 +247,7 @@ abstract class ServerRequestFactory
 
         // Set the host
         $accumulator = (object) ['host' => '', 'port' => null];
-        self::marshalHostAndPortFromHeaders($accumulator, $server, $headers);
-        $host = $accumulator->host;
-        $port = $accumulator->port;
+        list($host, $port) = marshalHostAndPort($headers, $server);
         if (! empty($host)) {
             $uri = $uri->withHost($host);
             if (! empty($port)) {
@@ -288,33 +280,16 @@ abstract class ServerRequestFactory
     /**
      * Marshal the host and port from HTTP headers and/or the PHP environment
      *
+     * @deprecated since 1.8.0; use Zend\Diactoros\marshalHostAndPort instead.
      * @param stdClass $accumulator
      * @param array $server
      * @param array $headers
      */
     public static function marshalHostAndPortFromHeaders(stdClass $accumulator, array $server, array $headers)
     {
-        if (self::getHeader('host', $headers, false)) {
-            self::marshalHostAndPortFromHeader($accumulator, self::getHeader('host', $headers));
-            return;
-        }
-
-        if (! isset($server['SERVER_NAME'])) {
-            return;
-        }
-
-        $accumulator->host = $server['SERVER_NAME'];
-        if (isset($server['SERVER_PORT'])) {
-            $accumulator->port = (int) $server['SERVER_PORT'];
-        }
-
-        if (! isset($server['SERVER_ADDR']) || ! preg_match('/^\[[0-9a-fA-F\:]+\]$/', $accumulator->host)) {
-            return;
-        }
-
-        // Misinterpreted IPv6-Address
-        // Reported for Safari on Windows
-        self::marshalIpv6HostAndPort($accumulator, $server);
+        list($host, $port) = marshalHostAndPort($headers, $server);
+        $accumulator->host = $host;
+        $accumulator->port = $port;
     }
 
     /**
@@ -378,45 +353,5 @@ abstract class ServerRequestFactory
             return substr($path, 0, $qpos);
         }
         return $path;
-    }
-
-    /**
-     * Marshal the host and port from the request header
-     *
-     * @param stdClass $accumulator
-     * @param string|array $host
-     * @return void
-     */
-    private static function marshalHostAndPortFromHeader(stdClass $accumulator, $host)
-    {
-        if (is_array($host)) {
-            $host = implode(', ', $host);
-        }
-
-        $accumulator->host = $host;
-        $accumulator->port = null;
-
-        // works for regname, IPv4 & IPv6
-        if (preg_match('|\:(\d+)$|', $accumulator->host, $matches)) {
-            $accumulator->host = substr($accumulator->host, 0, -1 * (strlen($matches[1]) + 1));
-            $accumulator->port = (int) $matches[1];
-        }
-    }
-
-    /**
-     * Marshal host/port from misinterpreted IPv6 address
-     *
-     * @param stdClass $accumulator
-     * @param array $server
-     */
-    private static function marshalIpv6HostAndPort(stdClass $accumulator, array $server)
-    {
-        $accumulator->host = '[' . $server['SERVER_ADDR'] . ']';
-        $accumulator->port = $accumulator->port ?: 80;
-        if ($accumulator->port . ']' === substr($accumulator->host, strrpos($accumulator->host, ':') + 1)) {
-            // The last digit of the IPv6-Address has been taken as port
-            // Unset the port so the default port can be used
-            $accumulator->port = null;
-        }
     }
 }
