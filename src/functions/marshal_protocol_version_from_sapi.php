@@ -9,6 +9,8 @@ namespace Zend\Diactoros;
 
 use UnexpectedValueException;
 
+use function preg_match;
+
 /**
  * Return HTTP protocol version (X.Y) as discovered within a `$_SERVER` array.
  *

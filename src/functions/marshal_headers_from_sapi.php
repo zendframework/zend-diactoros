@@ -7,6 +7,12 @@
 
 namespace Zend\Diactoros;
 
+use function array_key_exists;
+use function strpos;
+use function strtolower;
+use function strtr;
+use function substr;
+
 /**
  * @param array $server Values obtained from the SAPI (generally `$_SERVER`).
  * @return array Header/value pairs

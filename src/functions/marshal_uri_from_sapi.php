@@ -7,6 +7,19 @@
 
 namespace Zend\Diactoros;
 
+use function array_change_key_case;
+use function array_key_exists;
+use function explode;
+use function implode;
+use function is_array;
+use function ltrim;
+use function preg_match;
+use function preg_replace;
+use function strlen;
+use function strpos;
+use function strtolower;
+use function substr;
+
 /**
  * Marshal a Uri instance based on the values presnt in the $_SERVER array and headers.
  *
@@ -168,7 +181,6 @@ function marshalUriFromSapi(array $server, array $headers)
     $uri = $uri->withScheme($scheme);
 
     // Set the host
-    $accumulator = (object) ['host' => '', 'port' => null];
     list($host, $port) = $marshalHostAndPort($headers, $server);
     if (! empty($host)) {
         $uri = $uri->withHost($host);

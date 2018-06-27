@@ -7,6 +7,8 @@
 
 namespace Zend\Diactoros;
 
+use function is_callable;
+
 /**
  * Marshal the $_SERVER array
  *

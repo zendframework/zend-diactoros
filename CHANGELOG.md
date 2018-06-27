@@ -6,7 +6,24 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- Nothing.
+- [#307](https://github.com/zendframework/zend-diactoros/pull/307) adds the following functions under the `Zend\Diactoros` namespace, each of
+  which may be used to derive artifacts from SAPI supergloabls for the purposes
+  of generating a `ServerRequest` instance:
+  - `normalizeServer(array $server, callable $apacheRequestHeaderCallback = null) : array`
+    (main purpose is to aggregate the `Authorization` header in the SAPI params
+    when under Apache)
+  - `marshalProtocolVersionFromSapi(array $server) : string`
+  - `marshalMethodFromSapi(array $server) : string`
+  - `marshalUriFromSapi(array $server, array $headers) : Uri`
+  - `marshalHeadersFromSapi(array $server) : array`
+  - `parseCookieHeader(string $header) : array`
+  - `createUploadedFile(array $spec) : UploadedFile` (creates the instance from
+    a normal `$_FILES` entry)
+  - `normalizeUploadedFiles(array $files) : UploadedFileInterface[]` (traverses
+    a potentially nested array of uploaded file instances and/or `$_FILES`
+    entries, including those aggregated under mod_php, php-fpm, and php-cgi in
+    order to create a flat array of `UploadedFileInterface` instances to use in a
+    request)
 
 ### Changed
 
