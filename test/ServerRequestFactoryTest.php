@@ -17,7 +17,7 @@ use Zend\Diactoros\UploadedFile;
 use Zend\Diactoros\Uri;
 
 use function Zend\Diactoros\marshalHeadersFromSapi;
-use function Zend\Diactoros\marshalProtocolVersion;
+use function Zend\Diactoros\marshalProtocolVersionFromSapi;
 use function Zend\Diactoros\marshalUriFromSapi;
 use function Zend\Diactoros\normalizeServer;
 use function Zend\Diactoros\normalizeUploadedFiles;
@@ -562,12 +562,12 @@ class ServerRequestFactoryTest extends TestCase
     public function testMarshalProtocolVersionRisesExceptionIfVersionIsNotRecognized()
     {
         $this->expectException(UnexpectedValueException::class);
-        marshalProtocolVersion(['SERVER_PROTOCOL' => 'dadsa/1.0']);
+        marshalProtocolVersionFromSapi(['SERVER_PROTOCOL' => 'dadsa/1.0']);
     }
 
     public function testMarshalProtocolReturnsDefaultValueIfHeaderIsNotPresent()
     {
-        $version = marshalProtocolVersion([]);
+        $version = marshalProtocolVersionFromSapi([]);
         $this->assertSame('1.1', $version);
     }
 
@@ -576,7 +576,7 @@ class ServerRequestFactoryTest extends TestCase
      */
     public function testMarshalProtocolVersionReturnsHttpVersions($protocol, $expected)
     {
-        $version = marshalProtocolVersion(['SERVER_PROTOCOL' => $protocol]);
+        $version = marshalProtocolVersionFromSapi(['SERVER_PROTOCOL' => $protocol]);
         $this->assertSame($expected, $version);
     }
 

@@ -98,7 +98,7 @@ abstract class ServerRequestFactory
             $cookies ?: $_COOKIE,
             $query ?: $_GET,
             $body ?: $_POST,
-            marshalProtocolVersion($server)
+            marshalProtocolVersionFromSapi($server)
         );
     }
 

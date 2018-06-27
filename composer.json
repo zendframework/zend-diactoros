@@ -40,7 +40,7 @@
     "files": [
         "src/functions/create_uploaded_file.php",
         "src/functions/marshal_headers_from_sapi.php",
-        "src/functions/marshal_protocol_version.php",
+        "src/functions/marshal_protocol_version_from_sapi.php",
         "src/functions/marshal_uri_from_sapi.php",
         "src/functions/normalize_server.php",
         "src/functions/normalize_uploaded_files.php",
