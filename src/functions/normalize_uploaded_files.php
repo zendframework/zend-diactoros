@@ -10,6 +10,8 @@ namespace Zend\Diactoros;
 use InvalidArgumentException;
 use Psr\Http\Message\UploadedFileInterface;
 
+use function is_array;
+
 /**
  * Normalize uploaded files
  *

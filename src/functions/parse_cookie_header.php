@@ -7,6 +7,9 @@
 
 namespace Zend\Diactoros;
 
+use function preg_match_all;
+use function urldecode;
+
 /**
  * Parse a cookie header according to RFC 6265.
  *
