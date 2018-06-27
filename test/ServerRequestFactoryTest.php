@@ -24,33 +24,6 @@ use function Zend\Diactoros\normalizeUploadedFiles;
 
 class ServerRequestFactoryTest extends TestCase
 {
-    public function testGetWillReturnValueIfPresentInArray()
-    {
-        $array = [
-            'foo' => 'bar',
-            'bar' => '',
-            'baz' => null,
-        ];
-
-        foreach ($array as $key => $value) {
-            $this->assertSame($value, ServerRequestFactory::get($key, $array));
-        }
-    }
-
-    public function testGetWillReturnDefaultValueIfKeyIsNotInArray()
-    {
-        $try   = [ 'foo', 'bar', 'baz' ];
-        $array = [
-            'quz'  => true,
-            'quuz' => true,
-        ];
-        $default = 'BAT';
-
-        foreach ($try as $key) {
-            $this->assertSame($default, ServerRequestFactory::get($key, $array, $default));
-        }
-    }
-
     public function testReturnsServerValueUnchangedIfHttpAuthorizationHeaderIsPresent()
     {
         $server = [
@@ -100,18 +73,6 @@ class ServerRequestFactoryTest extends TestCase
         ];
 
         $this->assertEquals($expected, marshalHeadersFromSapi($server));
-    }
-
-    public function testStripQueryStringReturnsUnchangedStringIfNoQueryStringDetected()
-    {
-        $path = '/foo/bar';
-        $this->assertSame($path, ServerRequestFactory::stripQueryString($path));
-    }
-
-    public function testStripQueryStringReturnsNormalizedPathWhenQueryStringDetected()
-    {
-        $path = '/foo/bar?foo=bar';
-        $this->assertSame('/foo/bar', ServerRequestFactory::stripQueryString($path));
     }
 
     public function testMarshalRequestUriUsesIISUnencodedUrlValueIfPresentAndUrlWasRewritten()
