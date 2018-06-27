@@ -128,6 +128,31 @@ $request = RequestFactory::fromGlobals(
 );
 ```
 
+### ServerRequestFactory helper functions
+
+- Since 1.8.0
+
+In order to create the various artifacts required by a `ServerRequest` instance,
+Diactoros also provides a number of functions under the `Zend\Diactoros`
+namespace for introspecting the SAPI `$_SERVER` parameters, headers, `$_FILES`,
+and even the `Cookie` header. These include:
+
+- `Zend\Diactoros\normalizeServer(array $server, callable $apacheRequestHeaderCallback = null) : array`
+  (its main purpose is to aggregate the `Authorization` header in the SAPI params
+  when under Apache)
+- `Zend\Diactoros\marshalProtocolVersionFromSapi(array $server) : string`
+- `Zend\Diactoros\marshalMethodFromSapi(array $server) : string`
+- `Zend\Diactoros\marshalUriFromSapi(array $server, array $headers) : Uri`
+- `Zend\Diactoros\marshalHeadersFromSapi(array $server) : array`
+- `Zend\Diactoros\parseCookieHeader(string $header) : array`
+- `Zend\Diactoros\createUploadedFile(array $spec) : UploadedFile` (creates the
+  instance from a normal `$_FILES` entry)
+- `Zend\Diactoros\normalizeUploadedFiles(array $files) : UploadedFileInterface[]`
+  (traverses a potentially nested array of uploaded file instances and/or
+  `$_FILES` entries, including those aggregated under mod_php, php-fpm, and
+  php-cgi in order to create a flat array of `UploadedFileInterface` instances
+  to use in a request)
+
 ## URI
 
 `Zend\Diactoros\Uri` is an implementation of
@@ -176,6 +201,13 @@ as a stream or moving it to a filesystem location.
 In most cases, you will only use the methods defined in the `UploadedFileInterface`.
 
 ## Server
+
+> ### Deprecated
+>
+> The class `Zend\Diactoros\Server` is deprecated as of the 1.8.0 release. We
+> recommend using the class `Zend\HttpHandlerRunner\RequestHandlerRunner` via
+> the package [zendframework/zend-httphandlerrunner](https://docs.zendframework.com/zend-httphandlerrunner)
+> instead.
 
 `Zend\Diactoros\Server` represents a server capable of executing a callback. It has four methods:
 

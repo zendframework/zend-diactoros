@@ -1,7 +1,7 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-diactoros for the canonical source repository
- * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2018 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
@@ -14,6 +14,10 @@ use function preg_match;
 use function strlen;
 use function substr;
 
+/**
+ * @deprecated since 1.8.0. The package zendframework/zend-httphandlerrunner
+ *     now provides this functionality.
+ */
 class SapiStreamEmitter implements EmitterInterface
 {
     use SapiEmitterTrait;
