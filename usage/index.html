@@ -11,7 +11,7 @@
 
     <title>Usage - zend-diactoros</title>
 
-    <link rel="stylesheet" href="../css/styles-e3f3751b65.css">
+    <link rel="stylesheet" href="../css/styles-f773ae3616.css">
 </head>
 <body id="page-top">
 
@@ -63,74 +63,76 @@
             
             
                 <div class="nav navbar-nav navbar-collapse visible-xs-block ">
-                    <div class="subnavigation hidden-print">
-    <h4 class="subnavigation__title">
-        <a href="..">zend-diactoros</a>
-    </h4>
+                    
+    <div class="subnavigation hidden-print">
+        <h4 class="subnavigation__title">
+            <a href="..">zend-diactoros</a>
+        </h4>
 
-    <h5 class="subnavigation__subtitle">Table of Contents</h5>
+        <h5 class="subnavigation__subtitle">Table of Contents</h5>
 
-    <ul class="subnavigation__list">
-        
+        <ul class="subnavigation__list">
             
-                <li class="subnavigation__list-item ">
-                    <a href=".." class="subnavigation__link">zend-diactoros</a>
-                </li>
+                
+                    <li class="subnavigation__list-item ">
+                        <a href=".." class="subnavigation__link">zend-diactoros</a>
+                    </li>
+                
             
-        
+                
+                    <li class="subnavigation__list-item ">
+                        <a href="../overview/" class="subnavigation__link">Overview</a>
+                    </li>
+                
             
-                <li class="subnavigation__list-item ">
-                    <a href="../overview/" class="subnavigation__link">Overview</a>
-                </li>
+                
+                    <li class="subnavigation__list-item ">
+                        <a href="../install/" class="subnavigation__link">Installation</a>
+                    </li>
+                
             
-        
+                
+                    <li class="subnavigation__list-item subnavigation__list-item--active">
+                        <a href="./" class="subnavigation__link">Usage</a>
+                    </li>
+                
             
-                <li class="subnavigation__list-item ">
-                    <a href="../install/" class="subnavigation__link">Installation</a>
-                </li>
-            
-        
-            
-                <li class="subnavigation__list-item subnavigation__list-item--active">
-                    <a href="./" class="subnavigation__link">Usage</a>
-                </li>
-            
-        
-            
-                <li class="subnavigation__list-item">
-                    <span class="subnavigation__headline">Reference</span>
-                    <ul class="subnavigation__list">
-                        
+                
+                    <li class="subnavigation__list-item">
+                        <span class="subnavigation__headline">Reference</span>
+                        <ul class="subnavigation__list">
                             
+                                
     <li class="subnavigation__list-item ">
         <a href="../custom-responses/" class="subnavigation__link">Custom Responses</a>
     </li>
 
-                        
                             
+                                
     <li class="subnavigation__list-item ">
         <a href="../emitting-responses/" class="subnavigation__link">Emitting Responses</a>
     </li>
 
-                        
                             
+                                
     <li class="subnavigation__list-item ">
         <a href="../serialization/" class="subnavigation__link">Serialization</a>
     </li>
 
-                        
                             
+                                
     <li class="subnavigation__list-item ">
         <a href="../api/" class="subnavigation__link">API</a>
     </li>
 
-                        
-                    </ul>
-                </li>
+                            
+                        </ul>
+                    </li>
+                
             
-        
-    </ul>
-</div>
+        </ul>
+    </div>
+
                 </div>
             
 
@@ -317,6 +319,13 @@ $response = $response
     -&gt;withAddedHeader('X-Show-Something', 'something');</code></pre>
 
 <h3 id="serving-an-application">"Serving" an application</h3>
+<blockquote>
+<h3 id="deprecated">Deprecated</h3>
+<p>The class <code>Zend\Diactoros\Server</code> is deprecated as of the 1.8.0 release. We
+recommend using the class <code>Zend\HttpHandlerRunner\RequestHandlerRunner</code> via
+the package <a href="https://docs.zendframework.com/zend-httphandlerrunner">zendframework/zend-httphandlerrunner</a>
+instead.</p>
+</blockquote>
 <p><code>Zend\Diactoros\Server</code> mimics a portion of the API of node's <code>http.Server</code> class. It invokes a
 callback, passing it an <code>ServerRequest</code>, an <code>Response</code>, and optionally a callback to use for
 incomplete/unhandled requests.</p>
@@ -418,74 +427,76 @@ response, and error as its arguments (though the error may be null).</p>
         <optgroup label="Components"></optgroup>
     </select>
 </div>
-                    <div class="subnavigation hidden-print">
-    <h4 class="subnavigation__title">
-        <a href="..">zend-diactoros</a>
-    </h4>
+                    
+    <div class="subnavigation hidden-print">
+        <h4 class="subnavigation__title">
+            <a href="..">zend-diactoros</a>
+        </h4>
 
-    <h5 class="subnavigation__subtitle">Table of Contents</h5>
+        <h5 class="subnavigation__subtitle">Table of Contents</h5>
 
-    <ul class="subnavigation__list">
-        
+        <ul class="subnavigation__list">
             
-                <li class="subnavigation__list-item ">
-                    <a href=".." class="subnavigation__link">zend-diactoros</a>
-                </li>
+                
+                    <li class="subnavigation__list-item ">
+                        <a href=".." class="subnavigation__link">zend-diactoros</a>
+                    </li>
+                
             
-        
+                
+                    <li class="subnavigation__list-item ">
+                        <a href="../overview/" class="subnavigation__link">Overview</a>
+                    </li>
+                
             
-                <li class="subnavigation__list-item ">
-                    <a href="../overview/" class="subnavigation__link">Overview</a>
-                </li>
+                
+                    <li class="subnavigation__list-item ">
+                        <a href="../install/" class="subnavigation__link">Installation</a>
+                    </li>
+                
             
-        
+                
+                    <li class="subnavigation__list-item subnavigation__list-item--active">
+                        <a href="./" class="subnavigation__link">Usage</a>
+                    </li>
+                
             
-                <li class="subnavigation__list-item ">
-                    <a href="../install/" class="subnavigation__link">Installation</a>
-                </li>
-            
-        
-            
-                <li class="subnavigation__list-item subnavigation__list-item--active">
-                    <a href="./" class="subnavigation__link">Usage</a>
-                </li>
-            
-        
-            
-                <li class="subnavigation__list-item">
-                    <span class="subnavigation__headline">Reference</span>
-                    <ul class="subnavigation__list">
-                        
+                
+                    <li class="subnavigation__list-item">
+                        <span class="subnavigation__headline">Reference</span>
+                        <ul class="subnavigation__list">
                             
+                                
     <li class="subnavigation__list-item ">
         <a href="../custom-responses/" class="subnavigation__link">Custom Responses</a>
     </li>
 
-                        
                             
+                                
     <li class="subnavigation__list-item ">
         <a href="../emitting-responses/" class="subnavigation__link">Emitting Responses</a>
     </li>
 
-                        
                             
+                                
     <li class="subnavigation__list-item ">
         <a href="../serialization/" class="subnavigation__link">Serialization</a>
     </li>
 
-                        
                             
+                                
     <li class="subnavigation__list-item ">
         <a href="../api/" class="subnavigation__link">API</a>
     </li>
 
-                        
-                    </ul>
-                </li>
+                            
+                        </ul>
+                    </li>
+                
             
-        
-    </ul>
-</div>
+        </ul>
+    </div>
+
                 
             </div>
         </div>
@@ -548,7 +559,7 @@ response, and error as its arguments (though the error may be null).</p>
         var base_url = '..',
             siteName = 'zend-diactoros';
     </script>
-    <script src="../js/scripts-dcbafde59f.js"></script>
+    <script src="../js/scripts-5141b2abfe.js"></script>
         <script src="../search/require.js"></script>
         <script src="../search/search.js"></script>
 
