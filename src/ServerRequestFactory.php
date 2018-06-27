@@ -129,7 +129,7 @@ abstract class ServerRequestFactory
      *
      * If not, the $default is returned.
      *
-     * @deprecated since 1.8.0; use Zend\Diactoros\getHeaderFromArray() instead.
+     * @deprecated since 1.8.0; no longer used internally.
      * @param string $header
      * @param array $headers
      * @param mixed $default
@@ -137,7 +137,14 @@ abstract class ServerRequestFactory
      */
     public static function getHeader($header, array $headers, $default = null)
     {
-        return getHeaderFromArray($header, $headers, $default);
+        $header  = strtolower($name);
+        $headers = array_change_key_case($headers, CASE_LOWER);
+        if (array_key_exists($header, $headers)) {
+            $value = is_array($headers[$header]) ? implode(', ', $headers[$header]) : $headers[$header];
+            return $value;
+        }
+
+        return $default;
     }
 
     /**
@@ -201,16 +208,18 @@ abstract class ServerRequestFactory
     /**
      * Marshal the host and port from HTTP headers and/or the PHP environment
      *
-     * @deprecated since 1.8.0; use Zend\Diactoros\marshalHostAndPort instead.
+     * @deprecated since 1.8.0; use Zend\Diactoros\marshalUriFromSapi() instead,
+     *     and pull the host and port from the Uri instance that function
+     *     returns.
      * @param stdClass $accumulator
      * @param array $server
      * @param array $headers
      */
     public static function marshalHostAndPortFromHeaders(stdClass $accumulator, array $server, array $headers)
     {
-        list($host, $port) = marshalHostAndPort($headers, $server);
-        $accumulator->host = $host;
-        $accumulator->port = $port;
+        $uri = marshalUriFromSapi($server, $headers);
+        $accumulator->host = $uri->getHost();
+        $accumulator->port = $uri->getPort();
     }
 
     /**
@@ -219,14 +228,15 @@ abstract class ServerRequestFactory
      * Looks at a variety of criteria in order to attempt to autodetect a base
      * URI, including rewrite URIs, proxy URIs, etc.
      *
-     *
-     * @deprecated since 1.8.0; use Zend\Diactoros\marshalRequestPath() instead.
+     * @deprecated since 1.8.0; use Zend\Diactoros\marshalUriFromSapi() instead,
+     *     and pull the path from the Uri instance that function returns.
      * @param array $server
      * @return string
      */
     public static function marshalRequestUri(array $server)
     {
-        return marshalRequestPath($server);
+        $uri = marshalUriFromSapi($server, []);
+        return $uri->getPath();
     }
 
     /**

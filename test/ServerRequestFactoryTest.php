@@ -17,9 +17,7 @@ use Zend\Diactoros\UploadedFile;
 use Zend\Diactoros\Uri;
 
 use function Zend\Diactoros\marshalHeadersFromSapi;
-use function Zend\Diactoros\marshalHostAndPort;
 use function Zend\Diactoros\marshalProtocolVersion;
-use function Zend\Diactoros\marshalRequestPath;
 use function Zend\Diactoros\marshalUriFromSapi;
 use function Zend\Diactoros\normalizeServer;
 use function Zend\Diactoros\normalizeUploadedFiles;
@@ -123,7 +121,9 @@ class ServerRequestFactoryTest extends TestCase
             'UNENCODED_URL' => '/foo/bar',
         ];
 
-        $this->assertSame($server['UNENCODED_URL'], marshalRequestPath($server));
+        $uri = marshalUriFromSapi($server, []);
+
+        $this->assertSame($server['UNENCODED_URL'], $uri->getPath());
     }
 
     public function testMarshalRequestUriUsesHTTPXRewriteUrlIfPresent()
@@ -135,7 +135,11 @@ class ServerRequestFactoryTest extends TestCase
             'HTTP_X_REWRITE_URL' => '/bar/baz',
         ];
 
-        $this->assertSame($server['HTTP_X_REWRITE_URL'], marshalRequestPath($server));
+        $headers = marshalHeadersFromSapi($server);
+
+        $uri = marshalUriFromSapi($server, $headers);
+
+        $this->assertSame($server['HTTP_X_REWRITE_URL'], $uri->getPath());
     }
 
     public function testMarshalRequestUriUsesHTTPXOriginalUrlIfPresent()
@@ -148,7 +152,11 @@ class ServerRequestFactoryTest extends TestCase
             'HTTP_X_ORIGINAL_URL' => '/baz/bat',
         ];
 
-        $this->assertSame($server['HTTP_X_ORIGINAL_URL'], marshalRequestPath($server));
+        $headers = marshalHeadersFromSapi($server);
+
+        $uri = marshalUriFromSapi($server, $headers);
+
+        $this->assertSame($server['HTTP_X_ORIGINAL_URL'], $uri->getPath());
     }
 
     public function testMarshalRequestUriStripsSchemeHostAndPortInformationWhenPresent()
@@ -157,7 +165,9 @@ class ServerRequestFactoryTest extends TestCase
             'REQUEST_URI' => 'http://example.com:8000/foo/bar',
         ];
 
-        $this->assertSame('/foo/bar', marshalRequestPath($server));
+        $uri = marshalUriFromSapi($server, []);
+
+        $this->assertSame('/foo/bar', $uri->getPath());
     }
 
     public function testMarshalRequestUriUsesOrigPathInfoIfPresent()
@@ -166,14 +176,18 @@ class ServerRequestFactoryTest extends TestCase
             'ORIG_PATH_INFO' => '/foo/bar',
         ];
 
-        $this->assertSame('/foo/bar', marshalRequestPath($server));
+        $uri = marshalUriFromSapi($server, []);
+
+        $this->assertSame('/foo/bar', $uri->getPath());
     }
 
     public function testMarshalRequestUriFallsBackToRoot()
     {
         $server = [];
 
-        $this->assertSame('/', marshalRequestPath($server));
+        $uri = marshalUriFromSapi($server, []);
+
+        $this->assertSame('/', $uri->getPath());
     }
 
     public function testMarshalHostAndPortUsesHostHeaderWhenPresent()
@@ -183,10 +197,10 @@ class ServerRequestFactoryTest extends TestCase
         $request = $request->withMethod('GET');
         $request = $request->withHeader('Host', 'example.com');
 
-        list($host, $port) = marshalHostAndPort($request->getHeaders(), []);
+        $uri = marshalUriFromSapi([], $request->getHeaders());
 
-        $this->assertSame('example.com', $host);
-        $this->assertNull($port);
+        $this->assertSame('example.com', $uri->getHost());
+        $this->assertNull($uri->getPort());
     }
 
     public function testMarshalHostAndPortWillDetectPortInHostHeaderWhenPresent()
@@ -196,10 +210,10 @@ class ServerRequestFactoryTest extends TestCase
         $request = $request->withMethod('GET');
         $request = $request->withHeader('Host', 'example.com:8000');
 
-        list($host, $port) = marshalHostAndPort($request->getHeaders(), []);
+        $uri = marshalUriFromSapi([], $request->getHeaders());
 
-        $this->assertSame('example.com', $host);
-        $this->assertSame(8000, $port);
+        $this->assertSame('example.com', $uri->getHost());
+        $this->assertSame(8000, $uri->getPort());
     }
 
     public function testMarshalHostAndPortReturnsEmptyValuesIfNoHostHeaderAndNoServerName()
@@ -207,10 +221,10 @@ class ServerRequestFactoryTest extends TestCase
         $request = new ServerRequest();
         $request = $request->withUri(new Uri());
 
-        list($host, $port) = marshalHostAndPort($request->getHeaders(), []);
+        $uri = marshalUriFromSapi([], $request->getHeaders());
 
-        $this->assertSame('', $host);
-        $this->assertNull($port);
+        $this->assertSame('', $uri->getHost());
+        $this->assertNull($uri->getPort());
     }
 
     public function testMarshalHostAndPortReturnsServerNameForHostWhenPresent()
@@ -222,10 +236,10 @@ class ServerRequestFactoryTest extends TestCase
             'SERVER_NAME' => 'example.com',
         ];
 
-        list($host, $port) = marshalHostAndPort($request->getHeaders(), $server);
+        $uri = marshalUriFromSapi($server, $request->getHeaders());
 
-        $this->assertSame('example.com', $host);
-        $this->assertNull($port);
+        $this->assertSame('example.com', $uri->getHost());
+        $this->assertNull($uri->getPort());
     }
 
     public function testMarshalHostAndPortReturnsServerPortForPortWhenPresentWithServerName()
@@ -238,10 +252,10 @@ class ServerRequestFactoryTest extends TestCase
             'SERVER_PORT' => 8000,
         ];
 
-        list($host, $port) = marshalHostAndPort($request->getHeaders(), $server);
+        $uri = marshalUriFromSapi($server, $request->getHeaders());
 
-        $this->assertSame('example.com', $host);
-        $this->assertSame(8000, $port);
+        $this->assertSame('example.com', $uri->getHost());
+        $this->assertSame(8000, $uri->getPort());
     }
 
     public function testMarshalHostAndPortReturnsServerNameForHostIfServerAddrPresentButHostIsNotIpv6Address()
@@ -254,9 +268,9 @@ class ServerRequestFactoryTest extends TestCase
             'SERVER_NAME' => 'example.com',
         ];
 
-        list($host, $port) = marshalHostAndPort($request->getHeaders(), $server);
+        $uri = marshalUriFromSapi($server, $request->getHeaders());
 
-        $this->assertSame('example.com', $host);
+        $this->assertSame('example.com', $uri->getHost());
     }
 
     public function testMarshalHostAndPortReturnsServerAddrForHostIfPresentAndHostIsIpv6Address()
@@ -270,10 +284,10 @@ class ServerRequestFactoryTest extends TestCase
             'SERVER_PORT' => 8000,
         ];
 
-        list($host, $port) = marshalHostAndPort($request->getHeaders(), $server);
+        $uri = marshalUriFromSapi($server, $request->getHeaders());
 
-        $this->assertSame('[FE80::0202:B3FF:FE1E:8329]', $host);
-        $this->assertSame(8000, $port);
+        $this->assertSame(strtolower('[FE80::0202:B3FF:FE1E:8329]'), $uri->getHost());
+        $this->assertSame(8000, $uri->getPort());
     }
 
     public function testMarshalHostAndPortWillDetectPortInIpv6StyleHost()
@@ -286,10 +300,10 @@ class ServerRequestFactoryTest extends TestCase
             'SERVER_NAME' => '[FE80::0202:B3FF:FE1E:8329:80]',
         ];
 
-        list($host, $port) = marshalHostAndPort($request->getHeaders(), $server);
+        $uri = marshalUriFromSapi($server, $request->getHeaders());
 
-        $this->assertSame('[FE80::0202:B3FF:FE1E:8329]', $host);
-        $this->assertSame(80, $port);
+        $this->assertSame(strtolower('[FE80::0202:B3FF:FE1E:8329]'), $uri->getHost());
+        $this->assertNull($uri->getPort());
     }
 
     public function testMarshalUriDetectsHttpsSchemeFromServerValue()
