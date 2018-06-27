@@ -92,7 +92,7 @@ abstract class ServerRequestFactory
             $server,
             $files,
             marshalUriFromSapi($server, $headers),
-            array_key_exists('REQUEST_METHOD', $server) ? $server['REQUEST_METHOD'] : 'GET',
+            marshalMethodFromSapi($server),
             'php://input',
             $headers,
             $cookies ?: $_COOKIE,
