@@ -23,6 +23,15 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Removed
 
+- [#308](https://github.com/zendframework/zend-diactoros/pull/308) removes the following methods from the `ServerRequestFactory` class:
+  - `normalizeServer()` (use `Zend\Diactoros\normalizeServer()` instead)
+  - `marshalHeaders()` (use `Zend\Diactoros\marshalHeadersFromSapi()` instead)
+  - `marshalUriFromServer()` (use `Zend\Diactoros\marshalUriFromSapi()` instead)
+  - `marshalRequestUri()` (use `Uri::getPath()` from the `Uri` instance returned by `marshalUriFromSapi()` instead)
+  - `marshalHostAndPortFromHeaders()` (use `Uri::getHost()` and `Uri::getPort()` from the `Uri` instances returned by `marshalUriFromSapi()` instead)
+  - `stripQueryString()` (use `explode("?", $path, 2)[0]` instead)
+  - `normalizeFiles()` (use `Zend\Diactoros\normalizeUploadedFiles()` instead)
+
 - [#295](https://github.com/zendframework/zend-diactoros/pull/295) removes `Zend\Diactoros\Server`. You can use the `RequestHandlerRunner` class from
   [zendframework/zend-httphandlerrunner](https://docs.zendframework.com/zend-httphandlerrunner) to provide these capabilities instead.
 
