@@ -6,24 +6,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- [#307](https://github.com/zendframework/zend-diactoros/pull/307) adds the following functions under the `Zend\Diactoros` namespace, each of
-  which may be used to derive artifacts from SAPI supergloabls for the purposes
-  of generating a `ServerRequest` instance:
-  - `normalizeServer(array $server, callable $apacheRequestHeaderCallback = null) : array`
-    (main purpose is to aggregate the `Authorization` header in the SAPI params
-    when under Apache)
-  - `marshalProtocolVersionFromSapi(array $server) : string`
-  - `marshalMethodFromSapi(array $server) : string`
-  - `marshalUriFromSapi(array $server, array $headers) : Uri`
-  - `marshalHeadersFromSapi(array $server) : array`
-  - `parseCookieHeader(string $header) : array`
-  - `createUploadedFile(array $spec) : UploadedFile` (creates the instance from
-    a normal `$_FILES` entry)
-  - `normalizeUploadedFiles(array $files) : UploadedFileInterface[]` (traverses
-    a potentially nested array of uploaded file instances and/or `$_FILES`
-    entries, including those aggregated under mod_php, php-fpm, and php-cgi in
-    order to create a flat array of `UploadedFileInterface` instances to use in a
-    request)
+- Nothing.
 
 ### Changed
 
@@ -51,7 +34,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - Nothing.
 
-## 1.8.0 - TBD
+## 1.8.0 - 2018-06-27
 
 ### Added
 
@@ -119,28 +102,6 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - [#303](https://github.com/zendframework/zend-diactoros/pull/303) deprecates the `Zend\Diactoros\Server` class. Users are directed to the `RequestHandlerRunner` class from the
   [zendframework/zend-httphandlerrunner](https://docs.zendframework.com/zend-httphandlerrunner) package as an alternative.
-
-### Removed
-
-- Nothing.
-
-### Fixed
-
-- Nothing.
-
-## 1.7.3 - TBD
-
-### Added
-
-- Nothing.
-
-### Changed
-
-- Nothing.
-
-### Deprecated
-
-- Nothing.
 
 ### Removed
 
