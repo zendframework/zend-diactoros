@@ -49,7 +49,7 @@ function marshalUriFromSapi(array $server, array $headers)
     $path = marshalRequestPath($server);
 
     // Strip query string
-    $path = false !== ($qpos = strpos($path, '?')) ? substr($path, 0, $qpos) : $path;
+    $path = explode('?', $path, 2)[0];
 
     // URI query
     $query = '';

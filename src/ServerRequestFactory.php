@@ -238,9 +238,6 @@ abstract class ServerRequestFactory
      */
     public static function stripQueryString($path)
     {
-        if (($qpos = strpos($path, '?')) !== false) {
-            return substr($path, 0, $qpos);
-        }
-        return $path;
+        return explode('?', $path, 2)[0];
     }
 }
