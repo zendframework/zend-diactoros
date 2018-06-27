@@ -17,7 +17,7 @@ use UnexpectedValueException;
  * @throws UnexpectedValueException if the $server['SERVER_PROTOCOL'] value is
  *     malformed.
  */
-function marshalProtocolVersion(array $server)
+function marshalProtocolVersionFromSapi(array $server)
 {
     if (! isset($server['SERVER_PROTOCOL'])) {
         return '1.1';
