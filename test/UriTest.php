@@ -700,7 +700,7 @@ class UriTest extends TestCase
 
     public function testGetHttpsHostWithSpecifiedPort80()
     {
-        $uri = new Uri('http://example.com:80');
+        $uri = new Uri('https://example.com:80');
         $this->assertSame('example.com', $uri->getHost());
     }
 
