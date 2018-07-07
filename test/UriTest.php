@@ -698,6 +698,18 @@ class UriTest extends TestCase
         $this->assertSame('example.com:443', $uri->getHost());
     }
 
+    public function testGetHttpsHostWithoutSpecifiedPort()
+    {
+        $uri = new Uri('https://example.com');
+        $this->assertSame('example.com', $uri->getHost());
+    }
+
+    public function testGetHttpHostWithSpecifiedPort()
+    {
+        $uri = new Uri('http://example.com:80');
+        $this->assertSame('example.com', $uri->getHost());
+    }
+
     public function testUriDistinguishZeroFromEmptyString()
     {
         $expected = 'https://0:0@0:1/0?0#0';
