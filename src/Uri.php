@@ -471,7 +471,9 @@ class Uri implements UriInterface
 
         $this->scheme    = isset($parts['scheme']) ? $this->filterScheme($parts['scheme']) : '';
         $this->userInfo  = isset($parts['user']) ? $this->filterUserInfoPart($parts['user']) : '';
-        $this->host      = isset($parts['host']) ? strtolower($parts['host']) : '';
+        $this->host      = isset($parts['host'])
+            ? strtolower($parts['host']) . ($this->scheme === 'https' && (isset($parts['port']) && $parts['port'] !== 80) ? ':' . $parts['port'] : null)
+            : '';
         $this->port      = isset($parts['port']) ? $parts['port'] : null;
         $this->path      = isset($parts['path']) ? $this->filterPath($parts['path']) : '';
         $this->query     = isset($parts['query']) ? $this->filterQuery($parts['query']) : '';
