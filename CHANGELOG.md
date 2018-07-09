@@ -23,7 +23,8 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#312](https://github.com/zendframework/zend-diactoros/pull/312) fixes how the `normalizeUploadedFiles()` utility function handles nested trees of
+  uploaded files, ensuring it detects them properly.
 
 ## 1.8.0 - 2018-06-27
 
