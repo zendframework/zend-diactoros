@@ -1,7 +1,7 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-diactoros for the canonical source repository
- * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2018 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
@@ -9,11 +9,12 @@ namespace ZendTest\Diactoros;
 
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\UploadedFileInterface;
+
 use function Zend\Diactoros\normalizeUploadedFiles;
 
 class NormalizeUploadedFilesTest extends TestCase
 {
-    public function testFlatFile()
+    public function testCreatesUploadedFileFromFlatFileSpecification()
     {
         $files = [
             'avatar' => [
@@ -32,7 +33,7 @@ class NormalizeUploadedFilesTest extends TestCase
         $this->assertEquals('my-avatar.png', $normalised['avatar']->getClientFilename());
     }
 
-    public function testNestedFile()
+    public function testTraversesNestedFileSpecificationToExtractUploadedFile()
     {
         $files = [
             'my-form' => [
@@ -54,7 +55,7 @@ class NormalizeUploadedFilesTest extends TestCase
         $this->assertEquals('my-avatar.png', $normalised['my-form']['details']['avatar']->getClientFilename());
     }
 
-    public function testNumericIndexedFiles()
+    public function testTraversesNestedFileSpecificationContainingNumericIndicesToExtractUploadedFiles()
     {
         $files = [
             'my-form' => [
@@ -99,9 +100,10 @@ class NormalizeUploadedFilesTest extends TestCase
     }
 
     /**
-     * This case covers upfront numeric index which moves the tmp_name/size/etc fields further up the array tree
+     * This case covers upfront numeric index which moves the tmp_name/size/etc
+     * fields further up the array tree
      */
-    public function testNumericFirstIndexedFiles()
+    public function testTraversesDenormalizedNestedTreeOfIndicesToExtractUploadedFiles()
     {
         $files = [
             'slide-shows' => [
