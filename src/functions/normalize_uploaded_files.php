@@ -25,6 +25,8 @@ use function is_array;
 function normalizeUploadedFiles(array $files)
 {
     /**
+     * Traverse a nested tree of uploaded file specifications.
+     *
      * @param string[]|array[] $tmpNameTree
      * @param int[]|array[] $sizeTree
      * @param int[]|array[] $errorTree
