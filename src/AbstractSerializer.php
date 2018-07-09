@@ -49,18 +49,18 @@ abstract class AbstractSerializer
         while (! $stream->eof()) {
             $char = $stream->read(1);
 
-            if ($crFound && $char === self::LF) {
-                $crFound = false;
-                break;
-            }
+            if ($crFound) {
+                if ($char === self::LF) {
+                    $crFound = false;
+                    break;
+                }
 
-            // CR NOT followed by LF
-            if ($crFound && $char !== self::LF) {
+                // CR NOT followed by LF
                 throw new UnexpectedValueException('Unexpected carriage return detected');
             }
 
             // LF in isolation
-            if (! $crFound && $char === self::LF) {
+            if ($char === self::LF) {
                 throw new UnexpectedValueException('Unexpected line feed detected');
             }
 
