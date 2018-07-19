@@ -306,14 +306,29 @@ class ServerRequestFactoryTest extends TestCase
         $this->assertNull($uri->getPort());
     }
 
-    public function testMarshalUriDetectsHttpsSchemeFromServerValue()
+    /**
+     * @return array
+     */
+    public function httpsParamProvider()
+    {
+        return [
+            'lowercase' => ['https'],
+            'uppercase' => ['HTTPS'],
+        ];
+    }
+
+    /**
+     * @dataProvider httpsParamProvider
+     * @param string $param
+     */
+    public function testMarshalUriDetectsHttpsSchemeFromServerValue($param)
     {
         $request = new ServerRequest();
         $request = $request->withUri(new Uri('http://example.com/'));
         $request = $request->withHeader('Host', 'example.com');
 
         $server  = [
-            'HTTPS' => true,
+            $param => true,
         ];
 
         $uri = marshalUriFromSapi($server, $request->getHeaders());
@@ -322,14 +337,34 @@ class ServerRequestFactoryTest extends TestCase
         $this->assertSame('https', $uri->getScheme());
     }
 
-    public function testMarshalUriUsesHttpSchemeIfHttpsServerValueEqualsOff()
+    /**
+     * @return iterable
+     */
+    public function httpsDisableParamProvider()
+    {
+        foreach ($this->httpsParamProvider() as $key => $data) {
+            $param = array_shift($data);
+            foreach (['lowercase-off', 'uppercase-off'] as $type) {
+                $key = sprintf('%s-%s', $key, $type);
+                $value = false !== strpos($type, 'lowercase') ? 'off' : 'OFF';
+                yield $key => [$param, $value];
+            }
+        }
+    }
+
+    /**
+     * @dataProvider httpsDisableParamProvider
+     * @param string $param
+     * @param string $value
+     */
+    public function testMarshalUriUsesHttpSchemeIfHttpsServerValueEqualsOff($param, $value)
     {
         $request = new ServerRequest();
         $request = $request->withUri(new Uri('http://example.com/'));
         $request = $request->withHeader('Host', 'example.com');
 
         $server  = [
-            'HTTPS' => 'off',
+            $param => $value,
         ];
 
         $uri = marshalUriFromSapi($server, $request->getHeaders());
@@ -338,12 +373,16 @@ class ServerRequestFactoryTest extends TestCase
         $this->assertSame('http', $uri->getScheme());
     }
 
-    public function testMarshalUriDetectsHttpsSchemeFromXForwardedProtoValue()
+    /**
+     * @dataProvider httpsParamProvider
+     * @param string $xForwardedProto
+     */
+    public function testMarshalUriDetectsHttpsSchemeFromXForwardedProtoValue($xForwardedProto)
     {
         $request = new ServerRequest();
         $request = $request->withUri(new Uri('http://example.com/'));
         $request = $request->withHeader('Host', 'example.com');
-        $request = $request->withHeader('X-Forwarded-Proto', 'https');
+        $request = $request->withHeader('X-Forwarded-Proto', $xForwardedProto);
 
         $server  = [];
 

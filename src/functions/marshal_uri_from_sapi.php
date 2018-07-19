@@ -172,9 +172,15 @@ function marshalUriFromSapi(array $server, array $headers)
 
     // URI scheme
     $scheme = 'http';
-    $https  = array_key_exists('HTTPS', $server) ? $server['HTTPS'] : false;
-    if (($https && 'off' !== $https)
-        || $getHeaderFromArray('x-forwarded-proto', $headers, false) === 'https'
+    if (array_key_exists('HTTPS', $server)) {
+        $https = $server['HTTPS'];
+    } elseif (array_key_exists('https', $server)) {
+        $https = $server['https'];
+    } else {
+        $https = false;
+    }
+    if (($https && 'off' !== strtolower($https))
+        || strtolower($getHeaderFromArray('x-forwarded-proto', $headers, false)) === 'https'
     ) {
         $scheme = 'https';
     }
