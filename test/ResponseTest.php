@@ -78,7 +78,7 @@ class ResponseTest extends TestCase
         $records = $xpath->query('//ns:record');
 
         foreach ($records as $record) {
-            $value = $xpath->query('.//ns:value', $record)->item(0)->nodeValue;
+            $value = (int) $xpath->query('.//ns:value', $record)->item(0)->nodeValue;
             $description = $xpath->query('.//ns:description', $record)->item(0)->nodeValue;
 
             if (in_array($description, ['Unassigned', '(Unused)'])) {
@@ -185,6 +185,7 @@ class ResponseTest extends TestCase
             'too-high' => [600],
             'null' => [null],
             'string' => ['foo'],
+            'string-integer' => ['200'],
         ];
     }
 

@@ -106,6 +106,6 @@ final class Serializer extends AbstractSerializer
             throw new UnexpectedValueException('No status line detected');
         }
 
-        return [$matches['version'], $matches['status'], isset($matches['reason']) ? $matches['reason'] : ''];
+        return [$matches['version'], (int) $matches['status'], isset($matches['reason']) ? $matches['reason'] : ''];
     }
 }
