@@ -251,10 +251,13 @@ trait RequestTrait
      */
     public function withUri(UriInterface $uri, $preserveHost = false)
     {
+        $normalizedHeader = 'host';
         $new = clone $this;
         $new->uri = $uri;
 
-        if ($preserveHost && $this->hasHeader('Host')) {
+        $hasHeader = isset($this->headerNames[$normalizedHeader]);
+
+        if ($preserveHost && isset($hasHeader)) {
             return $new;
         }
 
@@ -267,18 +270,13 @@ trait RequestTrait
             $host .= ':' . $uri->getPort();
         }
 
-        $new->headerNames['host'] = 'Host';
-
-        // Remove an existing host header if present, regardless of current
-        // de-normalization of the header name.
-        // @see https://github.com/zendframework/zend-diactoros/issues/91
-        foreach (array_keys($new->headers) as $header) {
-            if (strtolower($header) === 'host') {
-                unset($new->headers[$header]);
-            }
+        if ($hasHeader) {
+            unset($new->headers[$new->headerNames[$normalizedHeader]]);
         }
 
-        $new->headers['Host'] = [$host];
+        $header = 'Host';
+        $new->headerNames[$normalizedHeader] = $header;
+        $new->headers[$header] = [$host];
 
         return $new;
     }
