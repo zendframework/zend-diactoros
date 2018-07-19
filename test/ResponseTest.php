@@ -112,11 +112,27 @@ class ResponseTest extends TestCase
         $this->assertSame('Foo Bar!', $response->getReasonPhrase());
     }
 
-    public function testCannotCreateReasonPhraseNotString()
+    public function invalidReasonPhrases()
+    {
+        return [
+            'true' => [ true ],
+            'false' => [ false ],
+            'array' => [ [ 200 ] ],
+            'object' => [ (object) [ 'reasonPhrase' => 'Ok' ] ],
+            'integer' => [99],
+            'float' => [400.5],
+            'null' => [null],
+        ];
+    }
+
+    /**
+     * @dataProvider invalidReasonPhrases
+     */
+    public function testWithStatusRaisesAnExceptionForNonStringReasonPhrases($invalidReasonPhrase)
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $response = $this->response->withStatus(422, null);
+        $this->response->withStatus(422, $invalidReasonPhrase);
     }
 
     public function testConstructorRaisesExceptionForInvalidStream()

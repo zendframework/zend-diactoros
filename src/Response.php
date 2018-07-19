@@ -175,7 +175,7 @@ class Response implements ResponseInterface
         ) {
             throw new InvalidArgumentException(sprintf(
                 'Invalid status code "%s"; must be an integer between %d and %d, inclusive',
-                (is_scalar($code) ? $code : gettype($code)),
+                is_scalar($code) ? $code : gettype($code),
                 static::MIN_STATUS_CODE_VALUE,
                 static::MAX_STATUS_CODE_VALUE
             ));
@@ -183,7 +183,7 @@ class Response implements ResponseInterface
 
         if (! is_string($reasonPhrase)) {
             throw new InvalidArgumentException(sprintf(
-                'Unsupported reason phrase; must be a string, received %s',
+                'Unsupported response reason phrase; must be a string, received %s',
                 is_object($reasonPhrase) ? get_class($reasonPhrase) : gettype($reasonPhrase)
             ));
         }
