@@ -35,26 +35,4 @@ class Request implements RequestInterface
     {
         $this->initialize($uri, $method, $body, $headers);
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getHeaders()
-    {
-        return $this->headers;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getHeader($header)
-    {
-        $normalized = strtolower($header);
-
-        if (! isset($this->headerNames[$normalized])) {
-            return [];
-        }
-
-        return $this->headers[$this->headerNames[$normalized]];
-    }
 }

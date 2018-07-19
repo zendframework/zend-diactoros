@@ -123,7 +123,12 @@ trait MessageTrait
      */
     public function hasHeader($header)
     {
-        return isset($this->headerNames[strtolower($header)]);
+        return $this->hasHeaderNormalized(strtolower($header));
+    }
+
+    private function hasHeaderNormalized($normalizedHeader)
+    {
+        return isset($this->headerNames[$normalizedHeader]);
     }
 
     /**
@@ -142,13 +147,13 @@ trait MessageTrait
      */
     public function getHeader($header)
     {
-        if (! $this->hasHeader($header)) {
+        $normalized = strtolower($header);
+
+        if (! $this->hasHeaderNormalized($normalized)) {
             return [];
         }
 
-        $header = $this->headerNames[strtolower($header)];
-
-        return $this->headers[$header];
+        return $this->headers[$this->headerNames[$normalized]];
     }
 
     /**
@@ -198,16 +203,16 @@ trait MessageTrait
      */
     public function withHeader($header, $value)
     {
-        $this->assertHeader($header);
+        $new = clone $this;
+        $new->assertHeader($header);
 
         $normalized = strtolower($header);
 
-        $new = clone $this;
-        if ($new->hasHeader($header)) {
+        if ($new->hasHeaderNormalized($normalized)) {
             unset($new->headers[$new->headerNames[$normalized]]);
         }
 
-        $value = $this->filterHeaderValue($value);
+        $value = $new->filterHeaderValue($value);
 
         $new->headerNames[$normalized] = $header;
         $new->headers[$header]         = $value;
@@ -262,18 +267,18 @@ trait MessageTrait
      */
     public function withoutHeader($header)
     {
-        if (! $this->hasHeader($header)) {
-            return clone $this;
-        }
-
         $normalized = strtolower($header);
-        $original   = $this->headerNames[$normalized];
 
         if ($normalized === 'host') {
             return $this;
         }
 
+        if (! $this->hasHeaderNormalized($normalized)) {
+            return clone $this;
+        }
+
         $new = clone $this;
+        $original = $new->headerNames[$normalized];
         unset($new->headers[$original], $new->headerNames[$normalized]);
         return $new;
     }
