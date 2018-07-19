@@ -22,6 +22,10 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
+- [#318](https://github.com/zendframework/zend-diactoros/pull/318) fixes the logic for discovering whether an HTTPS scheme is in play
+  to be case insensitive when comparing header and SAPI values, ensuring no
+  false negative lookups occur.
+
 - [#314](https://github.com/zendframework/zend-diactoros/pull/314) modifies error handling around opening a file resource within
   `Zend\Diactoros\Stream::setStream()` to no longer use the second argument to
   `set_error_handler()`, and instead check the error type in the handler itself;
