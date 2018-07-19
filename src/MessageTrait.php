@@ -212,12 +212,7 @@ trait MessageTrait
             unset($new->headers[$new->headerNames[$normalized]]);
         }
 
-        $value = $new->filterHeaderValue($value);
-
-        $new->headerNames[$normalized] = $header;
-        $new->headers[$header]         = $value;
-
-        return $new;
+        return $this->addNewHeader($new, $normalized, $header, $value);
     }
 
     /**
@@ -241,16 +236,29 @@ trait MessageTrait
     {
         $this->assertHeader($header);
 
-        if (! $this->hasHeader($header)) {
-            return $this->withHeader($header, $value);
-        }
-
-        $header = $this->headerNames[strtolower($header)];
+        $normalized = strtolower($header);
 
         $new = clone $this;
-        $value = $this->filterHeaderValue($value);
+
+        if (! $this->hasHeaderNormalized($normalized)) {
+            return $new->addNewHeader($new, $normalized, $header, $value);
+        }
+
+        $header = $new->headerNames[$normalized];
+
+        $value = $new->filterHeaderValue($value);
         $new->headers[$header] = array_merge($this->headers[$header], $value);
         return $new;
+    }
+
+    private function addNewHeader(self $instance, $normalizedHeader, $header, $value)
+    {
+        $value = $instance->filterHeaderValue($value);
+
+        $instance->headerNames[$normalizedHeader] = $header;
+        $instance->headers[$header] = $value;
+
+        return $instance;
     }
 
     /**
@@ -339,19 +347,15 @@ trait MessageTrait
      */
     private function setHeaders(array $originalHeaders)
     {
-        $headerNames = $headers = [];
+        $this->headerNames = $this->headers = [];
 
         foreach ($originalHeaders as $header => $value) {
-            $value = $this->filterHeaderValue($value);
+            $normalized = strtolower($header);
 
             $this->assertHeader($header);
 
-            $headerNames[strtolower($header)] = $header;
-            $headers[$header] = $value;
+            $this->addNewHeader($this, $normalized, $header, $value);
         }
-
-        $this->headerNames = $headerNames;
-        $this->headers = $headers;
     }
 
     /**
