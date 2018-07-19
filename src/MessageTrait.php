@@ -204,7 +204,6 @@ trait MessageTrait
     public function withHeader($header, $value)
     {
         $new = clone $this;
-        $new->assertHeader($header);
 
         $normalized = strtolower($header);
 
@@ -234,8 +233,6 @@ trait MessageTrait
      */
     public function withAddedHeader($header, $value)
     {
-        $this->assertHeader($header);
-
         $normalized = strtolower($header);
 
         $new = clone $this;
@@ -246,6 +243,7 @@ trait MessageTrait
 
         $header = $new->headerNames[$normalized];
 
+        $this->assertHeader($header);
         $value = $new->filterHeaderValue($value);
         $new->headers[$header] = array_merge($this->headers[$header], $value);
         return $new;
@@ -253,6 +251,7 @@ trait MessageTrait
 
     private function addNewHeader(self $instance, $normalizedHeader, $header, $value)
     {
+        $instance->assertHeader($header);
         $value = $instance->filterHeaderValue($value);
 
         $instance->headerNames[$normalizedHeader] = $header;
@@ -347,12 +346,8 @@ trait MessageTrait
      */
     private function setHeaders(array $originalHeaders)
     {
-        $this->headerNames = $this->headers = [];
-
         foreach ($originalHeaders as $header => $value) {
             $normalized = strtolower($header);
-
-            $this->assertHeader($header);
 
             $this->addNewHeader($this, $normalized, $header, $value);
         }
