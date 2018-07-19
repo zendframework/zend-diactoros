@@ -41,14 +41,7 @@ class Request implements RequestInterface
      */
     public function getHeaders()
     {
-        $headers = $this->headers;
-        if (! $this->hasHeader('host')
-            && $this->uri->getHost()
-        ) {
-            $headers['Host'] = [$this->getHostFromUri()];
-        }
-
-        return $headers;
+        return $this->headers;
     }
 
     /**
@@ -56,18 +49,12 @@ class Request implements RequestInterface
      */
     public function getHeader($header)
     {
-        if (! $this->hasHeader($header)) {
-            if (strtolower($header) === 'host'
-                && $this->uri->getHost()
-            ) {
-                return [$this->getHostFromUri()];
-            }
+        $normalized = strtolower($header);
 
+        if (! isset($this->headerNames[$normalized])) {
             return [];
         }
 
-        $header = $this->headerNames[strtolower($header)];
-
-        return $this->headers[$header];
+        return $this->headers[$this->headerNames[$normalized]];
     }
 }

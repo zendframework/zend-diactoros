@@ -269,6 +269,10 @@ trait MessageTrait
         $normalized = strtolower($header);
         $original   = $this->headerNames[$normalized];
 
+        if ($normalized === 'host') {
+            return $this;
+        }
+
         $new = clone $this;
         unset($new->headers[$original], $new->headerNames[$normalized]);
         return $new;
