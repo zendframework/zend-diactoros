@@ -22,7 +22,11 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#314](https://github.com/zendframework/zend-diactoros/pull/314) modifies error handling around opening a file resource within
+  `Zend\Diactoros\Stream::setStream()` to no longer use the second argument to
+  `set_error_handler()`, and instead check the error type in the handler itself;
+  this fixes an issue when the handler is nested inside another error handler,
+  which currently has buggy behavior within the PHP engine.
 
 ## 1.8.1 - 2018-07-09
 
