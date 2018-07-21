@@ -335,11 +335,15 @@ class Uri implements UriInterface
      */
     public function withPort($port)
     {
-        if (! is_int($port) && $port !== null) {
-            throw new InvalidArgumentException(sprintf(
-                'Invalid port "%s" specified; must be an integer, or null',
-                (is_object($port) ? get_class($port) : gettype($port))
-            ));
+        if ($port !== null) {
+            if (! is_numeric($port) || is_float($port)) {
+                throw new InvalidArgumentException(sprintf(
+                    'Invalid port "%s" specified; must be an integer, an integer string, or null',
+                    (is_object($port) ? get_class($port) : gettype($port))
+                ));
+            }
+
+            $port = (int) $port;
         }
 
         if ($port === $this->port) {

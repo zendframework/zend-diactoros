@@ -137,6 +137,7 @@ class UriTest extends TestCase
         return [
             'null'         => [ null ],
             'int'          => [ 3000 ],
+            'string-int'   => [ '3000' ],
         ];
     }
 
@@ -158,7 +159,7 @@ class UriTest extends TestCase
     public function testWithPortReturnsSameInstanceWithProvidedPortIsSameAsBefore()
     {
         $uri = new Uri('https://user:pass@local.example.com:3001/foo?bar=baz#quz');
-        $new = $uri->withPort(3001);
+        $new = $uri->withPort('3001');
         $this->assertSame($uri, $new);
         $this->assertEquals(3001, $new->getPort());
     }
@@ -169,9 +170,9 @@ class UriTest extends TestCase
             'true'       => [ true ],
             'false'      => [ false ],
             'string'     => [ 'string' ],
-            'string-int' => [ '3000' ],
+            'float'      => [ 55.5 ],
             'array'      => [ [ 3000 ] ],
-            'object'     => [ (object) [ 3000 ] ],
+            'object'     => [ (object) ['port' => 3000 ] ],
             'zero'       => [ 0 ],
             'too-small'  => [ -1 ],
             'too-big'    => [ 65536 ],
