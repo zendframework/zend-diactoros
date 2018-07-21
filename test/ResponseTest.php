@@ -78,7 +78,7 @@ class ResponseTest extends TestCase
         $records = $xpath->query('//ns:record');
 
         foreach ($records as $record) {
-            $value = (int) $xpath->query('.//ns:value', $record)->item(0)->nodeValue;
+            $value = $xpath->query('.//ns:value', $record)->item(0)->nodeValue;
             $description = $xpath->query('.//ns:description', $record)->item(0)->nodeValue;
 
             if (in_array($description, ['Unassigned', '(Unused)'])) {
@@ -140,7 +140,10 @@ class ResponseTest extends TestCase
     {
         $response = $this->response->withStatus($code);
 
-        $this->assertSame($code, $response->getStatusCode());
+        $result = $response->getStatusCode();
+
+        $this->assertSame((int) $code, $result);
+        $this->assertInternalType('int', $result);
     }
 
     public function validStatusCodes()
@@ -148,6 +151,7 @@ class ResponseTest extends TestCase
         return [
             'minimum' => [100],
             'middle' => [300],
+            'string-integer' => ['300'],
             'maximum' => [599],
         ];
     }
@@ -185,7 +189,6 @@ class ResponseTest extends TestCase
             'too-high' => [600],
             'null' => [null],
             'string' => ['foo'],
-            'string-integer' => ['200'],
         ];
     }
 

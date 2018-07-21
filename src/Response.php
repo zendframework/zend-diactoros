@@ -174,7 +174,8 @@ class Response implements ResponseInterface
      */
     private function setStatusCode($code)
     {
-        if (! is_int($code)
+        if (! is_numeric($code)
+            || is_float($code)
             || $code < static::MIN_STATUS_CODE_VALUE
             || $code > static::MAX_STATUS_CODE_VALUE
         ) {
@@ -185,6 +186,6 @@ class Response implements ResponseInterface
                 static::MAX_STATUS_CODE_VALUE
             ));
         }
-        $this->statusCode = $code;
+        $this->statusCode = (int) $code;
     }
 }
