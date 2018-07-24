@@ -22,6 +22,10 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
+- [#321](https://github.com/zendframework/zend-diactoros/pull/321) updates the logic in `Uri::withPort()` to ensure that it checks that the
+  value provided is either an integer or a string integer, as only those values
+  may be cast to integer without data loss.
+
 - [#320](https://github.com/zendframework/zend-diactoros/pull/320) adds checking within `Response` to ensure that the provided reason
   phrase is a string; an `InvalidArgumentException` is now raised if it is not. This change
   ensures the class adheres strictly to the PSR-7 specification.
