@@ -36,10 +36,10 @@ class PhpInputStreamTest extends TestCase
         return file_get_contents($this->file);
     }
 
-    public function assertStreamContents($test)
+    public function assertStreamContents($test, $message = '')
     {
         $content = $this->getFileContents();
-        $this->assertSame($content, $test);
+        $this->assertSame($content, $test, $message);
     }
 
     public function testStreamIsNeverWritable()
