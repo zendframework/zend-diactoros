@@ -22,7 +22,9 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#319](https://github.com/zendframework/zend-diactoros/pull/319) provides a fix to `Zend\Diactoros\Response` that ensures that the status
+  code returned is _always_ an integer (and never a string containing an
+  integer), thus ensuring it strictly adheres to the PSR-7 specification.
 
 ## 1.8.2 - 2018-07-19
 
