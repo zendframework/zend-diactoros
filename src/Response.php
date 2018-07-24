@@ -186,6 +186,6 @@ class Response implements ResponseInterface
                 static::MAX_STATUS_CODE_VALUE
             ));
         }
-        $this->statusCode = $code;
+        $this->statusCode = (int) $code;
     }
 }

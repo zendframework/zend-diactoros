@@ -140,7 +140,10 @@ class ResponseTest extends TestCase
     {
         $response = $this->response->withStatus($code);
 
-        $this->assertSame($code, $response->getStatusCode());
+        $result = $response->getStatusCode();
+
+        $this->assertSame((int) $code, $result);
+        $this->assertInternalType('int', $result);
     }
 
     public function validStatusCodes()
@@ -148,6 +151,7 @@ class ResponseTest extends TestCase
         return [
             'minimum' => [100],
             'middle' => [300],
+            'string-integer' => ['300'],
             'maximum' => [599],
         ];
     }
