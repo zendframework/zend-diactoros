@@ -161,7 +161,7 @@ class UriTest extends TestCase
         $uri = new Uri('https://user:pass@local.example.com:3001/foo?bar=baz#quz');
         $new = $uri->withPort('3001');
         $this->assertSame($uri, $new);
-        $this->assertEquals(3001, $new->getPort());
+        $this->assertSame(3001, $new->getPort());
     }
 
     public function invalidPorts()
