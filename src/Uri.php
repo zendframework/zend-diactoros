@@ -111,6 +111,10 @@ class Uri implements UriInterface
      */
     public function __construct($uri = '')
     {
+        if ('' === $uri) {
+            return;
+        }
+
         if (! is_string($uri)) {
             throw new InvalidArgumentException(sprintf(
                 'URI passed to constructor must be a string; received "%s"',
@@ -118,9 +122,7 @@ class Uri implements UriInterface
             ));
         }
 
-        if ('' !== $uri) {
-            $this->parseUri($uri);
-        }
+        $this->parseUri($uri);
     }
 
     /**
@@ -282,7 +284,7 @@ class Uri implements UriInterface
         }
         if (null !== $password && ! is_string($password)) {
             throw new InvalidArgumentException(sprintf(
-                '%s expects a string password argument; received %s',
+                '%s expects a string or null password argument; received %s',
                 __METHOD__,
                 (is_object($password) ? get_class($password) : gettype($password))
             ));
@@ -333,14 +335,14 @@ class Uri implements UriInterface
      */
     public function withPort($port)
     {
-        if (! is_numeric($port) && $port !== null) {
-            throw new InvalidArgumentException(sprintf(
-                'Invalid port "%s" specified; must be an integer, an integer string, or null',
-                (is_object($port) ? get_class($port) : gettype($port))
-            ));
-        }
-
         if ($port !== null) {
+            if (! is_numeric($port) || is_float($port)) {
+                throw new InvalidArgumentException(sprintf(
+                    'Invalid port "%s" specified; must be an integer, an integer string, or null',
+                    (is_object($port) ? get_class($port) : gettype($port))
+                ));
+            }
+
             $port = (int) $port;
         }
 
@@ -559,7 +561,7 @@ class Uri implements UriInterface
             return '';
         }
 
-        if (! array_key_exists($scheme, $this->allowedSchemes)) {
+        if (! isset($this->allowedSchemes[$scheme])) {
             throw new InvalidArgumentException(sprintf(
                 'Unsupported scheme "%s"; must be any empty string or in the set (%s)',
                 $scheme,
@@ -655,7 +657,7 @@ class Uri implements UriInterface
     private function splitQueryValue($value)
     {
         $data = explode('=', $value, 2);
-        if (1 === count($data)) {
+        if (! isset($data[1])) {
             $data[] = null;
         }
         return $data;
