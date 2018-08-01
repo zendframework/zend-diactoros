@@ -124,7 +124,11 @@ function marshalUriFromSapi(array $server, array $headers)
      * Detect the path for the request
      *
      * Looks at a variety of criteria in order to attempt to autodetect the base
-     * request path, including rewrite URIs, proxy URIs, etc.
+     * request path, including:
+     *
+     * - IIS7 UrlRewrite environment
+     * - REQUEST_URI
+     * - ORIG_PATH_INFO
      *
      * From ZF2's Zend\Http\PhpEnvironment\Request class
      * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
@@ -143,18 +147,6 @@ function marshalUriFromSapi(array $server, array $headers)
         }
 
         $requestUri = array_key_exists('REQUEST_URI', $server) ? $server['REQUEST_URI'] : null;
-
-        // Check this first so IIS will catch.
-        $httpXRewriteUrl = array_key_exists('HTTP_X_REWRITE_URL', $server) ? $server['HTTP_X_REWRITE_URL'] : null;
-        if ($httpXRewriteUrl !== null) {
-            $requestUri = $httpXRewriteUrl;
-        }
-
-        // Check for IIS 7.0 or later with ISAPI_Rewrite
-        $httpXOriginalUrl = array_key_exists('HTTP_X_ORIGINAL_URL', $server) ? $server['HTTP_X_ORIGINAL_URL'] : null;
-        if ($httpXOriginalUrl !== null) {
-            $requestUri = $httpXOriginalUrl;
-        }
 
         if ($requestUri !== null) {
             return preg_replace('#^[^/:]+://[^/]+#', '', $requestUri);

@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 1.8.4 - TBD
+## 1.8.4 - 2018-08-01
 
 ### Added
 
@@ -10,7 +10,48 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Changed
 
-- Nothing.
+- This release modifies how `ServerRequestFactory` marshals the request URI. In
+  prior releases, we would attempt to inspect the `X-Rewrite-Url` and
+  `X-Original-Url` headers, using their values, if present. These headers are
+  issued by the ISAPI_Rewrite module for IIS (developed by HeliconTech).
+  However, we have no way of guaranteeing that the module is what issued the
+  headers, making it an unreliable source for discovering the URI. As such, we
+  have removed this feature in this release of Diactoros.
+
+  If you are developing a middleware application, you can mimic the
+  functionality via middleware as follows:
+
+  ```php
+  use Psr\Http\Message\ResponseInterface;
+  use Psr\Http\Message\ServerRequestInterface;
+  use Psr\Http\Server\RequestHandlerInterface;
+  use Zend\Diactoros\Uri;
+
+  public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
+  {
+      $requestUri = null;
+
+      $httpXRewriteUrl = $request->getHeaderLine('X-Rewrite-Url');
+      if ($httpXRewriteUrl !== null) {
+          $requestUri = $httpXRewriteUrl;
+      }
+
+      $httpXOriginalUrl = $request->getHeaderLine('X-Original-Url');
+      if ($httpXOriginalUrl !== null) {
+          $requestUri = $httpXOriginalUrl;
+      }
+
+      if ($requestUri !== null) {
+          $request = $request->withUri(new Uri($requestUri));
+      }
+
+      return $handler->handle($request);
+  }
+  ```
+
+  If you use middleware such as the above, make sure you also instruct your web
+  server to strip any incoming headers of the same name so that you can
+  guarantee they are issued by the ISAPI_Rewrite module.
 
 ### Deprecated
 
