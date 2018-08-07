@@ -124,7 +124,7 @@ abstract class ServerRequestFactory
      */
     public static function getHeader($header, array $headers, $default = null)
     {
-        $header  = strtolower($name);
+        $header  = strtolower($header);
         $headers = array_change_key_case($headers, CASE_LOWER);
         if (array_key_exists($header, $headers)) {
             $value = is_array($headers[$header]) ? implode(', ', $headers[$header]) : $headers[$header];
