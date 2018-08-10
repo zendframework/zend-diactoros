@@ -24,7 +24,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - Nothing.
 
-## 1.8.5 - TBD
+## 1.8.6 - TBD
 
 ### Added
 
@@ -45,6 +45,30 @@ All notable changes to this project will be documented in this file, in reverse 
 ### Fixed
 
 - Nothing.
+
+## 1.8.5 - 2018-08-10
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#324](https://github.com/zendframework/zend-diactoros/pull/324) fixes a reference
+  to an undefined variable in the `ServerRequestFactory`, which made it
+  impossible to fetch a specific header by name.
 
 ## 1.8.4 - 2018-08-01
 
