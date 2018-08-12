@@ -16,7 +16,7 @@ class UploadedFileTest extends UploadedFileIntegrationTest
 {
     public static function setUpBeforeClass()
     {
-        if (!class_exists(RequestFactory::class)) {
+        if (! class_exists(RequestFactory::class)) {
             self::markTestSkipped('You need to install http-interop/http-factory-diactoros to run integration tests');
         }
         parent::setUpBeforeClass();
