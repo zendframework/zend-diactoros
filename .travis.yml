@@ -9,7 +9,7 @@ cache:
 env:
   global:
     - COMPOSER_ARGS="--no-interaction"
-    - COVERAGE_DEPS="php-coveralls/php-coveralls"
+    - DEPENDENCIES=""
     - LEGACY_DEPS="phpunit/phpunit"
 
 matrix:
@@ -31,6 +31,7 @@ matrix:
         - DEPS=locked
         - CHECK_CS=true
         - TEST_COVERAGE=true
+        - DEPENDENCIES="php-coveralls/php-coveralls"
     - php: 7
       env:
         - DEPS=latest
@@ -52,6 +53,11 @@ matrix:
     - php: 7.2
       env:
         - DEPS=latest
+    - php: 7.2
+      name: Integration tests
+      env:
+        - DEPENDENCIES="http-interop/http-factory-diactoros"
+
 
 before_install:
   - if [[ $TEST_COVERAGE != 'true' && "$(php --version | grep xdebug -ci)" -ge 1 ]]; then phpenv config-rm xdebug.ini || return 0 ; fi
@@ -62,7 +68,7 @@ install:
   - if [[ $TRAVIS_PHP_VERSION =~ ^5.6 ]]; then travis_retry composer update $COMPOSER_ARGS --with-dependencies $LEGACY_DEPS ; fi
   - if [[ $DEPS == 'latest' ]]; then travis_retry composer update $COMPOSER_ARGS ; fi
   - if [[ $DEPS == 'lowest' ]]; then travis_retry composer update --prefer-lowest --prefer-stable $COMPOSER_ARGS ; fi
-  - if [[ $TEST_COVERAGE == 'true' ]]; then travis_retry composer require --dev $COMPOSER_ARGS $COVERAGE_DEPS ; fi
+  - if ! [ -v "$DEPENDENCIES" ]; then travis_retry composer require --dev $COMPOSER_ARGS $DEPENDENCIES ; fi
   - stty cols 120 && composer show
 
 script:
