@@ -6,7 +6,18 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- Nothing.
+- [#326](https://github.com/zendframework/zend-diactoros/pull/326) adds [PSR-17](https://www.php-fig.org/psr/psr-17/) HTTP Message Factory implementations, including:
+
+  - `Zend\Diactoros\RequestFactory`
+  - `Zend\Diactoros\ResponseFactory`
+  - `Zend\Diactoros\ServerRequestFactory`
+  - `Zend\Diactoros\StreamFactory`
+  - `Zend\Diactoros\UploadedFileFactory`
+  - `Zend\Diactoros\UriFactory`
+
+  These factories may be used to produce the associated instances; we encourage
+  users to rely on the PSR-17 factory interfaces to allow exchanging PSR-7
+  implementations within their applications.
 
 ### Changed
 
