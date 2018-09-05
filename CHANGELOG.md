@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 1.8.6 - TBD
+## 1.8.6 - 2018-09-05
 
 ### Added
 
@@ -10,7 +10,13 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Changed
 
-- Nothing.
+- [#325](https://github.com/zendframework/zend-diactoros/pull/325) changes the behavior of `ServerRequest::withParsedBody()`. Per
+- PSR-7, it now no longer allows values other than `null`, arrays, or objects.
+
+- [#325](https://github.com/zendframework/zend-diactoros/pull/325) changes the behavior of each of `Request`, `ServerRequest`, and
+  `Response` in relation to the validation of header values. Previously, we
+  allowed empty arrays to be provided via `withHeader()`; however, this was
+  contrary to the PSR-7 specification. Empty arrays are no longer allowed.
 
 ### Deprecated
 
@@ -22,7 +28,11 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#325](https://github.com/zendframework/zend-diactoros/pull/325) ensures that `Uri::withUserInfo()` no longer ignores values of
+  `0` (numeric zero).
+
+- [#325](https://github.com/zendframework/zend-diactoros/pull/325) fixes how header values are merged when calling
+  `withAddedHeader()`, ensuring that array keys are ignored.
 
 ## 1.8.5 - 2018-08-10
 
