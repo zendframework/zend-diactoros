@@ -385,11 +385,18 @@ trait MessageTrait
             $values = [$values];
         }
 
+        if ([] === $values) {
+            throw new InvalidArgumentException(
+                'Invalid header value: must be a string or array of strings; '
+                . 'cannot be an empty array'
+            );
+        }
+
         return array_map(function ($value) {
             HeaderSecurity::assertValid($value);
 
             return (string) $value;
-        }, $values);
+        }, array_values($values));
     }
 
     /**

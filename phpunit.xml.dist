@@ -10,4 +10,13 @@
             <directory suffix=".php">src</directory>
         </whitelist>
     </filter>
+
+    <php>
+        <const name="REQUEST_FACTORY" value="Http\Factory\Diactoros\RequestFactory"/>
+        <const name="RESPONSE_FACTORY" value="Http\Factory\Diactoros\ResponseFactory"/>
+        <const name="SERVER_REQUEST_FACTORY" value="Http\Factory\Diactoros\ServerRequestFactory"/>
+        <const name="STREAM_FACTORY" value="Http\Factory\Diactoros\StreamFactory"/>
+        <const name="UPLOADED_FILE_FACTORY" value="Http\Factory\Diactoros\UploadedFileFactory"/>
+        <const name="URI_FACTORY" value="Http\Factory\Diactoros\UriFactory"/>
+    </php>
 </phpunit>
