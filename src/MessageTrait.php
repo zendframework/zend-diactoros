@@ -396,7 +396,7 @@ trait MessageTrait
             HeaderSecurity::assertValid($value);
 
             return (string) $value;
-        }, $values);
+        }, array_values($values));
     }
 
     /**
