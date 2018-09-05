@@ -30,6 +30,7 @@
   "require-dev": {
     "ext-dom": "*",
     "ext-libxml": "*",
+    "php-http/psr7-integration-tests": "dev-master",
     "phpunit/phpunit": "^5.7.16 || ^6.0.8 || ^7.2.7",
     "zendframework/zend-coding-standard": "~1.0"
   },
