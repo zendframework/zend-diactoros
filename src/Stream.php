@@ -330,8 +330,12 @@ class Stream implements StreamInterface
 
         if (is_string($stream)) {
             set_error_handler(function ($e) use (&$error) {
+                if ($e !== E_WARNING) {
+                    return;
+                }
+
                 $error = $e;
-            }, E_WARNING);
+            });
             $resource = fopen($stream, $mode);
             restore_error_handler();
         }

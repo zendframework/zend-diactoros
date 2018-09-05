@@ -112,6 +112,29 @@ class ResponseTest extends TestCase
         $this->assertSame('Foo Bar!', $response->getReasonPhrase());
     }
 
+    public function invalidReasonPhrases()
+    {
+        return [
+            'true' => [ true ],
+            'false' => [ false ],
+            'array' => [ [ 200 ] ],
+            'object' => [ (object) [ 'reasonPhrase' => 'Ok' ] ],
+            'integer' => [99],
+            'float' => [400.5],
+            'null' => [null],
+        ];
+    }
+
+    /**
+     * @dataProvider invalidReasonPhrases
+     */
+    public function testWithStatusRaisesAnExceptionForNonStringReasonPhrases($invalidReasonPhrase)
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->response->withStatus(422, $invalidReasonPhrase);
+    }
+
     public function testConstructorRaisesExceptionForInvalidStream()
     {
         $this->expectException(InvalidArgumentException::class);
@@ -140,7 +163,10 @@ class ResponseTest extends TestCase
     {
         $response = $this->response->withStatus($code);
 
-        $this->assertSame($code, $response->getStatusCode());
+        $result = $response->getStatusCode();
+
+        $this->assertSame((int) $code, $result);
+        $this->assertInternalType('int', $result);
     }
 
     public function validStatusCodes()
@@ -148,6 +174,7 @@ class ResponseTest extends TestCase
         return [
             'minimum' => [100],
             'middle' => [300],
+            'string-integer' => ['300'],
             'maximum' => [599],
         ];
     }
