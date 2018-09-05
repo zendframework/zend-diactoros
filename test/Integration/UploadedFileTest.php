@@ -7,8 +7,8 @@
 
 namespace ZendTest\Diactoros\Integration;
 
-use Http\Factory\Diactoros\RequestFactory;
 use Http\Psr7Test\UploadedFileIntegrationTest;
+use Zend\Diactoros\RequestFactory;
 use Zend\Diactoros\Stream;
 use Zend\Diactoros\UploadedFile;
 

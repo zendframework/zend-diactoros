@@ -4,8 +4,60 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0727246a3cdf80b2bb87748aa12ec6b9",
+    "content-hash": "efa171d75259239d91bf4012edd5620e",
     "packages": [
+        {
+            "name": "psr/http-factory",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/http-factory.git",
+                "reference": "378bfe27931ecc54ff824a20d6f6bfc303bbd04c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/http-factory/zipball/378bfe27931ecc54ff824a20d6f6bfc303bbd04c",
+                "reference": "378bfe27931ecc54ff824a20d6f6bfc303bbd04c",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0.0",
+                "psr/http-message": "^1.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psr\\Http\\Message\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "http://www.php-fig.org/"
+                }
+            ],
+            "description": "Common interfaces for PSR-7 HTTP message factories",
+            "keywords": [
+                "factory",
+                "http",
+                "message",
+                "psr",
+                "psr-17",
+                "psr-7",
+                "request",
+                "response"
+            ],
+            "time": "2018-07-30T21:54:04+00:00"
+        },
         {
             "name": "psr/http-message",
             "version": "1.0.1",
@@ -111,6 +163,50 @@
                 "instantiate"
             ],
             "time": "2017-07-22T11:58:36+00:00"
+        },
+        {
+            "name": "http-interop/http-factory-tests",
+            "version": "0.5.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/http-interop/http-factory-tests.git",
+                "reference": "3c6c62052daeb67ca7dc3e1ea1b72c0f0cc19070"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/http-interop/http-factory-tests/zipball/3c6c62052daeb67ca7dc3e1ea1b72c0f0cc19070",
+                "reference": "3c6c62052daeb67ca7dc3e1ea1b72c0f0cc19070",
+                "shasum": ""
+            },
+            "require": {
+                "phpunit/phpunit": "^6.5 || ^7.0",
+                "psr/http-factory": "^1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Interop\\Http\\Factory\\": "test/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "http://www.php-fig.org/"
+                }
+            ],
+            "description": "Unit tests for HTTP factories",
+            "keywords": [
+                "factory",
+                "http",
+                "psr-17",
+                "psr-7",
+                "test"
+            ],
+            "time": "2018-07-31T18:30:29+00:00"
         },
         {
             "name": "myclabs/deep-copy",

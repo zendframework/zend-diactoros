@@ -7,6 +7,9 @@
 
 namespace Zend\Diactoros;
 
+use Psr\Http\Message\ServerRequestFactoryInterface;
+use Psr\Http\Message\ServerRequestInterface;
+
 use function array_key_exists;
 use function is_callable;
 
@@ -18,7 +21,7 @@ use function is_callable;
  * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
-abstract class ServerRequestFactory
+class ServerRequestFactory implements ServerRequestFactoryInterface
 {
     /**
      * Function to use to get apache request headers; present only to simplify mocking.
@@ -73,6 +76,21 @@ abstract class ServerRequestFactory
             $query ?: $_GET,
             $body ?: $_POST,
             marshalProtocolVersionFromSapi($server)
+        );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function createServerRequest(string $method, $uri, array $serverParams = []) : ServerRequestInterface
+    {
+        $uploadedFiles = [];
+
+        return new ServerRequest(
+            $serverParams,
+            $uploadedFiles,
+            $uri,
+            $method
         );
     }
 }

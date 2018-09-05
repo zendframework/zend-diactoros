@@ -7,8 +7,8 @@
 
 namespace ZendTest\Diactoros\Integration;
 
-use Http\Factory\Diactoros\RequestFactory;
 use Http\Psr7Test\ResponseIntegrationTest;
+use Zend\Diactoros\RequestFactory;
 use Zend\Diactoros\Response;
 
 class ResponseTest extends ResponseIntegrationTest

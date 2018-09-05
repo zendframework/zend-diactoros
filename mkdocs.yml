@@ -6,6 +6,7 @@ pages:
     - Installation: install.md
     - Usage: usage.md
     - Reference:
+        - Factories: factories.md
         - "Custom Responses": custom-responses.md
         - "Emitting Responses": emitting-responses.md
         - Serialization: serialization.md

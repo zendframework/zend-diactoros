@@ -568,13 +568,4 @@ class ServerRequestFactoryTest extends TestCase
         $uri = marshalUriFromSapi($server, $headers);
         $this->assertSame('/requested/path', $uri->getPath());
     }
-
-    public function testGetHeader()
-    {
-        $headers = [
-            'Host' => 'example.com'
-        ];
-
-        $this->assertSame('example.com', ServerRequestFactory::getHeader('Host', $headers));
-    }
 }

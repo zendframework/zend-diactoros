@@ -7,9 +7,9 @@
 
 namespace ZendTest\Diactoros\Integration;
 
-use Http\Factory\Diactoros\RequestFactory;
 use Http\Psr7Test\RequestIntegrationTest;
 use Zend\Diactoros\Request;
+use Zend\Diactoros\RequestFactory;
 
 class RequestTest extends RequestIntegrationTest
 {
