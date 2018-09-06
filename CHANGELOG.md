@@ -19,6 +19,23 @@ All notable changes to this project will be documented in this file, in reverse 
   users to rely on the PSR-17 factory interfaces to allow exchanging PSR-7
   implementations within their applications.
 
+- [#328](https://github.com/zendframework/zend-diactoros/pull/328) adds a package-level exception interface, `Zend\Diactoros\Exception\ExceptionInterface`,
+  and several implementations for specific exceptions raised within the package.
+  These include:
+
+  - `Zend\Diactoros\Exception\DeserializationException` (extends `UnexpectedValueException`)
+  - `Zend\Diactoros\Exception\InvalidArgumentException` (extends `InvalidArgumentException`)
+  - `Zend\Diactoros\Exception\InvalidStreamPointerPositionException` (extends `RuntimeException`)
+  - `Zend\Diactoros\Exception\SerializationException` (extends `UnexpectedValueException`)
+  - `Zend\Diactoros\Exception\UnreadableStreamException` (extends `RuntimeException`)
+  - `Zend\Diactoros\Exception\UnrecognizedProtocolVersionException` (extends `UnexpectedValueException`)
+  - `Zend\Diactoros\Exception\UnrewindableStreamException` (extends `RuntimeException`)
+  - `Zend\Diactoros\Exception\UnseekableStreamException` (extends `RuntimeException`)
+  - `Zend\Diactoros\Exception\UntellableStreamException` (extends `RuntimeException`)
+  - `Zend\Diactoros\Exception\UnwritableStreamException` (extends `RuntimeException`)
+  - `Zend\Diactoros\Exception\UploadedFileAlreadyMovedException` (extends `RuntimeException`)
+  - `Zend\Diactoros\Exception\UploadedFileErrorException` (extends `RuntimeException`)
+
 ### Changed
 
 - [#162](https://github.com/zendframework/zend-diactoros/pull/162) modifies `Serializer\Request` such that it now no longer raises an `UnexpectedValueException` via its `toString()` method
