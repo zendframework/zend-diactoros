@@ -1,13 +1,12 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-diactoros for the canonical source repository
- * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2018 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
 namespace Zend\Diactoros;
 
-use InvalidArgumentException;
 use Psr\Http\Message\UriInterface;
 
 use function array_key_exists;
@@ -107,7 +106,7 @@ class Uri implements UriInterface
 
     /**
      * @param string $uri
-     * @throws InvalidArgumentException on non-string $uri argument
+     * @throws Exception\InvalidArgumentException on non-string $uri argument
      */
     public function __construct($uri = '')
     {
@@ -116,7 +115,7 @@ class Uri implements UriInterface
         }
 
         if (! is_string($uri)) {
-            throw new InvalidArgumentException(sprintf(
+            throw new Exception\InvalidArgumentException(sprintf(
                 'URI passed to constructor must be a string; received "%s"',
                 is_object($uri) ? get_class($uri) : gettype($uri)
             ));
@@ -245,7 +244,7 @@ class Uri implements UriInterface
     public function withScheme($scheme)
     {
         if (! is_string($scheme)) {
-            throw new InvalidArgumentException(sprintf(
+            throw new Exception\InvalidArgumentException(sprintf(
                 '%s expects a string argument; received %s',
                 __METHOD__,
                 is_object($scheme) ? get_class($scheme) : gettype($scheme)
@@ -276,14 +275,14 @@ class Uri implements UriInterface
     public function withUserInfo($user, $password = null)
     {
         if (! is_string($user)) {
-            throw new InvalidArgumentException(sprintf(
+            throw new Exception\InvalidArgumentException(sprintf(
                 '%s expects a string user argument; received %s',
                 __METHOD__,
                 is_object($user) ? get_class($user) : gettype($user)
             ));
         }
         if (null !== $password && ! is_string($password)) {
-            throw new InvalidArgumentException(sprintf(
+            throw new Exception\InvalidArgumentException(sprintf(
                 '%s expects a string or null password argument; received %s',
                 __METHOD__,
                 is_object($password) ? get_class($password) : gettype($password)
@@ -312,7 +311,7 @@ class Uri implements UriInterface
     public function withHost($host)
     {
         if (! is_string($host)) {
-            throw new InvalidArgumentException(sprintf(
+            throw new Exception\InvalidArgumentException(sprintf(
                 '%s expects a string argument; received %s',
                 __METHOD__,
                 is_object($host) ? get_class($host) : gettype($host)
@@ -337,7 +336,7 @@ class Uri implements UriInterface
     {
         if ($port !== null) {
             if (! is_numeric($port) || is_float($port)) {
-                throw new InvalidArgumentException(sprintf(
+                throw new Exception\InvalidArgumentException(sprintf(
                     'Invalid port "%s" specified; must be an integer, an integer string, or null',
                     is_object($port) ? get_class($port) : gettype($port)
                 ));
@@ -352,7 +351,7 @@ class Uri implements UriInterface
         }
 
         if ($port !== null && ($port < 1 || $port > 65535)) {
-            throw new InvalidArgumentException(sprintf(
+            throw new Exception\InvalidArgumentException(sprintf(
                 'Invalid port "%d" specified; must be a valid TCP/UDP port',
                 $port
             ));
@@ -370,19 +369,19 @@ class Uri implements UriInterface
     public function withPath($path)
     {
         if (! is_string($path)) {
-            throw new InvalidArgumentException(
+            throw new Exception\InvalidArgumentException(
                 'Invalid path provided; must be a string'
             );
         }
 
         if (strpos($path, '?') !== false) {
-            throw new InvalidArgumentException(
+            throw new Exception\InvalidArgumentException(
                 'Invalid path provided; must not contain a query string'
             );
         }
 
         if (strpos($path, '#') !== false) {
-            throw new InvalidArgumentException(
+            throw new Exception\InvalidArgumentException(
                 'Invalid path provided; must not contain a URI fragment'
             );
         }
@@ -406,13 +405,13 @@ class Uri implements UriInterface
     public function withQuery($query)
     {
         if (! is_string($query)) {
-            throw new InvalidArgumentException(
+            throw new Exception\InvalidArgumentException(
                 'Query string must be a string'
             );
         }
 
         if (strpos($query, '#') !== false) {
-            throw new InvalidArgumentException(
+            throw new Exception\InvalidArgumentException(
                 'Query string must not include a URI fragment'
             );
         }
@@ -436,7 +435,7 @@ class Uri implements UriInterface
     public function withFragment($fragment)
     {
         if (! is_string($fragment)) {
-            throw new InvalidArgumentException(sprintf(
+            throw new Exception\InvalidArgumentException(sprintf(
                 '%s expects a string argument; received %s',
                 __METHOD__,
                 is_object($fragment) ? get_class($fragment) : gettype($fragment)
@@ -466,7 +465,7 @@ class Uri implements UriInterface
         $parts = parse_url($uri);
 
         if (false === $parts) {
-            throw new \InvalidArgumentException(
+            throw new Exception\InvalidArgumentException(
                 'The source URI string appears to be malformed'
             );
         }
@@ -562,7 +561,7 @@ class Uri implements UriInterface
         }
 
         if (! isset($this->allowedSchemes[$scheme])) {
-            throw new InvalidArgumentException(sprintf(
+            throw new Exception\InvalidArgumentException(sprintf(
                 'Unsupported scheme "%s"; must be any empty string or in the set (%s)',
                 $scheme,
                 implode(', ', array_keys($this->allowedSchemes))

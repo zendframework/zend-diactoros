@@ -7,7 +7,6 @@
 
 namespace Zend\Diactoros;
 
-use InvalidArgumentException;
 use Psr\Http\Message\UploadedFileInterface;
 
 use function is_array;
@@ -20,7 +19,7 @@ use function is_array;
  *
  * @param array $files
  * @return UploadedFileInterface[]
- * @throws InvalidArgumentException for unrecognized values
+ * @throws Exception\InvalidArgumentException for unrecognized values
  */
 function normalizeUploadedFiles(array $files)
 {
@@ -84,7 +83,7 @@ function normalizeUploadedFiles(array $files)
             || ! isset($files['size']) || ! is_array($files['size'])
             || ! isset($files['error']) || ! is_array($files['error'])
         ) {
-            throw new InvalidArgumentException(sprintf(
+            throw new Exception\InvalidArgumentException(sprintf(
                 '$files provided to %s MUST contain each of the keys "tmp_name",'
                 . ' "size", and "error", with each represented as an array;'
                 . ' one or more were missing or non-array values',
@@ -123,7 +122,7 @@ function normalizeUploadedFiles(array $files)
             continue;
         }
 
-        throw new InvalidArgumentException('Invalid value in files specification');
+        throw new Exception\InvalidArgumentException('Invalid value in files specification');
     }
     return $normalized;
 }

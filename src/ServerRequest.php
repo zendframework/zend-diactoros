@@ -1,13 +1,12 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-diactoros for the canonical source repository
- * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2018 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
 namespace Zend\Diactoros;
 
-use InvalidArgumentException;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
@@ -75,7 +74,7 @@ class ServerRequest implements ServerRequestInterface
      * @param array $queryParams Query params for the message, if any.
      * @param null|array|object $parsedBody The deserialized body parameters, if any.
      * @param string $protocol HTTP protocol version.
-     * @throws InvalidArgumentException for any invalid value.
+     * @throws Exception\InvalidArgumentException for any invalid value.
      */
     public function __construct(
         array $serverParams = [],
@@ -181,7 +180,7 @@ class ServerRequest implements ServerRequestInterface
     public function withParsedBody($data)
     {
         if (! is_array($data) && ! is_object($data) && null !== $data) {
-            throw new InvalidArgumentException(sprintf(
+            throw new Exception\InvalidArgumentException(sprintf(
                 '%s expects a null, array, or object argument; received %s',
                 __METHOD__,
                 gettype($data)
@@ -237,7 +236,7 @@ class ServerRequest implements ServerRequestInterface
      * Recursively validate the structure in an uploaded files array.
      *
      * @param array $uploadedFiles
-     * @throws InvalidArgumentException if any leaf is not an UploadedFileInterface instance.
+     * @throws Exception\InvalidArgumentException if any leaf is not an UploadedFileInterface instance.
      */
     private function validateUploadedFiles(array $uploadedFiles)
     {
@@ -248,7 +247,7 @@ class ServerRequest implements ServerRequestInterface
             }
 
             if (! $file instanceof UploadedFileInterface) {
-                throw new InvalidArgumentException('Invalid leaf in uploaded files structure');
+                throw new Exception\InvalidArgumentException('Invalid leaf in uploaded files structure');
             }
         }
     }

@@ -1,17 +1,13 @@
 <?php
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @see       http://github.com/zendframework/zend-diactoros for the canonical source repository
- * @copyright Copyright (c) 2015-2016 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/zendframework/zend-diactoros for the canonical source repository
+ * @copyright Copyright (c) 2015-2018 Zend Technologies USA Inc. (https://www.zend.com)
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
 namespace Zend\Diactoros;
 
-use InvalidArgumentException;
 use Psr\Http\Message\StreamInterface;
-use RuntimeException;
 
 use function array_key_exists;
 
@@ -29,7 +25,7 @@ class CallbackStream implements StreamInterface
 
     /**
      * @param callable $callback
-     * @throws InvalidArgumentException
+     * @throws Exception\InvalidArgumentException
      */
     public function __construct(callable $callback)
     {
@@ -66,7 +62,7 @@ class CallbackStream implements StreamInterface
      * Attach a new callback to the instance.
      *
      * @param callable $callback
-     * @throws InvalidArgumentException for callable callback
+     * @throws Exception\InvalidArgumentException for callable callback
      */
     public function attach(callable $callback)
     {
@@ -85,7 +81,7 @@ class CallbackStream implements StreamInterface
      */
     public function tell()
     {
-        throw new RuntimeException('Callback streams cannot tell position');
+        throw Exception\UntellableStreamException::forCallbackStream();
     }
 
     /**
@@ -109,7 +105,7 @@ class CallbackStream implements StreamInterface
      */
     public function seek($offset, $whence = SEEK_SET)
     {
-        throw new RuntimeException('Callback streams cannot seek position');
+        throw Exception\UnseekableStreamException::forCallbackStream();
     }
 
     /**
@@ -117,7 +113,7 @@ class CallbackStream implements StreamInterface
      */
     public function rewind()
     {
-        throw new RuntimeException('Callback streams cannot rewind position');
+        throw Exception\UnrewindableStreamException::forCallbackStream();
     }
 
     /**
@@ -133,7 +129,7 @@ class CallbackStream implements StreamInterface
      */
     public function write($string)
     {
-        throw new RuntimeException('Callback streams cannot write');
+        throw Exception\UnwritableStreamException::forCallbackStream();
     }
 
     /**
@@ -149,7 +145,7 @@ class CallbackStream implements StreamInterface
      */
     public function read($length)
     {
-        throw new RuntimeException('Callback streams cannot read');
+        throw Exception\UnreadableStreamException::forCallbackStream();
     }
 
     /**

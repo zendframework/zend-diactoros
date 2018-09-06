@@ -1,13 +1,13 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-diactoros for the canonical source repository
- * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2018 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
 namespace Zend\Diactoros\Response;
 
-use InvalidArgumentException;
+use Zend\Diactoros\Exception;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Stream;
 
@@ -68,7 +68,7 @@ class JsonResponse extends Response
      * @param int $status Integer status code for the response; 200 by default.
      * @param array $headers Array of headers to use at initialization.
      * @param int $encodingOptions JSON encoding options to use.
-     * @throws InvalidArgumentException if unable to encode the $data to JSON.
+     * @throws Exception\InvalidArgumentException if unable to encode the $data to JSON.
      */
     public function __construct(
         $data,
@@ -147,12 +147,12 @@ class JsonResponse extends Response
      * @param mixed $data
      * @param int $encodingOptions
      * @return string
-     * @throws InvalidArgumentException if unable to encode the $data to JSON.
+     * @throws Exception\InvalidArgumentException if unable to encode the $data to JSON.
      */
     private function jsonEncode($data, $encodingOptions)
     {
         if (is_resource($data)) {
-            throw new InvalidArgumentException('Cannot JSON encode resources');
+            throw new Exception\InvalidArgumentException('Cannot JSON encode resources');
         }
 
         // Clear json_last_error()
@@ -161,7 +161,7 @@ class JsonResponse extends Response
         $json = json_encode($data, $encodingOptions);
 
         if (JSON_ERROR_NONE !== json_last_error()) {
-            throw new InvalidArgumentException(sprintf(
+            throw new Exception\InvalidArgumentException(sprintf(
                 'Unable to encode data to JSON in %s: %s',
                 __CLASS__,
                 json_last_error_msg()

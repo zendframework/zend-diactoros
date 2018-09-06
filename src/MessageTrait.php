@@ -1,13 +1,12 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-diactoros for the canonical source repository
- * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2018 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
 namespace Zend\Diactoros;
 
-use InvalidArgumentException;
 use Psr\Http\Message\StreamInterface;
 
 use function array_map;
@@ -194,7 +193,7 @@ trait MessageTrait
      * @param string $header Case-insensitive header field name.
      * @param string|string[] $value Header value(s).
      * @return static
-     * @throws \InvalidArgumentException for invalid header names or values.
+     * @throws Exception\InvalidArgumentException for invalid header names or values.
      */
     public function withHeader($header, $value)
     {
@@ -230,7 +229,7 @@ trait MessageTrait
      * @param string $header Case-insensitive header field name to add.
      * @param string|string[] $value Header value(s).
      * @return static
-     * @throws \InvalidArgumentException for invalid header names or values.
+     * @throws Exception\InvalidArgumentException for invalid header names or values.
      */
     public function withAddedHeader($header, $value)
     {
@@ -295,7 +294,7 @@ trait MessageTrait
      *
      * @param StreamInterface $body Body.
      * @return static
-     * @throws \InvalidArgumentException When the body is not valid.
+     * @throws Exception\InvalidArgumentException When the body is not valid.
      */
     public function withBody(StreamInterface $body)
     {
@@ -311,7 +310,7 @@ trait MessageTrait
         }
 
         if (! is_string($stream) && ! is_resource($stream)) {
-            throw new InvalidArgumentException(
+            throw new Exception\InvalidArgumentException(
                 'Stream must be a string stream resource identifier, '
                 . 'an actual stream resource, '
                 . 'or a Psr\Http\Message\StreamInterface implementation'
@@ -349,17 +348,17 @@ trait MessageTrait
      * Validate the HTTP protocol version
      *
      * @param string $version
-     * @throws InvalidArgumentException on invalid HTTP protocol version
+     * @throws Exception\InvalidArgumentException on invalid HTTP protocol version
      */
     private function validateProtocolVersion($version)
     {
         if (empty($version)) {
-            throw new InvalidArgumentException(
+            throw new Exception\InvalidArgumentException(
                 'HTTP protocol version can not be empty'
             );
         }
         if (! is_string($version)) {
-            throw new InvalidArgumentException(sprintf(
+            throw new Exception\InvalidArgumentException(sprintf(
                 'Unsupported HTTP protocol version; must be a string, received %s',
                 (is_object($version) ? get_class($version) : gettype($version))
             ));
@@ -368,7 +367,7 @@ trait MessageTrait
         // HTTP/1 uses a "<major>.<minor>" numbering scheme to indicate
         // versions of the protocol, while HTTP/2 does not.
         if (! preg_match('#^(1\.[01]|2)$#', $version)) {
-            throw new InvalidArgumentException(sprintf(
+            throw new Exception\InvalidArgumentException(sprintf(
                 'Unsupported HTTP protocol version "%s" provided',
                 $version
             ));
@@ -386,7 +385,7 @@ trait MessageTrait
         }
 
         if ([] === $values) {
-            throw new InvalidArgumentException(
+            throw new Exception\InvalidArgumentException(
                 'Invalid header value: must be a string or array of strings; '
                 . 'cannot be an empty array'
             );
@@ -404,7 +403,7 @@ trait MessageTrait
      *
      * @param string $name
      *
-     * @throws InvalidArgumentException
+     * @throws Exception\InvalidArgumentException
      */
     private function assertHeader($name)
     {

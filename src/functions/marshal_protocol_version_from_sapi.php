@@ -7,8 +7,6 @@
 
 namespace Zend\Diactoros;
 
-use UnexpectedValueException;
-
 use function preg_match;
 
 /**
@@ -16,8 +14,8 @@ use function preg_match;
  *
  * @param array $server
  * @return string
- * @throws UnexpectedValueException if the $server['SERVER_PROTOCOL'] value is
- *     malformed.
+ * @throws Exception\UnrecognizedProtocolVersionException if the
+ *     $server['SERVER_PROTOCOL'] value is malformed.
  */
 function marshalProtocolVersionFromSapi(array $server)
 {
@@ -26,10 +24,9 @@ function marshalProtocolVersionFromSapi(array $server)
     }
 
     if (! preg_match('#^(HTTP/)?(?P<version>[1-9]\d*(?:\.\d)?)$#', $server['SERVER_PROTOCOL'], $matches)) {
-        throw new UnexpectedValueException(sprintf(
-            'Unrecognized protocol version (%s)',
-            $server['SERVER_PROTOCOL']
-        ));
+        throw Exception\UnrecognizedProtocolVersionException::forVersion(
+            (string) $server['SERVER_PROTOCOL']
+        );
     }
 
     return $matches['version'];

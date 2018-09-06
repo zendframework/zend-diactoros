@@ -1,14 +1,14 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-diactoros for the canonical source repository
- * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2018 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
 namespace Zend\Diactoros\Response;
 
-use InvalidArgumentException;
 use Psr\Http\Message\StreamInterface;
+use Zend\Diactoros\Exception;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Stream;
 
@@ -37,7 +37,7 @@ class XmlResponse extends Response
      * @param string|StreamInterface $xml String or stream for the message body.
      * @param int $status Integer status code for the response; 200 by default.
      * @param array $headers Array of headers to use at initialization.
-     * @throws InvalidArgumentException if $text is neither a string or stream.
+     * @throws Exception\InvalidArgumentException if $text is neither a string or stream.
      */
     public function __construct(
         $xml,
@@ -56,7 +56,7 @@ class XmlResponse extends Response
      *
      * @param string|StreamInterface $xml
      * @return StreamInterface
-     * @throws InvalidArgumentException if $xml is neither a string or stream.
+     * @throws Exception\InvalidArgumentException if $xml is neither a string or stream.
      */
     private function createBody($xml)
     {
@@ -65,7 +65,7 @@ class XmlResponse extends Response
         }
 
         if (! is_string($xml)) {
-            throw new InvalidArgumentException(sprintf(
+            throw new Exception\InvalidArgumentException(sprintf(
                 'Invalid content (%s) provided to %s',
                 (is_object($xml) ? get_class($xml) : gettype($xml)),
                 __CLASS__
