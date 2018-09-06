@@ -10,6 +10,7 @@ pages:
     - "Custom Responses": v2/custom-responses.md
     - Serialization: v2/serialization.md
     - API: v2/api.md
+    - Migration: v2/migration.md
   - v1:
     - Overview: v1/overview.md
     - Installation: v1/install.md
