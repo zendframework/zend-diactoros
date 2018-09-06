@@ -10,3 +10,6 @@ $ composer require zendframework/zend-diactoros
 
 - `psr/http-message`, which defines interfaces for HTTP messages, including requests and responses.
   `zend-diactoros` provides implementations of each of these.
+
+- `psr/http-factory`, which defines interfaces for HTTP message factories.
+  `zend-diactoros` provides implementations of each of these.
