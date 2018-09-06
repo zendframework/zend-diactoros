@@ -1,19 +1,16 @@
 <?php
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @see       http://github.com/zendframework/zend-diactoros for the canonical source repository
- * @copyright Copyright (c) 2015-2016 Zend Technologies USA Inc. (http://www.zend.com)
+ * @see       https://github.com/zendframework/zend-diactoros for the canonical source repository
+ * @copyright Copyright (c) 2015-2018 Zend Technologies USA Inc. (https://www.zend.com)
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
 namespace Zend\Diactoros\Request;
 
-use InvalidArgumentException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\StreamInterface;
-use UnexpectedValueException;
 use Zend\Diactoros\AbstractSerializer;
+use Zend\Diactoros\Exception;
 use Zend\Diactoros\Request;
 use Zend\Diactoros\Stream;
 use Zend\Diactoros\Uri;
@@ -51,12 +48,14 @@ final class Serializer extends AbstractSerializer
      *
      * @param StreamInterface $stream
      * @return Request
-     * @throws UnexpectedValueException when errors occur parsing the message.
+     * @throws Exception\InvalidArgumentException if the message stream is not
+     *     readable or seekable.
+     * @throws Exception\SerializationException if an invalid request line is detected.
      */
     public static function fromStream(StreamInterface $stream)
     {
         if (! $stream->isReadable() || ! $stream->isSeekable()) {
-            throw new InvalidArgumentException('Message stream must be both readable and seekable');
+            throw new Exception\InvalidArgumentException('Message stream must be both readable and seekable');
         }
 
         $stream->rewind();
@@ -110,6 +109,7 @@ final class Serializer extends AbstractSerializer
      *
      * @param StreamInterface $stream
      * @return array
+     * @throws Exception\SerializationException
      */
     private static function getRequestLine(StreamInterface $stream)
     {
@@ -120,7 +120,7 @@ final class Serializer extends AbstractSerializer
             $requestLine,
             $matches
         )) {
-            throw new UnexpectedValueException('Invalid request line detected');
+            throw Exception\SerializationException::forInvalidRequestLine();
         }
 
         return [$matches['method'], $matches['target'], $matches['version']];

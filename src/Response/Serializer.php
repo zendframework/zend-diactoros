@@ -1,17 +1,16 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-diactoros for the canonical source repository
- * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2018 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
 namespace Zend\Diactoros\Response;
 
-use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
-use UnexpectedValueException;
 use Zend\Diactoros\AbstractSerializer;
+use Zend\Diactoros\Exception;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Stream;
 
@@ -25,7 +24,7 @@ final class Serializer extends AbstractSerializer
      *
      * @param string $message
      * @return Response
-     * @throws UnexpectedValueException when errors occur parsing the message.
+     * @throws \UnexpectedValueException when errors occur parsing the message.
      */
     public static function fromString($message)
     {
@@ -39,13 +38,13 @@ final class Serializer extends AbstractSerializer
      *
      * @param StreamInterface $stream
      * @return Response
-     * @throws InvalidArgumentException when the stream is not readable.
-     * @throws UnexpectedValueException when errors occur parsing the message.
+     * @throws Exception\InvalidArgumentException when the stream is not readable.
+     * @throws \UnexpectedValueException when errors occur parsing the message.
      */
     public static function fromStream(StreamInterface $stream)
     {
         if (! $stream->isReadable() || ! $stream->isSeekable()) {
-            throw new InvalidArgumentException('Message stream must be both readable and seekable');
+            throw new Exception\InvalidArgumentException('Message stream must be both readable and seekable');
         }
 
         $stream->rewind();
@@ -92,7 +91,7 @@ final class Serializer extends AbstractSerializer
      *
      * @param StreamInterface $stream
      * @return array Array with three elements: 0 => version, 1 => status, 2 => reason
-     * @throws UnexpectedValueException if line is malformed
+     * @throws Exception\SerializationException if line is malformed
      */
     private static function getStatusLine(StreamInterface $stream)
     {
@@ -103,7 +102,7 @@ final class Serializer extends AbstractSerializer
             $line,
             $matches
         )) {
-            throw new UnexpectedValueException('No status line detected');
+            throw Exception\SerializationException::forInvalidStatusLine();
         }
 
         return [$matches['version'], $matches['status'], isset($matches['reason']) ? $matches['reason'] : ''];

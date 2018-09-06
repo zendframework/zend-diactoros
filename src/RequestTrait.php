@@ -1,13 +1,12 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-diactoros for the canonical source repository
- * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2018 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
 namespace Zend\Diactoros;
 
-use InvalidArgumentException;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
 
@@ -60,7 +59,7 @@ trait RequestTrait
      * @param null|string $method HTTP method for the request, if any.
      * @param string|resource|StreamInterface $body Message body, if any.
      * @param array $headers Headers for the message, if any.
-     * @throws InvalidArgumentException for any invalid value.
+     * @throws Exception\InvalidArgumentException for any invalid value.
      */
     private function initialize($uri = null, $method = null, $body = 'php://memory', array $headers = [])
     {
@@ -95,7 +94,7 @@ trait RequestTrait
      *
      * @param null|string|UriInterface $uri
      * @return UriInterface
-     * @throws InvalidArgumentException
+     * @throws Exception\InvalidArgumentException
      */
     private function createUri($uri)
     {
@@ -108,7 +107,7 @@ trait RequestTrait
         if ($uri === null) {
             return new Uri();
         }
-        throw new InvalidArgumentException(
+        throw new Exception\InvalidArgumentException(
             'Invalid URI provided; must be null, a string, or a Psr\Http\Message\UriInterface instance'
         );
     }
@@ -163,12 +162,12 @@ trait RequestTrait
      *     request-target forms allowed in request messages)
      * @param mixed $requestTarget
      * @return static
-     * @throws InvalidArgumentException if the request target is invalid.
+     * @throws Exception\InvalidArgumentException if the request target is invalid.
      */
     public function withRequestTarget($requestTarget)
     {
         if (preg_match('#\s#', $requestTarget)) {
-            throw new InvalidArgumentException(
+            throw new Exception\InvalidArgumentException(
                 'Invalid request target provided; cannot contain whitespace'
             );
         }
@@ -201,7 +200,7 @@ trait RequestTrait
      *
      * @param string $method Case-insensitive method.
      * @return static
-     * @throws InvalidArgumentException for invalid HTTP methods.
+     * @throws Exception\InvalidArgumentException for invalid HTTP methods.
      */
     public function withMethod($method)
     {
@@ -287,19 +286,19 @@ trait RequestTrait
      * Set and validate the HTTP method
      *
      * @param string $method
-     * @throws InvalidArgumentException on invalid HTTP method.
+     * @throws Exception\InvalidArgumentException on invalid HTTP method.
      */
     private function setMethod($method)
     {
         if (! is_string($method)) {
-            throw new InvalidArgumentException(sprintf(
+            throw new Exception\InvalidArgumentException(sprintf(
                 'Unsupported HTTP method; must be a string, received %s',
                 is_object($method) ? get_class($method) : gettype($method)
             ));
         }
 
         if (! preg_match('/^[!#$%&\'*+.^_`\|~0-9a-z-]+$/i', $method)) {
-            throw new InvalidArgumentException(sprintf(
+            throw new Exception\InvalidArgumentException(sprintf(
                 'Unsupported HTTP method "%s" provided',
                 $method
             ));

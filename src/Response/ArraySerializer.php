@@ -1,14 +1,15 @@
 <?php
 /**
  * @see       http://github.com/zendframework/zend-diactoros for the canonical source repository
- * @copyright Copyright (c) 2017 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2017-2018 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
 namespace Zend\Diactoros\Response;
 
 use Psr\Http\Message\ResponseInterface;
-use UnexpectedValueException;
+use Throwable;
+use Zend\Diactoros\Exception;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Stream;
 
@@ -45,7 +46,7 @@ final class ArraySerializer
      *
      * @param array $serializedResponse
      * @return Response
-     * @throws UnexpectedValueException when cannot deserialize response
+     * @throws Exception\DeserializationException when cannot deserialize response
      */
     public static function fromArray(array $serializedResponse)
     {
@@ -61,8 +62,8 @@ final class ArraySerializer
             return (new Response($body, $statusCode, $headers))
                 ->withProtocolVersion($protocolVersion)
                 ->withStatus($statusCode, $reasonPhrase);
-        } catch (\Exception $exception) {
-            throw new UnexpectedValueException('Cannot deserialize response', null, $exception);
+        } catch (Throwable $exception) {
+            throw Exception\DeserializationException::forResponseFromArray($exception);
         }
     }
 
@@ -79,8 +80,8 @@ final class ArraySerializer
             return $data[$key];
         }
         if ($message === null) {
-            $message = sprintf('Missing "%s" key in serialized request', $key);
+            $message = sprintf('Missing "%s" key in serialized response', $key);
         }
-        throw new UnexpectedValueException($message);
+        throw new Exception\DeserializationException($message);
     }
 }
