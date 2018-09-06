@@ -20,7 +20,6 @@ matrix:
         - DEPS=locked
         - CS_CHECK=true
         - TEST_COVERAGE=true
-        - INTEGRATION_DEPS="http-interop/http-factory-diactoros"
     - php: 7.1
       env:
         - DEPS=latest
@@ -33,10 +32,9 @@ matrix:
     - php: 7.2
       env:
         - DEPS=latest
-    - php: 7.2
-      name: Integration tests
+    - php: nightly
       env:
-        - INTEGRATION_DEPS="http-interop/http-factory-diactoros"
+        - DEPS=latest
 
 before_install:
   - if [[ $TEST_COVERAGE != 'true' ]]; then phpenv config-rm xdebug.ini || return 0 ; fi
@@ -45,7 +43,6 @@ install:
   - travis_retry composer install $COMPOSER_ARGS
   - if [[ $DEPS == 'latest' ]]; then travis_retry composer update $COMPOSER_ARGS ; fi
   - if [[ $DEPS == 'lowest' ]]; then travis_retry composer update --prefer-lowest --prefer-stable $COMPOSER_ARGS ; fi
-  - if [[ $INTEGRATION_DEPS != '' ]]; then travis_retry composer require --dev $COMPOSER_ARGS $INTEGRATION_DEPS ; fi
   - stty cols 120 && composer show
 
 script:
