@@ -5,6 +5,8 @@
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
+declare(strict_types=1);
+
 namespace Zend\Diactoros\Response;
 
 use Zend\Diactoros\Exception;
@@ -72,9 +74,9 @@ class JsonResponse extends Response
      */
     public function __construct(
         $data,
-        $status = 200,
+        int $status = 200,
         array $headers = [],
-        $encodingOptions = self::DEFAULT_JSON_FLAGS
+        int $encodingOptions = self::DEFAULT_JSON_FLAGS
     ) {
         $this->setPayload($data);
         $this->encodingOptions = $encodingOptions;
@@ -96,43 +98,28 @@ class JsonResponse extends Response
     }
 
     /**
-     * @param $data
-     *
-     * @return JsonResponse
+     * @param mixed $data
      */
-    public function withPayload($data)
+    public function withPayload($data) : JsonResponse
     {
         $new = clone $this;
         $new->setPayload($data);
         return $this->updateBodyFor($new);
     }
 
-    /**
-     * @return int
-     */
-    public function getEncodingOptions()
+    public function getEncodingOptions() : int
     {
         return $this->encodingOptions;
     }
 
-    /**
-     * @param int $encodingOptions
-     *
-     * @return JsonResponse
-     */
-    public function withEncodingOptions($encodingOptions)
+    public function withEncodingOptions(int $encodingOptions) : JsonResponse
     {
         $new = clone $this;
         $new->encodingOptions = $encodingOptions;
         return $this->updateBodyFor($new);
     }
 
-    /**
-     * @param string $json
-     *
-     * @return Stream
-     */
-    private function createBodyFromJson($json)
+    private function createBodyFromJson(string $json) : Stream
     {
         $body = new Stream('php://temp', 'wb+');
         $body->write($json);
@@ -145,11 +132,9 @@ class JsonResponse extends Response
      * Encode the provided data to JSON.
      *
      * @param mixed $data
-     * @param int $encodingOptions
-     * @return string
      * @throws Exception\InvalidArgumentException if unable to encode the $data to JSON.
      */
-    private function jsonEncode($data, $encodingOptions)
+    private function jsonEncode($data, int $encodingOptions) : string
     {
         if (is_resource($data)) {
             throw new Exception\InvalidArgumentException('Cannot JSON encode resources');
@@ -172,9 +157,9 @@ class JsonResponse extends Response
     }
 
     /**
-     * @param $data
+     * @param mixed $data
      */
-    private function setPayload($data)
+    private function setPayload($data) : void
     {
         if (is_object($data)) {
             $data = clone $data;
@@ -189,7 +174,7 @@ class JsonResponse extends Response
      * @param self $toUpdate Instance to update.
      * @return JsonResponse Returns a new instance with an updated body.
      */
-    private function updateBodyFor(self $toUpdate)
+    private function updateBodyFor(JsonResponse $toUpdate) : JsonResponse
     {
         $json = $this->jsonEncode($toUpdate->payload, $toUpdate->encodingOptions);
         $body = $this->createBodyFromJson($json);

@@ -5,6 +5,8 @@
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
+declare(strict_types=1);
+
 namespace Zend\Diactoros\Request;
 
 use Psr\Http\Message\RequestInterface;
@@ -26,11 +28,8 @@ final class ArraySerializer
 {
     /**
      * Serialize a request message to an array.
-     *
-     * @param RequestInterface $request
-     * @return array
      */
-    public static function toArray(RequestInterface $request)
+    public static function toArray(RequestInterface $request) : array
     {
         return [
             'method'           => $request->getMethod(),
@@ -45,11 +44,9 @@ final class ArraySerializer
     /**
      * Deserialize a request array to a request instance.
      *
-     * @param array $serializedRequest
-     * @return Request
      * @throws Exception\DeserializationException when cannot deserialize response
      */
-    public static function fromArray(array $serializedRequest)
+    public static function fromArray(array $serializedRequest) : Request
     {
         try {
             $uri             = self::getValueFromKey($serializedRequest, 'uri');
@@ -69,13 +66,10 @@ final class ArraySerializer
     }
 
     /**
-     * @param array $data
-     * @param string $key
-     * @param string $message
      * @return mixed
      * @throws Exception\DeserializationException
      */
-    private static function getValueFromKey(array $data, $key, $message = null)
+    private static function getValueFromKey(array $data, string $key, string $message = null)
     {
         if (isset($data[$key])) {
             return $data[$key];

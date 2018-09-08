@@ -5,6 +5,8 @@
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
+declare(strict_types=1);
+
 namespace Zend\Diactoros;
 
 use Psr\Http\Message\StreamInterface;
@@ -36,16 +38,16 @@ final class RelativeStream implements StreamInterface
      * @param StreamInterface $decoratedStream
      * @param int $offset
      */
-    public function __construct(StreamInterface $decoratedStream, $offset)
+    public function __construct(StreamInterface $decoratedStream, ?int $offset)
     {
         $this->decoratedStream = $decoratedStream;
-        $this->offset = (int)$offset;
+        $this->offset = (int) $offset;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function __toString()
+    public function __toString() : string
     {
         if ($this->isSeekable()) {
             $this->seek(0);
@@ -56,7 +58,7 @@ final class RelativeStream implements StreamInterface
     /**
      * {@inheritdoc}
      */
-    public function close()
+    public function close() : void
     {
         $this->decoratedStream->close();
     }
@@ -72,7 +74,7 @@ final class RelativeStream implements StreamInterface
     /**
      * {@inheritdoc}
      */
-    public function getSize()
+    public function getSize() : int
     {
         return $this->decoratedStream->getSize() - $this->offset;
     }
@@ -80,7 +82,7 @@ final class RelativeStream implements StreamInterface
     /**
      * {@inheritdoc}
      */
-    public function tell()
+    public function tell() : int
     {
         return $this->decoratedStream->tell() - $this->offset;
     }
@@ -88,7 +90,7 @@ final class RelativeStream implements StreamInterface
     /**
      * {@inheritdoc}
      */
-    public function eof()
+    public function eof() : bool
     {
         return $this->decoratedStream->eof();
     }
@@ -96,7 +98,7 @@ final class RelativeStream implements StreamInterface
     /**
      * {@inheritdoc}
      */
-    public function isSeekable()
+    public function isSeekable() : bool
     {
         return $this->decoratedStream->isSeekable();
     }
@@ -104,26 +106,27 @@ final class RelativeStream implements StreamInterface
     /**
      * {@inheritdoc}
      */
-    public function seek($offset, $whence = SEEK_SET)
+    public function seek($offset, $whence = SEEK_SET) : void
     {
         if ($whence == SEEK_SET) {
-            return $this->decoratedStream->seek($offset + $this->offset, $whence);
+            $this->decoratedStream->seek($offset + $this->offset, $whence);
+            return;
         }
-        return $this->decoratedStream->seek($offset, $whence);
+        $this->decoratedStream->seek($offset, $whence);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function rewind()
+    public function rewind() : void
     {
-        return $this->seek(0);
+        $this->seek(0);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function isWritable()
+    public function isWritable() : bool
     {
         return $this->decoratedStream->isWritable();
     }
@@ -131,7 +134,7 @@ final class RelativeStream implements StreamInterface
     /**
      * {@inheritdoc}
      */
-    public function write($string)
+    public function write($string) : int
     {
         if ($this->tell() < 0) {
             throw new Exception\InvalidStreamPointerPositionException();
@@ -142,7 +145,7 @@ final class RelativeStream implements StreamInterface
     /**
      * {@inheritdoc}
      */
-    public function isReadable()
+    public function isReadable() : bool
     {
         return $this->decoratedStream->isReadable();
     }
@@ -150,7 +153,7 @@ final class RelativeStream implements StreamInterface
     /**
      * {@inheritdoc}
      */
-    public function read($length)
+    public function read($length) : string
     {
         if ($this->tell() < 0) {
             throw new Exception\InvalidStreamPointerPositionException();
@@ -161,7 +164,7 @@ final class RelativeStream implements StreamInterface
     /**
      * {@inheritdoc}
      */
-    public function getContents()
+    public function getContents() : string
     {
         if ($this->tell() < 0) {
             throw new Exception\InvalidStreamPointerPositionException();

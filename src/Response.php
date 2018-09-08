@@ -5,6 +5,8 @@
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
+declare(strict_types=1);
+
 namespace Zend\Diactoros;
 
 use Psr\Http\Message\ResponseInterface;
@@ -125,7 +127,7 @@ class Response implements ResponseInterface
      * @param array $headers Headers for the response, if any.
      * @throws Exception\InvalidArgumentException on any invalid element.
      */
-    public function __construct($body = 'php://memory', $status = 200, array $headers = [])
+    public function __construct($body = 'php://memory', int $status = 200, array $headers = [])
     {
         $this->setStatusCode($status);
         $this->stream = $this->getStream($body, 'wb+');
@@ -135,7 +137,7 @@ class Response implements ResponseInterface
     /**
      * {@inheritdoc}
      */
-    public function getStatusCode()
+    public function getStatusCode() : int
     {
         return $this->statusCode;
     }
@@ -143,7 +145,7 @@ class Response implements ResponseInterface
     /**
      * {@inheritdoc}
      */
-    public function getReasonPhrase()
+    public function getReasonPhrase() : string
     {
         return $this->reasonPhrase;
     }
@@ -151,7 +153,7 @@ class Response implements ResponseInterface
     /**
      * {@inheritdoc}
      */
-    public function withStatus($code, $reasonPhrase = '')
+    public function withStatus($code, $reasonPhrase = '') : Response
     {
         $new = clone $this;
         $new->setStatusCode($code, $reasonPhrase);
@@ -165,7 +167,7 @@ class Response implements ResponseInterface
      * @param string $reasonPhrase
      * @throws Exception\InvalidArgumentException on an invalid status code.
      */
-    private function setStatusCode($code, $reasonPhrase = '')
+    private function setStatusCode($code, $reasonPhrase = '') : void
     {
         if (! is_numeric($code)
             || is_float($code)

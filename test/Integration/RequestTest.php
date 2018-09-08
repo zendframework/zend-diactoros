@@ -5,6 +5,8 @@
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
+declare(strict_types=1);
+
 namespace ZendTest\Diactoros\Integration;
 
 use Http\Psr7Test\RequestIntegrationTest;
@@ -13,14 +15,6 @@ use Zend\Diactoros\RequestFactory;
 
 class RequestTest extends RequestIntegrationTest
 {
-    public static function setUpBeforeClass()
-    {
-        if (! class_exists(RequestFactory::class)) {
-            self::markTestSkipped('You need to install http-interop/http-factory-diactoros to run integration tests');
-        }
-        parent::setUpBeforeClass();
-    }
-
     public function createSubject()
     {
         return new Request('/', 'GET');

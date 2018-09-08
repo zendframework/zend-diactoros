@@ -5,6 +5,8 @@
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
+declare(strict_types=1);
+
 namespace Zend\Diactoros;
 
 use Psr\Http\Message\ServerRequestInterface;
@@ -80,13 +82,13 @@ class ServerRequest implements ServerRequestInterface
         array $serverParams = [],
         array $uploadedFiles = [],
         $uri = null,
-        $method = null,
+        string $method = null,
         $body = 'php://input',
         array $headers = [],
         array $cookies = [],
         array $queryParams = [],
         $parsedBody = null,
-        $protocol = '1.1'
+        string $protocol = '1.1'
     ) {
         $this->validateUploadedFiles($uploadedFiles);
 
@@ -106,7 +108,7 @@ class ServerRequest implements ServerRequestInterface
     /**
      * {@inheritdoc}
      */
-    public function getServerParams()
+    public function getServerParams() : array
     {
         return $this->serverParams;
     }
@@ -114,7 +116,7 @@ class ServerRequest implements ServerRequestInterface
     /**
      * {@inheritdoc}
      */
-    public function getUploadedFiles()
+    public function getUploadedFiles() : array
     {
         return $this->uploadedFiles;
     }
@@ -122,7 +124,7 @@ class ServerRequest implements ServerRequestInterface
     /**
      * {@inheritdoc}
      */
-    public function withUploadedFiles(array $uploadedFiles)
+    public function withUploadedFiles(array $uploadedFiles) : ServerRequest
     {
         $this->validateUploadedFiles($uploadedFiles);
         $new = clone $this;
@@ -133,7 +135,7 @@ class ServerRequest implements ServerRequestInterface
     /**
      * {@inheritdoc}
      */
-    public function getCookieParams()
+    public function getCookieParams() : array
     {
         return $this->cookieParams;
     }
@@ -141,7 +143,7 @@ class ServerRequest implements ServerRequestInterface
     /**
      * {@inheritdoc}
      */
-    public function withCookieParams(array $cookies)
+    public function withCookieParams(array $cookies) : ServerRequest
     {
         $new = clone $this;
         $new->cookieParams = $cookies;
@@ -151,7 +153,7 @@ class ServerRequest implements ServerRequestInterface
     /**
      * {@inheritdoc}
      */
-    public function getQueryParams()
+    public function getQueryParams() : array
     {
         return $this->queryParams;
     }
@@ -159,7 +161,7 @@ class ServerRequest implements ServerRequestInterface
     /**
      * {@inheritdoc}
      */
-    public function withQueryParams(array $query)
+    public function withQueryParams(array $query) : ServerRequest
     {
         $new = clone $this;
         $new->queryParams = $query;
@@ -177,7 +179,7 @@ class ServerRequest implements ServerRequestInterface
     /**
      * {@inheritdoc}
      */
-    public function withParsedBody($data)
+    public function withParsedBody($data) : ServerRequest
     {
         if (! is_array($data) && ! is_object($data) && null !== $data) {
             throw new Exception\InvalidArgumentException(sprintf(
@@ -195,7 +197,7 @@ class ServerRequest implements ServerRequestInterface
     /**
      * {@inheritdoc}
      */
-    public function getAttributes()
+    public function getAttributes() : array
     {
         return $this->attributes;
     }
@@ -215,7 +217,7 @@ class ServerRequest implements ServerRequestInterface
     /**
      * {@inheritdoc}
      */
-    public function withAttribute($attribute, $value)
+    public function withAttribute($attribute, $value) : ServerRequest
     {
         $new = clone $this;
         $new->attributes[$attribute] = $value;
@@ -225,7 +227,7 @@ class ServerRequest implements ServerRequestInterface
     /**
      * {@inheritdoc}
      */
-    public function withoutAttribute($attribute)
+    public function withoutAttribute($attribute) : ServerRequest
     {
         $new = clone $this;
         unset($new->attributes[$attribute]);
@@ -235,10 +237,9 @@ class ServerRequest implements ServerRequestInterface
     /**
      * Recursively validate the structure in an uploaded files array.
      *
-     * @param array $uploadedFiles
      * @throws Exception\InvalidArgumentException if any leaf is not an UploadedFileInterface instance.
      */
-    private function validateUploadedFiles(array $uploadedFiles)
+    private function validateUploadedFiles(array $uploadedFiles) : void
     {
         foreach ($uploadedFiles as $file) {
             if (is_array($file)) {

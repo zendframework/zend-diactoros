@@ -5,17 +5,18 @@
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
+declare(strict_types=1);
+
 namespace Zend\Diactoros;
 
 /**
  * Create an uploaded file instance from an array of values.
  *
  * @param array $spec A single $_FILES entry.
- * @return UploadedFile
  * @throws Exception\InvalidArgumentException if one or more of the tmp_name,
  *     size, or error keys are missing from $spec.
  */
-function createUploadedFile(array $spec)
+function createUploadedFile(array $spec) : UploadedFile
 {
     if (! isset($spec['tmp_name'])
         || ! isset($spec['size'])
