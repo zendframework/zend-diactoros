@@ -1,9 +1,11 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-diactoros for the canonical source repository
- * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2018 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace ZendTest\Diactoros;
 
@@ -241,7 +243,7 @@ class StreamTest extends TestCase
         file_put_contents($this->tmpnam, 'FOO BAR');
         $resource = fopen($this->tmpnam, 'wb+');
         $stream = new Stream($resource);
-        $this->assertTrue($stream->seek(2));
+        $this->assertNull($stream->seek(2));
         $this->assertSame(2, $stream->tell());
     }
 
@@ -251,7 +253,7 @@ class StreamTest extends TestCase
         file_put_contents($this->tmpnam, 'FOO BAR');
         $resource = fopen($this->tmpnam, 'wb+');
         $stream = new Stream($resource);
-        $this->assertTrue($stream->seek(2));
+        $this->assertNull($stream->seek(2));
         $stream->rewind();
         $this->assertSame(0, $stream->tell());
     }

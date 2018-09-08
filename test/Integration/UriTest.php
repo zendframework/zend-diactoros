@@ -5,6 +5,8 @@
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
+declare(strict_types=1);
+
 namespace ZendTest\Diactoros\Integration;
 
 use Http\Psr7Test\UriIntegrationTest;
@@ -13,14 +15,6 @@ use Zend\Diactoros\Uri;
 
 class UriTest extends UriIntegrationTest
 {
-    public static function setUpBeforeClass()
-    {
-        if (! class_exists(RequestFactory::class)) {
-            self::markTestSkipped('You need to install http-interop/http-factory-diactoros to run integration tests');
-        }
-        parent::setUpBeforeClass();
-    }
-
     public function createUri($uri)
     {
         return new Uri($uri);

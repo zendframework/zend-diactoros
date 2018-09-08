@@ -5,6 +5,8 @@
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
+declare(strict_types=1);
+
 namespace Zend\Diactoros;
 
 use Psr\Http\Message\ServerRequestFactoryInterface;
@@ -53,7 +55,7 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
         array $body = null,
         array $cookies = null,
         array $files = null
-    ) {
+    ) : ServerRequest {
         $server = normalizeServer(
             $server ?: $_SERVER,
             is_callable(self::$apacheRequestHeaders) ? self::$apacheRequestHeaders : null

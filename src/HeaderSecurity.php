@@ -5,6 +5,8 @@
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
+declare(strict_types=1);
+
 namespace Zend\Diactoros;
 
 use function get_class;
@@ -50,10 +52,8 @@ final class HeaderSecurity
      * lossy.
      *
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     * @param string $value
-     * @return string
      */
-    public static function filter($value)
+    public static function filter(string $value) : string
     {
         $value  = (string) $value;
         $length = strlen($value);
@@ -98,11 +98,10 @@ final class HeaderSecurity
      * tabs are allowed in values; header continuations MUST consist of
      * a single CRLF sequence followed by a space or horizontal tab.
      *
+     * @param string|int|float $value
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     * @param string $value
-     * @return bool
      */
-    public static function isValid($value)
+    public static function isValid($value) : bool
     {
         $value  = (string) $value;
 
@@ -131,7 +130,7 @@ final class HeaderSecurity
     /**
      * Assert a header value is valid.
      *
-     * @param string $value
+     * @param mixed $value Value to be tested. This method asserts it is a string or number.
      * @throws Exception\InvalidArgumentException for invalid values
      */
     public static function assertValid($value)

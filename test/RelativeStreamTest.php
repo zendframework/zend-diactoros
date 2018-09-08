@@ -1,9 +1,11 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-diactoros for the canonical source repository
- * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2018 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace ZendTest\Diactoros;
 
@@ -98,19 +100,17 @@ class RelativeStreamTest extends TestCase
     public function testSeek()
     {
         $decorated = $this->prophesize(Stream::class);
-        $decorated->seek(126, SEEK_SET)->shouldBeCalled()->willReturn(0);
+        $decorated->seek(126, SEEK_SET)->shouldBeCalled();
         $stream = new RelativeStream($decorated->reveal(), 100);
-        $ret = $stream->seek(26);
-        $this->assertSame(0, $ret);
+        $this->assertNull($stream->seek(26));
     }
 
     public function testRewind()
     {
         $decorated = $this->prophesize(Stream::class);
-        $decorated->seek(100, SEEK_SET)->shouldBeCalled()->willReturn(0);
+        $decorated->seek(100, SEEK_SET)->shouldBeCalled();
         $stream = new RelativeStream($decorated->reveal(), 100);
-        $ret = $stream->rewind();
-        $this->assertSame(0, $ret);
+        $this->assertNull($stream->rewind());
     }
 
     public function testWrite()

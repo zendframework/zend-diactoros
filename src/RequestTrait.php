@@ -5,8 +5,11 @@
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
+declare(strict_types=1);
+
 namespace Zend\Diactoros;
 
+use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
 
@@ -61,8 +64,12 @@ trait RequestTrait
      * @param array $headers Headers for the message, if any.
      * @throws Exception\InvalidArgumentException for any invalid value.
      */
-    private function initialize($uri = null, $method = null, $body = 'php://memory', array $headers = [])
-    {
+    private function initialize(
+        $uri = null,
+        string $method = null,
+        $body = 'php://memory',
+        array $headers = []
+    ) : void {
         if ($method !== null) {
             $this->setMethod($method);
         }
@@ -93,10 +100,9 @@ trait RequestTrait
      * Otherwise, it raises an exception.
      *
      * @param null|string|UriInterface $uri
-     * @return UriInterface
      * @throws Exception\InvalidArgumentException
      */
-    private function createUri($uri)
+    private function createUri($uri) : UriInterface
     {
         if ($uri instanceof UriInterface) {
             return $uri;
@@ -125,10 +131,8 @@ trait RequestTrait
      *
      * If no URI is available, and no request-target has been specifically
      * provided, this method MUST return the string "/".
-     *
-     * @return string
      */
-    public function getRequestTarget()
+    public function getRequestTarget() : string
     {
         if (null !== $this->requestTarget) {
             return $this->requestTarget;
@@ -160,11 +164,10 @@ trait RequestTrait
      *
      * @link http://tools.ietf.org/html/rfc7230#section-2.7 (for the various
      *     request-target forms allowed in request messages)
-     * @param mixed $requestTarget
-     * @return static
+     * @param string $requestTarget
      * @throws Exception\InvalidArgumentException if the request target is invalid.
      */
-    public function withRequestTarget($requestTarget)
+    public function withRequestTarget($requestTarget) : RequestInterface
     {
         if (preg_match('#\s#', $requestTarget)) {
             throw new Exception\InvalidArgumentException(
@@ -182,7 +185,7 @@ trait RequestTrait
      *
      * @return string Returns the request method.
      */
-    public function getMethod()
+    public function getMethod() : string
     {
         return $this->method;
     }
@@ -199,10 +202,9 @@ trait RequestTrait
      * changed request method.
      *
      * @param string $method Case-insensitive method.
-     * @return static
      * @throws Exception\InvalidArgumentException for invalid HTTP methods.
      */
-    public function withMethod($method)
+    public function withMethod($method) : RequestInterface
     {
         $new = clone $this;
         $new->setMethod($method);
@@ -218,7 +220,7 @@ trait RequestTrait
      * @return UriInterface Returns a UriInterface instance
      *     representing the URI of the request, if any.
      */
-    public function getUri()
+    public function getUri() : UriInterface
     {
         return $this->uri;
     }
@@ -246,9 +248,8 @@ trait RequestTrait
      * @link http://tools.ietf.org/html/rfc3986#section-4.3
      * @param UriInterface $uri New request URI to use.
      * @param bool $preserveHost Preserve the original state of the Host header.
-     * @return static
      */
-    public function withUri(UriInterface $uri, $preserveHost = false)
+    public function withUri(UriInterface $uri, $preserveHost = false) : RequestInterface
     {
         $new = clone $this;
         $new->uri = $uri;
@@ -288,7 +289,7 @@ trait RequestTrait
      * @param string $method
      * @throws Exception\InvalidArgumentException on invalid HTTP method.
      */
-    private function setMethod($method)
+    private function setMethod($method) : void
     {
         if (! is_string($method)) {
             throw new Exception\InvalidArgumentException(sprintf(
@@ -308,10 +309,8 @@ trait RequestTrait
 
     /**
      * Retrieve the host from the URI instance
-     *
-     * @return string
      */
-    private function getHostFromUri()
+    private function getHostFromUri() : string
     {
         $host  = $this->uri->getHost();
         $host .= $this->uri->getPort() ? ':' . $this->uri->getPort() : '';

@@ -5,8 +5,11 @@
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
+declare(strict_types=1);
+
 namespace Zend\Diactoros;
 
+use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\StreamInterface;
 
 use function array_map;
@@ -60,7 +63,7 @@ trait MessageTrait
      *
      * @return string HTTP protocol version.
      */
-    public function getProtocolVersion()
+    public function getProtocolVersion() : string
     {
         return $this->protocol;
     }
@@ -78,7 +81,7 @@ trait MessageTrait
      * @param string $version HTTP protocol version
      * @return static
      */
-    public function withProtocolVersion($version)
+    public function withProtocolVersion($version) : MessageInterface
     {
         $this->validateProtocolVersion($version);
         $new = clone $this;
@@ -107,7 +110,7 @@ trait MessageTrait
      * @return array Returns an associative array of the message's headers. Each
      *     key MUST be a header name, and each value MUST be an array of strings.
      */
-    public function getHeaders()
+    public function getHeaders() : array
     {
         return $this->headers;
     }
@@ -120,7 +123,7 @@ trait MessageTrait
      *     name using a case-insensitive string comparison. Returns false if
      *     no matching header name is found in the message.
      */
-    public function hasHeader($header)
+    public function hasHeader($header) : bool
     {
         return isset($this->headerNames[strtolower($header)]);
     }
@@ -139,7 +142,7 @@ trait MessageTrait
      *    header. If the header does not appear in the message, this method MUST
      *    return an empty array.
      */
-    public function getHeader($header)
+    public function getHeader($header) : array
     {
         if (! $this->hasHeader($header)) {
             return [];
@@ -169,7 +172,7 @@ trait MessageTrait
      *    concatenated together using a comma. If the header does not appear in
      *    the message, this method MUST return an empty string.
      */
-    public function getHeaderLine($name)
+    public function getHeaderLine($name) : string
     {
         $value = $this->getHeader($name);
         if (empty($value)) {
@@ -195,7 +198,7 @@ trait MessageTrait
      * @return static
      * @throws Exception\InvalidArgumentException for invalid header names or values.
      */
-    public function withHeader($header, $value)
+    public function withHeader($header, $value) : MessageInterface
     {
         $this->assertHeader($header);
 
@@ -231,7 +234,7 @@ trait MessageTrait
      * @return static
      * @throws Exception\InvalidArgumentException for invalid header names or values.
      */
-    public function withAddedHeader($header, $value)
+    public function withAddedHeader($header, $value) : MessageInterface
     {
         $this->assertHeader($header);
 
@@ -259,7 +262,7 @@ trait MessageTrait
      * @param string $header Case-insensitive header field name to remove.
      * @return static
      */
-    public function withoutHeader($header)
+    public function withoutHeader($header) : MessageInterface
     {
         if (! $this->hasHeader($header)) {
             return clone $this;
@@ -278,7 +281,7 @@ trait MessageTrait
      *
      * @return StreamInterface Returns the body as a stream.
      */
-    public function getBody()
+    public function getBody() : StreamInterface
     {
         return $this->stream;
     }
@@ -296,14 +299,14 @@ trait MessageTrait
      * @return static
      * @throws Exception\InvalidArgumentException When the body is not valid.
      */
-    public function withBody(StreamInterface $body)
+    public function withBody(StreamInterface $body) : MessageInterface
     {
         $new = clone $this;
         $new->stream = $body;
         return $new;
     }
 
-    private function getStream($stream, $modeIfNotInstance)
+    private function getStream($stream, string $modeIfNotInstance) : StreamInterface
     {
         if ($stream instanceof StreamInterface) {
             return $stream;
@@ -327,7 +330,7 @@ trait MessageTrait
      *
      * @param array $originalHeaders Headers to filter.
      */
-    private function setHeaders(array $originalHeaders)
+    private function setHeaders(array $originalHeaders) : void
     {
         $headerNames = $headers = [];
 
@@ -350,7 +353,7 @@ trait MessageTrait
      * @param string $version
      * @throws Exception\InvalidArgumentException on invalid HTTP protocol version
      */
-    private function validateProtocolVersion($version)
+    private function validateProtocolVersion($version) : void
     {
         if (empty($version)) {
             throw new Exception\InvalidArgumentException(
@@ -378,7 +381,7 @@ trait MessageTrait
      * @param mixed $values
      * @return string[]
      */
-    private function filterHeaderValue($values)
+    private function filterHeaderValue($values) : array
     {
         if (! is_array($values)) {
             $values = [$values];
@@ -405,7 +408,7 @@ trait MessageTrait
      *
      * @throws Exception\InvalidArgumentException
      */
-    private function assertHeader($name)
+    private function assertHeader($name) : void
     {
         HeaderSecurity::assertValidName($name);
     }

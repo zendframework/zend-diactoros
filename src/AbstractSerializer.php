@@ -5,6 +5,10 @@
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
+declare(strict_types=1);
+
+declare(strict_types=1);
+
 namespace Zend\Diactoros;
 
 use Psr\Http\Message\StreamInterface;
@@ -34,12 +38,10 @@ abstract class AbstractSerializer
      * Retrieves a line from the stream; a line is defined as a sequence of
      * characters ending in a CRLF sequence.
      *
-     * @param StreamInterface $stream
-     * @return string
      * @throws Exception\DeserializationException if the sequence contains a CR
      *     or LF in isolation, or ends in a CR.
      */
-    protected static function getLine(StreamInterface $stream)
+    protected static function getLine(StreamInterface $stream) : string
     {
         $line    = '';
         $crFound = false;
@@ -87,11 +89,9 @@ abstract class AbstractSerializer
      * - The first is an array of headers
      * - The second is a StreamInterface containing the body content
      *
-     * @param StreamInterface $stream
-     * @return array
      * @throws Exception\DeserializationException For invalid headers.
      */
-    protected static function splitStream(StreamInterface $stream)
+    protected static function splitStream(StreamInterface $stream) : array
     {
         $headers       = [];
         $currentHeader = false;
@@ -125,11 +125,8 @@ abstract class AbstractSerializer
 
     /**
      * Serialize headers to string values.
-     *
-     * @param array $headers
-     * @return string
      */
-    protected static function serializeHeaders(array $headers)
+    protected static function serializeHeaders(array $headers) : string
     {
         $lines = [];
         foreach ($headers as $header => $values) {
@@ -144,11 +141,8 @@ abstract class AbstractSerializer
 
     /**
      * Filter a header name to wordcase
-     *
-     * @param string $header
-     * @return string
      */
-    protected static function filterHeader($header)
+    protected static function filterHeader($header) : string
     {
         $filtered = str_replace('-', ' ', $header);
         $filtered = ucwords($filtered);

@@ -5,6 +5,8 @@
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
+declare(strict_types=1);
+
 namespace Zend\Diactoros\Response;
 
 use Psr\Http\Message\StreamInterface;
@@ -40,7 +42,7 @@ class TextResponse extends Response
      * @param array $headers Array of headers to use at initialization.
      * @throws Exception\InvalidArgumentException if $text is neither a string or stream.
      */
-    public function __construct($text, $status = 200, array $headers = [])
+    public function __construct($text, int $status = 200, array $headers = [])
     {
         parent::__construct(
             $this->createBody($text),
@@ -53,10 +55,9 @@ class TextResponse extends Response
      * Create the message body.
      *
      * @param string|StreamInterface $text
-     * @return StreamInterface
      * @throws Exception\InvalidArgumentException if $html is neither a string or stream.
      */
-    private function createBody($text)
+    private function createBody($text) : StreamInterface
     {
         if ($text instanceof StreamInterface) {
             return $text;

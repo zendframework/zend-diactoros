@@ -5,6 +5,8 @@
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
+declare(strict_types=1);
+
 namespace Zend\Diactoros\Request;
 
 use Psr\Http\Message\RequestInterface;
@@ -32,11 +34,9 @@ final class Serializer extends AbstractSerializer
      *
      * Internally, casts the message to a stream and invokes fromStream().
      *
-     * @param string $message
-     * @return Request
-     * @throws UnexpectedValueException when errors occur parsing the message.
+     * @throws Exception\SerializationException when errors occur parsing the message.
      */
-    public static function fromString($message)
+    public static function fromString(string $message) : Request
     {
         $stream = new Stream('php://temp', 'wb+');
         $stream->write($message);
@@ -46,13 +46,11 @@ final class Serializer extends AbstractSerializer
     /**
      * Deserialize a request stream to a request instance.
      *
-     * @param StreamInterface $stream
-     * @return Request
      * @throws Exception\InvalidArgumentException if the message stream is not
      *     readable or seekable.
      * @throws Exception\SerializationException if an invalid request line is detected.
      */
-    public static function fromStream(StreamInterface $stream)
+    public static function fromStream(StreamInterface $stream) : Request
     {
         if (! $stream->isReadable() || ! $stream->isSeekable()) {
             throw new Exception\InvalidArgumentException('Message stream must be both readable and seekable');
@@ -60,10 +58,10 @@ final class Serializer extends AbstractSerializer
 
         $stream->rewind();
 
-        list($method, $requestTarget, $version) = self::getRequestLine($stream);
+        [$method, $requestTarget, $version] = self::getRequestLine($stream);
         $uri = self::createUriFromRequestTarget($requestTarget);
 
-        list($headers, $body) = self::splitStream($stream);
+        [$headers, $body] = self::splitStream($stream);
 
         return (new Request($uri, $method, $body, $headers))
             ->withProtocolVersion($version)
@@ -72,11 +70,8 @@ final class Serializer extends AbstractSerializer
 
     /**
      * Serialize a request message to a string.
-     *
-     * @param RequestInterface $request
-     * @return string
      */
-    public static function toString(RequestInterface $request)
+    public static function toString(RequestInterface $request) : string
     {
         $httpMethod = $request->getMethod();
         $headers = self::serializeHeaders($request->getHeaders());
@@ -107,11 +102,9 @@ final class Serializer extends AbstractSerializer
      * exception if it does not follow specifications; if valid, returns a list
      * with the method, target, and version, in that order.
      *
-     * @param StreamInterface $stream
-     * @return array
      * @throws Exception\SerializationException
      */
-    private static function getRequestLine(StreamInterface $stream)
+    private static function getRequestLine(StreamInterface $stream) : array
     {
         $requestLine = self::getLine($stream);
 
@@ -132,11 +125,8 @@ final class Serializer extends AbstractSerializer
      * If the request target is of authority or asterisk form, an empty Uri
      * instance is returned; otherwise, the value is used to create and return
      * a new Uri instance.
-     *
-     * @param string $requestTarget
-     * @return Uri
      */
-    private static function createUriFromRequestTarget($requestTarget)
+    private static function createUriFromRequestTarget(string $requestTarget) : Uri
     {
         if (preg_match('#^https?://#', $requestTarget)) {
             return new Uri($requestTarget);

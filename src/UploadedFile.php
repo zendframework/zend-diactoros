@@ -5,6 +5,8 @@
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
+declare(strict_types=1);
+
 namespace Zend\Diactoros;
 
 use Psr\Http\Message\StreamInterface;
@@ -90,8 +92,13 @@ class UploadedFile implements UploadedFileInterface
      * @param string|null $clientMediaType
      * @throws Exception\InvalidArgumentException
      */
-    public function __construct($streamOrFile, $size, $errorStatus, $clientFilename = null, $clientMediaType = null)
-    {
+    public function __construct(
+        $streamOrFile,
+        int $size,
+        int $errorStatus,
+        string $clientFilename = null,
+        string $clientMediaType = null
+    ) {
         if ($errorStatus === UPLOAD_ERR_OK) {
             if (is_string($streamOrFile)) {
                 $this->file = $streamOrFile;
@@ -108,33 +115,16 @@ class UploadedFile implements UploadedFileInterface
             }
         }
 
-        if (! is_int($size)) {
-            throw new Exception\InvalidArgumentException('Invalid size provided for UploadedFile; must be an int');
-        }
         $this->size = $size;
 
-        if (! is_int($errorStatus)
-            || 0 > $errorStatus
-            || 8 < $errorStatus
-        ) {
+        if (0 > $errorStatus || 8 < $errorStatus) {
             throw new Exception\InvalidArgumentException(
                 'Invalid error status for UploadedFile; must be an UPLOAD_ERR_* constant'
             );
         }
         $this->error = $errorStatus;
 
-        if (null !== $clientFilename && ! is_string($clientFilename)) {
-            throw new Exception\InvalidArgumentException(
-                'Invalid client filename provided for UploadedFile; must be null or a string'
-            );
-        }
         $this->clientFilename = $clientFilename;
-
-        if (null !== $clientMediaType && ! is_string($clientMediaType)) {
-            throw new Exception\InvalidArgumentException(
-                'Invalid client media type provided for UploadedFile; must be null or a string'
-            );
-        }
         $this->clientMediaType = $clientMediaType;
     }
 
@@ -143,7 +133,7 @@ class UploadedFile implements UploadedFileInterface
      * @throws Exception\UploadedFileAlreadyMovedException if the upload was
      *     not successful.
      */
-    public function getStream()
+    public function getStream() : StreamInterface
     {
         if ($this->error !== UPLOAD_ERR_OK) {
             throw Exception\UploadedFileErrorException::dueToStreamUploadError(
@@ -174,7 +164,7 @@ class UploadedFile implements UploadedFileInterface
      * @throws Exception\UploadedFileErrorException on any error during the
      *     move operation, or on the second or subsequent call to the method.
      */
-    public function moveTo($targetPath)
+    public function moveTo($targetPath) : void
     {
         if ($this->moved) {
             throw new Exception\UploadedFileAlreadyMovedException('Cannot move file; already moved!');
@@ -219,7 +209,7 @@ class UploadedFile implements UploadedFileInterface
      *
      * @return int|null The file size in bytes or null if unknown.
      */
-    public function getSize()
+    public function getSize() : ?int
     {
         return $this->size;
     }
@@ -230,7 +220,7 @@ class UploadedFile implements UploadedFileInterface
      * @see http://php.net/manual/en/features.file-upload.errors.php
      * @return int One of PHP's UPLOAD_ERR_XXX constants.
      */
-    public function getError()
+    public function getError() : int
     {
         return $this->error;
     }
@@ -241,7 +231,7 @@ class UploadedFile implements UploadedFileInterface
      * @return string|null The filename sent by the client or null if none
      *     was provided.
      */
-    public function getClientFilename()
+    public function getClientFilename() : ?string
     {
         return $this->clientFilename;
     }
@@ -249,7 +239,7 @@ class UploadedFile implements UploadedFileInterface
     /**
      * {@inheritdoc}
      */
-    public function getClientMediaType()
+    public function getClientMediaType() : ?string
     {
         return $this->clientMediaType;
     }
@@ -259,7 +249,7 @@ class UploadedFile implements UploadedFileInterface
      *
      * @param string $path
      */
-    private function writeFile($path)
+    private function writeFile(string $path) : void
     {
         $handle = fopen($path, 'wb+');
         if (false === $handle) {

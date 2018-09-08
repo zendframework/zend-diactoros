@@ -38,6 +38,11 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Changed
 
+- [#329](https://github.com/zendframework/zend-diactoros/pull/329) adds return type hints and scalar parameter type hints wherever possible.
+  The changes were done to help improve code quality, in part by reducing manual
+  type checking. If you are extending any classes, you may need to update your
+  signatures; check the signatures of the class(es) you are extending for changes.
+
 - [#162](https://github.com/zendframework/zend-diactoros/pull/162) modifies `Serializer\Request` such that it now no longer raises an `UnexpectedValueException` via its `toString()` method
   when an unexpected HTTP method is encountered; this can be done safely, as the value can never
   be invalid due to other changes in the same patch.
