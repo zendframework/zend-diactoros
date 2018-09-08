@@ -7,8 +7,6 @@
 
 declare(strict_types=1);
 
-declare(strict_types=1);
-
 namespace Zend\Diactoros;
 
 use Psr\Http\Message\StreamInterface;
