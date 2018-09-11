@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace Zend\Diactoros;
 
+use function sprintf;
+
 /**
  * Create an uploaded file instance from an array of values.
  *
@@ -33,7 +35,7 @@ function createUploadedFile(array $spec) : UploadedFile
         $spec['tmp_name'],
         $spec['size'],
         $spec['error'],
-        isset($spec['name']) ? $spec['name'] : null,
-        isset($spec['type']) ? $spec['type'] : null
+        $spec['name'] ?? null,
+        $spec['type'] ?? null
     );
 }

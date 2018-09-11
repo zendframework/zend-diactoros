@@ -26,9 +26,9 @@ use function ucwords;
  */
 abstract class AbstractSerializer
 {
-    const CR  = "\r";
-    const EOL = "\r\n";
-    const LF  = "\n";
+    public const CR = "\r";
+    public const EOL = "\r\n";
+    public const LF = "\n";
 
     /**
      * Retrieve a single line from the stream.
@@ -41,7 +41,7 @@ abstract class AbstractSerializer
      */
     protected static function getLine(StreamInterface $stream) : string
     {
-        $line    = '';
+        $line = '';
         $crFound = false;
         while (! $stream->eof()) {
             $char = $stream->read(1);
@@ -91,7 +91,7 @@ abstract class AbstractSerializer
      */
     protected static function splitStream(StreamInterface $stream) : array
     {
-        $headers       = [];
+        $headers = [];
         $currentHeader = false;
 
         while ($line = self::getLine($stream)) {

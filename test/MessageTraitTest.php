@@ -19,9 +19,7 @@ use function count;
 
 class MessageTraitTest extends TestCase
 {
-    /**
-     * @var MessageInterface
-     */
+    /** @var MessageInterface */
     protected $message;
 
     public function setUp()
@@ -73,14 +71,14 @@ class MessageTraitTest extends TestCase
 
     public function testUsesStreamProvidedInConstructorAsBody()
     {
-        $stream  = $this->createMock(StreamInterface::class);
+        $stream = $this->createMock(StreamInterface::class);
         $message = new Request(null, null, $stream);
         $this->assertSame($stream, $message->getBody());
     }
 
     public function testBodyMutatorReturnsCloneWithChanges()
     {
-        $stream  = $this->createMock(StreamInterface::class);
+        $stream = $this->createMock(StreamInterface::class);
         $message = $this->message->withBody($stream);
         $this->assertNotSame($this->message, $message);
         $this->assertSame($stream, $message->getBody());
@@ -130,7 +128,7 @@ class MessageTraitTest extends TestCase
 
     public function testAddHeaderAppendsToExistingHeader()
     {
-        $message  = $this->message->withHeader('X-Foo', 'Foo');
+        $message = $this->message->withHeader('X-Foo', 'Foo');
         $this->assertNotSame($this->message, $message);
         $message2 = $message->withAddedHeader('X-Foo', 'Bar');
         $this->assertNotSame($message, $message2);

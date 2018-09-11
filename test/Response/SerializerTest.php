@@ -55,8 +55,8 @@ class SerializerTest extends TestCase
             ->withAddedHeader('X-Foo-Bar', 'Bat');
 
         $message = Serializer::toString($response);
-        $this->assertContains("X-Foo-Bar: Baz", $message);
-        $this->assertContains("X-Foo-Bar: Bat", $message);
+        $this->assertContains('X-Foo-Bar: Baz', $message);
+        $this->assertContains('X-Foo-Bar: Bat', $message);
     }
 
     public function testOmitsReasonPhraseFromStatusLineIfEmpty()
@@ -143,7 +143,7 @@ class SerializerTest extends TestCase
 
     public function testCanDeserializeResponseWithoutHeadersOrBody()
     {
-        $text = "HTTP/1.0 204";
+        $text = 'HTTP/1.0 204';
         $response = Serializer::fromString($text);
 
         $this->assertInstanceOf(ResponseInterface::class, $response);
@@ -182,15 +182,15 @@ class SerializerTest extends TestCase
         return [
             'invalid-name' => [
                 "HTTP/1.1 204\r\nThi;-I()-Invalid: value",
-                'Invalid header detected'
+                'Invalid header detected',
             ],
             'invalid-format' => [
                 "HTTP/1.1 204\r\nThis is not a header\r\n\r\nContent",
-                'Invalid header detected'
+                'Invalid header detected',
             ],
             'invalid-continuation' => [
                 "HTTP/1.1 204\r\nX-Foo-Bar: Baz\r\nInvalid continuation\r\nContent",
-                'Invalid header continuation'
+                'Invalid header continuation',
             ],
         ];
     }

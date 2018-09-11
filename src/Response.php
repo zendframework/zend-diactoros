@@ -12,10 +12,13 @@ namespace Zend\Diactoros;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 
+use function get_class;
 use function gettype;
 use function is_float;
 use function is_numeric;
+use function is_object;
 use function is_scalar;
+use function is_string;
 use function sprintf;
 
 /**
@@ -29,8 +32,8 @@ class Response implements ResponseInterface
 {
     use MessageTrait;
 
-    const MIN_STATUS_CODE_VALUE = 100;
-    const MAX_STATUS_CODE_VALUE = 599;
+    public const MIN_STATUS_CODE_VALUE = 100;
+    public const MAX_STATUS_CODE_VALUE = 599;
 
     /**
      * Map of standard HTTP status code/reason phrases
@@ -111,14 +114,10 @@ class Response implements ResponseInterface
         599 => 'Network Connect Timeout Error',
     ];
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $reasonPhrase;
 
-    /**
-     * @var int
-     */
+    /** @var int */
     private $statusCode;
 
     /**

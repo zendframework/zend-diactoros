@@ -55,7 +55,7 @@ class XmlResponseTest extends TestCase
     public function testAllowsStreamsForResponseBody()
     {
         $stream = $this->prophesize(StreamInterface::class);
-        $body   = $stream->reveal();
+        $body = $stream->reveal();
         $response = new XmlResponse($body);
         $this->assertSame($body, $response->getBody());
     }

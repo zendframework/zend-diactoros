@@ -200,7 +200,7 @@ class CallbackStreamTest extends TestCase
 
     public function phpCallbacksForStreams()
     {
-        $class = __CLASS__;
+        $class = self::class;
 
         // @codingStandardsIgnoreStart
         return [

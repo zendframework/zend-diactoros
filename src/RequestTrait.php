@@ -36,9 +36,7 @@ trait RequestTrait
 {
     use MessageTrait;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $method = 'GET';
 
     /**
@@ -48,9 +46,7 @@ trait RequestTrait
      */
     private $requestTarget;
 
-    /**
-     * @var UriInterface
-     */
+    /** @var UriInterface */
     private $uri;
 
     /**
@@ -66,7 +62,7 @@ trait RequestTrait
      */
     private function initialize(
         $uri = null,
-        string $method = null,
+        ?string $method = null,
         $body = 'php://memory',
         array $headers = []
     ) : void {
@@ -74,7 +70,7 @@ trait RequestTrait
             $this->setMethod($method);
         }
 
-        $this->uri    = $this->createUri($uri);
+        $this->uri = $this->createUri($uri);
         $this->stream = $this->getStream($body, 'wb+');
 
         $this->setHeaders($headers);
@@ -312,7 +308,7 @@ trait RequestTrait
      */
     private function getHostFromUri() : string
     {
-        $host  = $this->uri->getHost();
+        $host = $this->uri->getHost();
         $host .= $this->uri->getPort() ? ':' . $this->uri->getPort() : '';
         return $host;
     }

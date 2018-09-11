@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace ZendTest\Diactoros\Integration;
 
 use Http\Psr7Test\UriIntegrationTest;
-use Zend\Diactoros\RequestFactory;
 use Zend\Diactoros\Uri;
 
 class UriTest extends UriIntegrationTest

@@ -20,9 +20,7 @@ use const SEEK_SET;
  */
 class CallbackStream implements StreamInterface
 {
-    /**
-     * @var callable|null
-     */
+    /** @var callable|null */
     protected $callback;
 
     /**
@@ -166,7 +164,7 @@ class CallbackStream implements StreamInterface
         $metadata = [
             'eof' => $this->eof(),
             'stream_type' => 'callback',
-            'seekable' => false
+            'seekable' => false,
         ];
 
         if (null === $key) {

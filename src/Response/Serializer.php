@@ -48,7 +48,7 @@ final class Serializer extends AbstractSerializer
         $stream->rewind();
 
         [$version, $status, $reasonPhrase] = self::getStatusLine($stream);
-        [$headers, $body]                  = self::splitStream($stream);
+        [$headers, $body] = self::splitStream($stream);
 
         return (new Response($body, $status, $headers))
             ->withProtocolVersion($version)
@@ -61,9 +61,9 @@ final class Serializer extends AbstractSerializer
     public static function toString(ResponseInterface $response) : string
     {
         $reasonPhrase = $response->getReasonPhrase();
-        $headers      = self::serializeHeaders($response->getHeaders());
-        $body         = (string) $response->getBody();
-        $format       = 'HTTP/%s %d%s%s%s';
+        $headers = self::serializeHeaders($response->getHeaders());
+        $body = (string) $response->getBody();
+        $format = 'HTTP/%s %d%s%s%s';
 
         if (! empty($headers)) {
             $headers = "\r\n" . $headers;
@@ -99,6 +99,6 @@ final class Serializer extends AbstractSerializer
             throw Exception\SerializationException::forInvalidStatusLine();
         }
 
-        return [$matches['version'], (int) $matches['status'], isset($matches['reason']) ? $matches['reason'] : ''];
+        return [$matches['version'], (int) $matches['status'], $matches['reason'] ?? ''];
     }
 }

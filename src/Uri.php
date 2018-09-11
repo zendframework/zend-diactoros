@@ -11,13 +11,12 @@ namespace Zend\Diactoros;
 
 use Psr\Http\Message\UriInterface;
 
-use function array_key_exists;
 use function array_keys;
-use function count;
 use function explode;
 use function get_class;
 use function gettype;
 use function implode;
+use function is_float;
 use function is_numeric;
 use function is_object;
 use function is_string;
@@ -48,56 +47,40 @@ class Uri implements UriInterface
      *
      * @const string
      */
-    const CHAR_SUB_DELIMS = '!\$&\'\(\)\*\+,;=';
+    public const CHAR_SUB_DELIMS = '!\$&\'\(\)\*\+,;=';
 
     /**
      * Unreserved characters used in user info, paths, query strings, and fragments.
      *
      * @const string
      */
-    const CHAR_UNRESERVED = 'a-zA-Z0-9_\-\.~\pL';
+    public const CHAR_UNRESERVED = 'a-zA-Z0-9_\-\.~\pL';
 
-    /**
-     * @var int[] Array indexed by valid scheme names to their corresponding ports.
-     */
+    /** @var int[] Array indexed by valid scheme names to their corresponding ports. */
     protected $allowedSchemes = [
         'http'  => 80,
         'https' => 443,
     ];
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $scheme = '';
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $userInfo = '';
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $host = '';
 
-    /**
-     * @var int
-     */
+    /** @var int */
     private $port;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $path = '';
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $query = '';
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $fragment = '';
 
     /**
@@ -459,13 +442,13 @@ class Uri implements UriInterface
             );
         }
 
-        $this->scheme    = isset($parts['scheme']) ? $this->filterScheme($parts['scheme']) : '';
-        $this->userInfo  = isset($parts['user']) ? $this->filterUserInfoPart($parts['user']) : '';
-        $this->host      = isset($parts['host']) ? strtolower($parts['host']) : '';
-        $this->port      = isset($parts['port']) ? $parts['port'] : null;
-        $this->path      = isset($parts['path']) ? $this->filterPath($parts['path']) : '';
-        $this->query     = isset($parts['query']) ? $this->filterQuery($parts['query']) : '';
-        $this->fragment  = isset($parts['fragment']) ? $this->filterFragment($parts['fragment']) : '';
+        $this->scheme = isset($parts['scheme']) ? $this->filterScheme($parts['scheme']) : '';
+        $this->userInfo = isset($parts['user']) ? $this->filterUserInfoPart($parts['user']) : '';
+        $this->host = isset($parts['host']) ? strtolower($parts['host']) : '';
+        $this->port = $parts['port'] ?? null;
+        $this->path = isset($parts['path']) ? $this->filterPath($parts['path']) : '';
+        $this->query = isset($parts['query']) ? $this->filterQuery($parts['query']) : '';
+        $this->fragment = isset($parts['fragment']) ? $this->filterFragment($parts['fragment']) : '';
 
         if (isset($parts['pass'])) {
             $this->userInfo .= ':' . $parts['pass'];
@@ -497,7 +480,6 @@ class Uri implements UriInterface
         }
 
         $uri .= $path;
-
 
         if ('' !== $query) {
             $uri .= sprintf('?%s', $query);

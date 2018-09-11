@@ -20,7 +20,7 @@ use function basename;
 use function file_exists;
 use function file_get_contents;
 use function fopen;
-use function is_scalar;
+use function is_string;
 use function sys_get_temp_dir;
 use function tempnam;
 use function uniqid;
@@ -285,7 +285,7 @@ class UploadedFileTest extends TestCase
         $uploadedFile->moveTo($this->tmpFile);
 
         $original = file_get_contents(__FILE__);
-        $test     = file_get_contents($this->tmpFile);
+        $test = file_get_contents($this->tmpFile);
 
         $this->assertSame($original, $test);
     }

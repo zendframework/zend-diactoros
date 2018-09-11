@@ -49,12 +49,12 @@ final class ArraySerializer
     public static function fromArray(array $serializedRequest) : Request
     {
         try {
-            $uri             = self::getValueFromKey($serializedRequest, 'uri');
-            $method          = self::getValueFromKey($serializedRequest, 'method');
-            $body            = new Stream('php://memory', 'wb+');
+            $uri = self::getValueFromKey($serializedRequest, 'uri');
+            $method = self::getValueFromKey($serializedRequest, 'method');
+            $body = new Stream('php://memory', 'wb+');
             $body->write(self::getValueFromKey($serializedRequest, 'body'));
-            $headers         = self::getValueFromKey($serializedRequest, 'headers');
-            $requestTarget   = self::getValueFromKey($serializedRequest, 'request_target');
+            $headers = self::getValueFromKey($serializedRequest, 'headers');
+            $requestTarget = self::getValueFromKey($serializedRequest, 'request_target');
             $protocolVersion = self::getValueFromKey($serializedRequest, 'protocol_version');
 
             return (new Request($uri, $method, $body, $headers))
@@ -69,7 +69,7 @@ final class ArraySerializer
      * @return mixed
      * @throws Exception\DeserializationException
      */
-    private static function getValueFromKey(array $data, string $key, string $message = null)
+    private static function getValueFromKey(array $data, string $key, ?string $message = null)
     {
         if (isset($data[$key])) {
             return $data[$key];

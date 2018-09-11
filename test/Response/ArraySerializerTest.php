@@ -68,12 +68,10 @@ class ArraySerializerTest extends TestCase
             'reason_phrase' => 'Custom',
             'protocol_version' => '1.1',
             'headers' => [
-                'Accept' => [
-                    'application/json',
-                ],
+                'Accept' => ['application/json'],
                 'X-Foo-Bar' => [
                     'Baz',
-                    'Bat'
+                    'Bat',
                 ],
             ],
             'body' => '{"test":"value"}',

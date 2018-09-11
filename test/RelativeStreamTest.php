@@ -117,9 +117,9 @@ class RelativeStreamTest extends TestCase
     {
         $decorated = $this->prophesize(Stream::class);
         $decorated->tell()->willReturn(100);
-        $decorated->write("foobaz")->shouldBeCalled()->willReturn(6);
+        $decorated->write('foobaz')->shouldBeCalled()->willReturn(6);
         $stream = new RelativeStream($decorated->reveal(), 100);
-        $ret = $stream->write("foobaz");
+        $ret = $stream->write('foobaz');
         $this->assertSame(6, $ret);
     }
 
@@ -127,42 +127,42 @@ class RelativeStreamTest extends TestCase
     {
         $decorated = $this->prophesize(Stream::class);
         $decorated->tell()->willReturn(100);
-        $decorated->read(3)->shouldBeCalled()->willReturn("foo");
+        $decorated->read(3)->shouldBeCalled()->willReturn('foo');
         $stream = new RelativeStream($decorated->reveal(), 100);
         $ret = $stream->read(3);
-        $this->assertSame("foo", $ret);
+        $this->assertSame('foo', $ret);
     }
 
     public function testGetContents()
     {
         $decorated = $this->prophesize(Stream::class);
         $decorated->tell()->willReturn(100);
-        $decorated->getContents()->shouldBeCalled()->willReturn("foo");
+        $decorated->getContents()->shouldBeCalled()->willReturn('foo');
         $stream = new RelativeStream($decorated->reveal(), 100);
         $ret = $stream->getContents();
-        $this->assertSame("foo", $ret);
+        $this->assertSame('foo', $ret);
     }
 
     public function testGetMetadata()
     {
         $decorated = $this->prophesize(Stream::class);
-        $decorated->getMetadata("bar")->shouldBeCalled()->willReturn("foo");
+        $decorated->getMetadata('bar')->shouldBeCalled()->willReturn('foo');
         $stream = new RelativeStream($decorated->reveal(), 100);
-        $ret = $stream->getMetadata("bar");
-        $this->assertSame("foo", $ret);
+        $ret = $stream->getMetadata('bar');
+        $this->assertSame('foo', $ret);
     }
 
     public function testWriteRaisesExceptionWhenPointerIsBehindOffset()
     {
         $decorated = $this->prophesize(Stream::class);
         $decorated->tell()->shouldBeCalled()->willReturn(0);
-        $decorated->write("foobaz")->shouldNotBeCalled();
+        $decorated->write('foobaz')->shouldNotBeCalled();
         $stream = new RelativeStream($decorated->reveal(), 100);
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Invalid pointer position');
 
-        $stream->write("foobaz");
+        $stream->write('foobaz');
     }
 
     public function testReadRaisesExceptionWhenPointerIsBehindOffset()

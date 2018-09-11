@@ -17,12 +17,10 @@ use function fclose;
 use function fopen;
 use function fwrite;
 use function is_dir;
-use function is_int;
 use function is_resource;
 use function is_string;
 use function is_writable;
 use function move_uploaded_file;
-use function sprintf;
 use function strpos;
 
 use const PHP_SAPI;
@@ -37,7 +35,7 @@ use const UPLOAD_ERR_PARTIAL;
 
 class UploadedFile implements UploadedFileInterface
 {
-    const ERROR_MESSAGES = [
+    public const ERROR_MESSAGES = [
         UPLOAD_ERR_OK         => 'There is no error, the file uploaded with success',
         UPLOAD_ERR_INI_SIZE   => 'The uploaded file exceeds the upload_max_filesize directive in php.ini',
         UPLOAD_ERR_FORM_SIZE  => 'The uploaded file exceeds the MAX_FILE_SIZE directive that was '
@@ -49,39 +47,25 @@ class UploadedFile implements UploadedFileInterface
         UPLOAD_ERR_EXTENSION  => 'A PHP extension stopped the file upload.',
     ];
 
-    /**
-     * @var string|null
-     */
+    /** @var string|null */
     private $clientFilename;
 
-    /**
-     * @var string|null
-     */
+    /** @var string|null */
     private $clientMediaType;
 
-    /**
-     * @var int
-     */
+    /** @var int */
     private $error;
 
-    /**
-     * @var null|string
-     */
+    /** @var null|string */
     private $file;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     private $moved = false;
 
-    /**
-     * @var int
-     */
+    /** @var int */
     private $size;
 
-    /**
-     * @var null|StreamInterface
-     */
+    /** @var null|StreamInterface */
     private $stream;
 
     /**
@@ -96,8 +80,8 @@ class UploadedFile implements UploadedFileInterface
         $streamOrFile,
         int $size,
         int $errorStatus,
-        string $clientFilename = null,
-        string $clientMediaType = null
+        ?string $clientFilename = null,
+        ?string $clientMediaType = null
     ) {
         if ($errorStatus === UPLOAD_ERR_OK) {
             if (is_string($streamOrFile)) {
@@ -189,7 +173,7 @@ class UploadedFile implements UploadedFileInterface
 
         $sapi = PHP_SAPI;
         switch (true) {
-            case (empty($sapi) || 0 === strpos($sapi, 'cli') || ! $this->file):
+            case empty($sapi) || 0 === strpos($sapi, 'cli') || ! $this->file:
                 // Non-SAPI environment, or no filename present
                 $this->writeFile($targetPath);
                 break;

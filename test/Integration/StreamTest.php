@@ -11,7 +11,6 @@ namespace ZendTest\Diactoros\Integration;
 
 use Http\Psr7Test\StreamIntegrationTest;
 use Psr\Http\Message\StreamInterface;
-use Zend\Diactoros\RequestFactory;
 use Zend\Diactoros\Stream;
 
 class StreamTest extends StreamIntegrationTest

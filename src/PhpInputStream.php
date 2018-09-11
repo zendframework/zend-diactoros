@@ -16,14 +16,10 @@ use function stream_get_contents;
  */
 class PhpInputStream extends Stream
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     private $cache = '';
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     private $reachedEof = false;
 
     /**
@@ -81,7 +77,7 @@ class PhpInputStream extends Stream
             return $this->cache;
         }
 
-        $contents     = stream_get_contents($this->resource, $maxLength);
+        $contents = stream_get_contents($this->resource, $maxLength);
         $this->cache .= $contents;
 
         if ($maxLength === -1 || $this->eof()) {

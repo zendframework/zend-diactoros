@@ -41,7 +41,7 @@ class SerializerTest extends TestCase
 
     public function testSerializesRequestWithBody()
     {
-        $body   = json_encode(['test' => 'value']);
+        $body = json_encode(['test' => 'value']);
         $stream = new Stream('php://memory', 'wb+');
         $stream->write($body);
 
@@ -66,8 +66,8 @@ class SerializerTest extends TestCase
             ->withAddedHeader('X-Foo-Bar', 'Bat');
 
         $message = Serializer::toString($request);
-        $this->assertContains("X-Foo-Bar: Baz", $message);
-        $this->assertContains("X-Foo-Bar: Bat", $message);
+        $this->assertContains('X-Foo-Bar: Baz', $message);
+        $this->assertContains('X-Foo-Bar: Bat', $message);
     }
 
     public function originForms()
@@ -257,15 +257,15 @@ class SerializerTest extends TestCase
         return [
             'invalid-name' => [
                 "GET /foo HTTP/1.1\r\nThi;-I()-Invalid: value",
-                'Invalid header detected'
+                'Invalid header detected',
             ],
             'invalid-format' => [
                 "POST /foo HTTP/1.1\r\nThis is not a header\r\n\r\nContent",
-                'Invalid header detected'
+                'Invalid header detected',
             ],
             'invalid-continuation' => [
                 "POST /foo HTTP/1.1\r\nX-Foo-Bar: Baz\r\nInvalid continuation\r\nContent",
-                'Invalid header continuation'
+                'Invalid header continuation',
             ],
         ];
     }
@@ -314,7 +314,7 @@ class SerializerTest extends TestCase
     public function testFromStreamStopsReadingAfterScanningHeader()
     {
         $headers = "POST /foo HTTP/1.0\r\nContent-Type: text/plain\r\nX-Foo-Bar: Baz;\r\n Bat\r\n\r\n";
-        $payload = $headers . "Content!";
+        $payload = $headers . 'Content!';
 
         $stream = $this->createMock(StreamInterface::class);
         $stream

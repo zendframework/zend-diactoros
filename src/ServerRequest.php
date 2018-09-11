@@ -15,7 +15,10 @@ use Psr\Http\Message\UploadedFileInterface;
 use Psr\Http\Message\UriInterface;
 
 use function array_key_exists;
+use function gettype;
 use function is_array;
+use function is_object;
+use function sprintf;
 
 /**
  * Server-side HTTP request
@@ -35,34 +38,22 @@ class ServerRequest implements ServerRequestInterface
 {
     use RequestTrait;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     private $attributes = [];
 
-    /**
-     * @var array
-     */
+    /** @var array */
     private $cookieParams = [];
 
-    /**
-     * @var null|array|object
-     */
+    /** @var null|array|object */
     private $parsedBody;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     private $queryParams = [];
 
-    /**
-     * @var array
-     */
+    /** @var array */
     private $serverParams;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     private $uploadedFiles;
 
     /**
@@ -82,7 +73,7 @@ class ServerRequest implements ServerRequestInterface
         array $serverParams = [],
         array $uploadedFiles = [],
         $uri = null,
-        string $method = null,
+        ?string $method = null,
         $body = 'php://input',
         array $headers = [],
         array $cookies = [],
@@ -97,12 +88,12 @@ class ServerRequest implements ServerRequestInterface
         }
 
         $this->initialize($uri, $method, $body, $headers);
-        $this->serverParams  = $serverParams;
+        $this->serverParams = $serverParams;
         $this->uploadedFiles = $uploadedFiles;
-        $this->cookieParams  = $cookies;
-        $this->queryParams   = $queryParams;
-        $this->parsedBody    = $parsedBody;
-        $this->protocol      = $protocol;
+        $this->cookieParams = $cookies;
+        $this->queryParams = $queryParams;
+        $this->parsedBody = $parsedBody;
+        $this->protocol = $protocol;
     }
 
     /**

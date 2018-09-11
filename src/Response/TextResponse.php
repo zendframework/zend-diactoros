@@ -67,7 +67,7 @@ class TextResponse extends Response
             throw new Exception\InvalidArgumentException(sprintf(
                 'Invalid content (%s) provided to %s',
                 (is_object($text) ? get_class($text) : gettype($text)),
-                __CLASS__
+                self::class
             ));
         }
 

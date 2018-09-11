@@ -67,7 +67,7 @@ class HtmlResponse extends Response
             throw new Exception\InvalidArgumentException(sprintf(
                 'Invalid content (%s) provided to %s',
                 (is_object($html) ? get_class($html) : gettype($html)),
-                __CLASS__
+                self::class
             ));
         }
 

@@ -11,6 +11,7 @@ namespace ZendTest\Diactoros\Response;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use stdClass;
 use Zend\Diactoros\Response\JsonResponse;
 
 use function fopen;
@@ -31,9 +32,7 @@ class JsonResponseTest extends TestCase
     {
         $data = [
             'nested' => [
-                'json' => [
-                    'tree',
-                ],
+                'json' => ['tree'],
             ],
         ];
         $json = '{"nested":{"json":["tree"]}}';
@@ -123,7 +122,7 @@ class JsonResponseTest extends TestCase
         $defaultFlags = JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_SLASHES;
 
         $response = new JsonResponse([$key => $value]);
-        $stream   = $response->getBody();
+        $stream = $response->getBody();
         $contents = (string) $stream;
 
         $expected = json_encode($value, $defaultFlags);
@@ -192,7 +191,7 @@ JSON;
 
     public function testModifyingThePayloadDoesntMutateResponseInstance()
     {
-        $payload = new \stdClass();
+        $payload = new stdClass();
         $payload->foo = 'bar';
 
         $response = new JsonResponse($payload);

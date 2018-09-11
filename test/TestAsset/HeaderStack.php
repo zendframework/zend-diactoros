@@ -14,9 +14,7 @@ namespace ZendTest\Diactoros\TestAsset;
  */
 class HeaderStack
 {
-    /**
-     * @var string[][]
-     */
+    /** @var string[][] */
     private static $data = [];
 
     /**

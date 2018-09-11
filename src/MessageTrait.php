@@ -14,6 +14,7 @@ use Psr\Http\Message\StreamInterface;
 
 use function array_map;
 use function array_merge;
+use function array_values;
 use function get_class;
 use function gettype;
 use function implode;
@@ -46,14 +47,10 @@ trait MessageTrait
      */
     protected $headerNames = [];
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $protocol = '1.1';
 
-    /**
-     * @var StreamInterface
-     */
+    /** @var StreamInterface */
     private $stream;
 
     /**
@@ -212,7 +209,7 @@ trait MessageTrait
         $value = $this->filterHeaderValue($value);
 
         $new->headerNames[$normalized] = $header;
-        $new->headers[$header]         = $value;
+        $new->headers[$header] = $value;
 
         return $new;
     }
@@ -269,7 +266,7 @@ trait MessageTrait
         }
 
         $normalized = strtolower($header);
-        $original   = $this->headerNames[$normalized];
+        $original = $this->headerNames[$normalized];
 
         $new = clone $this;
         unset($new->headers[$original], $new->headerNames[$normalized]);

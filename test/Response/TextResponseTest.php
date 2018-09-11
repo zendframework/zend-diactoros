@@ -53,7 +53,7 @@ class TextResponseTest extends TestCase
     public function testAllowsStreamsForResponseBody()
     {
         $stream = $this->prophesize(StreamInterface::class);
-        $body   = $stream->reveal();
+        $body = $stream->reveal();
         $response = new TextResponse($body);
         $this->assertSame($body, $response->getBody());
     }

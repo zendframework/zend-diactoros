@@ -23,9 +23,7 @@ use function stream_context_create;
 
 class ResponseTest extends TestCase
 {
-    /**
-     * @var Response
-    */
+    /** @var Response */
     protected $response;
 
     public function setUp()

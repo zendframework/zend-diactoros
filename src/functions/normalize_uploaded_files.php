@@ -11,7 +11,9 @@ namespace Zend\Diactoros;
 
 use Psr\Http\Message\UploadedFileInterface;
 
+use function createUploadedFile;
 use function is_array;
+use function sprintf;
 
 /**
  * Normalize uploaded files
@@ -38,8 +40,8 @@ function normalizeUploadedFiles(array $files) : array
         array $tmpNameTree,
         array $sizeTree,
         array $errorTree,
-        array $nameTree = null,
-        array $typeTree = null
+        ?array $nameTree = null,
+        ?array $typeTree = null
     ) use (&$recursiveNormalize) : array {
         $normalized = [];
         foreach ($tmpNameTree as $key => $value) {
@@ -49,8 +51,8 @@ function normalizeUploadedFiles(array $files) : array
                     $tmpNameTree[$key],
                     $sizeTree[$key],
                     $errorTree[$key],
-                    isset($nameTree[$key]) ? $nameTree[$key] : null,
-                    isset($typeTree[$key]) ? $typeTree[$key] : null
+                    $nameTree[$key] ?? null,
+                    $typeTree[$key] ?? null
                 );
                 continue;
             }
@@ -58,8 +60,8 @@ function normalizeUploadedFiles(array $files) : array
                 'tmp_name' => $tmpNameTree[$key],
                 'size' => $sizeTree[$key],
                 'error' => $errorTree[$key],
-                'name' => isset($nameTree[$key]) ? $nameTree[$key] : null,
-                'type' => isset($typeTree[$key]) ? $typeTree[$key] : null
+                'name' => $nameTree[$key] ?? null,
+                'type' => $typeTree[$key] ?? null,
             ]);
         }
         return $normalized;
@@ -96,8 +98,8 @@ function normalizeUploadedFiles(array $files) : array
             $files['tmp_name'],
             $files['size'],
             $files['error'],
-            isset($files['name']) ? $files['name'] : null,
-            isset($files['type']) ? $files['type'] : null
+            $files['name'] ?? null,
+            $files['type'] ?? null
         );
     };
 

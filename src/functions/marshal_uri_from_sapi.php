@@ -12,15 +12,22 @@ namespace Zend\Diactoros;
 use function array_change_key_case;
 use function array_key_exists;
 use function explode;
+use function gettype;
 use function implode;
 use function is_array;
+use function is_bool;
+use function is_string;
 use function ltrim;
 use function preg_match;
 use function preg_replace;
+use function sprintf;
 use function strlen;
 use function strpos;
+use function strrpos;
 use function strtolower;
 use function substr;
+
+use const CASE_LOWER;
 
 /**
  * Marshal a Uri instance based on the values presnt in the $_SERVER array and headers.
@@ -38,11 +45,10 @@ function marshalUriFromSapi(array $server, array $headers) : Uri
      * @return mixed
      */
     $getHeaderFromArray = function (string $name, array $headers, $default = null) {
-        $header  = strtolower($name);
+        $header = strtolower($name);
         $headers = array_change_key_case($headers, CASE_LOWER);
         if (array_key_exists($header, $headers)) {
-            $value = is_array($headers[$header]) ? implode(', ', $headers[$header]) : $headers[$header];
-            return $value;
+            return is_array($headers[$header]) ? implode(', ', $headers[$header]) : $headers[$header];
         }
 
         return $default;
@@ -133,7 +139,7 @@ function marshalUriFromSapi(array $server, array $headers) : Uri
         // IIS7 with URL Rewrite: make sure we get the unencoded url
         // (double slash problem).
         $iisUrlRewritten = array_key_exists('IIS_WasUrlRewritten', $server) ? $server['IIS_WasUrlRewritten'] : null;
-        $unencodedUrl    = array_key_exists('UNENCODED_URL', $server) ? $server['UNENCODED_URL'] : '';
+        $unencodedUrl = array_key_exists('UNENCODED_URL', $server) ? $server['UNENCODED_URL'] : '';
         if ('1' === $iisUrlRewritten && ! empty($unencodedUrl)) {
             return $unencodedUrl;
         }

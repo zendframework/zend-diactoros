@@ -567,7 +567,7 @@ class UriTest extends TestCase
             'zero-float' => 0.0,
             'float'      => 1.1,
             'array'      => ['value'],
-            'object'     => (object)['value' => 'value'],
+            'object'     => (object) ['value' => 'value'],
         ];
 
         $combinations = [];
@@ -616,7 +616,7 @@ class UriTest extends TestCase
     {
         return [
             ['http://example.com/тестовый_путь/', '/тестовый_путь/'],
-            ['http://example.com/ουτοπία/', '/ουτοπία/']
+            ['http://example.com/ουτοπία/', '/ουτοπία/'],
         ];
     }
 

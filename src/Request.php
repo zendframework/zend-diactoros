@@ -33,7 +33,7 @@ class Request implements RequestInterface
      * @param array $headers Headers for the message, if any.
      * @throws Exception\InvalidArgumentException for any invalid value.
      */
-    public function __construct($uri = null, string $method = null, $body = 'php://temp', array $headers = [])
+    public function __construct($uri = null, ?string $method = null, $body = 'php://temp', array $headers = [])
     {
         $this->initialize($uri, $method, $body, $headers);
     }

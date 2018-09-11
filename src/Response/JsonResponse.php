@@ -42,16 +42,12 @@ class JsonResponse extends Response
      *
      * @const int
      */
-    const DEFAULT_JSON_FLAGS = 79;
+    public const DEFAULT_JSON_FLAGS = 79;
 
-    /**
-     * @var mixed
-     */
+    /** @var mixed */
     private $payload;
 
-    /**
-     * @var int
-     */
+    /** @var int */
     private $encodingOptions;
 
     /**
@@ -148,7 +144,7 @@ class JsonResponse extends Response
         if (JSON_ERROR_NONE !== json_last_error()) {
             throw new Exception\InvalidArgumentException(sprintf(
                 'Unable to encode data to JSON in %s: %s',
-                __CLASS__,
+                self::class,
                 json_last_error_msg()
             ));
         }

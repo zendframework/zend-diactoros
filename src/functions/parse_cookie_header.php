@@ -12,6 +12,8 @@ namespace Zend\Diactoros;
 use function preg_match_all;
 use function urldecode;
 
+use const PREG_SET_ORDER;
+
 /**
  * Parse a cookie header according to RFC 6265.
  *

@@ -18,9 +18,7 @@ use Zend\Diactoros\Uri;
 
 class ServerRequestTest extends TestCase
 {
-    /**
-     * @var ServerRequest
-     */
+    /** @var ServerRequest */
     protected $request;
 
     public function setUp()
@@ -136,12 +134,8 @@ class ServerRequestTest extends TestCase
         $headers = [
             'host' => ['example.com'],
         ];
-        $cookies = [
-            'boo' => 'foo',
-        ];
-        $queryParams = [
-            'bar' => 'bat',
-        ];
+        $cookies = ['boo' => 'foo'];
+        $queryParams = ['bar' => 'bat'];
         $parsedBody = 'bazbar';
         $protocol = '1.2';
 
@@ -237,7 +231,7 @@ class ServerRequestTest extends TestCase
             [
                 new UploadedFile('php://temp', 0, 0),
                 new UploadedFile('php://temp', 0, 0),
-            ]
+            ],
         ];
 
         $request = $request->withUploadedFiles($uploadedFiles);

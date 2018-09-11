@@ -22,14 +22,10 @@ use const SEEK_SET;
  */
 final class RelativeStream implements StreamInterface
 {
-    /**
-     * @var StreamInterface
-     */
+    /** @var StreamInterface */
     private $decoratedStream;
 
-    /**
-     * @var int
-     */
+    /** @var int */
     private $offset;
 
     /**
@@ -108,7 +104,7 @@ final class RelativeStream implements StreamInterface
      */
     public function seek($offset, $whence = SEEK_SET) : void
     {
-        if ($whence == SEEK_SET) {
+        if ($whence === SEEK_SET) {
             $this->decoratedStream->seek($offset + $this->offset, $whence);
             return;
         }

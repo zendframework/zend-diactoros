@@ -26,6 +26,7 @@ use function fstat;
 use function ftok;
 use function function_exists;
 use function fwrite;
+use function gmp_init;
 use function imagecreate;
 use function is_resource;
 use function shmop_open;
@@ -41,9 +42,7 @@ class StreamTest extends TestCase
 {
     public $tmpnam;
 
-    /**
-     * @var Stream
-     */
+    /** @var Stream */
     protected $stream;
 
     public function setUp()
@@ -67,7 +66,7 @@ class StreamTest extends TestCase
     public function testCanInstantiteWithStreamResource()
     {
         $resource = fopen('php://memory', 'wb+');
-        $stream   = new Stream($resource);
+        $stream = new Stream($resource);
         $this->assertInstanceOf(Stream::class, $stream);
     }
 
@@ -94,7 +93,7 @@ class StreamTest extends TestCase
     public function testDetachReturnsResource()
     {
         $resource = fopen('php://memory', 'wb+');
-        $stream   = new Stream($resource);
+        $stream = new Stream($resource);
         $this->assertSame($resource, $stream->detach());
     }
 
@@ -284,7 +283,7 @@ class StreamTest extends TestCase
 
     public function testIsWritableReturnsTrueForWritableMemoryStream()
     {
-        $stream = new Stream("php://temp", "r+b");
+        $stream = new Stream('php://temp', 'r+b');
         $this->assertTrue($stream->isWritable());
     }
 
@@ -480,7 +479,7 @@ class StreamTest extends TestCase
      */
     public function testAttachWithNonStringNonResourceRaisesException($resource)
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid stream');
 
         $this->stream->attach($resource);
@@ -546,7 +545,7 @@ class StreamTest extends TestCase
         $this->stream->attach($resource);
 
         $expected = stream_get_meta_data($resource);
-        $test     = $this->stream->getMetadata();
+        $test = $this->stream->getMetadata();
 
         $this->assertSame($expected, $test);
     }
@@ -560,7 +559,7 @@ class StreamTest extends TestCase
         $metadata = stream_get_meta_data($resource);
         $expected = $metadata['uri'];
 
-        $test     = $this->stream->getMetadata('uri');
+        $test = $this->stream->getMetadata('uri');
 
         $this->assertSame($expected, $test);
     }

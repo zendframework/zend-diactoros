@@ -39,14 +39,10 @@ use const SEEK_SET;
  */
 class Stream implements StreamInterface
 {
-    /**
-     * @var resource|null
-     */
+    /** @var resource|null */
     protected $resource;
 
-    /**
-     * @var string|resource
-     */
+    /** @var string|resource */
     protected $stream;
 
     /**
@@ -215,13 +211,11 @@ class Stream implements StreamInterface
         $meta = stream_get_meta_data($this->resource);
         $mode = $meta['mode'];
 
-        return (
-            strstr($mode, 'x')
+        return strstr($mode, 'x')
             || strstr($mode, 'w')
             || strstr($mode, 'c')
             || strstr($mode, 'a')
-            || strstr($mode, '+')
-        );
+            || strstr($mode, '+');
     }
 
     /**
@@ -258,7 +252,7 @@ class Stream implements StreamInterface
         $meta = stream_get_meta_data($this->resource);
         $mode = $meta['mode'];
 
-        return (strstr($mode, 'r') || strstr($mode, '+'));
+        return strstr($mode, 'r') || strstr($mode, '+');
     }
 
     /**
@@ -325,7 +319,7 @@ class Stream implements StreamInterface
      */
     private function setStream($stream, string $mode = 'r') : void
     {
-        $error    = null;
+        $error = null;
         $resource = $stream;
 
         if (is_string($stream)) {

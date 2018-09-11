@@ -18,9 +18,7 @@ use Zend\Diactoros\Uri;
 
 class RequestTest extends TestCase
 {
-    /**
-     * @var Request
-     */
+    /** @var Request */
     protected $request;
 
     public function setUp()
@@ -90,8 +88,8 @@ class RequestTest extends TestCase
 
     public function testConstructorCanAcceptAllMessageParts()
     {
-        $uri     = new Uri('http://example.com/');
-        $body    = new Stream('php://memory');
+        $uri = new Uri('http://example.com/');
+        $body = new Stream('php://memory');
         $headers = [
             'x-foo' => ['bar'],
         ];
@@ -115,9 +113,9 @@ class RequestTest extends TestCase
     public function testDefaultStreamIsWritable()
     {
         $request = new Request();
-        $request->getBody()->write("test");
+        $request->getBody()->write('test');
 
-        $this->assertSame("test", (string)$request->getBody());
+        $this->assertSame('test', (string) $request->getBody());
     }
 
     public function invalidRequestUri()
@@ -128,7 +126,7 @@ class RequestTest extends TestCase
             'int'      => [ 1 ],
             'float'    => [ 1.1 ],
             'array'    => [ ['http://example.com'] ],
-            'stdClass' => [ (object) [ 'href'         => 'http://example.com'] ],
+            'stdClass' => [ (object) [ 'href' => 'http://example.com'] ],
         ];
     }
 
@@ -163,7 +161,7 @@ class RequestTest extends TestCase
 
     public function customRequestMethods()
     {
-        return[
+        return [
             /* WebDAV methods */
             'TRACE'     => ['TRACE'],
             'PROPFIND'  => ['PROPFIND'],
@@ -255,25 +253,25 @@ class RequestTest extends TestCase
                 (new Request())
                 ->withUri(new Uri('https://api.example.com/user'))
                 ->withMethod('POST'),
-                '/user'
+                '/user',
             ],
             'absolute-uri-with-query' => [
                 (new Request())
                 ->withUri(new Uri('https://api.example.com/user?foo=bar'))
                 ->withMethod('POST'),
-                '/user?foo=bar'
+                '/user?foo=bar',
             ],
             'relative-uri' => [
                 (new Request())
                 ->withUri(new Uri('/user'))
                 ->withMethod('GET'),
-                '/user'
+                '/user',
             ],
             'relative-uri-with-query' => [
                 (new Request())
                 ->withUri(new Uri('/user?foo=bar'))
                 ->withMethod('GET'),
-                '/user?foo=bar'
+                '/user?foo=bar',
             ],
         ];
     }
@@ -549,8 +547,8 @@ class RequestTest extends TestCase
         $request = (new Request())
             ->withHeader($hostKey, 'example.com');
 
-        $uri  = new Uri('http://example.org/foo/bar');
-        $new  = $request->withUri($uri);
+        $uri = new Uri('http://example.org/foo/bar');
+        $new = $request->withUri($uri);
         $host = $new->getHeaderLine('host');
         $this->assertSame('example.org', $host);
         $headers = $new->getHeaders();

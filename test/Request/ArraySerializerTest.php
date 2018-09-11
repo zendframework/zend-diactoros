@@ -39,15 +39,11 @@ class ArraySerializerTest extends TestCase
             'uri' => 'http://example.com/foo/bar?baz=bat',
             'protocol_version' => '1.1',
             'headers' => [
-                'Host' => [
-                    'example.com',
-                ],
-                'Accept' => [
-                    'application/json',
-                ],
+                'Host' => ['example.com'],
+                'Accept' => ['application/json'],
                 'X-Foo-Bar' => [
                     'Baz',
-                    'Bat'
+                    'Bat',
                 ],
             ],
             'body' => '{"test":"value"}',
@@ -62,15 +58,11 @@ class ArraySerializerTest extends TestCase
             'uri' => 'http://example.com/foo/bar?baz=bat',
             'protocol_version' => '1.1',
             'headers' => [
-                'Host' => [
-                    'example.com',
-                ],
-                'Accept' => [
-                    'application/json',
-                ],
+                'Host' => ['example.com'],
+                'Accept' => ['application/json'],
                 'X-Foo-Bar' => [
                     'Baz',
-                    'Bat'
+                    'Bat',
                 ],
             ],
             'body' => '{"test":"value"}',
@@ -100,15 +92,11 @@ class ArraySerializerTest extends TestCase
             'uri' => 'http://example.com/foo/bar?baz=bat',
             'protocol_version' => '1.1',
             'headers' => [
-                'Host' => [
-                    'example.com',
-                ],
-                'Accept' => [
-                    'application/json',
-                ],
+                'Host' => ['example.com'],
+                'Accept' => ['application/json'],
                 'X-Foo-Bar' => [
                     'Baz',
-                    'Bat'
+                    'Bat',
                 ],
             ],
         ];

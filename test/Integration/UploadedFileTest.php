@@ -10,9 +10,10 @@ declare(strict_types=1);
 namespace ZendTest\Diactoros\Integration;
 
 use Http\Psr7Test\UploadedFileIntegrationTest;
-use Zend\Diactoros\RequestFactory;
 use Zend\Diactoros\Stream;
 use Zend\Diactoros\UploadedFile;
+
+use const UPLOAD_ERR_OK;
 
 class UploadedFileTest extends UploadedFileIntegrationTest
 {

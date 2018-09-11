@@ -51,10 +51,10 @@ final class ArraySerializer
             $body = new Stream('php://memory', 'wb+');
             $body->write(self::getValueFromKey($serializedResponse, 'body'));
 
-            $statusCode      = self::getValueFromKey($serializedResponse, 'status_code');
-            $headers         = self::getValueFromKey($serializedResponse, 'headers');
+            $statusCode = self::getValueFromKey($serializedResponse, 'status_code');
+            $headers = self::getValueFromKey($serializedResponse, 'headers');
             $protocolVersion = self::getValueFromKey($serializedResponse, 'protocol_version');
-            $reasonPhrase    = self::getValueFromKey($serializedResponse, 'reason_phrase');
+            $reasonPhrase = self::getValueFromKey($serializedResponse, 'reason_phrase');
 
             return (new Response($body, $statusCode, $headers))
                 ->withProtocolVersion($protocolVersion)
@@ -71,7 +71,7 @@ final class ArraySerializer
      * @return mixed
      * @throws UnexpectedValueException
      */
-    private static function getValueFromKey(array $data, string $key, string $message = null)
+    private static function getValueFromKey(array $data, string $key, ?string $message = null)
     {
         if (isset($data[$key])) {
             return $data[$key];

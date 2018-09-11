@@ -69,7 +69,7 @@ class XmlResponse extends Response
             throw new Exception\InvalidArgumentException(sprintf(
                 'Invalid content (%s) provided to %s',
                 (is_object($xml) ? get_class($xml) : gettype($xml)),
-                __CLASS__
+                self::class
             ));
         }
 

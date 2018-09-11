@@ -14,6 +14,13 @@ use Psr\Http\Message\ServerRequestInterface;
 
 use function array_key_exists;
 use function is_callable;
+use function marshalHeadersFromSapi;
+use function marshalMethodFromSapi;
+use function marshalProtocolVersionFromSapi;
+use function marshalUriFromSapi;
+use function normalizeServer;
+use function normalizeUploadedFiles;
+use function parseCookieHeader;
 
 /**
  * Class for marshaling a request object from the current PHP environment.
@@ -50,17 +57,17 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
      * @return ServerRequest
      */
     public static function fromGlobals(
-        array $server = null,
-        array $query = null,
-        array $body = null,
-        array $cookies = null,
-        array $files = null
+        ?array $server = null,
+        ?array $query = null,
+        ?array $body = null,
+        ?array $cookies = null,
+        ?array $files = null
     ) : ServerRequest {
         $server = normalizeServer(
             $server ?: $_SERVER,
             is_callable(self::$apacheRequestHeaders) ? self::$apacheRequestHeaders : null
         );
-        $files   = normalizeUploadedFiles($files ?: $_FILES);
+        $files = normalizeUploadedFiles($files ?: $_FILES);
         $headers = marshalHeadersFromSapi($server);
 
         if (null === $cookies && array_key_exists('cookie', $headers)) {

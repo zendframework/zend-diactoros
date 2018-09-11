@@ -55,7 +55,7 @@ final class HeaderSecurity
      */
     public static function filter(string $value) : string
     {
-        $value  = (string) $value;
+        $value = (string) $value;
         $length = strlen($value);
         $string = '';
         for ($i = 0; $i < $length; $i += 1) {
@@ -103,7 +103,7 @@ final class HeaderSecurity
      */
     public static function isValid($value) : bool
     {
-        $value  = (string) $value;
+        $value = (string) $value;
 
         // Look for:
         // \n not preceded by \r, OR

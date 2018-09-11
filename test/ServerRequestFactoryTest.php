@@ -10,14 +10,16 @@ declare(strict_types=1);
 namespace ZendTest\Diactoros;
 
 use PHPUnit\Framework\TestCase;
-use ReflectionMethod;
-use ReflectionProperty;
 use UnexpectedValueException;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\ServerRequestFactory;
 use Zend\Diactoros\UploadedFile;
 use Zend\Diactoros\Uri;
 
+use function array_shift;
+use function sprintf;
+use function strpos;
+use function strtolower;
 use function Zend\Diactoros\marshalHeadersFromSapi;
 use function Zend\Diactoros\marshalProtocolVersionFromSapi;
 use function Zend\Diactoros\marshalUriFromSapi;
@@ -91,9 +93,7 @@ class ServerRequestFactoryTest extends TestCase
 
     public function testMarshalRequestUriStripsSchemeHostAndPortInformationWhenPresent()
     {
-        $server = [
-            'REQUEST_URI' => 'http://example.com:8000/foo/bar',
-        ];
+        $server = ['REQUEST_URI' => 'http://example.com:8000/foo/bar'];
 
         $uri = marshalUriFromSapi($server, []);
 
@@ -102,9 +102,7 @@ class ServerRequestFactoryTest extends TestCase
 
     public function testMarshalRequestUriUsesOrigPathInfoIfPresent()
     {
-        $server = [
-            'ORIG_PATH_INFO' => '/foo/bar',
-        ];
+        $server = ['ORIG_PATH_INFO' => '/foo/bar'];
 
         $uri = marshalUriFromSapi($server, []);
 
@@ -162,9 +160,7 @@ class ServerRequestFactoryTest extends TestCase
         $request = new ServerRequest();
         $request = $request->withUri(new Uri('http://example.com/'));
 
-        $server  = [
-            'SERVER_NAME' => 'example.com',
-        ];
+        $server = ['SERVER_NAME' => 'example.com'];
 
         $uri = marshalUriFromSapi($server, $request->getHeaders());
 
@@ -177,7 +173,7 @@ class ServerRequestFactoryTest extends TestCase
         $request = new ServerRequest();
         $request = $request->withUri(new Uri());
 
-        $server  = [
+        $server = [
             'SERVER_NAME' => 'example.com',
             'SERVER_PORT' => 8000,
         ];
@@ -193,7 +189,7 @@ class ServerRequestFactoryTest extends TestCase
         $request = new ServerRequest();
         $request = $request->withUri(new Uri('http://example.com/'));
 
-        $server  = [
+        $server = [
             'SERVER_ADDR' => '127.0.0.1',
             'SERVER_NAME' => 'example.com',
         ];
@@ -208,7 +204,7 @@ class ServerRequestFactoryTest extends TestCase
         $request = new ServerRequest();
         $request = $request->withUri(new Uri());
 
-        $server  = [
+        $server = [
             'SERVER_ADDR' => 'FE80::0202:B3FF:FE1E:8329',
             'SERVER_NAME' => '[FE80::0202:B3FF:FE1E:8329]',
             'SERVER_PORT' => 8000,
@@ -225,7 +221,7 @@ class ServerRequestFactoryTest extends TestCase
         $request = new ServerRequest();
         $request = $request->withUri(new Uri());
 
-        $server  = [
+        $server = [
             'SERVER_ADDR' => 'FE80::0202:B3FF:FE1E:8329',
             'SERVER_NAME' => '[FE80::0202:B3FF:FE1E:8329:80]',
         ];
@@ -257,9 +253,7 @@ class ServerRequestFactoryTest extends TestCase
         $request = $request->withUri(new Uri('http://example.com/'));
         $request = $request->withHeader('Host', 'example.com');
 
-        $server  = [
-            $param => true,
-        ];
+        $server = [$param => true];
 
         $uri = marshalUriFromSapi($server, $request->getHeaders());
 
@@ -293,9 +287,7 @@ class ServerRequestFactoryTest extends TestCase
         $request = $request->withUri(new Uri('http://example.com/'));
         $request = $request->withHeader('Host', 'example.com');
 
-        $server  = [
-            $param => $value,
-        ];
+        $server = [$param => $value];
 
         $uri = marshalUriFromSapi($server, $request->getHeaders());
 
@@ -314,7 +306,7 @@ class ServerRequestFactoryTest extends TestCase
         $request = $request->withHeader('Host', 'example.com');
         $request = $request->withHeader('X-Forwarded-Proto', $xForwardedProto);
 
-        $server  = [];
+        $server = [];
 
         $uri = marshalUriFromSapi($server, $request->getHeaders());
 
@@ -328,9 +320,7 @@ class ServerRequestFactoryTest extends TestCase
         $request = $request->withUri(new Uri('http://example.com/'));
         $request = $request->withHeader('Host', 'example.com');
 
-        $server = [
-            'REQUEST_URI' => '/foo/bar?foo=bar',
-        ];
+        $server = ['REQUEST_URI' => '/foo/bar?foo=bar'];
 
         $uri = marshalUriFromSapi($server, $request->getHeaders());
 
@@ -361,9 +351,7 @@ class ServerRequestFactoryTest extends TestCase
         $request = $request->withUri(new Uri('http://example.com/'));
         $request = $request->withHeader('Host', 'example.com');
 
-        $server = [
-            'REQUEST_URI' => '/foo/bar#foo',
-        ];
+        $server = ['REQUEST_URI' => '/foo/bar#foo'];
 
         $uri = marshalUriFromSapi($server, $request->getHeaders());
 
@@ -382,22 +370,22 @@ class ServerRequestFactoryTest extends TestCase
             'QUERY_STRING' => 'bar=baz',
         ];
 
-        $cookies = $query = $body = $files = [
-            'bar' => 'baz',
-        ];
+        $cookies = $query = $body = $files = ['bar' => 'baz'];
 
         $cookies['cookies'] = true;
-        $query['query']     = true;
-        $body['body']       = true;
-        $files              = [ 'files' => [
-            'tmp_name' => 'php://temp',
-            'size'     => 0,
-            'error'    => 0,
-            'name'     => 'foo.bar',
-            'type'     => 'text/plain',
-        ]];
+        $query['query'] = true;
+        $body['body'] = true;
+        $files = [
+            'files' => [
+                'tmp_name' => 'php://temp',
+                'size'     => 0,
+                'error'    => 0,
+                'name'     => 'foo.bar',
+                'type'     => 'text/plain',
+            ],,
+        ];
         $expectedFiles = [
-            'files' => new UploadedFile('php://temp', 0, 0, 'foo.bar', 'text/plain')
+            'files' => new UploadedFile('php://temp', 0, 0, 'foo.bar', 'text/plain'),,
         ];
 
         $request = ServerRequestFactory::fromGlobals($server, $query, $body, $cookies, $files);
@@ -412,9 +400,7 @@ class ServerRequestFactoryTest extends TestCase
 
     public function testFromGlobalsUsesCookieHeaderInsteadOfCookieSuperGlobal()
     {
-        $_COOKIE = [
-            'foo_bar' => 'bat',
-        ];
+        $_COOKIE = ['foo_bar' => 'bat'];
         $_SERVER['HTTP_COOKIE'] = 'foo_bar=baz';
 
         $request = ServerRequestFactory::fromGlobals();
@@ -427,9 +413,7 @@ class ServerRequestFactoryTest extends TestCase
      */
     public function testFromGlobalsUsesCookieSuperGlobalWhenCookieHeaderIsNotSet()
     {
-        $_COOKIE = [
-            'foo_bar' => 'bat',
-        ];
+        $_COOKIE = ['foo_bar' => 'bat'];
 
         $request = ServerRequestFactory::fromGlobals();
         $this->assertSame(['foo_bar' => 'bat'], $request->getCookieParams());
@@ -515,13 +499,15 @@ class ServerRequestFactoryTest extends TestCase
      */
     public function testNormalizeFilesReturnsOnlyActualFilesWhenOriginalFilesContainsNestedAssociativeArrays()
     {
-        $files = [ 'fooFiles' => [
-            'tmp_name' => ['file' => 'php://temp'],
-            'size'     => ['file' => 0],
-            'error'    => ['file' => 0],
-            'name'     => ['file' => 'foo.bar'],
-            'type'     => ['file' => 'text/plain'],
-        ]];
+        $files = [
+            'fooFiles' => [
+                'tmp_name' => ['file' => 'php://temp'],
+                'size'     => ['file' => 0],
+                'error'    => ['file' => 0],
+                'name'     => ['file' => 'foo.bar'],
+                'type'     => ['file' => 'text/plain'],
+            ],,
+        ];
 
         $normalizedFiles = normalizeUploadedFiles($files);
 
@@ -560,12 +546,8 @@ class ServerRequestFactoryTest extends TestCase
 
     public function testMarshalRequestUriPrefersRequestUriServerParamWhenXOriginalUrlButNoXRewriteUrlPresent()
     {
-        $headers = [
-            'X-Original-URL' => '/hijack-attempt',
-        ];
-        $server = [
-            'REQUEST_URI' => 'https://example.com/requested/path',
-        ];
+        $headers = ['X-Original-URL' => '/hijack-attempt'];
+        $server = ['REQUEST_URI' => 'https://example.com/requested/path'];
 
         $uri = marshalUriFromSapi($server, $headers);
         $this->assertSame('/requested/path', $uri->getPath());

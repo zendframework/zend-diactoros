@@ -75,8 +75,8 @@ final class Serializer extends AbstractSerializer
     {
         $httpMethod = $request->getMethod();
         $headers = self::serializeHeaders($request->getHeaders());
-        $body    = (string) $request->getBody();
-        $format  = '%s %s HTTP/%s%s%s';
+        $body = (string) $request->getBody();
+        $format = '%s %s HTTP/%s%s%s';
 
         if (! empty($headers)) {
             $headers = "\r\n" . $headers;
