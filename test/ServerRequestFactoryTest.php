@@ -382,10 +382,10 @@ class ServerRequestFactoryTest extends TestCase
                 'error'    => 0,
                 'name'     => 'foo.bar',
                 'type'     => 'text/plain',
-            ],,
+            ],
         ];
         $expectedFiles = [
-            'files' => new UploadedFile('php://temp', 0, 0, 'foo.bar', 'text/plain'),,
+            'files' => new UploadedFile('php://temp', 0, 0, 'foo.bar', 'text/plain'),
         ];
 
         $request = ServerRequestFactory::fromGlobals($server, $query, $body, $cookies, $files);
@@ -506,7 +506,7 @@ class ServerRequestFactoryTest extends TestCase
                 'error'    => ['file' => 0],
                 'name'     => ['file' => 'foo.bar'],
                 'type'     => ['file' => 'text/plain'],
-            ],,
+            ],
         ];
 
         $normalizedFiles = normalizeUploadedFiles($files);
