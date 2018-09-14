@@ -11,7 +11,6 @@ namespace Zend\Diactoros;
 
 use Psr\Http\Message\UploadedFileInterface;
 
-use function createUploadedFile;
 use function is_array;
 use function sprintf;
 

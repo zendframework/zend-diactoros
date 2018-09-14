@@ -14,13 +14,6 @@ use Psr\Http\Message\ServerRequestInterface;
 
 use function array_key_exists;
 use function is_callable;
-use function marshalHeadersFromSapi;
-use function marshalMethodFromSapi;
-use function marshalProtocolVersionFromSapi;
-use function marshalUriFromSapi;
-use function normalizeServer;
-use function normalizeUploadedFiles;
-use function parseCookieHeader;
 
 /**
  * Class for marshaling a request object from the current PHP environment.
