@@ -1,9 +1,11 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-diactoros for the canonical source repository
- * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2018 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace ZendTest\Diactoros;
 
@@ -182,17 +184,6 @@ class ResponseTest extends TestCase
     /**
      * @dataProvider invalidStatusCodes
      */
-    public function testConstructorRaisesExceptionForInvalidStatus($code)
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Invalid status code');
-
-        new Response('php://memory', $code);
-    }
-
-    /**
-     * @dataProvider invalidStatusCodes
-     */
     public function testCannotSetInvalidStatusCode($code)
     {
         $this->expectException(InvalidArgumentException::class);
@@ -260,13 +251,6 @@ class ResponseTest extends TestCase
         $this->expectExceptionMessage($contains);
 
         new Response('php://memory', 200, $headers);
-    }
-
-    public function testInvalidStatusCodeInConstructor()
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        new Response('php://memory', null);
     }
 
     public function testReasonPhraseCanBeEmpty()

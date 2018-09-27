@@ -1,9 +1,11 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-diactoros for the canonical source repository
- * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2018 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace ZendTest\Diactoros;
 
@@ -44,7 +46,7 @@ class UploadedFileTest extends TestCase
 
     public function tearDown()
     {
-        if (is_scalar($this->tmpFile) && file_exists($this->tmpFile)) {
+        if (is_string($this->tmpFile) && file_exists($this->tmpFile)) {
             unlink($this->tmpFile);
         }
     }
@@ -76,30 +78,6 @@ class UploadedFileTest extends TestCase
         new UploadedFile($streamOrFile, 0, UPLOAD_ERR_OK);
     }
 
-    public function invalidSizes()
-    {
-        return [
-            'null'   => [null],
-            'true'   => [true],
-            'false'  => [false],
-            'float'  => [1.1],
-            'string' => ['1'],
-            'array'  => [[1]],
-            'object' => [(object) [1]],
-        ];
-    }
-
-    /**
-     * @dataProvider invalidSizes
-     */
-    public function testRaisesExceptionOnInvalidSize($size)
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('size');
-
-        new UploadedFile(fopen('php://temp', 'wb+'), $size, UPLOAD_ERR_OK);
-    }
-
     public function testValidSize()
     {
         $uploaded = new UploadedFile(fopen('php://temp', 'wb+'), 123, UPLOAD_ERR_OK);
@@ -110,13 +88,6 @@ class UploadedFileTest extends TestCase
     public function invalidErrorStatuses()
     {
         return [
-            'null'     => [null],
-            'true'     => [true],
-            'false'    => [false],
-            'float'    => [1.1],
-            'string'   => ['1'],
-            'array'    => [[1]],
-            'object'   => [(object) [1]],
             'negative' => [-1],
             'too-big'  => [9],
         ];
@@ -133,29 +104,6 @@ class UploadedFileTest extends TestCase
         new UploadedFile(fopen('php://temp', 'wb+'), 0, $status);
     }
 
-    public function invalidFilenamesAndMediaTypes()
-    {
-        return [
-            'true'   => [true],
-            'false'  => [false],
-            'int'    => [1],
-            'float'  => [1.1],
-            'array'  => [['string']],
-            'object' => [(object) ['string']],
-        ];
-    }
-
-    /**
-     * @dataProvider invalidFilenamesAndMediaTypes
-     */
-    public function testRaisesExceptionOnInvalidClientFilename($filename)
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('filename');
-
-        new UploadedFile(fopen('php://temp', 'wb+'), 0, UPLOAD_ERR_OK, $filename);
-    }
-
     public function testValidClientFilename()
     {
         $file = new UploadedFile(fopen('php://temp', 'wb+'), 0, UPLOAD_ERR_OK, 'boo.txt');
@@ -166,17 +114,6 @@ class UploadedFileTest extends TestCase
     {
         $file = new UploadedFile(fopen('php://temp', 'wb+'), 0, UPLOAD_ERR_OK, null);
         $this->assertSame(null, $file->getClientFilename());
-    }
-
-    /**
-     * @dataProvider invalidFilenamesAndMediaTypes
-     */
-    public function testRaisesExceptionOnInvalidClientMediaType($mediaType)
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('media type');
-
-        new UploadedFile(fopen('php://temp', 'wb+'), 0, UPLOAD_ERR_OK, 'foobar.baz', $mediaType);
     }
 
     public function testValidClientMediaType()

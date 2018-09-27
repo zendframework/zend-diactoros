@@ -1,9 +1,11 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-diactoros for the canonical source repository
- * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2018 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace ZendTest\Diactoros;
 
@@ -26,16 +28,33 @@ class RequestTest extends TestCase
         $this->request = new Request();
     }
 
-    public function testMethodIsEmptyByDefault()
+    public function testMethodIsGetByDefault()
     {
-        $this->assertSame('', $this->request->getMethod());
+        $this->assertSame('GET', $this->request->getMethod());
     }
 
     public function testMethodMutatorReturnsCloneWithChangedMethod()
     {
-        $request = $this->request->withMethod('GET');
+        $request = $this->request->withMethod('POST');
         $this->assertNotSame($this->request, $request);
-        $this->assertSame('GET', $request->getMethod());
+        $this->assertEquals('POST', $request->getMethod());
+    }
+
+    public function invalidMethod()
+    {
+        return [
+            [null],
+            [''],
+        ];
+    }
+
+    /**
+     * @dataProvider invalidMethod
+     */
+    public function testWithInvalidMethod($method)
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->request->withMethod($method);
     }
 
     public function testReturnsUnpopulatedUriByDefault()
@@ -127,13 +146,7 @@ class RequestTest extends TestCase
     public function invalidRequestMethod()
     {
         return [
-            'true'       => [ true ],
-            'false'      => [ false ],
-            'int'        => [ 1 ],
-            'float'      => [ 1.1 ],
             'bad-string' => [ 'BOGUS METHOD' ],
-            'array'      => [ ['POST'] ],
-            'stdClass'   => [ (object) [ 'method' => 'POST'] ],
         ];
     }
 

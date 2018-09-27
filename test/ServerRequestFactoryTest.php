@@ -1,9 +1,11 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-diactoros for the canonical source repository
- * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2018 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace ZendTest\Diactoros;
 
@@ -24,33 +26,6 @@ use function Zend\Diactoros\normalizeUploadedFiles;
 
 class ServerRequestFactoryTest extends TestCase
 {
-    public function testGetWillReturnValueIfPresentInArray()
-    {
-        $array = [
-            'foo' => 'bar',
-            'bar' => '',
-            'baz' => null,
-        ];
-
-        foreach ($array as $key => $value) {
-            $this->assertSame($value, ServerRequestFactory::get($key, $array));
-        }
-    }
-
-    public function testGetWillReturnDefaultValueIfKeyIsNotInArray()
-    {
-        $try   = [ 'foo', 'bar', 'baz' ];
-        $array = [
-            'quz'  => true,
-            'quuz' => true,
-        ];
-        $default = 'BAT';
-
-        foreach ($try as $key) {
-            $this->assertSame($default, ServerRequestFactory::get($key, $array, $default));
-        }
-    }
-
     public function testReturnsServerValueUnchangedIfHttpAuthorizationHeaderIsPresent()
     {
         $server = [
@@ -100,18 +75,6 @@ class ServerRequestFactoryTest extends TestCase
         ];
 
         $this->assertEquals($expected, marshalHeadersFromSapi($server));
-    }
-
-    public function testStripQueryStringReturnsUnchangedStringIfNoQueryStringDetected()
-    {
-        $path = '/foo/bar';
-        $this->assertSame($path, ServerRequestFactory::stripQueryString($path));
-    }
-
-    public function testStripQueryStringReturnsNormalizedPathWhenQueryStringDetected()
-    {
-        $path = '/foo/bar?foo=bar';
-        $this->assertSame('/foo/bar', ServerRequestFactory::stripQueryString($path));
     }
 
     public function testMarshalRequestUriUsesIISUnencodedUrlValueIfPresentAndUrlWasRewritten()
@@ -606,14 +569,5 @@ class ServerRequestFactoryTest extends TestCase
 
         $uri = marshalUriFromSapi($server, $headers);
         $this->assertSame('/requested/path', $uri->getPath());
-    }
-
-    public function testGetHeader()
-    {
-        $headers = [
-            'Host' => 'example.com'
-        ];
-
-        $this->assertSame('example.com', ServerRequestFactory::getHeader('Host', $headers));
     }
 }

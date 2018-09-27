@@ -5,23 +5,17 @@
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
+declare(strict_types=1);
+
 namespace ZendTest\Diactoros\Integration;
 
-use Http\Factory\Diactoros\RequestFactory;
 use Http\Psr7Test\UploadedFileIntegrationTest;
+use Zend\Diactoros\RequestFactory;
 use Zend\Diactoros\Stream;
 use Zend\Diactoros\UploadedFile;
 
 class UploadedFileTest extends UploadedFileIntegrationTest
 {
-    public static function setUpBeforeClass()
-    {
-        if (! class_exists(RequestFactory::class)) {
-            self::markTestSkipped('You need to install http-interop/http-factory-diactoros to run integration tests');
-        }
-        parent::setUpBeforeClass();
-    }
-
     public function createSubject()
     {
         $stream = new Stream('php://memory', 'rw');

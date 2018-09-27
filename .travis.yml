@@ -9,37 +9,17 @@ cache:
 env:
   global:
     - COMPOSER_ARGS="--no-interaction"
-    - LEGACY_DEPS="phpunit/phpunit"
 
 matrix:
   include:
-    - php: 5.6
+    - php: 7.1
       env:
         - DEPS=lowest
-    - php: 5.6
+    - php: 7.1
       env:
         - DEPS=locked
-    - php: 5.6
-      env:
-        - DEPS=latest
-    - php: 7
-      env:
-        - DEPS=lowest
-    - php: 7
-      env:
-        - DEPS=locked
-        - CHECK_CS=true
+        - CS_CHECK=true
         - TEST_COVERAGE=true
-        - INTEGRATION_DEPS="php-coveralls/php-coveralls"
-    - php: 7
-      env:
-        - DEPS=latest
-    - php: 7.1
-      env:
-        - DEPS=lowest
-    - php: 7.1
-      env:
-        - DEPS=locked
     - php: 7.1
       env:
         - DEPS=latest
@@ -52,26 +32,22 @@ matrix:
     - php: 7.2
       env:
         - DEPS=latest
-    - php: 7.2
-      name: Integration tests
+    - php: nightly
       env:
-        - INTEGRATION_DEPS="http-interop/http-factory-diactoros"
+        - DEPS=latest
 
 before_install:
-  - if [[ $TEST_COVERAGE != 'true' && "$(php --version | grep xdebug -ci)" -ge 1 ]]; then phpenv config-rm xdebug.ini || return 0 ; fi
-  - travis_retry composer self-update
+  - if [[ $TEST_COVERAGE != 'true' ]]; then phpenv config-rm xdebug.ini || return 0 ; fi
 
 install:
-  - travis_retry composer install $COMPOSER_ARGS --ignore-platform-reqs
-  - if [[ $TRAVIS_PHP_VERSION =~ ^5.6 ]]; then travis_retry composer update $COMPOSER_ARGS --with-dependencies $LEGACY_DEPS ; fi
+  - travis_retry composer install $COMPOSER_ARGS
   - if [[ $DEPS == 'latest' ]]; then travis_retry composer update $COMPOSER_ARGS ; fi
   - if [[ $DEPS == 'lowest' ]]; then travis_retry composer update --prefer-lowest --prefer-stable $COMPOSER_ARGS ; fi
-  - if [[ $INTEGRATION_DEPS != '' ]]; then travis_retry composer require --dev $COMPOSER_ARGS $INTEGRATION_DEPS ; fi
   - stty cols 120 && composer show
 
 script:
   - if [[ $TEST_COVERAGE == 'true' ]]; then composer test-coverage ; else composer test ; fi
-  - if [[ $CHECK_CS == 'true' ]]; then composer cs-check ; fi
+  - if [[ $CS_CHECK == 'true' ]]; then composer cs-check ; fi
 
 after_script:
   - if [[ $TEST_COVERAGE == 'true' ]]; then travis_retry php vendor/bin/php-coveralls -v ; fi
