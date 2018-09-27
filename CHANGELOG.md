@@ -76,50 +76,6 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - Nothing.
 
-## 1.9.0 - TBD
-
-### Added
-
-- Nothing.
-
-### Changed
-
-- Nothing.
-
-### Deprecated
-
-- Nothing.
-
-### Removed
-
-- Nothing.
-
-### Fixed
-
-- Nothing.
-
-## 1.8.7 - TBD
-
-### Added
-
-- Nothing.
-
-### Changed
-
-- Nothing.
-
-### Deprecated
-
-- Nothing.
-
-### Removed
-
-- Nothing.
-
-### Fixed
-
-- Nothing.
-
 ## 1.8.6 - 2018-09-05
 
 ### Added
@@ -162,41 +118,6 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - Nothing.
 
-<<<<<<< HEAD
-## 1.8.6 - TBD
-
-### Added
-
-- Nothing.
-
-### Changed
-
-- Nothing.
-
-### Deprecated
-
-- Nothing.
-
-### Removed
-
-- Nothing.
-
-### Fixed
-
-- Nothing.
-
-## 1.8.5 - 2018-08-10
-
-### Added
-
-- Nothing.
-
-### Changed
-
-- Nothing.
-
-=======
->>>>>>> feature/325-integration-tests
 ### Deprecated
 
 - Nothing.
