@@ -1,3 +1,4 @@
+.tmp/
 doc/html/
 vendor/
 zf-mkdoc-theme/

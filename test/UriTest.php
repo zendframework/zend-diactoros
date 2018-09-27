@@ -1,9 +1,11 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-diactoros for the canonical source repository
- * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2018 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace ZendTest\Diactoros;
 
@@ -337,29 +339,6 @@ class UriTest extends TestCase
     {
         $uri = new Uri('?foo=bar');
         $this->assertSame('?foo=bar', (string) $uri);
-    }
-
-    public function invalidConstructorUris()
-    {
-        return [
-            'null' => [ null ],
-            'true' => [ true ],
-            'false' => [ false ],
-            'int' => [ 1 ],
-            'float' => [ 1.1 ],
-            'array' => [ [ 'http://example.com/' ] ],
-            'object' => [ (object) [ 'uri' => 'http://example.com/' ] ],
-        ];
-    }
-
-    /**
-     * @dataProvider invalidConstructorUris
-     */
-    public function testConstructorRaisesExceptionForNonStringURI($uri)
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        new Uri($uri);
     }
 
     public function testConstructorRaisesExceptionForSeriouslyMalformedURI()

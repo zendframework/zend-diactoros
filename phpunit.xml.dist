@@ -3,6 +3,9 @@
         <testsuite name="Zend\\Diactoros Tests">
             <directory>./test</directory>
         </testsuite>
+        <testsuite name="PSR-17 Integration Tests">
+            <directory>./vendor/http-interop/http-factory-tests/test</directory>
+        </testsuite>
     </testsuites>
 
     <filter>
@@ -12,11 +15,11 @@
     </filter>
 
     <php>
-        <const name="REQUEST_FACTORY" value="Http\Factory\Diactoros\RequestFactory"/>
-        <const name="RESPONSE_FACTORY" value="Http\Factory\Diactoros\ResponseFactory"/>
-        <const name="SERVER_REQUEST_FACTORY" value="Http\Factory\Diactoros\ServerRequestFactory"/>
-        <const name="STREAM_FACTORY" value="Http\Factory\Diactoros\StreamFactory"/>
-        <const name="UPLOADED_FILE_FACTORY" value="Http\Factory\Diactoros\UploadedFileFactory"/>
-        <const name="URI_FACTORY" value="Http\Factory\Diactoros\UriFactory"/>
+        <const name="REQUEST_FACTORY" value="Zend\Diactoros\RequestFactory"/>
+        <const name="RESPONSE_FACTORY" value="Zend\Diactoros\ResponseFactory"/>
+        <const name="SERVER_REQUEST_FACTORY" value="Zend\Diactoros\ServerRequestFactory"/>
+        <const name="STREAM_FACTORY" value="Zend\Diactoros\StreamFactory"/>
+        <const name="UPLOADED_FILE_FACTORY" value="Zend\Diactoros\UploadedFileFactory"/>
+        <const name="URI_FACTORY" value="Zend\Diactoros\UriFactory"/>
     </php>
 </phpunit>

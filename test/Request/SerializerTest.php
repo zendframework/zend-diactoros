@@ -1,9 +1,11 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-diactoros for the canonical source repository
- * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2018 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace ZendTest\Diactoros\Request;
 
@@ -336,15 +338,5 @@ class SerializerTest extends TestCase
         $stream = Serializer::fromStream($stream);
 
         $this->assertInstanceOf(RelativeStream::class, $stream->getBody());
-    }
-
-    public function testToStringRaisesExceptionOnEmptyMethod()
-    {
-        $request = (new Request())
-            ->withUri(new Uri('http://example.com/foo/bar?baz=bat'));
-
-        $this->expectException(UnexpectedValueException::class);
-
-        Serializer::toString($request);
     }
 }

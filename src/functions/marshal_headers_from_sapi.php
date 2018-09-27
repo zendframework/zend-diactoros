@@ -5,6 +5,8 @@
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
+declare(strict_types=1);
+
 namespace Zend\Diactoros;
 
 use function array_key_exists;
@@ -17,7 +19,7 @@ use function substr;
  * @param array $server Values obtained from the SAPI (generally `$_SERVER`).
  * @return array Header/value pairs
  */
-function marshalHeadersFromSapi(array $server)
+function marshalHeadersFromSapi(array $server) : array
 {
     $headers = [];
     foreach ($server as $key => $value) {

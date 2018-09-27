@@ -1,16 +1,34 @@
-docs_dir: doc/book
-site_dir: doc/html
+docs_dir: docs/book
+site_dir: docs/html
 pages:
-    - index.md
-    - Overview: overview.md
-    - Installation: install.md
-    - Usage: usage.md
+  - index.md
+  - Overview: v2/overview.md
+  - Installation: v2/install.md
+  - Usage: v2/usage.md
+  - Reference:
+    - Factories: v2/factories.md
+    - "Custom Responses": v2/custom-responses.md
+    - Serialization: v2/serialization.md
+    - API: v2/api.md
+    - Migration: v2/migration.md
+  - v1:
+    - Overview: v1/overview.md
+    - Installation: v1/install.md
+    - Usage: v1/usage.md
     - Reference:
-        - "Custom Responses": custom-responses.md
-        - "Emitting Responses": emitting-responses.md
-        - Serialization: serialization.md
-        - API: api.md
+      - "Custom Responses": v1/custom-responses.md
+      - "Emitting Responses": v1/emitting-responses.md
+      - Serialization: v1/serialization.md
+      - API: v1/api.md
+  - "_hidden-legacy-page-links":
+    - "_overview": overview.md
+    - "_installation": install.md
+    - "_usage": usage.md
+    - "_reference-custom-responses": custom-responses.md
+    - "_reference-emitting-responses": emitting-responses.md
+    - "_reference-serialization": serialization.md
+    - "_reference-api": api.md
 site_name: zend-diactoros
 site_description: 'zend-diactoros: PSR-7 HTTP message implementation'
 repo_url: 'https://github.com/zendframework/zend-diactoros'
-copyright: 'Copyright (c) 2016 <a href="http://www.zend.com/">Zend Technologies USA Inc.</a>'
+copyright: 'Copyright (c) 2016-2018 <a href="https://www.zend.com/">Zend Technologies USA Inc.</a>'
