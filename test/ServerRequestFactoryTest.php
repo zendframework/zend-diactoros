@@ -570,4 +570,15 @@ class ServerRequestFactoryTest extends TestCase
         $uri = marshalUriFromSapi($server, $headers);
         $this->assertSame('/requested/path', $uri->getPath());
     }
+
+    public function testServerRequestFactoryHasAWritableEmptyBody()
+    {
+        $factory = new ServerRequestFactory();
+        $request = $factory->createServerRequest('GET', '/');
+        $body = $request->getBody();
+
+        $this->assertTrue($body->isWritable());
+        $this->assertTrue($body->isSeekable());
+        $this->assertSame(0, $body->getSize());
+    }
 }

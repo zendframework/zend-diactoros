@@ -92,7 +92,8 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
             $serverParams,
             $uploadedFiles,
             $uri,
-            $method
+            $method,
+            'php://temp'
         );
     }
 }
