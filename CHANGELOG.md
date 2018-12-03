@@ -22,7 +22,9 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#337](https://github.com/zendframework/zend-diactoros/pull/337) ensures that the `ServerRequestFactory::createServerRequest()` method
+  creates a `php://temp` stream instead of a `php::input` stream, in compliance
+  with the PSR-17 specification.
 
 ## 2.0.0 - 2018-09-27
 
