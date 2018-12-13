@@ -31,4 +31,3 @@ pages:
 site_name: zend-diactoros
 site_description: 'PSR-7 HTTP message implementations.'
 repo_url: 'https://github.com/zendframework/zend-diactoros'
-copyright: 'Copyright (c) 2016-2018 <a href="https://www.zend.com/">Zend Technologies USA Inc.</a>'
