@@ -1,7 +1,7 @@
 docs_dir: docs/book
 site_dir: docs/html
 pages:
-  - index.md
+  - Home: index.md
   - Overview: v2/overview.md
   - Installation: v2/install.md
   - Usage: v2/usage.md
