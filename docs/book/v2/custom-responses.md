@@ -173,7 +173,7 @@ $response = new EmptyResponse(201, [
 ]);
 
 // Alternately, set the header after instantiation:
-$response = ( new EmptyResponse(201) )->withHeader('Location', $url);
+$response = (new EmptyResponse(201))->withHeader('Location', $url);
 ```
 
 ## Redirects
