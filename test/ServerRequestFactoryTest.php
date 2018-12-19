@@ -423,6 +423,18 @@ class ServerRequestFactoryTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     * @preserveGlobalState
+     */
+    public function testCreateFromGlobalsShouldPreserveKeysWhenCreatedWithAZeroValue()
+    {
+        $_SERVER['Accept'] = '0';
+
+        $request = ServerRequestFactory::fromGlobals();
+        $this->assertSame('0', $request->getHeaderLine('Accept'));
+    }
+
+    /**
+     * @runInSeparateProcess
      * @preserveGlobalState disabled
      */
     public function testFromGlobalsUsesCookieSuperGlobalWhenCookieHeaderIsNotSet()
