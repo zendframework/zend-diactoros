@@ -44,7 +44,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#344](https://github.com/zendframework/zend-diactoros/pull/344) provides a fix to ensure that headers with a value of "0" are retained.
 
 ## 2.0.1 - 2018-12-03
 
