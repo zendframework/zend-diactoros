@@ -1,5 +1,3 @@
-sudo: false
-
 language: php
 
 cache:
@@ -32,7 +30,13 @@ matrix:
     - php: 7.2
       env:
         - DEPS=latest
-    - php: nightly
+    - php: 7.3
+      env:
+        - DEPS=lowest
+    - php: 7.3
+      env:
+        - DEPS=locked
+    - php: 7.3
       env:
         - DEPS=latest
 
