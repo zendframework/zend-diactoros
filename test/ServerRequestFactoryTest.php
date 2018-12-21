@@ -60,6 +60,23 @@ class ServerRequestFactoryTest extends TestCase
         $this->assertSame($expected, marshalHeadersFromSapi($server));
     }
 
+    public function testMarshalInvalidHeadersStrippedFromServerArray()
+    {
+        $server = [
+            'COOKIE' => 'COOKIE',
+            'HTTP_AUTHORIZATION' => 'token',
+            'MD5' => 'CONTENT-MD5',
+            'CONTENT_LENGTH' => 'UNSPECIFIED',
+        ];
+
+        //Headers that don't begin with HTTP_ or CONTENT_ will not be returned
+        $expected = [
+            'authorization' => 'token',
+            'content-length' => 'UNSPECIFIED',
+        ];
+        $this->assertSame($expected, marshalHeadersFromSapi($server));
+    }
+
     public function testMarshalsVariablesPrefixedByApacheFromServerArray()
     {
         // Non-prefixed versions will be preferred
@@ -427,10 +444,27 @@ class ServerRequestFactoryTest extends TestCase
      */
     public function testCreateFromGlobalsShouldPreserveKeysWhenCreatedWithAZeroValue()
     {
-        $_SERVER['Accept'] = '0';
+        $_SERVER['HTTP_ACCEPT'] = '0';
+        $_SERVER['CONTENT_LENGTH'] = '0';
 
         $request = ServerRequestFactory::fromGlobals();
-        $this->assertSame('0', $request->getHeaderLine('Accept'));
+        $this->assertSame('0', $request->getHeaderLine('accept'));
+        $this->assertSame('0', $request->getHeaderLine('content-length'));
+    }
+
+    /**
+     * @runInSeparateProcess
+     * @preserveGlobalState
+     */
+    public function testCreateFromGlobalsShouldNotPreserveKeysWhenCreatedWithAnEmptyValue()
+    {
+        $_SERVER['HTTP_ACCEPT'] = '';
+        $_SERVER['CONTENT_LENGTH'] = '';
+
+        $request = ServerRequestFactory::fromGlobals();
+
+        $this->assertFalse($request->hasHeader('accept'));
+        $this->assertFalse($request->hasHeader('content-length'));
     }
 
     /**
