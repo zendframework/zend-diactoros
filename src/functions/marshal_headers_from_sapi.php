@@ -46,8 +46,6 @@ function marshalHeadersFromSapi(array $server) : array
             $headers[$name] = $value;
             continue;
         }
-
-        $headers[$key] = $value;
     }
 
     return $headers;
