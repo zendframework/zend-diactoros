@@ -274,7 +274,7 @@ class Stream implements StreamInterface
             throw Exception\UnreadableStreamException::dueToConfiguration();
         }
 
-        $result = fread($this->resource, $length);
+        $result = fread($this->resource, (int)$length);
 
         if (false === $result) {
             throw Exception\UnreadableStreamException::dueToPhpError();
