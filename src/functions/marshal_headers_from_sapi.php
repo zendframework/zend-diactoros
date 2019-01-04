@@ -35,19 +35,17 @@ function marshalHeadersFromSapi(array $server) : array
             }
         }
 
-        if ($value && strpos($key, 'HTTP_') === 0) {
+        if (strlen($value) && strpos($key, 'HTTP_') === 0) {
             $name = strtr(strtolower(substr($key, 5)), '_', '-');
             $headers[$name] = $value;
             continue;
         }
 
-        if ($value && strpos($key, 'CONTENT_') === 0) {
+        if (strlen($value) && strpos($key, 'CONTENT_') === 0) {
             $name = 'content-' . strtolower(substr($key, 8));
             $headers[$name] = $value;
             continue;
         }
-
-        $headers[$key] = $value;
     }
 
     return $headers;
