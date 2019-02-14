@@ -189,7 +189,7 @@ class UploadedFile implements UploadedFileInterface
 
         $sapi = PHP_SAPI;
         switch (true) {
-            case (empty($sapi) || 0 === strpos($sapi, 'cli') || ! $this->file):
+            case (empty($sapi) || 0 === strpos($sapi, 'cli') || 0 === strpos($sapi, 'phpdbg') || ! $this->file):
                 // Non-SAPI environment, or no filename present
                 $this->writeFile($targetPath);
                 break;
