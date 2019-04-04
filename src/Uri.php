@@ -652,7 +652,7 @@ class Uri implements UriInterface
     /**
      * Filter a query string key or value, or a fragment.
      */
-    private function filterQueryOrFragment(string $value) : string
+    private function filterQueryOrFragment(string $value) : ?string
     {
         return preg_replace_callback(
             '/(?:[^' . self::CHAR_UNRESERVED . self::CHAR_SUB_DELIMS . '%:@\/\?]+|%(?![A-Fa-f0-9]{2}))/u',
