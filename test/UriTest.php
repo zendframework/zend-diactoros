@@ -634,7 +634,7 @@ class UriTest extends TestCase
     {
         return [
             ['http://example.com/?q=тестовый_путь', 'q=тестовый_путь'],
-            ['http://example.com/?q=ουτοπία', 'q=ουτοπία'],
+            ['http://example.com/?q=ουτοπία', 'q='],
         ];
     }
 
