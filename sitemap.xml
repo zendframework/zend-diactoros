@@ -4,7 +4,7 @@
     
     <url>
      <loc>/</loc>
-     <lastmod>2019-01-05</lastmod>
+     <lastmod>2019-04-17</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
@@ -12,7 +12,7 @@
     
     <url>
      <loc>/v2/overview/</loc>
-     <lastmod>2019-01-05</lastmod>
+     <lastmod>2019-04-17</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
@@ -20,7 +20,7 @@
     
     <url>
      <loc>/v2/install/</loc>
-     <lastmod>2019-01-05</lastmod>
+     <lastmod>2019-04-17</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
@@ -28,7 +28,7 @@
     
     <url>
      <loc>/v2/usage/</loc>
-     <lastmod>2019-01-05</lastmod>
+     <lastmod>2019-04-17</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
@@ -37,31 +37,31 @@
         
     <url>
      <loc>/v2/factories/</loc>
-     <lastmod>2019-01-05</lastmod>
+     <lastmod>2019-04-17</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/v2/custom-responses/</loc>
-     <lastmod>2019-01-05</lastmod>
+     <lastmod>2019-04-17</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/v2/serialization/</loc>
-     <lastmod>2019-01-05</lastmod>
+     <lastmod>2019-04-17</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/v2/api/</loc>
-     <lastmod>2019-01-05</lastmod>
+     <lastmod>2019-04-17</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/v2/migration/</loc>
-     <lastmod>2019-01-05</lastmod>
+     <lastmod>2019-04-17</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
@@ -71,19 +71,19 @@
         
     <url>
      <loc>/v1/overview/</loc>
-     <lastmod>2019-01-05</lastmod>
+     <lastmod>2019-04-17</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/v1/install/</loc>
-     <lastmod>2019-01-05</lastmod>
+     <lastmod>2019-04-17</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/v1/usage/</loc>
-     <lastmod>2019-01-05</lastmod>
+     <lastmod>2019-04-17</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
@@ -99,43 +99,43 @@
         
     <url>
      <loc>/overview/</loc>
-     <lastmod>2019-01-05</lastmod>
+     <lastmod>2019-04-17</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/install/</loc>
-     <lastmod>2019-01-05</lastmod>
+     <lastmod>2019-04-17</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/usage/</loc>
-     <lastmod>2019-01-05</lastmod>
+     <lastmod>2019-04-17</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/custom-responses/</loc>
-     <lastmod>2019-01-05</lastmod>
+     <lastmod>2019-04-17</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/emitting-responses/</loc>
-     <lastmod>2019-01-05</lastmod>
+     <lastmod>2019-04-17</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/serialization/</loc>
-     <lastmod>2019-01-05</lastmod>
+     <lastmod>2019-04-17</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/api/</loc>
-     <lastmod>2019-01-05</lastmod>
+     <lastmod>2019-04-17</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
