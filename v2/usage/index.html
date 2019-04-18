@@ -12,6 +12,7 @@
     <title>Usage - zend-diactoros</title>
 
     <link rel="stylesheet" href="../../css/styles-18b942728f.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.2.0/anchor.min.js"></script>
 </head>
 <body id="page-top">
 
@@ -66,7 +67,7 @@
                     
     <div class="subnavigation hidden-print">
         <h4 class="subnavigation__title">
-            <a href="../..">zend-diactoros</a>
+            <a href="">zend-diactoros</a>
         </h4>
 
         <h5 class="subnavigation__subtitle">Table of Contents</h5>
@@ -75,19 +76,19 @@
             
                 
                     <li class="subnavigation__list-item ">
-                        <a href="../overview/" class="subnavigation__link">Overview</a>
+                        <a href="v2/overview/" class="subnavigation__link">Overview</a>
                     </li>
                 
             
                 
                     <li class="subnavigation__list-item ">
-                        <a href="../install/" class="subnavigation__link">Installation</a>
+                        <a href="v2/install/" class="subnavigation__link">Installation</a>
                     </li>
                 
             
                 
                     <li class="subnavigation__list-item subnavigation__list-item--active">
-                        <a href="./" class="subnavigation__link">Usage</a>
+                        <a href="v2/usage/" class="subnavigation__link">Usage</a>
                     </li>
                 
             
@@ -98,31 +99,31 @@
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../factories/" class="subnavigation__link">Factories</a>
+        <a href="v2/factories/" class="subnavigation__link">Factories</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../custom-responses/" class="subnavigation__link">Custom Responses</a>
+        <a href="v2/custom-responses/" class="subnavigation__link">Custom Responses</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../serialization/" class="subnavigation__link">Serialization</a>
+        <a href="v2/serialization/" class="subnavigation__link">Serialization</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../api/" class="subnavigation__link">API</a>
+        <a href="v2/api/" class="subnavigation__link">API</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../migration/" class="subnavigation__link">Migration</a>
+        <a href="v2/migration/" class="subnavigation__link">Migration</a>
     </li>
 
                             
@@ -137,19 +138,19 @@
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../../v1/overview/" class="subnavigation__link">Overview</a>
+        <a href="v1/overview/" class="subnavigation__link">Overview</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../../v1/install/" class="subnavigation__link">Installation</a>
+        <a href="v1/install/" class="subnavigation__link">Installation</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../../v1/usage/" class="subnavigation__link">Usage</a>
+        <a href="v1/usage/" class="subnavigation__link">Usage</a>
     </li>
 
                             
@@ -160,25 +161,25 @@
             
                 
     <li class="subnavigation__list-item ">
-        <a href="../../v1/custom-responses/" class="subnavigation__link">Custom Responses</a>
+        <a href="v1/custom-responses/" class="subnavigation__link">Custom Responses</a>
     </li>
 
             
                 
     <li class="subnavigation__list-item ">
-        <a href="../../v1/emitting-responses/" class="subnavigation__link">Emitting Responses</a>
+        <a href="v1/emitting-responses/" class="subnavigation__link">Emitting Responses</a>
     </li>
 
             
                 
     <li class="subnavigation__list-item ">
-        <a href="../../v1/serialization/" class="subnavigation__link">Serialization</a>
+        <a href="v1/serialization/" class="subnavigation__link">Serialization</a>
     </li>
 
             
                 
     <li class="subnavigation__list-item ">
-        <a href="../../v1/api/" class="subnavigation__link">API</a>
+        <a href="v1/api/" class="subnavigation__link">API</a>
     </li>
 
             
@@ -266,7 +267,7 @@
         <li><a href="https://docs.zendframework.com/">Documentation</a></li>
 
         
-            <li><a href="../..">zend-diactoros</a></li>
+            <li><a href="">zend-diactoros</a></li>
 
             
 
@@ -337,12 +338,12 @@ $request = $request-&gt;withRequestTarget('*');                 // asterisk-form
 $request-&gt;getBody()-&gt;write(json_encode($data));
 $response = $client-&gt;send($request);
 
-printf(&quot;Response status: %d (%s)\n&quot;, $response-&gt;getStatusCode(), $response-&gt;getReasonPhrase());
-printf(&quot;Headers:\n&quot;);
+printf("Response status: %d (%s)\n", $response-&gt;getStatusCode(), $response-&gt;getReasonPhrase());
+printf("Headers:\n");
 foreach ($response-&gt;getHeaders() as $header =&gt; $values) {
-    printf(&quot;    %s: %s\n&quot;, $header, implode(', ', $values));
+    printf("    %s: %s\n", $header, implode(', ', $values));
 }
-printf(&quot;Message:\n%s\n&quot;, $response-&gt;getBody());</code></pre>
+printf("Message:\n%s\n", $response-&gt;getBody());</code></pre>
 
 <p>(Note: <code>zend-diactoros</code> does NOT ship with a client implementation; the above is just an
 illustration of a possible implementation.)</p>
@@ -384,10 +385,10 @@ value. Manipulating headers does, however.</p>
 <pre class="codehilite"><code class="language-php">$response = new Zend\Diactoros\Response();
 
 // Write to the response body:
-$response-&gt;getBody()-&gt;write(&quot;some content\n&quot;);
+$response-&gt;getBody()-&gt;write("some content\n");
 
 // Multiple calls to write() append:
-$response-&gt;getBody()-&gt;write(&quot;more content\n&quot;); // now &quot;some content\nmore content\n&quot;
+$response-&gt;getBody()-&gt;write("more content\n"); // now "some content\nmore content\n"
 
 // Add headers
 // Note: headers do not need to be added before data is written to the body!
@@ -403,7 +404,7 @@ $response = $response
         
         <li class="page-nav__item">
             
-                <a rel="prev" class="page-nav__link page-nav__link--prev" href="../install/">
+                <a rel="prev" class="page-nav__link page-nav__link--prev" href="v2/install/">
                     <i class="fa fa-chevron-left"></i> Previous
                 </a>
             
@@ -412,7 +413,7 @@ $response = $response
         
         <li class="page-nav__item">
             
-                <a rel="next" class="page-nav__link page-nav__link--next" href="../factories/">
+                <a rel="next" class="page-nav__link page-nav__link--next" href="v2/factories/">
                     Next <i class="fa fa-chevron-right"></i>
                 </a>
             
@@ -447,7 +448,7 @@ $response = $response
                     
     <div class="subnavigation hidden-print">
         <h4 class="subnavigation__title">
-            <a href="../..">zend-diactoros</a>
+            <a href="">zend-diactoros</a>
         </h4>
 
         <h5 class="subnavigation__subtitle">Table of Contents</h5>
@@ -456,19 +457,19 @@ $response = $response
             
                 
                     <li class="subnavigation__list-item ">
-                        <a href="../overview/" class="subnavigation__link">Overview</a>
+                        <a href="v2/overview/" class="subnavigation__link">Overview</a>
                     </li>
                 
             
                 
                     <li class="subnavigation__list-item ">
-                        <a href="../install/" class="subnavigation__link">Installation</a>
+                        <a href="v2/install/" class="subnavigation__link">Installation</a>
                     </li>
                 
             
                 
                     <li class="subnavigation__list-item subnavigation__list-item--active">
-                        <a href="./" class="subnavigation__link">Usage</a>
+                        <a href="v2/usage/" class="subnavigation__link">Usage</a>
                     </li>
                 
             
@@ -479,31 +480,31 @@ $response = $response
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../factories/" class="subnavigation__link">Factories</a>
+        <a href="v2/factories/" class="subnavigation__link">Factories</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../custom-responses/" class="subnavigation__link">Custom Responses</a>
+        <a href="v2/custom-responses/" class="subnavigation__link">Custom Responses</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../serialization/" class="subnavigation__link">Serialization</a>
+        <a href="v2/serialization/" class="subnavigation__link">Serialization</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../api/" class="subnavigation__link">API</a>
+        <a href="v2/api/" class="subnavigation__link">API</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../migration/" class="subnavigation__link">Migration</a>
+        <a href="v2/migration/" class="subnavigation__link">Migration</a>
     </li>
 
                             
@@ -518,19 +519,19 @@ $response = $response
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../../v1/overview/" class="subnavigation__link">Overview</a>
+        <a href="v1/overview/" class="subnavigation__link">Overview</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../../v1/install/" class="subnavigation__link">Installation</a>
+        <a href="v1/install/" class="subnavigation__link">Installation</a>
     </li>
 
                             
                                 
     <li class="subnavigation__list-item ">
-        <a href="../../v1/usage/" class="subnavigation__link">Usage</a>
+        <a href="v1/usage/" class="subnavigation__link">Usage</a>
     </li>
 
                             
@@ -541,25 +542,25 @@ $response = $response
             
                 
     <li class="subnavigation__list-item ">
-        <a href="../../v1/custom-responses/" class="subnavigation__link">Custom Responses</a>
+        <a href="v1/custom-responses/" class="subnavigation__link">Custom Responses</a>
     </li>
 
             
                 
     <li class="subnavigation__list-item ">
-        <a href="../../v1/emitting-responses/" class="subnavigation__link">Emitting Responses</a>
+        <a href="v1/emitting-responses/" class="subnavigation__link">Emitting Responses</a>
     </li>
 
             
                 
     <li class="subnavigation__list-item ">
-        <a href="../../v1/serialization/" class="subnavigation__link">Serialization</a>
+        <a href="v1/serialization/" class="subnavigation__link">Serialization</a>
     </li>
 
             
                 
     <li class="subnavigation__list-item ">
-        <a href="../../v1/api/" class="subnavigation__link">API</a>
+        <a href="v1/api/" class="subnavigation__link">API</a>
     </li>
 
             
@@ -645,9 +646,8 @@ $response = $response
         var base_url = '../..',
             siteName = 'zend-diactoros';
     </script>
-    <script src="../../js/scripts-0bcb0a3bb3.js"></script>
-        <script src="../../search/require.js"></script>
-        <script src="../../search/search.js"></script>
+    <script src="../../js/scripts-edc4cfa790.js"></script>
+        <script src="../../search/main.js"></script>
 
     
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
@@ -676,6 +676,14 @@ $response = $response
             </div>
         </div>
     </div>
+
+<script>
+// Anchors
+anchors.options.placement = 'left';
+anchors.add(
+    '.content h1:not(.content__title), .content h2, .content > h3, .content h4, .content h5'
+);
+</script>
 
 
 
