@@ -24,7 +24,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - Nothing.
 
-## 2.1.2 - TBD
+## 2.1.2 - 2019-04-29
 
 ### Added
 
@@ -44,7 +44,8 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#355](https://github.com/zendframework/zend-diactoros/pull/355) adds `phpdbg` to the list of accepted non-SAPI enviornments for purposes
+  of calling `UploadedFile::moveTo()`.
 
 ## 2.1.1 - 2019-01-05
 
