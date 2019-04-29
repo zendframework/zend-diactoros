@@ -1,16 +1,22 @@
 docs_dir: docs/book
 site_dir: docs/html
+extra:
+  current_version: v2
+  versions:
+    - v2
+    - v1
 pages:
   - Home: index.md
-  - Overview: v2/overview.md
-  - Installation: v2/install.md
-  - Usage: v2/usage.md
-  - Reference:
-    - Factories: v2/factories.md
-    - "Custom Responses": v2/custom-responses.md
-    - Serialization: v2/serialization.md
-    - API: v2/api.md
-    - Migration: v2/migration.md
+  - v2:
+    - Overview: v2/overview.md
+    - Installation: v2/install.md
+    - Usage: v2/usage.md
+    - Reference:
+      - Factories: v2/factories.md
+      - "Custom Responses": v2/custom-responses.md
+      - Serialization: v2/serialization.md
+      - API: v2/api.md
+      - Migration: v2/migration.md
   - v1:
     - Overview: v1/overview.md
     - Installation: v1/install.md
