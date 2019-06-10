@@ -29,6 +29,7 @@ use function sprintf;
  */
 class CsvResponse extends Response
 {
+    use DownloadResponseTrait;
     use InjectContentTypeTrait;
 
     /**
@@ -39,11 +40,15 @@ class CsvResponse extends Response
      *
      * @param string|StreamInterface $text String or stream for the message body.
      * @param int $status Integer status code for the response; 200 by default.
+     * @param string $filename
      * @param array $headers Array of headers to use at initialization.
-     * @throws Exception\InvalidArgumentException if $text is neither a string or stream.
      */
-    public function __construct($text, int $status = 200, array $headers = [])
+    public function __construct($text, int $status = 200, string $filename = '', array $headers = [])
     {
+        if (is_string($filename) && $filename !== '') {
+            $headers = $this->prepareDownloadHeaders($filename, $headers);
+        }
+
         parent::__construct(
             $this->createBody($text),
             $status,
@@ -55,6 +60,7 @@ class CsvResponse extends Response
      * Create the CSV message body.
      *
      * @param string|StreamInterface $text
+     * @return StreamInterface
      * @throws Exception\InvalidArgumentException if $text is neither a string or stream.
      */
     private function createBody($text) : StreamInterface
@@ -75,5 +81,25 @@ class CsvResponse extends Response
         $body->write($text);
         $body->rewind();
         return $body;
+    }
+
+    /**
+     * Get download headers
+     *
+     * @param string $filename
+     * @return array
+     */
+    private function getDownloadHeaders(string $filename): array
+    {
+        $headers = [];
+        $headers['cache-control'] = ['must-revalidate'];
+        $headers['content-description'] = ['File Transfer'];
+        $headers['content-disposition'] = [sprintf('attachment; filename=%s', $filename)];
+        $headers['content-transfer-encoding'] = ['Binary'];
+        $headers['content-type'] = ['text/csv; charset=utf-8'];
+        $headers['expires'] = ['0'];
+        $headers['pragma'] = ['Public'];
+
+        return $headers;
     }
 }
