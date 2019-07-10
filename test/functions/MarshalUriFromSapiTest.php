@@ -24,7 +24,7 @@ class MarshalUriFromSapiTest extends TestCase
         $server = [
             'HTTPS' => $httpsValue,
             'SERVER_NAME' => 'localhost',
-            'SERVER_PORT'=>'80',
+            'SERVER_PORT' => '80',
             'SERVER_ADDR' => '172.22.0.4',
             'REMOTE_PORT' => '36852',
             'REMOTE_ADDR' => '172.22.0.1',
