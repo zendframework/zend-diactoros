@@ -168,7 +168,7 @@ function marshalUriFromSapi(array $server, array $headers) : Uri
             ));
         }
 
-        return 'off' !== strtolower($https);
+        return 'on' === strtolower($https);
     };
     if (array_key_exists('HTTPS', $server)) {
         $https = $marshalHttpsValue($server['HTTPS']);
