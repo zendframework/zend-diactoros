@@ -171,7 +171,7 @@ function marshalUriFromSapi(array $server, array $headers)
     } else {
         $https = false;
     }
-    if (($https && 'off' !== strtolower($https))
+    if (($https && 'on' === strtolower($https))
         || strtolower($getHeaderFromArray('x-forwarded-proto', $headers, false)) === 'https'
     ) {
         $scheme = 'https';
