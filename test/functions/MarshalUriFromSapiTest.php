@@ -17,7 +17,7 @@ class MarshalUriFromSapiTest extends TestCase
      * @param string $expectedScheme
      * @dataProvider returnsUrlWithCorrectHttpSchemeFromArraysProvider
      */
-    public function testReturnsUrlWithCorrectHttpSchemeFromArrays(string $httpsValue, string $expectedScheme) : void
+    public function testReturnsUrlWithCorrectHttpSchemeFromArrays($httpsValue, $expectedScheme)
     {
         $server = [
             'HTTPS' => $httpsValue,
@@ -60,7 +60,10 @@ class MarshalUriFromSapiTest extends TestCase
         self::assertSame($expectedScheme, $url->getScheme());
     }
 
-    public function returnsUrlWithCorrectHttpSchemeFromArraysProvider() : array
+    /**
+     * @return array
+     */
+    public function returnsUrlWithCorrectHttpSchemeFromArraysProvider()
     {
         return [
             'on-lowercase' => ['on', 'https'],
