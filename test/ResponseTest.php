@@ -61,6 +61,7 @@ class ResponseTest extends TestCase
                     'http' => [
                         'method'  => 'GET',
                         'timeout' => 30,
+                        'user_agent' => 'PHP',
                     ],
                 ]
             )
