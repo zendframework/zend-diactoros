@@ -21,7 +21,6 @@ use function curl_exec;
 use function curl_getinfo;
 use function curl_init;
 use function curl_setopt;
-use function defined;
 use function file_exists;
 use function file_put_contents;
 use function gmdate;
