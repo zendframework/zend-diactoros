@@ -295,7 +295,7 @@ class ServerRequestFactoryTest extends TestCase
         $request = $request->withHeader('Host', 'example.com');
 
         $server  = [
-            $param => true,
+            $param => 'on',
         ];
 
         $uri = marshalUriFromSapi($server, $request->getHeaders());
