@@ -15,6 +15,7 @@
     </filter>
 
     <php>
+        <env name="ALWAYS_REFRESH_IANA_HTTP_STATUS_CODES" value="false"/>
         <const name="REQUEST_FACTORY" value="Zend\Diactoros\RequestFactory"/>
         <const name="RESPONSE_FACTORY" value="Zend\Diactoros\ResponseFactory"/>
         <const name="SERVER_REQUEST_FACTORY" value="Zend\Diactoros\ServerRequestFactory"/>
