@@ -51,7 +51,8 @@ class MarshalUriFromSapiTest extends TestCase
             'HTTP_ACCEPT_LANGUAGE' => 'de-DE,de;q=0.9,en-US;q=0.8,en;q=0.7',
             'HTTP_ACCEPT_ENCODING' => 'gzip, deflate, br',
             'HTTP_REFERER' => 'http://localhost:8080/index.html',
-            'HTTP_USER_AGENT' => 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/67.0.3396.99 Chrome/67.0.3396.99 Safari/537.36',
+            'HTTP_USER_AGENT' => 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko)'
+                . ' Ubuntu Chromium/67.0.3396.99 Chrome/67.0.3396.99 Safari/537.36',
             'HTTP_ACCEPT' => 'application/json,*/*',
             'HTTP_CONNECTION' => 'keep-alive',
             'HTTP_HOST' => 'localhost:8080',
