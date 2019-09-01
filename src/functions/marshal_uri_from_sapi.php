@@ -132,19 +132,19 @@ function marshalUriFromSapi(array $server, array $headers) : Uri
     $marshalRequestPath = function (array $server) : string {
         // IIS7 with URL Rewrite: make sure we get the unencoded url
         // (double slash problem).
-        $iisUrlRewritten = array_key_exists('IIS_WasUrlRewritten', $server) ? $server['IIS_WasUrlRewritten'] : null;
-        $unencodedUrl    = array_key_exists('UNENCODED_URL', $server) ? $server['UNENCODED_URL'] : '';
+        $iisUrlRewritten = $server['IIS_WasUrlRewritten'] ?? null;
+        $unencodedUrl    = $server['UNENCODED_URL'] ?? '';
         if ('1' === $iisUrlRewritten && ! empty($unencodedUrl)) {
             return $unencodedUrl;
         }
 
-        $requestUri = array_key_exists('REQUEST_URI', $server) ? $server['REQUEST_URI'] : null;
+        $requestUri = $server['REQUEST_URI'] ?? null;
 
         if ($requestUri !== null) {
             return preg_replace('#^[^/:]+://[^/]+#', '', $requestUri);
         }
 
-        $origPathInfo = array_key_exists('ORIG_PATH_INFO', $server) ? $server['ORIG_PATH_INFO'] : null;
+        $origPathInfo = $server['ORIG_PATH_INFO'] ?? null;
         if (empty($origPathInfo)) {
             return '/';
         }
