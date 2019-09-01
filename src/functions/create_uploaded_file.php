@@ -33,7 +33,7 @@ function createUploadedFile(array $spec) : UploadedFile
         $spec['tmp_name'],
         $spec['size'],
         $spec['error'],
-        isset($spec['name']) ? $spec['name'] : null,
-        isset($spec['type']) ? $spec['type'] : null
+        $spec['name'] ?? null,
+        $spec['type'] ?? null
     );
 }
