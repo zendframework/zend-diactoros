@@ -336,7 +336,7 @@
 <h2 id="request-message">Request Message</h2>
 <p><code>Zend\Diactoros\Request</code> implements <a href="https://github.com/php-fig/http-message/blob/master/src/RequestInterface.php"><code>Psr\Http\Message\RequestInterface</code></a>,
 and is intended for client-side requests. It includes the following methods:</p>
-<pre class="codehilite"><code class="language-php">class Request
+<p> <pre class=codehilite><code class=language-php>class Request
 {
     public function __construct(
         $uri = null,
@@ -346,8 +346,7 @@ and is intended for client-side requests. It includes the following methods:</p>
     );
 
     // See psr/http-message's RequestInterface for other methods
-}</code></pre>
-
+}</code></pre></p>
 <p>Requests are immutable. Any methods that would change state &mdash; those prefixed with <code>with</code> and
 <code>without</code> &mdash; all return a new instance with the changes requested.</p>
 <h2 id="serverrequest-message">ServerRequest Message</h2>
@@ -355,7 +354,7 @@ and is intended for client-side requests. It includes the following methods:</p>
 <a href="https://github.com/php-fig/http-message/blob/master/src/ServerRequestInterface.php"><code>Psr\Http\Message\ServerRequestInterface</code></a>,
 which provides access to the elements of an HTTP request, as well as uniform access to the various
 elements of incoming data. The methods included are:</p>
-<pre class="codehilite"><code class="language-php">class ServerRequest
+<p> <pre class=codehilite><code class=language-php>class ServerRequest
 {
     public function __construct(
         array $serverParams = [],
@@ -367,8 +366,7 @@ elements of incoming data. The methods included are:</p>
     );
 
     // See psr/http-message's ServerRequestInterface for other methods.
-}</code></pre>
-
+}</code></pre></p>
 <p>The <code>ServerRequest</code> is immutable. Any methods that would change state &mdash; those prefixed with <code>with</code>
 and <code>without</code> &mdash; all return a new instance with the changes requested. Server parameters are
 considered completely immutable, however, as they cannot be recalculated, and, rather, is a source
@@ -378,7 +376,7 @@ for other values.</p>
 <a href="https://github.com/php-fig/http-message/blob/master/src/ResponseInterface.php"><code>Psr\Http\Message\ResponseInterface</code></a>,
 an object to be used to aggregate response information for both HTTP clients and server-side
 applications, including headers and message body content. It includes the following:</p>
-<pre class="codehilite"><code class="language-php">class Response
+<p> <pre class=codehilite><code class=language-php>class Response
 {
     public function __construct(
         $body = 'php://memory',
@@ -387,37 +385,34 @@ applications, including headers and message body content. It includes the follow
     );
 
     // See psr/http-message's ResponseInterface for other methods
-}</code></pre>
-
+}</code></pre></p>
 <p>Like the <code>Request</code> and <code>ServerRequest</code>, responses are immutable. Any methods that would change state
 &mdash; those prefixed with <code>with</code> and <code>without</code> &mdash; all return a new instance with the changes requested.</p>
-<h3 id="htmlresponse-and-jsonresponse">HtmlResponse and JsonResponse</h3>
+<h3>HtmlResponse and JsonResponse</h3>
 <p>The most common use case in server-side applications for generating responses is to provide a string
 to use for the response, typically HTML or data to serialize as JSON.  <code>Zend\Diactoros\Response\HtmlResponse</code> and <code>Zend\Diactoros\Response\JsonResponse</code> exist to facilitate these use cases:</p>
-<pre class="codehilite"><code class="language-php">$htmlResponse = new HtmlResponse($html);
+<p> <pre class=codehilite><code class=language-php>$htmlResponse = new HtmlResponse($html);
 
-$jsonResponse = new JsonResponse($data);</code></pre>
-
+$jsonResponse = new JsonResponse($data);</code></pre></p>
 <p>In the first example, you will receive a response with a stream containing the HTML; additionally,
 the <code>Content-Type</code> header will be set to <code>text/html</code>. In the second case, the stream will contain a
 stream containing the JSON-serialized <code>$data</code>, and have a <code>Content-Type</code> header set to
 <code>application/json</code>.</p>
 <p>Both objects allow passing the HTTP status, as well as any headers you want to specify,
 including the <code>Content-Type</code> header:</p>
-<pre class="codehilite"><code class="language-php">$htmlResponse = new HtmlResponse($html, 404, [
+<p> <pre class=codehilite><code class=language-php>$htmlResponse = new HtmlResponse($html, 404, [
     'Content-Type' =&gt; [ 'application/xhtml+xml' ],
 ]);
 
 $jsonResponse = new JsonResponse($data, 422, [
     'Content-Type' =&gt; [ 'application/problem+json' ],
-]);</code></pre>
-
+]);</code></pre></p>
 <h2 id="serverrequestfactory">ServerRequestFactory</h2>
 <p>This static class can be used to marshal a <code>ServerRequest</code> instance from the PHP environment. The
 primary entry point is <code>Zend\Diactoros\ServerRequestFactory::fromGlobals(array $server, array
 $query, array $body, array $cookies, array $files)</code>. This method will create a new <code>ServerRequest</code>
 instance with the data provided. Examples of usage are:</p>
-<pre class="codehilite"><code class="language-php">// Returns new ServerRequest instance, using values from superglobals:
+<p> <pre class=codehilite><code class=language-php>// Returns new ServerRequest instance, using values from superglobals:
 $request = ServerRequestFactory::fromGlobals();
 
 // or
@@ -430,9 +425,8 @@ $request = RequestFactory::fromGlobals(
     $_POST,
     $_COOKIE,
     $_FILES
-);</code></pre>
-
-<h3 id="serverrequestfactory-helper-functions">ServerRequestFactory helper functions</h3>
+);</code></pre></p>
+<h3>ServerRequestFactory helper functions</h3>
 <p>In order to create the various artifacts required by a <code>ServerRequest</code> instance,
 Diactoros also provides a number of functions under the <code>Zend\Diactoros</code>
 namespace for introspecting the SAPI <code>$_SERVER</code> parameters, headers, <code>$_FILES</code>,
@@ -459,13 +453,12 @@ and even the <code>Cookie</code> header. These include:</p>
 <a href="https://github.com/php-fig/http-message/blob/master/src/UriInterface.php"><code>Psr\Http\Message\UriInterface</code></a>,
 and models and validates URIs. It implements <code>__toString()</code>, allowing it to be represented as a
 string and <code>echo()</code>'d directly. The following methods are pertinent:</p>
-<pre class="codehilite"><code class="language-php">class Uri
+<p> <pre class=codehilite><code class=language-php>class Uri
 {
     public function __construct($uri = '');
 
     // See psr/http-message's UriInterface for other methods.
-}</code></pre>
-
+}</code></pre></p>
 <p>Like the various message objects, URIs are immutable. Any methods that would
 change state &mdash; those
 prefixed with <code>with</code> and <code>without</code> &mdash; all return a new instance with the changes requested.</p>
@@ -522,7 +515,7 @@ as a stream or moving it to a filesystem location.</p>
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-diactoros/edit/master/docs/v2/api.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-diactoros/edit/master/docs/book/v2/api.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

@@ -314,7 +314,7 @@ return a <code>Response</code> instance.</p>
 <em>populate</em> the request, and then <em>introspect</em> the response.  Both requests and responses are
 immutable; if you make changes &mdash; e.g., by calling setter methods &mdash; you must capture the return
 value, as it is a new instance.</p>
-<pre class="codehilite"><code class="language-php">// Create a request
+<p> <pre class=codehilite><code class=language-php>// Create a request
 $request = (new Zend\Diactoros\Request())
     -&gt;withUri(new Zend\Diactoros\Uri('http://example.com'))
     -&gt;withMethod('PATCH')
@@ -342,19 +342,18 @@ $request = $request-&gt;withRequestTarget('*');                 // asterisk-form
 $request-&gt;getBody()-&gt;write(json_encode($data));
 $response = $client-&gt;send($request);
 
-printf("Response status: %d (%s)\n", $response-&gt;getStatusCode(), $response-&gt;getReasonPhrase());
-printf("Headers:\n");
+printf(&quot;Response status: %d (%s)\n&quot;, $response-&gt;getStatusCode(), $response-&gt;getReasonPhrase());
+printf(&quot;Headers:\n&quot;);
 foreach ($response-&gt;getHeaders() as $header =&gt; $values) {
-    printf("    %s: %s\n", $header, implode(', ', $values));
+    printf(&quot;    %s: %s\n&quot;, $header, implode(', ', $values));
 }
-printf("Message:\n%s\n", $response-&gt;getBody());</code></pre>
-
+printf(&quot;Message:\n%s\n&quot;, $response-&gt;getBody());</code></pre></p>
 <p>(Note: <code>zend-diactoros</code> does NOT ship with a client implementation; the above is just an
 illustration of a possible implementation.)</p>
 <h2 id="server-side-applications">Server-Side Applications</h2>
 <p>Server-side applications will need to marshal the incoming request based on superglobals, and will
 then populate and send a response.</p>
-<h3 id="marshaling-an-incoming-request">Marshaling an incoming request</h3>
+<h3>Marshaling an incoming request</h3>
 <p>PHP contains a plethora of information about the incoming request, and keeps that information in a
 variety of locations. <code>Zend\Diactoros\ServerRequestFactory::fromGlobals()</code> can simplify marshaling
 that information into a request instance.</p>
@@ -368,37 +367,36 @@ that information into a request instance.</p>
 </ul>
 <p>The method will then return a <code>Zend\Diactoros\ServerRequest</code> instance. If any argument is omitted,
 the associated superglobal will be used.</p>
-<pre class="codehilite"><code class="language-php">$request = Zend\Diactoros\ServerRequestFactory::fromGlobals(
+<p> <pre class=codehilite><code class=language-php>$request = Zend\Diactoros\ServerRequestFactory::fromGlobals(
     $_SERVER,
     $_GET,
     $_POST,
     $_COOKIE,
     $_FILES
-);</code></pre>
-
+);</code></pre></p>
 <p>When no cookie array is supplied, <code>fromGlobals</code> will first try to parse the supplied <code>cookie</code> header
 before falling back to the <code>$_COOKIE</code> superglobal. This is done because PHP has some legacy handling
 for request parameters which were then registered as global variables. Due to this, cookies with a period
 in the name were renamed with underlines. By getting the cookies directly from the cookie header, you have
 access to the original cookies in the way you set them in your application and they are send by the user
 agent.</p>
-<h3 id="manipulating-the-response">Manipulating the response</h3>
+<h3>Manipulating the response</h3>
 <p>Use the response object to add headers and provide content for the response.  Writing to the body
 does not create a state change in the response, so it can be done without capturing the return
 value. Manipulating headers does, however.</p>
-<pre class="codehilite"><code class="language-php">$response = new Zend\Diactoros\Response();
+<p> <pre class=codehilite><code class=language-php>$response = new Zend\Diactoros\Response();
 
 // Write to the response body:
-$response-&gt;getBody()-&gt;write("some content\n");
+$response-&gt;getBody()-&gt;write(&quot;some content\n&quot;);
 
 // Multiple calls to write() append:
-$response-&gt;getBody()-&gt;write("more content\n"); // now "some content\nmore content\n"
+$response-&gt;getBody()-&gt;write(&quot;more content\n&quot;); // now &quot;some content\nmore content\n&quot;
 
 // Add headers
 // Note: headers do not need to be added before data is written to the body!
 $response = $response
     -&gt;withHeader('Content-Type', 'text/plain')
-    -&gt;withAddedHeader('X-Show-Something', 'something');</code></pre>
+    -&gt;withAddedHeader('X-Show-Something', 'something');</code></pre></p>
 
 
 
@@ -432,7 +430,7 @@ $response = $response
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-diactoros/edit/master/docs/v2/usage.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-diactoros/edit/master/docs/book/v2/usage.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

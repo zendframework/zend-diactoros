@@ -316,7 +316,7 @@ return a <code>Response</code> instance.</p>
 <em>populate</em> the request, and then <em>introspect</em> the response.  Both requests and responses are
 immutable; if you make changes &mdash; e.g., by calling setter methods &mdash; you must capture the return
 value, as it is a new instance.</p>
-<pre class="codehilite"><code class="language-php">// Create a request
+<p> <pre class=codehilite><code class=language-php>// Create a request
 $request = (new Zend\Diactoros\Request())
     -&gt;withUri(new Zend\Diactoros\Uri('http://example.com'))
     -&gt;withMethod('PATCH')
@@ -344,19 +344,18 @@ $request = $request-&gt;withRequestTarget('*');                 // asterisk-form
 $request-&gt;getBody()-&gt;write(json_encode($data));
 $response = $client-&gt;send($request);
 
-printf("Response status: %d (%s)\n", $response-&gt;getStatusCode(), $response-&gt;getReasonPhrase());
-printf("Headers:\n");
+printf(&quot;Response status: %d (%s)\n&quot;, $response-&gt;getStatusCode(), $response-&gt;getReasonPhrase());
+printf(&quot;Headers:\n&quot;);
 foreach ($response-&gt;getHeaders() as $header =&gt; $values) {
-    printf("    %s: %s\n", $header, implode(', ', $values));
+    printf(&quot;    %s: %s\n&quot;, $header, implode(', ', $values));
 }
-printf("Message:\n%s\n", $response-&gt;getBody());</code></pre>
-
+printf(&quot;Message:\n%s\n&quot;, $response-&gt;getBody());</code></pre></p>
 <p>(Note: <code>zend-diactoros</code> does NOT ship with a client implementation; the above is just an
 illustration of a possible implementation.)</p>
 <h2 id="server-side-applications">Server-Side Applications</h2>
 <p>Server-side applications will need to marshal the incoming request based on superglobals, and will
 then populate and send a response.</p>
-<h3 id="marshaling-an-incoming-request">Marshaling an incoming request</h3>
+<h3>Marshaling an incoming request</h3>
 <p>PHP contains a plethora of information about the incoming request, and keeps that information in a
 variety of locations. <code>Zend\Diactoros\ServerRequestFactory::fromGlobals()</code> can simplify marshaling
 that information into a request instance.</p>
@@ -370,41 +369,39 @@ that information into a request instance.</p>
 </ul>
 <p>The method will then return a <code>Zend\Diactoros\ServerRequest</code> instance. If any argument is omitted,
 the associated superglobal will be used.</p>
-<pre class="codehilite"><code class="language-php">$request = Zend\Diactoros\ServerRequestFactory::fromGlobals(
+<p> <pre class=codehilite><code class=language-php>$request = Zend\Diactoros\ServerRequestFactory::fromGlobals(
     $_SERVER,
     $_GET,
     $_POST,
     $_COOKIE,
     $_FILES
-);</code></pre>
-
+);</code></pre></p>
 <p>When no cookie array is supplied, <code>fromGlobals</code> will first try to parse the supplied <code>cookie</code> header
 before falling back to the <code>$_COOKIE</code> superglobal. This is done because PHP has some legacy handling
 for request parameters which were then registered as global variables. Due to this, cookies with a period
 in the name were renamed with underlines. By getting the cookies directly from the cookie header, you have
 access to the original cookies in the way you set them in your application and they are send by the user
 agent.</p>
-<h3 id="manipulating-the-response">Manipulating the response</h3>
+<h3>Manipulating the response</h3>
 <p>Use the response object to add headers and provide content for the response.  Writing to the body
 does not create a state change in the response, so it can be done without capturing the return
 value. Manipulating headers does, however.</p>
-<pre class="codehilite"><code class="language-php">$response = new Zend\Diactoros\Response();
+<p> <pre class=codehilite><code class=language-php>$response = new Zend\Diactoros\Response();
 
 // Write to the response body:
-$response-&gt;getBody()-&gt;write("some content\n");
+$response-&gt;getBody()-&gt;write(&quot;some content\n&quot;);
 
 // Multiple calls to write() append:
-$response-&gt;getBody()-&gt;write("more content\n"); // now "some content\nmore content\n"
+$response-&gt;getBody()-&gt;write(&quot;more content\n&quot;); // now &quot;some content\nmore content\n&quot;
 
 // Add headers
 // Note: headers do not need to be added before data is written to the body!
 $response = $response
     -&gt;withHeader('Content-Type', 'text/plain')
-    -&gt;withAddedHeader('X-Show-Something', 'something');</code></pre>
-
-<h3 id="serving-an-application">"Serving" an application</h3>
+    -&gt;withAddedHeader('X-Show-Something', 'something');</code></pre></p>
+<h3>"Serving" an application</h3>
 <blockquote>
-<h3 id="deprecated">Deprecated</h3>
+<h3>Deprecated</h3>
 <p>The class <code>Zend\Diactoros\Server</code> is deprecated as of the 1.8.0 release. We
 recommend using the class <code>Zend\HttpHandlerRunner\RequestHandlerRunner</code> via
 the package <a href="https://docs.zendframework.com/zend-httphandlerrunner">zendframework/zend-httphandlerrunner</a>
@@ -414,10 +411,10 @@ instead.</p>
 callback, passing it an <code>ServerRequest</code>, an <code>Response</code>, and optionally a callback to use for
 incomplete/unhandled requests.</p>
 <p>You can create a server in one of three ways:</p>
-<pre class="codehilite"><code class="language-php">// Direct instantiation, with a callback handler, request, and response
+<p> <pre class=codehilite><code class=language-php>// Direct instantiation, with a callback handler, request, and response
 $server = new Zend\Diactoros\Server(
     function ($request, $response, $done) {
-        $response-&gt;getBody()-&gt;write("Hello world!");
+        $response-&gt;getBody()-&gt;write(&quot;Hello world!&quot;);
     },
     $request,
     $response
@@ -426,7 +423,7 @@ $server = new Zend\Diactoros\Server(
 // Using the createServer factory, providing it with the various superglobals:
 $server = Zend\Diactoros\Server::createServer(
     function ($request, $response, $done) {
-        $response-&gt;getBody()-&gt;write("Hello world!");
+        $response-&gt;getBody()-&gt;write(&quot;Hello world!&quot;);
     },
     $_SERVER,
     $_GET,
@@ -438,11 +435,10 @@ $server = Zend\Diactoros\Server::createServer(
 // Using the createServerFromRequest factory, and providing it a request:
 $server = Zend\Diactoros\Server::createServerFromRequest(
   function ($request, $response, $done) {
-      $response-&gt;getBody()-&gt;write("Hello world!");
+      $response-&gt;getBody()-&gt;write(&quot;Hello world!&quot;);
   },
   $request
-);</code></pre>
-
+);</code></pre></p>
 <p>Server callbacks can expect up to three arguments, in the following order:</p>
 <ul>
 <li><code>$request</code> - the request object</li>
@@ -450,17 +446,15 @@ $server = Zend\Diactoros\Server::createServerFromRequest(
 <li><code>$done</code> - an optional callback to call when complete</li>
 </ul>
 <p>Once you have your server instance, you must instruct it to listen:</p>
-<pre class="codehilite"><code class="language-php">$server-&gt;listen();</code></pre>
-
+<p> <pre class=codehilite><code class=language-php>$server-&gt;listen();</code></pre></p>
 <p>At this time, you can optionally provide a callback to <code>listen()</code>; this will be passed to the
 handler as the third argument (<code>$done</code>):</p>
-<pre class="codehilite"><code class="language-php">$server-&gt;listen(function ($request, $response, $error = null) {
+<p> <pre class=codehilite><code class=language-php>$server-&gt;listen(function ($request, $response, $error = null) {
     if (! $error) {
         return;
     }
     // do something with the error...
-});</code></pre>
-
+});</code></pre></p>
 <p>Typically, the <code>listen</code> callback will be an error handler, and can expect to receive the request,
 response, and error as its arguments (though the error may be null).</p>
 
@@ -496,7 +490,7 @@ response, and error as its arguments (though the error may be null).</p>
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-diactoros/edit/master/docs/v1/usage.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-diactoros/edit/master/docs/book/v1/usage.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

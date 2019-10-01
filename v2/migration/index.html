@@ -320,21 +320,21 @@ options for doing so:</p>
 <ul>
 <li>Adopt the v2 release specifically:</li>
 </ul>
-<pre class="codehilite"><code class="language-bash">$ composer require "zendframework/zend-diactoros:^2.0"</code></pre>
-
+<p><code>bash
+  $ composer require "zendframework/zend-diactoros:^2.0"</code></p>
 <ul>
 <li>
 <p>Update your constraint to allow either version:</p>
 </li>
 <li>
 <p>Edit the constraint in your <code>composer.json</code> to read:</p>
-<pre class="codehilite"><code class="language-json">"zendframework/zend-diactoros": "^1.8.6 || ^2.0"</code></pre>
-
+<p><code>json
+"zendframework/zend-diactoros": "^1.8.6 || ^2.0"</code></p>
 </li>
 <li>
 <p>Update your dependencies:</p>
-<pre class="codehilite"><code class="language-bash">$ composer update</code></pre>
-
+<p><code>bash
+$ composer update</code></p>
 </li>
 </ul>
 <p>The first approach may fail if libraries you depend on specifically require a
@@ -359,19 +359,19 @@ pose no backwards compatibility issues.</p>
 <p>Several features were removed for version 2. These include removal of the
 <code>Emitter</code> functionality, the <code>Server</code> implementation, and a number of methods on
 the <code>ServerRequestFactory</code>.</p>
-<h3 id="emitters">Emitters</h3>
+<h3>Emitters</h3>
 <p><code>Zend\Diactoros\Response\EmitterInterface</code> and all emitter implementations were
 removed from zend-diactoros. They are now available in the
 <a href="https://docs.zendframework.com/zend-httphandlerrunner">zendframework/zend-httphandlerrunner package</a>.
 In most cases, these can be replaced by changing the namespace of imported
 classes from <code>Zend\Diactoros\Response</code> to <code>Zend\HttpHandlerRunner\Emitter</code>.</p>
-<h3 id="server">Server</h3>
+<h3>Server</h3>
 <p>The <code>Zend\Diactoros\Server</code> class has been removed. We recommend using the
 <code>RequestHandlerRunner</code> class from <a href="https://docs.zendframework.com/zend-httphandlerrunner">zendframework/zend-httphandlerrunner</a>
 to provide these capabilities instead. Usage is similar, but the
 <code>RequestHandlerRunner</code> provides better error handling, and integration with
 emitters.</p>
-<h3 id="serverrequestfactory-methods">ServerRequestFactory methods</h3>
+<h3>ServerRequestFactory methods</h3>
 <p>A number of public static methods have been removed from
 <code>ServerRequestFactory</code>. The following table details the methods removed, and
 replacements you may use if you still require the functionality.</p>
@@ -446,7 +446,7 @@ replacements you may use if you still require the functionality.</p>
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-diactoros/edit/master/docs/v2/migration.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-diactoros/edit/master/docs/book/v2/migration.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>
