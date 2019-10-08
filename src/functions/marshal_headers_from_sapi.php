@@ -28,6 +28,10 @@ function marshalHeadersFromSapi(array $server) : array
             continue;
         }
 
+        if ($value === '') {
+            continue;
+        }
+
         // Apache prefixes environment variables with REDIRECT_
         // if they are added by rewrite rules
         if (strpos($key, 'REDIRECT_') === 0) {
@@ -38,10 +42,6 @@ function marshalHeadersFromSapi(array $server) : array
             if (array_key_exists($key, $server)) {
                 continue;
             }
-        }
-
-        if ($value === '') {
-            continue;
         }
 
         if (strpos($key, 'HTTP_') === 0) {
