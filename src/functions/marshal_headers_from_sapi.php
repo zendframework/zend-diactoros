@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Zend\Diactoros;
 
 use function array_key_exists;
+use function is_string;
 use function strpos;
 use function strtolower;
 use function strtr;
@@ -23,6 +24,10 @@ function marshalHeadersFromSapi(array $server) : array
 {
     $headers = [];
     foreach ($server as $key => $value) {
+        if (! is_string($key)) {
+            continue;
+        }
+
         // Apache prefixes environment variables with REDIRECT_
         // if they are added by rewrite rules
         if (strpos($key, 'REDIRECT_') === 0) {
