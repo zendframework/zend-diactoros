@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 2.1.4 - TBD
+## 2.1.4 - 2019-10-08
 
 ### Added
 
@@ -22,7 +22,9 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#370](https://github.com/zendframework/zend-diactoros/pull/370) updates `Zend\Diactoros\marshalHeadersFromSapi()` to ensure all underscores in header name keys are converted to dashes (fixing issues with header names such as `CONTENT_SECURITY_POLICY`, which would previously resolve improperly to `content-security_policy`).
+
+- [#370](https://github.com/zendframework/zend-diactoros/pull/370) updates `Zend\Diactoros\marshalHeadersFromSapi()` to ignore header names from the `$server` array that resolve to integers; previously, it would raise a fatal error.
 
 ## 2.1.3 - 2019-07-10
 
