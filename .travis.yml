@@ -7,6 +7,7 @@ cache:
 env:
   global:
     - COMPOSER_ARGS="--no-interaction"
+    - COVERAGE_DEPS="php-coveralls/php-coveralls"
 
 matrix:
   include:
@@ -47,6 +48,7 @@ install:
   - travis_retry composer install $COMPOSER_ARGS
   - if [[ $DEPS == 'latest' ]]; then travis_retry composer update $COMPOSER_ARGS ; fi
   - if [[ $DEPS == 'lowest' ]]; then travis_retry composer update --prefer-lowest --prefer-stable $COMPOSER_ARGS ; fi
+  - if [[ $TEST_COVERAGE == 'true' ]]; then travis_retry composer require --dev $COMPOSER_ARGS $COVERAGE_DEPS ; fi
   - stty cols 120 && composer show
 
 script:
