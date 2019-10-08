@@ -51,7 +51,7 @@ function marshalHeadersFromSapi(array $server) : array
         }
 
         if (strpos($key, 'CONTENT_') === 0) {
-            $name = 'content-' . strtolower(substr($key, 8));
+            $name = str_replace('_', '-', strtolower($key));
             $headers[$name] = $value;
             continue;
         }
