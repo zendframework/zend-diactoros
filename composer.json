@@ -31,6 +31,7 @@
     "psr/http-message": "^1.0"
   },
   "require-dev": {
+    "ext-curl": "*",
     "ext-dom": "*",
     "ext-libxml": "*",
     "http-interop/http-factory-tests": "^0.5.0",

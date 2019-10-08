@@ -3,6 +3,7 @@ language: php
 cache:
   directories:
     - $HOME/.composer/cache
+    - test/TestAsset/.cache # Cache archives are currently set to expire after 28 days by default
 
 env:
   global:

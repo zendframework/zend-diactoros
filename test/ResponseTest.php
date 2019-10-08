@@ -1,7 +1,7 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-diactoros for the canonical source repository
- * @copyright Copyright (c) 2015-2018 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2019 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
@@ -16,10 +16,24 @@ use PHPUnit\Framework\TestCase;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Stream;
 
+use function curl_close;
+use function curl_exec;
+use function curl_getinfo;
+use function curl_init;
+use function curl_setopt;
+use function file_exists;
+use function file_put_contents;
+use function gmdate;
 use function in_array;
-use function libxml_set_streams_context;
 use function preg_match;
-use function stream_context_create;
+use function sprintf;
+use function strtotime;
+
+use const CURLINFO_HTTP_CODE;
+use const CURLOPT_HTTPHEADER;
+use const CURLOPT_RETURNTRANSFER;
+use const CURLOPT_TIMEOUT;
+use const LOCK_EX;
 
 class ResponseTest extends TestCase
 {
@@ -51,27 +65,67 @@ class ResponseTest extends TestCase
         $this->assertSame('Unprocessable Entity', $response->getReasonPhrase());
     }
 
+    private function fetchIanaStatusCodes() : DOMDocument
+    {
+        $updated = null;
+        $ianaHttpStatusCodesFile = __DIR__ . '/TestAsset/.cache/http-status-codes.xml';
+        $ianaHttpStatusCodes = null;
+        if (file_exists($ianaHttpStatusCodesFile)) {
+            $ianaHttpStatusCodes = new DOMDocument();
+            $ianaHttpStatusCodes->load($ianaHttpStatusCodesFile);
+            if (! $ianaHttpStatusCodes->relaxNGValidate(__DIR__ . '/TestAsset/http-status-codes.rng')) {
+                $ianaHttpStatusCodes = null;
+            }
+        }
+        if ($ianaHttpStatusCodes) {
+            if (! getenv('ALWAYS_REFRESH_IANA_HTTP_STATUS_CODES')) {
+                // use cached codes
+                return $ianaHttpStatusCodes;
+            }
+            $xpath = new DOMXPath($ianaHttpStatusCodes);
+            $xpath->registerNamespace('ns', 'http://www.iana.org/assignments');
+            $updated = $xpath->query('//ns:updated')->item(0)->nodeValue;
+            $updated = strtotime($updated);
+        }
+
+        $ch = curl_init('https://www.iana.org/assignments/http-status-codes/http-status-codes.xml');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+        curl_setopt($ch, CURLOPT_USERAGENT, 'PHP Curl');
+        if ($updated) {
+            $ifModifiedSince = sprintf(
+                'If-Modified-Since: %s',
+                gmdate('D, d M Y H:i:s \G\M\T', $updated)
+            );
+            curl_setopt($ch, CURLOPT_HTTPHEADER, [$ifModifiedSince]);
+        }
+        $response = curl_exec($ch);
+        $responseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if ($responseCode === 304 && $ianaHttpStatusCodes) {
+            // status codes did not change
+            return $ianaHttpStatusCodes;
+        }
+
+        if ($responseCode === 200) {
+            $downloadedIanaHttpStatusCodes = new DOMDocument();
+            $downloadedIanaHttpStatusCodes->loadXML($response);
+            if ($downloadedIanaHttpStatusCodes->relaxNGValidate(__DIR__ . '/TestAsset/http-status-codes.rng')) {
+                file_put_contents($ianaHttpStatusCodesFile, $response, LOCK_EX);
+                return $downloadedIanaHttpStatusCodes;
+            }
+        }
+        if ($ianaHttpStatusCodes) {
+            // return cached codes if available
+            return $ianaHttpStatusCodes;
+        }
+        self::fail('Unable to retrieve IANA response status codes due to timeout or invalid XML');
+    }
+
     public function ianaCodesReasonPhrasesProvider()
     {
-        $ianaHttpStatusCodes = new DOMDocument();
-
-        libxml_set_streams_context(
-            stream_context_create(
-                [
-                    'http' => [
-                        'method'  => 'GET',
-                        'timeout' => 30,
-                        'user_agent' => 'PHP',
-                    ],
-                ]
-            )
-        );
-
-        $ianaHttpStatusCodes->load('https://www.iana.org/assignments/http-status-codes/http-status-codes.xml');
-
-        if (! $ianaHttpStatusCodes->relaxNGValidate(__DIR__ . '/TestAsset/http-status-codes.rng')) {
-            self::fail('Unable to retrieve IANA response status codes due to timeout or invalid XML');
-        }
+        $ianaHttpStatusCodes = $this->fetchIanaStatusCodes();
 
         $ianaCodesReasonPhrases = [];
 
