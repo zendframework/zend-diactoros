@@ -101,6 +101,7 @@ class UriTest extends TestCase
             'at'          => ['user@example.com', 'cred@foo', 'user%40example.com:cred%40foo'],
             'percent'     => ['%25',              '%25',      '%25:%25'],
             'invalid-enc' => ['%ZZ',              '%GG',      '%25ZZ:%25GG'],
+            'invalid-utf' => ["\x21\x92",         '!?',       '!%92:!%3F'],
         ];
         // @codingStandardsIgnoreEnd
     }
@@ -617,7 +618,8 @@ class UriTest extends TestCase
         return [
             ['http://example.com/тестовый_путь/', '/тестовый_путь/'],
             ['http://example.com/ουτοπία/', '/ουτοπία/'],
-            ["http://example.com/\x21\x92", "\x21\x92"],
+            ["http://example.com/\x21\x92", '/%21%92'],
+            ['http://example.com/!?', '/%21'],
         ];
     }
 
@@ -636,7 +638,7 @@ class UriTest extends TestCase
         return [
             ['http://example.com/?q=тестовый_путь', 'q=тестовый_путь'],
             ['http://example.com/?q=ουτοπία', 'q=ουτοπία'],
-            ["http://example.com/?q=\x21\x92", "?q=\x21\x92"],
+            ["http://example.com/?q=\x21\x92", 'q=!%92'],
         ];
     }
 
