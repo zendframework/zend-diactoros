@@ -603,6 +603,7 @@ class Uri implements UriInterface
      */
     private function filterInvalidUtf8(string $string) : string
     {
+        // check if given string contains only valid UTF-8 characters
         if (preg_match('//u', $string)) {
             return $string;
         }
