@@ -11,9 +11,7 @@ namespace Zend\Diactoros;
 
 use Psr\Http\Message\UriInterface;
 
-use function array_key_exists;
 use function array_keys;
-use function count;
 use function explode;
 use function get_class;
 use function gettype;
@@ -23,10 +21,12 @@ use function is_object;
 use function is_string;
 use function ltrim;
 use function parse_url;
+use function preg_match;
 use function preg_replace;
 use function preg_replace_callback;
 use function rawurlencode;
 use function sprintf;
+use function str_split;
 use function strpos;
 use function strtolower;
 use function substr;
@@ -560,6 +560,8 @@ class Uri implements UriInterface
      */
     private function filterUserInfoPart(string $part) : string
     {
+        $part = $this->filterInvalidUtf8($part);
+
         // Note the addition of `%` to initial charset; this allows `|` portion
         // to match and thus prevent double-encoding.
         return preg_replace_callback(
@@ -574,6 +576,8 @@ class Uri implements UriInterface
      */
     private function filterPath(string $path) : string
     {
+        $path = $this->filterInvalidUtf8($path);
+
         $path = preg_replace_callback(
             '/(?:[^' . self::CHAR_UNRESERVED . ')(:@&=\+\$,\/;%]+|%(?![A-Fa-f0-9]{2}))/u',
             [$this, 'urlEncodeChar'],
@@ -592,6 +596,26 @@ class Uri implements UriInterface
 
         // Ensure only one leading slash, to prevent XSS attempts.
         return '/' . ltrim($path, '/');
+    }
+
+    /**
+     * Encode invalid UTF-8 characters in given string. All other characters are unchanged.
+     */
+    private function filterInvalidUtf8(string $string) : string
+    {
+        // check if given string contains only valid UTF-8 characters
+        if (preg_match('//u', $string)) {
+            return $string;
+        }
+
+        $letters = str_split($string);
+        foreach ($letters as $i => $letter) {
+            if (! preg_match('//u', $letter)) {
+                $letters[$i] = $this->urlEncodeChar([$letter]);
+            }
+        }
+
+        return implode('', $letters);
     }
 
     /**
@@ -654,6 +678,8 @@ class Uri implements UriInterface
      */
     private function filterQueryOrFragment(string $value) : string
     {
+        $value = $this->filterInvalidUtf8($value);
+
         return preg_replace_callback(
             '/(?:[^' . self::CHAR_UNRESERVED . self::CHAR_SUB_DELIMS . '%:@\/\?]+|%(?![A-Fa-f0-9]{2}))/u',
             [$this, 'urlEncodeChar'],

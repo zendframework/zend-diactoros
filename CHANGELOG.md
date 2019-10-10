@@ -24,7 +24,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - Nothing.
 
-## 2.1.5 - TBD
+## 2.1.5 - 2019-10-10
 
 ### Added
 
@@ -44,7 +44,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#372](https://github.com/zendframework/zend-diactoros/pull/372) fixes issues that occur in the `Zend\Diactoros\Uri` class when invalid UTF-8 characters are present the user-info, path, or query string, ensuring they are URL-encoded before being consumed. Previously, such characters could result in a fatal error, which was particularly problematic when marshaling the request URI for an application request cycle.
 
 ## 2.1.4 - 2019-10-08
 
