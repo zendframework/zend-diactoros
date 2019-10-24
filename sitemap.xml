@@ -2,117 +2,117 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
      <loc>https://docs.zendframework.com/zend-diactoros/</loc>
-     <lastmod>2019-10-10</lastmod>
+     <lastmod>2019-10-24</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>https://docs.zendframework.com/zend-diactoros/v2/overview/</loc>
-     <lastmod>2019-10-10</lastmod>
+     <lastmod>2019-10-24</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>https://docs.zendframework.com/zend-diactoros/v2/install/</loc>
-     <lastmod>2019-10-10</lastmod>
+     <lastmod>2019-10-24</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>https://docs.zendframework.com/zend-diactoros/v2/usage/</loc>
-     <lastmod>2019-10-10</lastmod>
+     <lastmod>2019-10-24</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>https://docs.zendframework.com/zend-diactoros/v2/factories/</loc>
-     <lastmod>2019-10-10</lastmod>
+     <lastmod>2019-10-24</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>https://docs.zendframework.com/zend-diactoros/v2/custom-responses/</loc>
-     <lastmod>2019-10-10</lastmod>
+     <lastmod>2019-10-24</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>https://docs.zendframework.com/zend-diactoros/v2/serialization/</loc>
-     <lastmod>2019-10-10</lastmod>
+     <lastmod>2019-10-24</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>https://docs.zendframework.com/zend-diactoros/v2/api/</loc>
-     <lastmod>2019-10-10</lastmod>
+     <lastmod>2019-10-24</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>https://docs.zendframework.com/zend-diactoros/v2/migration/</loc>
-     <lastmod>2019-10-10</lastmod>
+     <lastmod>2019-10-24</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>https://docs.zendframework.com/zend-diactoros/v1/overview/</loc>
-     <lastmod>2019-10-10</lastmod>
+     <lastmod>2019-10-24</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>https://docs.zendframework.com/zend-diactoros/v1/install/</loc>
-     <lastmod>2019-10-10</lastmod>
+     <lastmod>2019-10-24</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>https://docs.zendframework.com/zend-diactoros/v1/usage/</loc>
-     <lastmod>2019-10-10</lastmod>
+     <lastmod>2019-10-24</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>https://docs.zendframework.com/zend-diactoros/v1/custom-responses/</loc>
-     <lastmod>2019-10-10</lastmod>
+     <lastmod>2019-10-24</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>https://docs.zendframework.com/zend-diactoros/v1/emitting-responses/</loc>
-     <lastmod>2019-10-10</lastmod>
+     <lastmod>2019-10-24</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>https://docs.zendframework.com/zend-diactoros/v1/serialization/</loc>
-     <lastmod>2019-10-10</lastmod>
+     <lastmod>2019-10-24</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>https://docs.zendframework.com/zend-diactoros/v1/api/</loc>
-     <lastmod>2019-10-10</lastmod>
+     <lastmod>2019-10-24</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>https://docs.zendframework.com/zend-diactoros/overview/</loc>
-     <lastmod>2019-10-10</lastmod>
+     <lastmod>2019-10-24</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>https://docs.zendframework.com/zend-diactoros/install/</loc>
-     <lastmod>2019-10-10</lastmod>
+     <lastmod>2019-10-24</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>https://docs.zendframework.com/zend-diactoros/usage/</loc>
-     <lastmod>2019-10-10</lastmod>
+     <lastmod>2019-10-24</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>https://docs.zendframework.com/zend-diactoros/custom-responses/</loc>
-     <lastmod>2019-10-10</lastmod>
+     <lastmod>2019-10-24</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>https://docs.zendframework.com/zend-diactoros/emitting-responses/</loc>
-     <lastmod>2019-10-10</lastmod>
+     <lastmod>2019-10-24</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>https://docs.zendframework.com/zend-diactoros/serialization/</loc>
-     <lastmod>2019-10-10</lastmod>
+     <lastmod>2019-10-24</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>https://docs.zendframework.com/zend-diactoros/api/</loc>
-     <lastmod>2019-10-10</lastmod>
+     <lastmod>2019-10-24</lastmod>
      <changefreq>daily</changefreq>
     </url>
 </urlset>
