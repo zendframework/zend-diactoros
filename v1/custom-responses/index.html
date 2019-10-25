@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="PSR-7 HTTP message implementations.">  
+    <link rel="canonical" href="https://docs.zendframework.com/zend-diactoros/v1/custom-responses/">
+    <link rel="shortcut icon" href="../../img/favicon.ico">
+
+    <title>Custom Responses - zend-diactoros - Zend Framework Docs</title>
+
+    <link rel="stylesheet" href="../../css/styles-5cfabd53ee.css">
+</head>
+<body id="page-top">
+
+    
+    <div class="navbar navbar-default" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+
+            
+            <span class="navbar-brand">
+                <a class="logo-link" href="https://framework.zend.com/" data-tooltip data-placement="bottom" title="Go to the ZF homepage">
+                    <img src="../../img/zend-framework-logo.svg" height="28" alt="Zend Framework">
+                </a>
+            </span>
+        </div>
+
+        <div class="navbar-collapse collapse">
+
+            
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="https://framework.zend.com/about">About</a>
+                </li>
+                <li>
+                    <a href="https://framework.zend.com/downloads">Install</a>
+                </li>
+                <li class="active">
+                    <a href="https://docs.zendframework.com">Documentation</a>
+                </li>
+                <li>
+                    <a href="https://www.zend.com/en/services/training">Training</a>
+                </li>
+                <li>
+                    <a href="https://framework.zend.com/blog">Blog</a>
+                </li>
+                <li>
+                    <a href="https://framework.zend.com/participate">Participate</a>
+                </li>
+            </ul>
+
+            
+            
+                <div class="nav navbar-nav navbar-collapse visible-xs-block ">
+                    
+    <div class="subnavigation hidden-print">
+        <h4 class="subnavigation__title">
+            <a href="../..">zend-diactoros</a>
+        </h4>
+
+        <h5 class="subnavigation__subtitle">Table of Contents</h5>
+
+        <ul class="subnavigation__list">
+            
+
+                
+                
+
+                    
+                    
+                
+            
+
+                
+                
+                    
+                        
+    <li class="subnavigation__list-item ">
+        <a href="../overview/" class="subnavigation__link">Overview</a>
+    </li>
+
+                    
+                        
+    <li class="subnavigation__list-item ">
+        <a href="../install/" class="subnavigation__link">Installation</a>
+    </li>
+
+                    
+                        
+    <li class="subnavigation__list-item ">
+        <a href="../usage/" class="subnavigation__link">Usage</a>
+    </li>
+
+                    
+                        
+    <li class="subnavigation__list-item">
+        <span class="subnavigation__headline">Reference</span>
+        <ul class="subnavigation__list">
+            
+                
+    <li class="subnavigation__list-item subnavigation__list-item--active">
+        <a href="./" class="subnavigation__link">Custom Responses</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../emitting-responses/" class="subnavigation__link">Emitting Responses</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../serialization/" class="subnavigation__link">Serialization</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../api/" class="subnavigation__link">API</a>
+    </li>
+
+            
+        </ul>
+    </li>
+
+                    
+                
+            
+        </ul>
+    </div>
+
+                </div>
+            
+
+            
+            <div class="nav navbar-nav navbar-collapse visible-xs-block">
+                <div class="component-selector">
+    <h4 class="component-selector__title">Components</h4>
+    <h5 class="component-selector__subtitle">Find documentation…</h5>
+    <select class="form-control component-selector__control">
+        <option value="/">Overview</option>
+        <optgroup label="Components"></optgroup>
+    </select>
+</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+    <header class="header">
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="col-xs-8">
+                <h1 class="header__title">
+                    Documentation
+
+                    
+                        <small class="header__subtitle">zend-diactoros</small>
+                    
+                </h1>
+            </div>
+
+            
+            <div class="col-xs-4 text-right">
+                
+                    
+<div class="version-selector">
+    <div class="btn-group">
+        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            
+                v1
+            
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+            
+                
+                    <li class="dropdown-menu__item">
+                        <a href="../../v2/overview/">
+                            
+                                v2 (latest)
+                            
+                        </a>
+                    </li>
+                
+            
+                
+                    <li class="dropdown-menu__item dropdown-menu__item--selected">
+                        <a href="../overview/">
+                            
+                                v1
+                            
+                        </a>
+                    </li>
+                
+            
+        </ul>
+    </div>
+</div>
+
+
+                    <a href="#" class="header__link header__link--search" data-toggle="modal" data-target="#mkdocs_search_modal" title="Open search">
+                        <i class="fa fa-search"></i> Search
+                    </a>
+                    <a href="https://github.com/zendframework/zend-diactoros/" class="header__link header__link--github" title="Go to repository of zend-diactoros">
+                        <i class="fa fa-github"></i> GitHub
+                    </a>
+                
+            </div>
+        </div>
+    </div>
+</header>
+
+    
+    <div class="laminas-announcement">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                Zend Framework transitions to the Linux Foundation. <a href="https://getlaminas.org">Learn More.</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-md-9 col-xs-12 content" role="main">
+            <!-- content:begin -->
+                
+                    <ol class="breadcrumb" role="navigation" aria-label="breadcrumbs navigation">
+    <li><a href="https://framework.zend.com/">Home</a></li>
+
+    
+        <li><a href="https://docs.zendframework.com/">Documentation</a></li>
+
+        
+            <li><a href="../..">zend-diactoros</a></li>
+
+            
+                
+                    
+                    
+                
+            
+                
+                    
+                    
+                        <li>Reference</li>
+                    
+                
+            
+
+            <li class="active">Custom Responses</li>
+        
+    
+</ol>
+
+
+
+    <div class="alert alert-danger" role="alert">
+        <h4>Caution</h4>
+        <p>
+            The documentation you are viewing is for an older version of this component.<br>
+            <a href="../..">Switch to the latest (v2) version.</a>
+        </p>
+    </div>
+
+
+
+
+    
+    
+        <h2 class="chapter__headline">Reference</h2>
+    
+
+    <div>
+        
+    
+
+    
+    
+        <div class="toc">
+            <h6 class="toc__headline">In This Article</h6>
+            <ul class="toc__list">
+                
+                    <li class="toc__entry">
+                        <a href="#text-responses" class="toc__link">Text Responses</a>
+                    </li>
+                
+                    <li class="toc__entry">
+                        <a href="#html-responses" class="toc__link">HTML Responses</a>
+                    </li>
+                
+                    <li class="toc__entry">
+                        <a href="#xml-responses" class="toc__link">XML Responses</a>
+                    </li>
+                
+                    <li class="toc__entry">
+                        <a href="#json-responses" class="toc__link">JSON Responses</a>
+                    </li>
+                
+                    <li class="toc__entry">
+                        <a href="#empty-responses" class="toc__link">Empty Responses</a>
+                    </li>
+                
+                    <li class="toc__entry">
+                        <a href="#redirects" class="toc__link">Redirects</a>
+                    </li>
+                
+                    <li class="toc__entry">
+                        <a href="#creating-custom-responses" class="toc__link">Creating custom responses</a>
+                    </li>
+                
+            </ul>
+        </div>
+    
+
+    </div>
+
+    <h1 id="custom-responses">Custom Responses</h1>
+<p>When developing server-side applications, the message type you're most likely to create manually is
+the response. In such cases, the standard signature can be an obstacle to usability. Let's review:</p>
+<p> <pre class=codehilite><code class=language-php>class Response implements ResponseInterface
+{
+    public function __construct($body = 'php://temp', $status = 200, array $headers = []);
+}</code></pre></p>
+<p>Some standard use cases, however, make this un-wieldy:</p>
+<ul>
+<li>Returning a response containing HTML; in this case, you likely want to provide the HTML to the
+  constructor, not a stream with the HTML injected.</li>
+<li>Returning a response containing JSON; in this case, you likely want to provide the data to
+  serialize to JSON, not a stream containing serialized JSON.</li>
+<li>Returning a response with no content; in this case, you don't want to bother with the body at all.</li>
+<li>Returning a redirect response; in this case, you likely just want to specify the target for the
+  <code>Location</code> header, and optionally the status code.</li>
+</ul>
+<p>Starting with version 1.1, Diactoros offers several custom response types for simplifying these
+common tasks.</p>
+<h2 id="text-responses">Text Responses</h2>
+<p><code>Zend\Diactoros\Response\TextResponse</code> creates a plain text response. It sets the
+<code>Content-Type</code> header to <code>text/plain</code> by default:</p>
+<p> <pre class=codehilite><code class=language-php>$response = new TextResponse('Hello world!');</code></pre></p>
+<p>The constructor accepts two additional arguments: a status code and an array of headers.</p>
+<p> <pre class=codehilite><code class=language-php>$response = new TextResponse($text, 200, ['Content-Type' =&gt; ['text/csv']]);</code></pre></p>
+<h2 id="html-responses">HTML Responses</h2>
+<p><code>Zend\Diactoros\Response\HtmlResponse</code> allows specifying HTML as a payload, and sets the
+<code>Content-Type</code> header to <code>text/html</code> by default:</p>
+<p> <pre class=codehilite><code class=language-php>$response = new HtmlResponse($htmlContent);</code></pre></p>
+<p>The constructor allows passing two additional arguments: a status code, and an array of headers.
+These allow you to further seed the initial state of the response, as well as to override the
+<code>Content-Type</code> header if desired:</p>
+<p> <pre class=codehilite><code class=language-php>$response = new HtmlResponse($htmlContent, 200, [ 'Content-Type' =&gt; ['application/xhtml+xml']]);</code></pre></p>
+<p>Headers must be in the same format as you would provide to the
+<a href="../api/#response-message">Response constructor</a>.</p>
+<h2 id="xml-responses">XML Responses</h2>
+<ul>
+<li>Since 1.7.0</li>
+</ul>
+<p><code>Zend\Diactoros\Response\XmlResponse</code> allows specifying XML as a payload, and sets the
+<code>Content-Type</code> header to <code>application/xml</code> by default:</p>
+<p> <pre class=codehilite><code class=language-php>$response = new XmlResponse($xml);</code></pre></p>
+<p>The constructor allows passing two additional arguments: a status code, and an array of headers.
+These allow you to further seed the initial state of the response, as well as to override the
+<code>Content-Type</code> header if desired:</p>
+<p> <pre class=codehilite><code class=language-php>$response = new XmlResponse($xml, 200, [ 'Content-Type' =&gt; ['application/hal+xml']]);</code></pre></p>
+<p>Headers must be in the same format as you would provide to the
+<a href="../api/#response-message">Response constructor</a>.</p>
+<h2 id="json-responses">JSON Responses</h2>
+<p><code>Zend\Diactoros\Response\JsonResponse</code> accepts a data structure to convert to JSON, and sets
+the <code>Content-Type</code> header to <code>application/json</code>:</p>
+<p> <pre class=codehilite><code class=language-php>$response = new JsonResponse($data);</code></pre></p>
+<p>If providing an object, we recommend implementing <a href="http://php.net/JsonSerializable">JsonSerializable</a>
+to ensure your object is correctly serialized.</p>
+<p>Just like the <code>HtmlResponse</code>, the <code>JsonResponse</code> allows passing two additional arguments — a
+status code, and an array of headers — to allow you to further seed the initial state of the
+response:</p>
+<p> <pre class=codehilite><code class=language-php>$response = new JsonResponse($data, 200, [ 'Content-Type' =&gt; ['application/hal+json']]);</code></pre></p>
+<p>Finally, <code>JsonResponse</code> allows a fourth optional argument, the flags to provide to <code>json_encode()</code>.
+By default, these are set to <code>JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT</code> (integer
+15), providing <a href="http://tools.ietf.org/html/rfc4627">RFC 4627</a> compliant JSON capable of embedding in
+HTML. If you want to specify a different set of flags, use the fourth constructor argument:</p>
+<p> <pre class=codehilite><code class=language-php>$response = new JsonResponse(
+    $data,
+    200,
+    [],
+    JSON_PRETTY_PRINT | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT
+);</code></pre></p>
+<h2 id="empty-responses">Empty Responses</h2>
+<p>Many API actions allow returning empty responses:</p>
+<ul>
+<li><code>201 Created</code> responses are often empty, and only include a <code>Link</code> or <code>Location</code> header pointing
+  to the newly created resource.</li>
+<li><code>202 Accepted</code> responses are typically empty, indicating that the new entity has been received,
+  but not yet processed.</li>
+<li><code>204 No Content</code> responses are, by definition, empty, and often used as a success response when
+  deleting an entity.</li>
+</ul>
+<p><code>Zend\Diactoros\Response\EmptyResponse</code> is a <code>Zend\Diactoros\Response</code> extension that, by default,
+returns an empty response with a 204 status. Its constructor allows passing the status and headers
+only:</p>
+<p> <pre class=codehilite><code class=language-php>class EmptyResponse extends Response
+{
+    public function __construct($status = 204, array $headers = []);
+}</code></pre></p>
+<p>An empty, read-only body is injected at instantiation, ensuring no write operations are possible on
+the response. Usage is typically one of the following forms:</p>
+<p> <pre class=codehilite><code class=language-php>// Basic 204 response:
+$response = new EmptyResponse();
+
+// 201 response with location header:
+$response = new EmptyResponse(201, [
+    'Location' =&gt; [ $url ],
+]);
+
+// Alternately, set the header after instantiation:
+$response = ( new EmptyResponse(201) )-&gt;withHeader('Location', $url);</code></pre></p>
+<h2 id="redirects">Redirects</h2>
+<p><code>Zend\Diactoros\Response\RedirectResponse</code> is a <code>Zend\Diactoros\Response</code> extension for producing
+redirect responses. The only required argument is a URI, which may be provided as either a string or
+<code>Psr\Http\Message\UriInterface</code> instance. By default, the status 302 is used, and no other headers
+are produced; you may alter these via the additional optional arguments:</p>
+<p> <pre class=codehilite><code class=language-php>class RedirectResponse extends Response
+{
+    public function __construct($uri, $status = 302, array $headers = []);
+}</code></pre></p>
+<p>Typical usage is:</p>
+<p> <pre class=codehilite><code class=language-php>// 302 redirect:
+$response = new RedirectResponse('/user/login');
+
+// 301 redirect:
+$response = new RedirectResponse('/user/login', 301);
+
+// using a URI instance (e.g., by altering the request URI instance)
+$uri = $request-&gt;getUri();
+$response = new RedirectResponse($uri-&gt;withPath('/login'));</code></pre></p>
+<h2 id="creating-custom-responses">Creating custom responses</h2>
+<p>PHP allows constructor overloading. What this means is that constructors of extending classes can
+define completely different argument sets without conflicting with the parent implementation.
+Considering that most custom response types do not need to change internal functionality, but
+instead focus on user experience (i.e., simplifying instantiation), this fact can be leveraged to
+create your custom types.</p>
+<p>The general pattern will be something like this:</p>
+<p> <pre class=codehilite><code class=language-php>class MyCustomResponse extends Response
+{
+    public function __construct($data, $status = 200, array $headers = [])
+    {
+        // - Do something with $data, and create a Stream for the body (if necessary).
+        // - Maybe set some default headers.
+
+        parent::__construct($body, $status, $headers);
+    }
+}</code></pre></p>
+<p>Note the call to <code>parent::__construct()</code>. This is particularly relevant, as the implementation at
+the time of writing has all class properties marked as private, making them inaccessible to
+extensions; this is done to protect encapsulation and ensure consistency of operations between
+instances.</p>
+<p>If you don't want to go the extension route (perhaps you don't want another <code>ResponseInterface</code>
+implementation within your object graph) you can instead create a factory. As an example:</p>
+<p> <pre class=codehilite><code class=language-php>$plainTextResponse = function ($text, $status = 200, array $headers = []) {
+    $response = new Response('php://temp', $status, $headers);
+    $response-&gt;getBody()-&gt;write($text);
+    if (! $response-&gt;hasHeader('Content-Type')) {
+        $response = $response-&gt;withHeader('Content-Type', 'text/plain');
+    }
+    return $response;
+};
+
+$response = $plainTextResponse('Hello, world!');</code></pre></p>
+<p>We recommend following the semantic of providing the status and headers as the final two arguments
+for any factory or custom response extensions.</p>
+
+
+
+
+    <nav>
+    <ul class="page-nav hidden-print">
+
+        
+        <li class="page-nav__item">
+            
+                <a rel="prev" class="page-nav__link page-nav__link--prev" href="../usage/">
+                    <i class="fa fa-chevron-left"></i> Previous
+                </a>
+            
+        </li>
+
+        
+        <li class="page-nav__item">
+            
+                <a rel="next" class="page-nav__link page-nav__link--next" href="../emitting-responses/">
+                    Next <i class="fa fa-chevron-right"></i>
+                </a>
+            
+        </li>
+    </ul>
+</nav>
+
+
+
+
+    <div class="help-wanted">
+        <p>
+            Found a mistake or want to contribute to the documentation?
+            <a href="https://github.com/zendframework/zend-diactoros/edit/master/docs/book/v1/custom-responses.md" target="_blank" class="help-wanted__link">
+                Edit this page on GitHub!
+            </a>
+        </p>
+    </div>
+
+                
+            <!-- content:end -->
+            </div>
+            <div class="col-md-3 col-xs-12 sidebar">
+                
+                    <div class="component-selector">
+    <h4 class="component-selector__title">Components</h4>
+    <h5 class="component-selector__subtitle">Find documentation…</h5>
+    <select class="form-control component-selector__control">
+        <option value="/">Overview</option>
+        <optgroup label="Components"></optgroup>
+    </select>
+</div>
+                    
+    <div class="subnavigation hidden-print">
+        <h4 class="subnavigation__title">
+            <a href="../..">zend-diactoros</a>
+        </h4>
+
+        <h5 class="subnavigation__subtitle">Table of Contents</h5>
+
+        <ul class="subnavigation__list">
+            
+
+                
+                
+
+                    
+                    
+                
+            
+
+                
+                
+                    
+                        
+    <li class="subnavigation__list-item ">
+        <a href="../overview/" class="subnavigation__link">Overview</a>
+    </li>
+
+                    
+                        
+    <li class="subnavigation__list-item ">
+        <a href="../install/" class="subnavigation__link">Installation</a>
+    </li>
+
+                    
+                        
+    <li class="subnavigation__list-item ">
+        <a href="../usage/" class="subnavigation__link">Usage</a>
+    </li>
+
+                    
+                        
+    <li class="subnavigation__list-item">
+        <span class="subnavigation__headline">Reference</span>
+        <ul class="subnavigation__list">
+            
+                
+    <li class="subnavigation__list-item subnavigation__list-item--active">
+        <a href="./" class="subnavigation__link">Custom Responses</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../emitting-responses/" class="subnavigation__link">Emitting Responses</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../serialization/" class="subnavigation__link">Serialization</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../api/" class="subnavigation__link">API</a>
+    </li>
+
+            
+        </ul>
+    </li>
+
+                    
+                
+            
+        </ul>
+    </div>
+
+                
+            </div>
+        </div>
+    </div>
+
+    
+    <footer class="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-9">
+                <h5>Zend Framework</h5>
+                <ul>
+                    <li><a href="https://framework.zend.com/">framework.zend.com</a></li>
+                    <li><a href="https://docs.zendframework.com">docs.zendframework.com</a></li>
+                    <li><a href="https://packages.zendframework.com">packages.zendframework.com</a></li>
+                    <li><a href="https://apigility.org">apigility.org</a></li>
+                    <li><a href="https://getexpressive.org/">getexpressive.org</a></li>
+                </ul>
+            </div>
+        </div>
+
+        
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <a class="footer__button" href="#page-top"><i class="fa fa-chevron-up" aria-hidden="true"></i></a>
+            </div>
+        </div>
+
+        <div class="row">
+
+            
+            <div class="col-md-9">
+                <h4 class="footer__headline">Copyright</h4>
+                <p>&copy; 2006-2019 by <a href="https://www.zend.com/">Zend</a>, a <a href="https://www.roguewave.com/">Rogue Wave Company</a>.</p>
+            </div>
+
+            
+            <div class="col-md-3">
+                <h4 class="footer__headline">Support</h4>
+                <ul class="support__list">
+                    <li class="support__list-item">
+                        <a href="https://discourse.zendframework.com" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
+                    </li>
+                    <li class="support__list-item">
+                        <a href="https://zendframework-slack.herokuapp.com" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
+                    </li>
+                    <li class="support__list-item">
+                        <a href="https://github.com/zendframework" class="support__link" title="Github"><i class="fa fa-github"></i></a>
+                    </li>
+                    <li class="support__list-item">
+                        <a href="https://twitter.com/zfdevteam" class="support__link" title="Twitter"><i class="fa fa-twitter"></i></a>
+                    </li>
+                    <li class="support__list-item">
+                        <a href="https://tinyletter.com/mwopzend" class="support__link" title="Newsletter"><i class="fa fa-envelope"></i></a>
+                    </li>
+                    <li class="support__list-item">
+                        <a href="https://framework.zend.com/blog/feed-rss.xml" class="support__link" title="Blog feed"><i class="fa fa-rss"></i></a>
+                    </li>
+                    <li class="support__list-item">
+                        <a href="https://framework.zend.com/security/feed" class="support__link" title="Security feed"><i class="fa fa-rss-square"></i></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</footer>
+
+    <script>
+        var base_url = '../..',
+            siteName = 'zend-diactoros';
+    </script>
+    <script src="../../js/scripts-8d7ae56abf.js"></script>
+        <script src="../../search/main.js"></script>
+
+    
+    <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                        <span class="sr-only">Close</span>
+                    </button>
+                    <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        From here you can search these documents. Enter your search terms below.
+                    </p>
+                    <form role="form">
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query">
+                        </div>
+                    </form>
+                    <div id="mkdocs-search-results"></div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</body>
+
+
+</html>
