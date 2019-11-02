@@ -53,8 +53,8 @@ $response = new Response($body);
 $response = $response->withHeader('Content-Range', $range);
 ```
 
-> Note: you will likely want to ensure the range specified falls within the
-> content size of the streamed body!
+(Note: you will likely want to ensure the range specified falls within the
+content size of the streamed body!)
 
 The `SapiStreamEmitter` detects the `Content-Range` header and emits only the
 bytes specified.
