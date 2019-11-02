@@ -1,6 +1,6 @@
 # Emitting responses
 
-> ## Deprecated
+> ### Deprecated
 >
 > Emitters are deprecated from Diactoros starting with version 1.8.0. The
 > functionality is now available for any PSR-7 implementation via the package
