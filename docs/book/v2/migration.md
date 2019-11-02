@@ -64,7 +64,7 @@ to provide these capabilities instead. Usage is similar, but the
 `RequestHandlerRunner` provides better error handling, and integration with
 emitters.
 
-### ServerRequestFactory methods
+### ServerRequestFactory Methods
 
 A number of public static methods have been removed from
 `ServerRequestFactory`. The following table details the methods removed, and

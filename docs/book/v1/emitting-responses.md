@@ -1,4 +1,4 @@
-# Emitting responses
+# Emitting Responses
 
 > ### Deprecated
 >
@@ -29,7 +29,7 @@ $emitter = new Zend\Diactoros\Response\SapiEmitter();
 $emitter->emit($response);
 ```
 
-## Emitting ranges of streamed files
+## Emitting Ranges of streamed Files
 
 The `SapiStreamEmitter` is useful when you want to emit a `Content-Range`. As an
 example, to stream a range of bytes from a file to a client, the client can pass

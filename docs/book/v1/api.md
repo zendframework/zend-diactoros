@@ -128,7 +128,7 @@ $request = RequestFactory::fromGlobals(
 );
 ```
 
-### ServerRequestFactory helper functions
+### ServerRequestFactory Helper Functions
 
 - Since 1.8.0
 

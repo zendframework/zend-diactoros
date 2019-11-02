@@ -180,7 +180,7 @@ $uri = $request->getUri();
 $response = new RedirectResponse($uri->withPath('/login'));
 ```
 
-## Creating custom responses
+## Creating custom Responses
 
 PHP allows constructor overloading. What this means is that constructors of extending classes can
 define completely different argument sets without conflicting with the parent implementation.
