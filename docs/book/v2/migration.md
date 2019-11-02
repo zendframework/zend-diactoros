@@ -1,4 +1,4 @@
-# Migration to version 2
+# Migration to Version 2
 
 If you are only using the PSR-7 implementations (e.g., `Request`, `Response`,
 `ServerRequest`, etc.), migrating to v2 can be done by updating your
