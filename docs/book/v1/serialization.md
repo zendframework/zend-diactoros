@@ -32,7 +32,7 @@ the following static methods:
 The deserialization methods (`fromArray()`) will raise exceptions if errors occur while parsing the
 message.
 
-### Example usage
+### Example Usage
 
 Array serialization can be usesful for log messages:
 
