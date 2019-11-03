@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="PSR-7 HTTP message implementations.">  
+    <meta name="description" content="PSR-7 HTTP message implementations">  
     <link rel="canonical" href="https://docs.zendframework.com/zend-diactoros/v1/custom-responses/">
     <link rel="shortcut icon" href="../../img/favicon.ico">
 
@@ -325,7 +325,7 @@
                     </li>
                 
                     <li class="toc__entry">
-                        <a href="#creating-custom-responses" class="toc__link">Creating custom responses</a>
+                        <a href="#creating-custom-responses" class="toc__link">Creating custom Responses</a>
                     </li>
                 
             </ul>
@@ -370,9 +370,9 @@ These allow you to further seed the initial state of the response, as well as to
 <p>Headers must be in the same format as you would provide to the
 <a href="../api/#response-message">Response constructor</a>.</p>
 <h2 id="xml-responses">XML Responses</h2>
-<ul>
-<li>Since 1.7.0</li>
-</ul>
+<blockquote>
+<p>Available since version 1.7.0</p>
+</blockquote>
 <p><code>Zend\Diactoros\Response\XmlResponse</code> allows specifying XML as a payload, and sets the
 <code>Content-Type</code> header to <code>application/xml</code> by default:</p>
 <p> <pre class=codehilite><code class=language-php>$response = new XmlResponse($xml);</code></pre></p>
@@ -450,7 +450,7 @@ $response = new RedirectResponse('/user/login', 301);
 // using a URI instance (e.g., by altering the request URI instance)
 $uri = $request-&gt;getUri();
 $response = new RedirectResponse($uri-&gt;withPath('/login'));</code></pre></p>
-<h2 id="creating-custom-responses">Creating custom responses</h2>
+<h2 id="creating-custom-responses">Creating custom Responses</h2>
 <p>PHP allows constructor overloading. What this means is that constructors of extending classes can
 define completely different argument sets without conflicting with the parent implementation.
 Considering that most custom response types do not need to change internal functionality, but

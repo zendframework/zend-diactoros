@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="PSR-7 HTTP message implementations.">  
+    <meta name="description" content="PSR-7 HTTP message implementations">  
     <link rel="canonical" href="https://docs.zendframework.com/zend-diactoros/v1/api/">
     <link rel="shortcut icon" href="../../img/favicon.ico">
 
@@ -395,9 +395,9 @@ applications, including headers and message body content. It includes the follow
 <p>Like the <code>Request</code> and <code>ServerRequest</code>, responses are immutable. Any methods that would change state
 &mdash; those prefixed with <code>with</code> and <code>without</code> &mdash; all return a new instance with the changes requested.</p>
 <h3>HtmlResponse and JsonResponse</h3>
-<ul>
-<li>Added in 1.1.0</li>
-</ul>
+<blockquote>
+<p>Available since version 1.1.0</p>
+</blockquote>
 <p>The most common use case in server-side applications for generating responses is to provide a string
 to use for the response, typically HTML or data to serialize as JSON.  <code>Zend\Diactoros\Response\HtmlResponse</code> and <code>Zend\Diactoros\Response\JsonResponse</code> exist to facilitate these use cases:</p>
 <p> <pre class=codehilite><code class=language-php>$htmlResponse = new HtmlResponse($html);
@@ -435,10 +435,10 @@ $request = RequestFactory::fromGlobals(
     $_COOKIE,
     $_FILES
 );</code></pre></p>
-<h3>ServerRequestFactory helper functions</h3>
-<ul>
-<li>Since 1.8.0</li>
-</ul>
+<h3>ServerRequestFactory Helper Functions</h3>
+<blockquote>
+<p>Available since version 1.8.0</p>
+</blockquote>
 <p>In order to create the various artifacts required by a <code>ServerRequest</code> instance,
 Diactoros also provides a number of functions under the <code>Zend\Diactoros</code>
 namespace for introspecting the SAPI <code>$_SERVER</code> parameters, headers, <code>$_FILES</code>,

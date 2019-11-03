@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="PSR-7 HTTP message implementations.">  
+    <meta name="description" content="PSR-7 HTTP message implementations">  
     <link rel="canonical" href="https://docs.zendframework.com/zend-diactoros/v1/emitting-responses/">
     <link rel="shortcut icon" href="../../img/favicon.ico">
 
@@ -301,11 +301,7 @@
             <ul class="toc__list">
                 
                     <li class="toc__entry">
-                        <a href="#deprecated" class="toc__link">Deprecated</a>
-                    </li>
-                
-                    <li class="toc__entry">
-                        <a href="#emitting-ranges-of-streamed-files" class="toc__link">Emitting ranges of streamed files</a>
+                        <a href="#emitting-ranges-of-streamed-files" class="toc__link">Emitting Ranges of streamed Files</a>
                     </li>
                 
             </ul>
@@ -314,9 +310,9 @@
 
     </div>
 
-    <h1 id="emitting-responses">Emitting responses</h1>
+    <h1 id="emitting-responses">Emitting Responses</h1>
 <blockquote>
-<h2 id="deprecated">Deprecated</h2>
+<h3>Deprecated</h3>
 <p>Emitters are deprecated from Diactoros starting with version 1.8.0. The
 functionality is now available for any PSR-7 implementation via the package
 <a href="https://docs.zendframework.com/zend-httphandlerrunner">zendframework/zend-httphandlerrunner</a>.
@@ -337,7 +333,7 @@ PHP function to emit headers, and <code>echo()</code> to emit the response body.
 $response-&gt;getBody()-&gt;write(&quot;some content\n&quot;);
 $emitter = new Zend\Diactoros\Response\SapiEmitter();
 $emitter-&gt;emit($response);</code></pre></p>
-<h2 id="emitting-ranges-of-streamed-files">Emitting ranges of streamed files</h2>
+<h2 id="emitting-ranges-of-streamed-files">Emitting Ranges of streamed Files</h2>
 <p>The <code>SapiStreamEmitter</code> is useful when you want to emit a <code>Content-Range</code>. As an
 example, to stream a range of bytes from a file to a client, the client can pass
 the following header:</p>
@@ -352,10 +348,8 @@ $range .= '/' . $size;
 
 $response = new Response($body);
 $response = $response-&gt;withHeader('Content-Range', $range);</code></pre></p>
-<blockquote>
-<p>Note: you will likely want to ensure the range specified falls within the
-content size of the streamed body!</p>
-</blockquote>
+<p>(Note: you will likely want to ensure the range specified falls within the
+content size of the streamed body!)</p>
 <p>The <code>SapiStreamEmitter</code> detects the <code>Content-Range</code> header and emits only the
 bytes specified.</p>
 <p> <pre class=codehilite><code class=language-php>$emitter = new SapiStreamEmitter();
