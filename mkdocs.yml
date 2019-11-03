@@ -17,7 +17,7 @@ nav:
       - Serialization: v2/serialization.md
       - API: v2/api.md
     - Migration:
-      - 'Migration to Version 2': v2/migration.md
+      - "Migration to Version 2": v2/migration.md
   - v1:
     - Overview: v1/overview.md
     - Installation: v1/install.md
@@ -36,5 +36,5 @@ nav:
     - "_reference-serialization": serialization.md
     - "_reference-api": api.md
 site_name: zend-diactoros
-site_description: 'PSR-7 HTTP message implementations.'
-repo_url: 'https://github.com/zendframework/zend-diactoros'
+site_description: "PSR-7 HTTP message implementations"
+repo_url: "https://github.com/zendframework/zend-diactoros"
