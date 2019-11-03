@@ -1,4 +1,4 @@
-# Migration to version 2
+# Migration to Version 2
 
 If you are only using the PSR-7 implementations (e.g., `Request`, `Response`,
 `ServerRequest`, etc.), migrating to v2 can be done by updating your
@@ -64,7 +64,7 @@ to provide these capabilities instead. Usage is similar, but the
 `RequestHandlerRunner` provides better error handling, and integration with
 emitters.
 
-### ServerRequestFactory methods
+### ServerRequestFactory Methods
 
 A number of public static methods have been removed from
 `ServerRequestFactory`. The following table details the methods removed, and

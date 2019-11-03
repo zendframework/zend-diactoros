@@ -60,7 +60,7 @@ Headers must be in the same format as you would provide to the
 
 ## XML Responses
 
-- Since 1.7.0
+> Available since version 1.7.0
 
 `Zend\Diactoros\Response\XmlResponse` allows specifying XML as a payload, and sets the
 `Content-Type` header to `application/xml` by default:
@@ -180,7 +180,7 @@ $uri = $request->getUri();
 $response = new RedirectResponse($uri->withPath('/login'));
 ```
 
-## Creating custom responses
+## Creating custom Responses
 
 PHP allows constructor overloading. What this means is that constructors of extending classes can
 define completely different argument sets without conflicting with the parent implementation.

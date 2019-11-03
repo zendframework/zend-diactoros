@@ -5,7 +5,7 @@ extra:
   versions:
     - v2
     - v1
-pages:
+nav:
   - Home: index.md
   - v2:
     - Overview: v2/overview.md
@@ -16,7 +16,8 @@ pages:
       - "Custom Responses": v2/custom-responses.md
       - Serialization: v2/serialization.md
       - API: v2/api.md
-      - Migration: v2/migration.md
+    - Migration:
+      - 'Migration to Version 2': v2/migration.md
   - v1:
     - Overview: v1/overview.md
     - Installation: v1/install.md

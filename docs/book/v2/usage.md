@@ -60,7 +60,7 @@ illustration of a possible implementation.)
 Server-side applications will need to marshal the incoming request based on superglobals, and will
 then populate and send a response.
 
-### Marshaling an incoming request
+### Marshaling an incoming Request
 
 PHP contains a plethora of information about the incoming request, and keeps that information in a
 variety of locations. `Zend\Diactoros\ServerRequestFactory::fromGlobals()` can simplify marshaling
@@ -94,7 +94,7 @@ in the name were renamed with underlines. By getting the cookies directly from t
 access to the original cookies in the way you set them in your application and they are send by the user
 agent.
 
-### Manipulating the response
+### Manipulating the Response
 
 Use the response object to add headers and provide content for the response.  Writing to the body
 does not create a state change in the response, so it can be done without capturing the return
