@@ -75,7 +75,7 @@ Like the `Request` and `ServerRequest`, responses are immutable. Any methods tha
 
 ### HtmlResponse and JsonResponse
 
-- Added in 1.1.0
+> Available since version 1.1.0
 
 The most common use case in server-side applications for generating responses is to provide a string
 to use for the response, typically HTML or data to serialize as JSON.  `Zend\Diactoros\Response\HtmlResponse` and `Zend\Diactoros\Response\JsonResponse` exist to facilitate these use cases:
@@ -128,9 +128,9 @@ $request = RequestFactory::fromGlobals(
 );
 ```
 
-### ServerRequestFactory helper functions
+### ServerRequestFactory Helper Functions
 
-- Since 1.8.0
+> Available since version 1.8.0
 
 In order to create the various artifacts required by a `ServerRequest` instance,
 Diactoros also provides a number of functions under the `Zend\Diactoros`

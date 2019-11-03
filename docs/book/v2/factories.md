@@ -1,4 +1,4 @@
-# HTTP Message Factories
+# Factories
 
 [PSR-17](https://www.php-fig.org/psr/psr-17/) defines factory interfaces for
 creating [PSR-7](https://www.php-fig.org/psr/psr-7/) instances. As of version

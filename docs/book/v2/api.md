@@ -126,7 +126,7 @@ $request = RequestFactory::fromGlobals(
 );
 ```
 
-### ServerRequestFactory helper functions
+### ServerRequestFactory Helper Functions
 
 In order to create the various artifacts required by a `ServerRequest` instance,
 Diactoros also provides a number of functions under the `Zend\Diactoros`

@@ -1,6 +1,6 @@
-# Emitting responses
+# Emitting Responses
 
-> ## Deprecated
+> ### Deprecated
 >
 > Emitters are deprecated from Diactoros starting with version 1.8.0. The
 > functionality is now available for any PSR-7 implementation via the package
@@ -29,7 +29,7 @@ $emitter = new Zend\Diactoros\Response\SapiEmitter();
 $emitter->emit($response);
 ```
 
-## Emitting ranges of streamed files
+## Emitting Ranges of streamed Files
 
 The `SapiStreamEmitter` is useful when you want to emit a `Content-Range`. As an
 example, to stream a range of bytes from a file to a client, the client can pass
@@ -53,8 +53,8 @@ $response = new Response($body);
 $response = $response->withHeader('Content-Range', $range);
 ```
 
-> Note: you will likely want to ensure the range specified falls within the
-> content size of the streamed body!
+(Note: you will likely want to ensure the range specified falls within the
+content size of the streamed body!)
 
 The `SapiStreamEmitter` detects the `Content-Range` header and emits only the
 bytes specified.

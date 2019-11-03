@@ -1,4 +1,4 @@
-# Installation and Requirements
+# Installation
 
 Install this library using composer:
 
