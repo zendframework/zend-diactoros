@@ -102,7 +102,7 @@ class MarshalUriFromSapiTest extends TestCase
                 [
                     'SERVER_NAME' => 'localhost',
                 ],
-                ['X-Forwarded-Host' => 'example.org'],
+                ['X-Forwarded-Host' => 'example.org', 'Host' => 'localhost'],
             ],
         ];
     }
