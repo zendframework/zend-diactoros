@@ -78,8 +78,12 @@ class MarshalUriFromSapiTest extends TestCase
     /**
      * @dataProvider returnsUrlWithCorrectSchemeAndHostFromArrays
      */
-    public function testReturnsUrlWithCorrectSchemeAndHostFromArrays(string $expectedScheme, string $expectedHost, array $server, array $headers) : void
-    {
+    public function testReturnsUrlWithCorrectSchemeAndHostFromArrays(
+        string $expectedScheme,
+        string $expectedHost,
+        array $server,
+        array $headers
+    ) : void {
         $uri = marshalUriFromSapi($server, $headers);
         self::assertSame($expectedScheme, $uri->getScheme());
         self::assertSame($expectedHost, $uri->getHost());
