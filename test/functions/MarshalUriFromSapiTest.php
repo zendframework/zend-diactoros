@@ -74,4 +74,40 @@ class MarshalUriFromSapiTest extends TestCase
             'empty' => ['', 'http'],
         ];
     }
+
+    /**
+     * @dataProvider returnsUrlWithCorrectSchemeAndHostFromArrays
+     */
+    public function testReturnsUrlWithCorrectSchemeAndHostFromArrays(
+        string $expectedScheme,
+        string $expectedHost,
+        array $server,
+        array $headers
+    ) : void {
+        $uri = marshalUriFromSapi($server, $headers);
+        self::assertSame($expectedScheme, $uri->getScheme());
+        self::assertSame($expectedHost, $uri->getHost());
+    }
+
+    public function returnsUrlWithCorrectSchemeAndHostFromArrays() : array
+    {
+        return [
+            'x-forwarded-proto' => [
+                'https',
+                'localhost',
+                [
+                    'SERVER_NAME' => 'localhost',
+                ],
+                ['X-Forwarded-Proto' => 'https'],
+            ],
+            'x-forwarded-host' => [
+                'http',
+                'example.org',
+                [
+                    'SERVER_NAME' => 'localhost',
+                ],
+                ['X-Forwarded-Host' => 'example.org', 'Host' => 'localhost'],
+            ],
+        ];
+    }
 }

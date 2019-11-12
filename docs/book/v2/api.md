@@ -194,4 +194,6 @@ In most cases, you will not interact with the Stream object directly.
 and provides abstraction around a single uploaded file, including behavior for interacting with it
 as a stream or moving it to a filesystem location.
 
+Additionally, it extends PHP's build in `SplFileInfo` object in order to provide a compatible interface wherever such an object is needed.
+
 In most cases, you will only use the methods defined in the `UploadedFileInterface`.

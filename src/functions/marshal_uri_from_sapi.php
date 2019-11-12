@@ -80,7 +80,7 @@ function marshalUriFromSapi(array $server, array $headers) : Uri
         * @return array Array of two items, host and port, in that order (can be
         *     passed to a list() operation).
         */
-        $marshalIpv6HostAndPort = function (array $server, string $host, ?int $port) : array {
+        $marshalIpv6HostAndPort = function (array $server, ?int $port) : array {
             $host = '[' . $server['SERVER_ADDR'] . ']';
             $port = $port ?: 80;
             if ($port . ']' === substr($host, strrpos($host, ':') + 1)) {
@@ -93,8 +93,14 @@ function marshalUriFromSapi(array $server, array $headers) : Uri
 
         static $defaults = ['', null];
 
-        if ($getHeaderFromArray('host', $headers, false)) {
-            return $marshalHostAndPortFromHeader($getHeaderFromArray('host', $headers));
+        $forwardedHost = $getHeaderFromArray('x-forwarded-host', $headers, false);
+        if ($forwardedHost !== false) {
+            return $marshalHostAndPortFromHeader($forwardedHost);
+        }
+
+        $host = $getHeaderFromArray('host', $headers, false);
+        if ($host !== false) {
+            return $marshalHostAndPortFromHeader($host);
         }
 
         if (! isset($server['SERVER_NAME'])) {
@@ -112,7 +118,7 @@ function marshalUriFromSapi(array $server, array $headers) : Uri
 
         // Misinterpreted IPv6-Address
         // Reported for Safari on Windows
-        return $marshalIpv6HostAndPort($server, $host, $port);
+        return $marshalIpv6HostAndPort($server, $port);
     };
 
     /**

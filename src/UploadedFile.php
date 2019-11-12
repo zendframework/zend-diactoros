@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Zend\Diactoros;
 
+use SplFileInfo;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
 
@@ -35,7 +36,7 @@ use const UPLOAD_ERR_NO_TMP_DIR;
 use const UPLOAD_ERR_OK;
 use const UPLOAD_ERR_PARTIAL;
 
-class UploadedFile implements UploadedFileInterface
+class UploadedFile extends SplFileInfo implements UploadedFileInterface
 {
     const ERROR_MESSAGES = [
         UPLOAD_ERR_OK         => 'There is no error, the file uploaded with success',
@@ -102,9 +103,13 @@ class UploadedFile implements UploadedFileInterface
         if ($errorStatus === UPLOAD_ERR_OK) {
             if (is_string($streamOrFile)) {
                 $this->file = $streamOrFile;
+
+                parent::__construct($this->file);
             }
             if (is_resource($streamOrFile)) {
                 $this->stream = new Stream($streamOrFile);
+
+                parent::__construct($this->stream->getMetaData('uri'));
             }
 
             if (! $this->file && ! $this->stream) {
