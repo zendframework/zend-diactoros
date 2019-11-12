@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 2.2.1 - TBD
+## 2.2.0 - 2019-11-12
 
 ### Added
 
@@ -29,28 +29,6 @@ All notable changes to this project will be documented in this file, in reverse 
 ### Added
 
 - [#377](https://github.com/zendframework/zend-diactoros/issues/377) enables UploadedFile to stand in and be used as an SplFileInfo object.
-
-### Changed
-
-- Nothing.
-
-### Deprecated
-
-- Nothing.
-
-### Removed
-
-- Nothing.
-
-### Fixed
-
-- Nothing.
-
-## 2.1.6 - TBD
-
-### Added
-
-- Nothing.
 
 ### Changed
 
