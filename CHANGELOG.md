@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- Nothing.
+- [#376](https://github.com/zendframework/zend-diactoros/pull/376) adds support for using the X-Forwarded-Host header for determining the originally requested host name when marshaling the server request.
 
 ### Changed
 
