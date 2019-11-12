@@ -10,7 +10,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Changed
 
-- Nothing.
+- [#378](https://github.com/zendframework/zend-diactoros/pull/378) updates the `UploadedFile` class to extend `SplFileInfo`, allowing developers to make use of those features in their applications.
 
 ### Deprecated
 
