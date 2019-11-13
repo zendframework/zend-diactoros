@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 2.2.1 - TBD
+## 2.2.1 - 2019-11-13
 
 ### Added
 
@@ -10,7 +10,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Changed
 
-- Nothing.
+- [#379](https://github.com/zendframework/zend-diactoros/pull/379) removes extension of `SplFileInfo` by the `UploadedFile` class. The signatures of `getSize()` are potentially incompatible, and `UploadedFile` is intended to work with arbitrary PHP and PSR-7 streams, whereas `SplFileInfo` can only model files on the filesystem. While this is technically a BC break, we are treating it as a bugfix, as the class was broken for many use cases.
 
 ### Deprecated
 
