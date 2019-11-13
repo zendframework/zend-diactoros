@@ -13,7 +13,6 @@ use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use ReflectionProperty;
 use RuntimeException;
-use SplFileInfo;
 use Zend\Diactoros\Stream;
 use Zend\Diactoros\UploadedFile;
 
@@ -325,14 +324,5 @@ class UploadedFileTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage($message);
         $uploadedFile->moveTo('/tmp/foo');
-    }
-
-    /**
-     * @see https://github.com/zendframework/zend-diactoros/pull/378
-     */
-    public function testExtendsSplFileInfo()
-    {
-        $uploaded = new UploadedFile(fopen('php://temp', 'wb+'), 0, UPLOAD_ERR_OK);
-        $this->assertInstanceOf(SplFileInfo::class, $uploaded);
     }
 }
