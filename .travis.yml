@@ -1,5 +1,3 @@
-sudo: false
-
 language: php
 
 cache:
@@ -56,6 +54,24 @@ matrix:
       name: Integration tests
       env:
         - INTEGRATION_DEPS="http-interop/http-factory-diactoros"
+    - php: 7.3
+      env:
+        - DEPS=lowest
+    - php: 7.3
+      env:
+        - DEPS=locked
+    - php: 7.3
+      env:
+        - DEPS=latest
+    - php: 7.4
+      env:
+        - DEPS=lowest
+    - php: 7.4
+      env:
+        - DEPS=locked
+    - php: 7.4
+      env:
+        - DEPS=latest
 
 before_install:
   - if [[ $TEST_COVERAGE != 'true' && "$(php --version | grep xdebug -ci)" -ge 1 ]]; then phpenv config-rm xdebug.ini || return 0 ; fi
