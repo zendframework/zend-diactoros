@@ -24,7 +24,7 @@ class MessageTraitTest extends TestCase
      */
     protected $message;
 
-    public function setUp()
+    protected function setUp() : void
     {
         $this->message = new Request(null, null, $this->createMock(StreamInterface::class));
     }

@@ -27,7 +27,7 @@ class PhpInputStreamTest extends TestCase
      */
     protected $stream;
 
-    public function setUp()
+    protected function setUp() : void
     {
         $this->file = __DIR__ . '/TestAsset/php-input-stream.txt';
         $this->stream = new PhpInputStream($this->file);
