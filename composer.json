@@ -36,7 +36,7 @@
     "ext-libxml": "*",
     "http-interop/http-factory-tests": "^0.5.0",
     "php-http/psr7-integration-tests": "dev-master",
-    "phpunit/phpunit": "^7.0.2",
+    "phpunit/phpunit": "^7.5.18",
     "zendframework/zend-coding-standard": "~1.0.0"
   },
   "conflict": {

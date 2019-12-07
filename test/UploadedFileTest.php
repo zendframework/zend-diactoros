@@ -39,12 +39,12 @@ class UploadedFileTest extends TestCase
 {
     protected $tmpFile;
 
-    public function setUp()
+    protected function setUp() : void
     {
         $this->tmpfile = null;
     }
 
-    public function tearDown()
+    protected function tearDown() : void
     {
         if (is_string($this->tmpFile) && file_exists($this->tmpFile)) {
             unlink($this->tmpFile);

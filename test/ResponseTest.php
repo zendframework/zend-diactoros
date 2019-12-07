@@ -42,7 +42,7 @@ class ResponseTest extends TestCase
     */
     protected $response;
 
-    public function setUp()
+    protected function setUp() : void
     {
         $this->response = new Response();
     }
@@ -223,7 +223,7 @@ class ResponseTest extends TestCase
         $result = $response->getStatusCode();
 
         $this->assertSame((int) $code, $result);
-        $this->assertInternalType('int', $result);
+        $this->assertIsInt($result);
     }
 
     public function validStatusCodes()
@@ -311,7 +311,7 @@ class ResponseTest extends TestCase
     public function testReasonPhraseCanBeEmpty()
     {
         $response = $this->response->withStatus(555);
-        $this->assertInternalType('string', $response->getReasonPhrase());
+        $this->assertIsString($response->getReasonPhrase());
         $this->assertEmpty($response->getReasonPhrase());
     }
 

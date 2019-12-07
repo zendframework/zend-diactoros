@@ -23,7 +23,7 @@ class ServerRequestTest extends TestCase
      */
     protected $request;
 
-    public function setUp()
+    protected function setUp() : void
     {
         $this->request = new ServerRequest();
     }
@@ -182,7 +182,7 @@ class ServerRequestTest extends TestCase
     public function testCookieParamsAreAnEmptyArrayAtInitialization()
     {
         $request = new ServerRequest();
-        $this->assertInternalType('array', $request->getCookieParams());
+        $this->assertIsArray($request->getCookieParams());
         $this->assertCount(0, $request->getCookieParams());
     }
 
@@ -192,7 +192,7 @@ class ServerRequestTest extends TestCase
     public function testQueryParamsAreAnEmptyArrayAtInitialization()
     {
         $request = new ServerRequest();
-        $this->assertInternalType('array', $request->getQueryParams());
+        $this->assertIsArray($request->getQueryParams());
         $this->assertCount(0, $request->getQueryParams());
     }
 
