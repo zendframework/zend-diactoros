@@ -323,7 +323,7 @@ return a <code>Response</code> instance.</p>
 <em>populate</em> the request, and then <em>introspect</em> the response.  Both requests and responses are
 immutable; if you make changes &mdash; e.g., by calling setter methods &mdash; you must capture the return
 value, as it is a new instance.</p>
-<p> <pre class=codehilite><code class=language-php>// Create a request
+<pre class=codehilite><code class=language-php>// Create a request
 $request = (new Zend\Diactoros\Request())
     -&gt;withUri(new Zend\Diactoros\Uri('http://example.com'))
     -&gt;withMethod('PATCH')
@@ -356,7 +356,7 @@ printf(&quot;Headers:\n&quot;);
 foreach ($response-&gt;getHeaders() as $header =&gt; $values) {
     printf(&quot;    %s: %s\n&quot;, $header, implode(', ', $values));
 }
-printf(&quot;Message:\n%s\n&quot;, $response-&gt;getBody());</code></pre></p>
+printf(&quot;Message:\n%s\n&quot;, $response-&gt;getBody());</code></pre>
 <p>(Note: <code>zend-diactoros</code> does NOT ship with a client implementation; the above is just an
 illustration of a possible implementation.)</p>
 <h2 id="server-side-applications">Server-Side Applications</h2>
@@ -376,13 +376,13 @@ that information into a request instance.</p>
 </ul>
 <p>The method will then return a <code>Zend\Diactoros\ServerRequest</code> instance. If any argument is omitted,
 the associated superglobal will be used.</p>
-<p> <pre class=codehilite><code class=language-php>$request = Zend\Diactoros\ServerRequestFactory::fromGlobals(
+<pre class=codehilite><code class=language-php>$request = Zend\Diactoros\ServerRequestFactory::fromGlobals(
     $_SERVER,
     $_GET,
     $_POST,
     $_COOKIE,
     $_FILES
-);</code></pre></p>
+);</code></pre>
 <p>When no cookie array is supplied, <code>fromGlobals</code> will first try to parse the supplied <code>cookie</code> header
 before falling back to the <code>$_COOKIE</code> superglobal. This is done because PHP has some legacy handling
 for request parameters which were then registered as global variables. Due to this, cookies with a period
@@ -393,7 +393,7 @@ agent.</p>
 <p>Use the response object to add headers and provide content for the response.  Writing to the body
 does not create a state change in the response, so it can be done without capturing the return
 value. Manipulating headers does, however.</p>
-<p> <pre class=codehilite><code class=language-php>$response = new Zend\Diactoros\Response();
+<pre class=codehilite><code class=language-php>$response = new Zend\Diactoros\Response();
 
 // Write to the response body:
 $response-&gt;getBody()-&gt;write(&quot;some content\n&quot;);
@@ -405,7 +405,7 @@ $response-&gt;getBody()-&gt;write(&quot;more content\n&quot;); // now &quot;some
 // Note: headers do not need to be added before data is written to the body!
 $response = $response
     -&gt;withHeader('Content-Type', 'text/plain')
-    -&gt;withAddedHeader('X-Show-Something', 'something');</code></pre></p>
+    -&gt;withAddedHeader('X-Show-Something', 'something');</code></pre>
 
 
 

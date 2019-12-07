@@ -344,14 +344,14 @@
     <h1 id="custom-responses">Custom Responses</h1>
 <p>When developing server-side applications, the message type you're most likely to create manually is
 the response. In such cases, the standard signature can be an obstacle to usability. Let's review:</p>
-<p> <pre class=codehilite><code class=language-php>namespace Zend\Diactoros;
+<pre class=codehilite><code class=language-php>namespace Zend\Diactoros;
 
 use Psr\Http\Message\ResponseInterface;
 
 class Response implements ResponseInterface
 {
     public function __construct($body = 'php://temp', $status = 200, array $headers = []);
-}</code></pre></p>
+}</code></pre>
 <p>Some standard use cases, however, make this un-wieldy:</p>
 <ul>
 <li>Returning a response containing HTML; in this case, you likely want to provide the HTML to the
@@ -367,65 +367,65 @@ common tasks.</p>
 <h2 id="text-responses">Text Responses</h2>
 <p><code>Zend\Diactoros\Response\TextResponse</code> creates a plain text response. It sets the
 <code>Content-Type</code> header to <code>text/plain</code> by default:</p>
-<p> <pre class=codehilite><code class=language-php>$response = new Zend\Diactoros\Response\TextResponse('Hello world!');</code></pre></p>
+<pre class=codehilite><code class=language-php>$response = new Zend\Diactoros\Response\TextResponse('Hello world!');</code></pre>
 <p>The constructor accepts two additional arguments: a status code and an array of headers.</p>
-<p> <pre class=codehilite><code class=language-php>$response = new Zend\Diactoros\Response\TextResponse(
+<pre class=codehilite><code class=language-php>$response = new Zend\Diactoros\Response\TextResponse(
     $text,
     200,
     ['Content-Type' =&gt; ['text/csv']]
-);</code></pre></p>
+);</code></pre>
 <h2 id="html-responses">HTML Responses</h2>
 <p><code>Zend\Diactoros\Response\HtmlResponse</code> allows specifying HTML as a payload, and sets the
 <code>Content-Type</code> header to <code>text/html</code> by default:</p>
-<p> <pre class=codehilite><code class=language-php>$response = new Zend\Diactoros\Response\HtmlResponse($htmlContent);</code></pre></p>
+<pre class=codehilite><code class=language-php>$response = new Zend\Diactoros\Response\HtmlResponse($htmlContent);</code></pre>
 <p>The constructor allows passing two additional arguments: a status code, and an array of headers.
 These allow you to further seed the initial state of the response, as well as to override the
 <code>Content-Type</code> header if desired:</p>
-<p> <pre class=codehilite><code class=language-php>$response = new Zend\Diactoros\Response\HtmlResponse(
+<pre class=codehilite><code class=language-php>$response = new Zend\Diactoros\Response\HtmlResponse(
     $htmlContent,
     200,
     ['Content-Type' =&gt; ['application/xhtml+xml']]
-);</code></pre></p>
+);</code></pre>
 <p>Headers must be in the same format as you would provide to the
 <a href="../api/#response-message">Response constructor</a>.</p>
 <h2 id="xml-responses">XML Responses</h2>
 <p><code>Zend\Diactoros\Response\XmlResponse</code> allows specifying XML as a payload, and sets the
 <code>Content-Type</code> header to <code>application/xml</code> by default:</p>
-<p> <pre class=codehilite><code class=language-php>$response = new Zend\Diactoros\Response\XmlResponse($xml);</code></pre></p>
+<pre class=codehilite><code class=language-php>$response = new Zend\Diactoros\Response\XmlResponse($xml);</code></pre>
 <p>The constructor allows passing two additional arguments: a status code, and an array of headers.
 These allow you to further seed the initial state of the response, as well as to override the
 <code>Content-Type</code> header if desired:</p>
-<p> <pre class=codehilite><code class=language-php>$response = new Zend\Diactoros\Response\XmlResponse(
+<pre class=codehilite><code class=language-php>$response = new Zend\Diactoros\Response\XmlResponse(
     $xml,
     200,
     ['Content-Type' =&gt; ['application/hal+xml']]
-);</code></pre></p>
+);</code></pre>
 <p>Headers must be in the same format as you would provide to the
 <a href="../api/#response-message">Response constructor</a>.</p>
 <h2 id="json-responses">JSON Responses</h2>
 <p><code>Zend\Diactoros\Response\JsonResponse</code> accepts a data structure to convert to JSON, and sets
 the <code>Content-Type</code> header to <code>application/json</code>:</p>
-<p> <pre class=codehilite><code class=language-php>$response = new Zend\Diactoros\Response\JsonResponse($data);</code></pre></p>
+<pre class=codehilite><code class=language-php>$response = new Zend\Diactoros\Response\JsonResponse($data);</code></pre>
 <p>If providing an object, we recommend implementing <a href="http://php.net/JsonSerializable">JsonSerializable</a>
 to ensure your object is correctly serialized.</p>
 <p>Just like the <code>HtmlResponse</code>, the <code>JsonResponse</code> allows passing two additional arguments — a
 status code, and an array of headers — to allow you to further seed the initial state of the
 response:</p>
-<p> <pre class=codehilite><code class=language-php>$response = new Zend\Diactoros\Response\JsonResponse(
+<pre class=codehilite><code class=language-php>$response = new Zend\Diactoros\Response\JsonResponse(
     $data,
     200,
     ['Content-Type' =&gt; ['application/hal+json']]
-);</code></pre></p>
+);</code></pre>
 <p>Finally, <code>JsonResponse</code> allows a fourth optional argument, the flags to provide to <code>json_encode()</code>.
 By default, these are set to <code>JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT</code> (integer
 15), providing <a href="http://tools.ietf.org/html/rfc4627">RFC 4627</a> compliant JSON capable of embedding in
 HTML. If you want to specify a different set of flags, use the fourth constructor argument:</p>
-<p> <pre class=codehilite><code class=language-php>$response = new Zend\Diactoros\Response\JsonResponse(
+<pre class=codehilite><code class=language-php>$response = new Zend\Diactoros\Response\JsonResponse(
     $data,
     200,
     [],
     JSON_PRETTY_PRINT | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT
-);</code></pre></p>
+);</code></pre>
 <h2 id="empty-responses">Empty Responses</h2>
 <p>Many API actions allow returning empty responses:</p>
 <ul>
@@ -439,17 +439,17 @@ HTML. If you want to specify a different set of flags, use the fourth constructo
 <p><code>Zend\Diactoros\Response\EmptyResponse</code> is a <code>Zend\Diactoros\Response</code> extension that, by default,
 returns an empty response with a 204 status. Its constructor allows passing the status and headers
 only:</p>
-<p> <pre class=codehilite><code class=language-php>namespace Zend\Diactoros\Response;
+<pre class=codehilite><code class=language-php>namespace Zend\Diactoros\Response;
 
 use Zend\Diactoros\Response;
 
 class EmptyResponse extends Response
 {
     public function __construct($status = 204, array $headers = []);
-}</code></pre></p>
+}</code></pre>
 <p>An empty, read-only body is injected at instantiation, ensuring no write operations are possible on
 the response. Usage is typically one of the following forms:</p>
-<p> <pre class=codehilite><code class=language-php>use Zend\Diactoros\Response\EmptyResponse;
+<pre class=codehilite><code class=language-php>use Zend\Diactoros\Response\EmptyResponse;
 
 // Basic 204 response:
 $response = new EmptyResponse();
@@ -460,22 +460,22 @@ $response = new EmptyResponse(201, [
 ]);
 
 // Alternately, set the header after instantiation:
-$response = (new EmptyResponse(201))-&gt;withHeader('Location', $url);</code></pre></p>
+$response = (new EmptyResponse(201))-&gt;withHeader('Location', $url);</code></pre>
 <h2 id="redirects">Redirects</h2>
 <p><code>Zend\Diactoros\Response\RedirectResponse</code> is a <code>Zend\Diactoros\Response</code> extension for producing
 redirect responses. The only required argument is a URI, which may be provided as either a string or
 <code>Psr\Http\Message\UriInterface</code> instance. By default, the status 302 is used, and no other headers
 are produced; you may alter these via the additional optional arguments:</p>
-<p> <pre class=codehilite><code class=language-php>namespace Zend\Diactoros\Response;
+<pre class=codehilite><code class=language-php>namespace Zend\Diactoros\Response;
 
 use Zend\Diactoros\Response;
 
 class RedirectResponse extends Response
 {
     public function __construct($uri, $status = 302, array $headers = []);
-}</code></pre></p>
+}</code></pre>
 <p>Typical usage is:</p>
-<p> <pre class=codehilite><code class=language-php>use Zend\Diactoros\Response\RedirectResponse;
+<pre class=codehilite><code class=language-php>use Zend\Diactoros\Response\RedirectResponse;
 
 // 302 redirect:
 $response = new RedirectResponse('/user/login');
@@ -485,7 +485,7 @@ $response = new RedirectResponse('/user/login', 301);
 
 // using a URI instance (e.g., by altering the request URI instance)
 $uri = $request-&gt;getUri();
-$response = new RedirectResponse($uri-&gt;withPath('/login'));</code></pre></p>
+$response = new RedirectResponse($uri-&gt;withPath('/login'));</code></pre>
 <h2 id="creating-custom-responses">Creating custom Responses</h2>
 <p>PHP allows constructor overloading. What this means is that constructors of extending classes can
 define completely different argument sets without conflicting with the parent implementation.
@@ -493,7 +493,7 @@ Considering that most custom response types do not need to change internal funct
 instead focus on user experience (i.e., simplifying instantiation), this fact can be leveraged to
 create your custom types.</p>
 <p>The general pattern will be something like this:</p>
-<p> <pre class=codehilite><code class=language-php>use Zend\Diactoros\Response;
+<pre class=codehilite><code class=language-php>use Zend\Diactoros\Response;
 
 class MyCustomResponse extends Response
 {
@@ -504,14 +504,14 @@ class MyCustomResponse extends Response
 
         parent::__construct($body, $status, $headers);
     }
-}</code></pre></p>
+}</code></pre>
 <p>Note the call to <code>parent::__construct()</code>. This is particularly relevant, as the implementation at
 the time of writing has all class properties marked as private, making them inaccessible to
 extensions; this is done to protect encapsulation and ensure consistency of operations between
 instances.</p>
 <p>If you don't want to go the extension route (perhaps you don't want another <code>ResponseInterface</code>
 implementation within your object graph) you can instead create a factory. As an example:</p>
-<p> <pre class=codehilite><code class=language-php>$plainTextResponse = function ($text, $status = 200, array $headers = []) {
+<pre class=codehilite><code class=language-php>$plainTextResponse = function ($text, $status = 200, array $headers = []) {
     $response = new Zend\Diactoros\Response('php://temp', $status, $headers);
     $response-&gt;getBody()-&gt;write($text);
     if (! $response-&gt;hasHeader('Content-Type')) {
@@ -520,7 +520,7 @@ implementation within your object graph) you can instead create a factory. As an
     return $response;
 };
 
-$response = $plainTextResponse('Hello, world!');</code></pre></p>
+$response = $plainTextResponse('Hello, world!');</code></pre>
 <p>We recommend following the semantic of providing the status and headers as the final two arguments
 for any factory or custom response extensions.</p>
 
