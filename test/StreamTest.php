@@ -46,13 +46,13 @@ class StreamTest extends TestCase
      */
     protected $stream;
 
-    public function setUp()
+    protected function setUp() : void
     {
         $this->tmpnam = null;
         $this->stream = new Stream('php://memory', 'wb+');
     }
 
-    public function tearDown()
+    protected function tearDown() : void
     {
         if ($this->tmpnam && file_exists($this->tmpnam)) {
             unlink($this->tmpnam);
