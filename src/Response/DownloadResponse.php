@@ -10,7 +10,9 @@ declare(strict_types=1);
 namespace Zend\Diactoros\Response;
 
 use Zend\Diactoros\Exception\InvalidArgumentException;
+use Zend\Diactoros\Response;
 
+use Zend\Diactoros\Stream;
 use function array_keys;
 use function array_merge;
 use function implode;
@@ -36,6 +38,44 @@ class DownloadResponse extends Response
         'expires',
         'pragma'
     ];
+
+    /**
+     * DownloadResponse constructor.
+     * @param $body
+     * @param int $status
+     * @param string $filename
+     * @param array $headers
+     */
+    public function __construct($body, int $status = 200, string $filename = '', array $headers = [])
+    {
+        $content = new Stream('php://temp', 'wb+');
+        $content->write($body);
+        $content->rewind();
+
+        $headers = $this->prepareDownloadHeaders($filename, $headers);
+
+        parent::__construct($content, $status, $headers);
+    }
+
+    /**
+     * Get download headers
+     *
+     * @param string $filename
+     * @return array
+     */
+    private function getDownloadHeaders(string $filename): array
+    {
+        $headers = [];
+        $headers['cache-control'] = ['must-revalidate'];
+        $headers['content-description'] = ['File Transfer'];
+        $headers['content-disposition'] = [sprintf('attachment; filename=%s', $filename)];
+        $headers['content-transfer-encoding'] = ['Binary'];
+        $headers['content-type'] = ['text/csv; charset=utf-8'];
+        $headers['expires'] = ['0'];
+        $headers['pragma'] = ['Public'];
+
+        return $headers;
+    }
 
     /**
      * Check if the extra headers contain any of the download headers
