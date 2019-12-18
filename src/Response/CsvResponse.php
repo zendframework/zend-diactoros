@@ -29,7 +29,6 @@ use function sprintf;
  */
 class CsvResponse extends Response
 {
-    use DownloadResponseTrait;
     use InjectContentTypeTrait;
 
     /**

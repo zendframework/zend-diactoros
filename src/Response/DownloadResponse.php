@@ -18,10 +18,10 @@ use function in_array;
 use function sprintf;
 
 /**
- * Trait DownloadResponseTrait
+ * Class DownloadResponse
  * @package Zend\Diactoros\Response
  */
-trait DownloadResponseTrait
+class DownloadResponse extends Response
 {
     /**
      * A list of header keys required to be sent with a download response
