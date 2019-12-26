@@ -83,18 +83,35 @@ EOF;
         $this->assertSame('attachment; filename=valid.csv', $response->getHeaderLine('content-disposition'));
     }
 
+    public function testCanSendResponseWithCustomContentType()
+    {
+        $body = new Stream($this->root->url() . '/files/valid.csv');
+        $response = new DownloadResponse($body, 200, 'valid.csv', 'text/csv');
+        $this->assertInstanceOf(Response::class, $response);
+        $this->assertEquals(
+            file_get_contents($this->root->url() . '/files/valid.csv'),
+            (string) $response->getBody()
+        );
+        $this->assertHasValidResponseHeaders($response, 'valid.csv', 'text/csv');
+        $this->assertSame('attachment; filename=valid.csv', $response->getHeaderLine('content-disposition'));
+    }
+
     /**
      * @param DownloadResponse $response
      * @param string $filename
+     * @param string $contentType
      */
-    private function assertHasValidResponseHeaders(DownloadResponse $response, $filename = 'download'): void
-    {
+    private function assertHasValidResponseHeaders(
+        DownloadResponse $response,
+        $filename = 'download',
+        $contentType = 'application/octet-stream'
+    ) : void {
         $requiredHeaders = [
             'cache-control' => 'must-revalidate',
             'content-description' => 'File Transfer',
             'content-disposition' => sprintf('attachment; filename=%s', $filename),
             'content-transfer-encoding' => 'Binary',
-            'content-type' => 'application/octet-stream',
+            'content-type' => $contentType,
             'expires' => '0',
             'pragma' => 'Public'
         ];
