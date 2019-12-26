@@ -13,6 +13,7 @@ use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\DownloadResponse;
+use Zend\Diactoros\Stream;
 
 class DownloadResponseTest extends TestCase
 {
@@ -47,10 +48,59 @@ EOF;
 
     public function testCanCreateResponseFromString()
     {
-        $csvString = file_get_contents($this->root->url() . '/files/valid.csv');
-        $response = new DownloadResponse($csvString);
+        $body = file_get_contents($this->root->url() . '/files/valid.csv');
+        $response = new DownloadResponse($body);
         $this->assertInstanceOf(Response::class, $response);
-        $this->assertEquals($csvString, (string) $response->getBody()->getContents());
-        $this->assertArrayHasKey('cache-control', $response->getHeaders());
+        $this->assertEquals($body, (string) $response->getBody());
+        $this->assertEquals(619, $response->getBody()->getSize());
+        $this->assertHasValidResponseHeaders($response);
+        $this->assertSame('attachment; filename=download', $response->getHeaderLine('content-disposition'));
+    }
+
+    public function testCanCreateResponseFromFilename()
+    {
+        $body = new Stream($this->root->url() . '/files/valid.csv');
+        $response = new DownloadResponse($body);
+        $this->assertInstanceOf(Response::class, $response);
+        $this->assertEquals(
+            file_get_contents($this->root->url() . '/files/valid.csv'),
+            (string) $response->getBody()
+        );
+        $this->assertHasValidResponseHeaders($response);
+        $this->assertSame('attachment; filename=download', $response->getHeaderLine('content-disposition'));
+    }
+
+    public function testCanSendResponseWithCustomFilename()
+    {
+        $body = new Stream($this->root->url() . '/files/valid.csv');
+        $response = new DownloadResponse($body, 200, 'valid.csv');
+        $this->assertInstanceOf(Response::class, $response);
+        $this->assertEquals(
+            file_get_contents($this->root->url() . '/files/valid.csv'),
+            (string) $response->getBody()
+        );
+        $this->assertHasValidResponseHeaders($response, 'valid.csv');
+        $this->assertSame('attachment; filename=valid.csv', $response->getHeaderLine('content-disposition'));
+    }
+
+    /**
+     * @param DownloadResponse $response
+     * @param string $filename
+     */
+    private function assertHasValidResponseHeaders(DownloadResponse $response, $filename = 'download'): void
+    {
+        $requiredHeaders = [
+            'cache-control' => 'must-revalidate',
+            'content-description' => 'File Transfer',
+            'content-disposition' => sprintf('attachment; filename=%s', $filename),
+            'content-transfer-encoding' => 'Binary',
+            'content-type' => 'application/octet-stream',
+            'expires' => '0',
+            'pragma' => 'Public'
+        ];
+        foreach ($requiredHeaders as $header => $value) {
+            $this->assertTrue($response->hasHeader($header));
+            $this->assertSame($value, $response->getHeaderLine($header));
+        }
     }
 }

@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Zend\Diactoros\Response;
 
+use Psr\Http\Message\StreamInterface;
 use Zend\Diactoros\Exception\InvalidArgumentException;
 use Zend\Diactoros\Response;
 
@@ -41,20 +42,20 @@ class DownloadResponse extends Response
 
     /**
      * DownloadResponse constructor.
-     * @param $body
-     * @param int $status
-     * @param string $filename
+     * @param string|StreamInterface $body String or stream for the message body.
+     * @param int $status Integer status code for the response; 200 by default.
+     * @param string $filename The name of the file to be downloaded
+     * @param array $headers Array of headers to use at initialization.
+     * @throws InvalidArgumentException if $text is neither a string or stream.
      * @param array $headers
      */
-    public function __construct($body, int $status = 200, string $filename = '', array $headers = [])
+    public function __construct($body, int $status = 200, string $filename = 'download', array $headers = [])
     {
-        $content = new Stream('php://temp', 'wb+');
-        $content->write($body);
-        $content->rewind();
-
-        $headers = $this->prepareDownloadHeaders($filename, $headers);
-
-        parent::__construct($content, $status, $headers);
+        parent::__construct(
+            $this->createBody($body),
+            $status,
+            $this->prepareDownloadHeaders($filename, $headers)
+        );
     }
 
     /**
@@ -66,13 +67,13 @@ class DownloadResponse extends Response
     private function getDownloadHeaders(string $filename): array
     {
         $headers = [];
-        $headers['cache-control'] = ['must-revalidate'];
-        $headers['content-description'] = ['File Transfer'];
-        $headers['content-disposition'] = [sprintf('attachment; filename=%s', $filename)];
-        $headers['content-transfer-encoding'] = ['Binary'];
-        $headers['content-type'] = ['text/csv; charset=utf-8'];
-        $headers['expires'] = ['0'];
-        $headers['pragma'] = ['Public'];
+        $headers['cache-control'] = 'must-revalidate';
+        $headers['content-description'] = 'File Transfer';
+        $headers['content-disposition'] = sprintf('attachment; filename=%s', $filename);
+        $headers['content-transfer-encoding'] = 'Binary';
+        $headers['content-type'] = 'application/octet-stream';
+        $headers['expires'] = '0';
+        $headers['pragma'] = 'Public';
 
         return $headers;
     }
@@ -119,5 +120,30 @@ class DownloadResponse extends Response
         }
 
         return array_merge($headers, $this->getDownloadHeaders($filename));
+    }
+
+    /**
+     * @param string|StreamInterface $content
+     * @return StreamInterface
+     * @throws InvalidArgumentException if $body is neither a string nor a stream
+     */
+    private function createBody($content): StreamInterface
+    {
+        if ($content instanceof StreamInterface) {
+            return $content;
+        }
+
+        if (!is_string($content)) {
+            throw new InvalidArgumentException(sprintf(
+                'Invalid content (%s) provided to %s',
+                (is_object($content) ? get_class($content) : gettype($content)),
+                __CLASS__
+            ));
+        }
+
+        $body = new Stream('php://temp', 'wb+');
+        $body->write($content);
+        $body->rewind();
+        return $body;
     }
 }
