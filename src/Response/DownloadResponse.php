@@ -156,7 +156,7 @@ class DownloadResponse extends Response
     /**
      * @param string|StreamInterface $content
      * @return StreamInterface
-     * @throws InvalidArgumentException if $body is neither a string nor a stream
+     * @throws InvalidArgumentException if $body is neither a string nor a Stream
      */
     private function createBody($content): StreamInterface
     {
