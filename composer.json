@@ -35,6 +35,7 @@
     "ext-dom": "*",
     "ext-libxml": "*",
     "http-interop/http-factory-tests": "^0.5.0",
+    "mikey179/vfsstream": "^1.6",
     "php-http/psr7-integration-tests": "dev-master",
     "phpunit/phpunit": "^7.5.18",
     "zendframework/zend-coding-standard": "~1.0.0"

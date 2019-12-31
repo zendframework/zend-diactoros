@@ -132,6 +132,34 @@ $response = new Zend\Diactoros\Response\JsonResponse(
 );
 ```
 
+## CSV Responses
+
+`Zend\Diactoros\Response\CsvResponse` creates a plain text response. It sets the
+`Content-Type` header to `text/csv` by default:
+
+```php
+$csvContent = <<<EOF
+"first","last","email","dob",
+"john","citizen","john.citizen@afakeemailaddress.com","01/01/1970",
+EOF;
+
+$response = new Zend\Diactoros\Response\CsvResponse($csvContent);
+```
+
+The constructor accepts three additional arguments:
+
+- A status code
+- A filename, if the response is to be sent as a download
+- An array of supplemental headers
+
+```php
+$response = new Zend\Diactoros\Response\TextResponse(
+    $text,
+    200,
+    'monthly-sports-report.csv',
+    ['X-Generated-By' => ['zend-diactoros']]
+);
+
 ## Empty Responses
 
 Many API actions allow returning empty responses:
