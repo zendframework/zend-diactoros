@@ -14,6 +14,11 @@ use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\StreamInterface;
 use Zend\Diactoros\Response\CsvResponse;
 
+/**
+ * Class CsvResponseTest
+ * @package ZendTest\Diactoros\Response
+ * @coversDefaultClass \Zend\Diactoros\Response\CsvResponse
+ */
 class CsvResponseTest extends TestCase
 {
     const VALID_CSV_BODY = <<<EOF
@@ -35,56 +40,6 @@ EOF;
         $response = new CsvResponse(self::VALID_CSV_BODY, $status);
         $this->assertSame(404, $response->getStatusCode());
         $this->assertSame(self::VALID_CSV_BODY, (string) $response->getBody());
-    }
-
-    public function testConstructorAllowsSendingDownloadResponse()
-    {
-        $status = 404;
-        $filename = 'download.csv';
-
-        $response = new CsvResponse(self::VALID_CSV_BODY, $status, $filename);
-        $this->assertSame(
-            [
-                'cache-control' => ['must-revalidate'],
-                'content-description' => ['File Transfer'],
-                'content-disposition' => [sprintf('attachment; filename=%s', basename($filename))],
-                'content-transfer-encoding' => ['Binary'],
-                'content-type' => ['text/csv; charset=utf-8'],
-                'expires' => ['0'],
-                'pragma' => ['Public'],
-            ],
-            $response->getHeaders()
-        );
-        $this->assertSame(404, $response->getStatusCode());
-        $this->assertSame(self::VALID_CSV_BODY, (string) $response->getBody());
-    }
-
-    /**
-     * @dataProvider invalidHeadersWhenDownloading
-     */
-    public function testConstructorDoesNotAllowsOverridingDownloadHeadersWhenSendingDownloadResponse($header, $value)
-    {
-        $status = 404;
-        $filename = 'download.csv';
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(
-            'Cannot override download headers (cache-control, content-description, content-disposition, content-transfer-encoding, expires, pragma) when download response is being sent'
-        );
-
-        new CsvResponse(self::VALID_CSV_BODY, $status, $filename, [$header => [$value]]);
-
-    }
-
-    public function invalidHeadersWhenDownloading()
-    {
-        return [
-            ['cache-control', 'must-revalidate',],
-            ['content-description', 'File Transfer',],
-            ['content-disposition', 'upload.csv',],
-            ['content-transfer-encoding', 'Binary',],
-            ['expires', '0',],
-            ['pragma', 'Public',]
-        ];
     }
 
     public function testConstructorAllowsPassingHeaders()
