@@ -4,10 +4,6 @@
 >
 > This repository has moved to laminas/laminas-diactoros.
 
-> ## Repository abandoned 2019-12-31
->
-> This repository has moved to laminas/laminas-diactoros.
-
 Master:
 [![Build status][Master image]][Master]
 [![Coverage Status][Master coverage image]][Master coverage]
