@@ -2,7 +2,7 @@
 
 > ## Repository abandoned 2019-12-31
 >
-> This repository has moved to laminas/laminas-diactoros.
+> This repository has moved to [laminas/laminas-diactoros](https://github.com/laminas/laminas-diactoros).
 
 Master:
 [![Build status][Master image]][Master]
