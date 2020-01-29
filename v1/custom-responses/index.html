@@ -7,12 +7,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="PSR-7 HTTP message implementations">  
-    <link rel="canonical" href="https://docs.zendframework.com/zend-diactoros/v1/custom-responses/">
+    <link rel="canonical" href="https://docs.zendframework.com/v1/custom-responses/">
     <link rel="shortcut icon" href="../../img/favicon.ico">
 
     <title>Custom Responses - zend-diactoros - Zend Framework Docs</title>
 
-    <link rel="stylesheet" href="../../css/styles-5cfabd53ee.css">
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body id="page-top">
 
@@ -231,9 +231,9 @@
     <div class="laminas-announcement">
     <div class="container">
         <div class="row">
-            <div class="col-xs-12">
-                Zend Framework transitions to the Linux Foundation. <a href="https://getlaminas.org">Learn More.</a>
-            </div>
+            <div class="col-xs-12"><strong>
+                This package has moved. Visit its replacement, <a href="https://docs.laminas.dev/laminas-diactoros/">laminas/laminas-diactoros.</a>
+            </strong></div>
         </div>
     </div>
 </div>
@@ -337,10 +337,12 @@
     <h1 id="custom-responses">Custom Responses</h1>
 <p>When developing server-side applications, the message type you're most likely to create manually is
 the response. In such cases, the standard signature can be an obstacle to usability. Let's review:</p>
-<pre class=codehilite><code class=language-php>class Response implements ResponseInterface
+<pre><code class="language-php">class Response implements ResponseInterface
 {
     public function __construct($body = 'php://temp', $status = 200, array $headers = []);
-}</code></pre>
+}
+</code></pre>
+
 <p>Some standard use cases, however, make this un-wieldy:</p>
 <ul>
 <li>Returning a response containing HTML; in this case, you likely want to provide the HTML to the
@@ -356,17 +358,25 @@ common tasks.</p>
 <h2 id="text-responses">Text Responses</h2>
 <p><code>Zend\Diactoros\Response\TextResponse</code> creates a plain text response. It sets the
 <code>Content-Type</code> header to <code>text/plain</code> by default:</p>
-<pre class=codehilite><code class=language-php>$response = new TextResponse('Hello world!');</code></pre>
+<pre><code class="language-php">$response = new TextResponse('Hello world!');
+</code></pre>
+
 <p>The constructor accepts two additional arguments: a status code and an array of headers.</p>
-<pre class=codehilite><code class=language-php>$response = new TextResponse($text, 200, ['Content-Type' =&gt; ['text/csv']]);</code></pre>
+<pre><code class="language-php">$response = new TextResponse($text, 200, ['Content-Type' =&gt; ['text/csv']]);
+</code></pre>
+
 <h2 id="html-responses">HTML Responses</h2>
 <p><code>Zend\Diactoros\Response\HtmlResponse</code> allows specifying HTML as a payload, and sets the
 <code>Content-Type</code> header to <code>text/html</code> by default:</p>
-<pre class=codehilite><code class=language-php>$response = new HtmlResponse($htmlContent);</code></pre>
+<pre><code class="language-php">$response = new HtmlResponse($htmlContent);
+</code></pre>
+
 <p>The constructor allows passing two additional arguments: a status code, and an array of headers.
 These allow you to further seed the initial state of the response, as well as to override the
 <code>Content-Type</code> header if desired:</p>
-<pre class=codehilite><code class=language-php>$response = new HtmlResponse($htmlContent, 200, [ 'Content-Type' =&gt; ['application/xhtml+xml']]);</code></pre>
+<pre><code class="language-php">$response = new HtmlResponse($htmlContent, 200, [ 'Content-Type' =&gt; ['application/xhtml+xml']]);
+</code></pre>
+
 <p>Headers must be in the same format as you would provide to the
 <a href="../api/#response-message">Response constructor</a>.</p>
 <h2 id="xml-responses">XML Responses</h2>
@@ -375,33 +385,43 @@ These allow you to further seed the initial state of the response, as well as to
 </blockquote>
 <p><code>Zend\Diactoros\Response\XmlResponse</code> allows specifying XML as a payload, and sets the
 <code>Content-Type</code> header to <code>application/xml</code> by default:</p>
-<pre class=codehilite><code class=language-php>$response = new XmlResponse($xml);</code></pre>
+<pre><code class="language-php">$response = new XmlResponse($xml);
+</code></pre>
+
 <p>The constructor allows passing two additional arguments: a status code, and an array of headers.
 These allow you to further seed the initial state of the response, as well as to override the
 <code>Content-Type</code> header if desired:</p>
-<pre class=codehilite><code class=language-php>$response = new XmlResponse($xml, 200, [ 'Content-Type' =&gt; ['application/hal+xml']]);</code></pre>
+<pre><code class="language-php">$response = new XmlResponse($xml, 200, [ 'Content-Type' =&gt; ['application/hal+xml']]);
+</code></pre>
+
 <p>Headers must be in the same format as you would provide to the
 <a href="../api/#response-message">Response constructor</a>.</p>
 <h2 id="json-responses">JSON Responses</h2>
 <p><code>Zend\Diactoros\Response\JsonResponse</code> accepts a data structure to convert to JSON, and sets
 the <code>Content-Type</code> header to <code>application/json</code>:</p>
-<pre class=codehilite><code class=language-php>$response = new JsonResponse($data);</code></pre>
+<pre><code class="language-php">$response = new JsonResponse($data);
+</code></pre>
+
 <p>If providing an object, we recommend implementing <a href="http://php.net/JsonSerializable">JsonSerializable</a>
 to ensure your object is correctly serialized.</p>
 <p>Just like the <code>HtmlResponse</code>, the <code>JsonResponse</code> allows passing two additional arguments — a
 status code, and an array of headers — to allow you to further seed the initial state of the
 response:</p>
-<pre class=codehilite><code class=language-php>$response = new JsonResponse($data, 200, [ 'Content-Type' =&gt; ['application/hal+json']]);</code></pre>
+<pre><code class="language-php">$response = new JsonResponse($data, 200, [ 'Content-Type' =&gt; ['application/hal+json']]);
+</code></pre>
+
 <p>Finally, <code>JsonResponse</code> allows a fourth optional argument, the flags to provide to <code>json_encode()</code>.
 By default, these are set to <code>JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT</code> (integer
 15), providing <a href="http://tools.ietf.org/html/rfc4627">RFC 4627</a> compliant JSON capable of embedding in
 HTML. If you want to specify a different set of flags, use the fourth constructor argument:</p>
-<pre class=codehilite><code class=language-php>$response = new JsonResponse(
+<pre><code class="language-php">$response = new JsonResponse(
     $data,
     200,
     [],
     JSON_PRETTY_PRINT | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT
-);</code></pre>
+);
+</code></pre>
+
 <h2 id="empty-responses">Empty Responses</h2>
 <p>Many API actions allow returning empty responses:</p>
 <ul>
@@ -415,13 +435,15 @@ HTML. If you want to specify a different set of flags, use the fourth constructo
 <p><code>Zend\Diactoros\Response\EmptyResponse</code> is a <code>Zend\Diactoros\Response</code> extension that, by default,
 returns an empty response with a 204 status. Its constructor allows passing the status and headers
 only:</p>
-<pre class=codehilite><code class=language-php>class EmptyResponse extends Response
+<pre><code class="language-php">class EmptyResponse extends Response
 {
     public function __construct($status = 204, array $headers = []);
-}</code></pre>
+}
+</code></pre>
+
 <p>An empty, read-only body is injected at instantiation, ensuring no write operations are possible on
 the response. Usage is typically one of the following forms:</p>
-<pre class=codehilite><code class=language-php>// Basic 204 response:
+<pre><code class="language-php">// Basic 204 response:
 $response = new EmptyResponse();
 
 // 201 response with location header:
@@ -430,18 +452,22 @@ $response = new EmptyResponse(201, [
 ]);
 
 // Alternately, set the header after instantiation:
-$response = ( new EmptyResponse(201) )-&gt;withHeader('Location', $url);</code></pre>
+$response = ( new EmptyResponse(201) )-&gt;withHeader('Location', $url);
+</code></pre>
+
 <h2 id="redirects">Redirects</h2>
 <p><code>Zend\Diactoros\Response\RedirectResponse</code> is a <code>Zend\Diactoros\Response</code> extension for producing
 redirect responses. The only required argument is a URI, which may be provided as either a string or
 <code>Psr\Http\Message\UriInterface</code> instance. By default, the status 302 is used, and no other headers
 are produced; you may alter these via the additional optional arguments:</p>
-<pre class=codehilite><code class=language-php>class RedirectResponse extends Response
+<pre><code class="language-php">class RedirectResponse extends Response
 {
     public function __construct($uri, $status = 302, array $headers = []);
-}</code></pre>
+}
+</code></pre>
+
 <p>Typical usage is:</p>
-<pre class=codehilite><code class=language-php>// 302 redirect:
+<pre><code class="language-php">// 302 redirect:
 $response = new RedirectResponse('/user/login');
 
 // 301 redirect:
@@ -449,7 +475,9 @@ $response = new RedirectResponse('/user/login', 301);
 
 // using a URI instance (e.g., by altering the request URI instance)
 $uri = $request-&gt;getUri();
-$response = new RedirectResponse($uri-&gt;withPath('/login'));</code></pre>
+$response = new RedirectResponse($uri-&gt;withPath('/login'));
+</code></pre>
+
 <h2 id="creating-custom-responses">Creating custom Responses</h2>
 <p>PHP allows constructor overloading. What this means is that constructors of extending classes can
 define completely different argument sets without conflicting with the parent implementation.
@@ -457,7 +485,7 @@ Considering that most custom response types do not need to change internal funct
 instead focus on user experience (i.e., simplifying instantiation), this fact can be leveraged to
 create your custom types.</p>
 <p>The general pattern will be something like this:</p>
-<pre class=codehilite><code class=language-php>class MyCustomResponse extends Response
+<pre><code class="language-php">class MyCustomResponse extends Response
 {
     public function __construct($data, $status = 200, array $headers = [])
     {
@@ -466,14 +494,16 @@ create your custom types.</p>
 
         parent::__construct($body, $status, $headers);
     }
-}</code></pre>
+}
+</code></pre>
+
 <p>Note the call to <code>parent::__construct()</code>. This is particularly relevant, as the implementation at
 the time of writing has all class properties marked as private, making them inaccessible to
 extensions; this is done to protect encapsulation and ensure consistency of operations between
 instances.</p>
 <p>If you don't want to go the extension route (perhaps you don't want another <code>ResponseInterface</code>
 implementation within your object graph) you can instead create a factory. As an example:</p>
-<pre class=codehilite><code class=language-php>$plainTextResponse = function ($text, $status = 200, array $headers = []) {
+<pre><code class="language-php">$plainTextResponse = function ($text, $status = 200, array $headers = []) {
     $response = new Response('php://temp', $status, $headers);
     $response-&gt;getBody()-&gt;write($text);
     if (! $response-&gt;hasHeader('Content-Type')) {
@@ -482,7 +512,9 @@ implementation within your object graph) you can instead create a factory. As an
     return $response;
 };
 
-$response = $plainTextResponse('Hello, world!');</code></pre>
+$response = $plainTextResponse('Hello, world!');
+</code></pre>
+
 <p>We recommend following the semantic of providing the status and headers as the final two arguments
 for any factory or custom response extensions.</p>
 
@@ -648,7 +680,7 @@ for any factory or custom response extensions.</p>
             
             <div class="col-md-9">
                 <h4 class="footer__headline">Copyright</h4>
-                <p>&copy; 2006-2019 by <a href="https://www.zend.com/">Zend</a>, a <a href="https://www.roguewave.com/">Rogue Wave Company</a>.</p>
+                <p>&copy; 2006-2020 by <a href="https://www.zend.com/">Zend</a> by <a href="https://www.perforce.com/">Perforce</a>.</p>
             </div>
 
             
@@ -656,10 +688,10 @@ for any factory or custom response extensions.</p>
                 <h4 class="footer__headline">Support</h4>
                 <ul class="support__list">
                     <li class="support__list-item">
-                        <a href="https://discourse.zendframework.com" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
+                        <a href="https://discourse.laminas.dev" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
                     </li>
                     <li class="support__list-item">
-                        <a href="https://zendframework-slack.herokuapp.com" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
+                        <a href="https://laminas.dev/chat/" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
                     </li>
                     <li class="support__list-item">
                         <a href="https://github.com/zendframework" class="support__link" title="Github"><i class="fa fa-github"></i></a>
@@ -667,27 +699,28 @@ for any factory or custom response extensions.</p>
                     <li class="support__list-item">
                         <a href="https://twitter.com/zfdevteam" class="support__link" title="Twitter"><i class="fa fa-twitter"></i></a>
                     </li>
-                    <li class="support__list-item">
-                        <a href="https://tinyletter.com/mwopzend" class="support__link" title="Newsletter"><i class="fa fa-envelope"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/blog/feed-rss.xml" class="support__link" title="Blog feed"><i class="fa fa-rss"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/security/feed" class="support__link" title="Security feed"><i class="fa fa-rss-square"></i></a>
-                    </li>
                 </ul>
             </div>
         </div>
     </div>
 </footer>
 
+<nav class="cookie-bar navbar navbar-fixed-bottom navbar-default hidden">
+    <div class="container">
+        <p class="navbar-text">
+            We use cookies to allow you to dismiss dialogs such as the Laminas
+            Project notification.
+        </p>
+        <button type="button" class="cookie-button btn btn-default navbar-btn">Allow Cookies</button>
+    </div>
+</nav>
+
     <script>
         var base_url = '../..',
             siteName = 'zend-diactoros';
     </script>
-    <script src="../../js/scripts-8d7ae56abf.js"></script>
-        <script src="../../search/main.js"></script>
+    <script src="/js/scripts.js"></script>
+    <script src="../../search/main.js"></script>
 
     
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">

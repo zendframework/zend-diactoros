@@ -7,12 +7,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="PSR-7 HTTP message implementations">  
-    <link rel="canonical" href="https://docs.zendframework.com/zend-diactoros/v2/api/">
+    <link rel="canonical" href="https://docs.zendframework.com/v2/api/">
     <link rel="shortcut icon" href="../../img/favicon.ico">
 
     <title>API - zend-diactoros - Zend Framework Docs</title>
 
-    <link rel="stylesheet" href="../../css/styles-5cfabd53ee.css">
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body id="page-top">
 
@@ -246,9 +246,9 @@
     <div class="laminas-announcement">
     <div class="container">
         <div class="row">
-            <div class="col-xs-12">
-                Zend Framework transitions to the Linux Foundation. <a href="https://getlaminas.org">Learn More.</a>
-            </div>
+            <div class="col-xs-12"><strong>
+                This package has moved. Visit its replacement, <a href="https://docs.laminas.dev/laminas-diactoros/">laminas/laminas-diactoros.</a>
+            </strong></div>
         </div>
     </div>
 </div>
@@ -345,7 +345,7 @@
 <h2 id="request-message">Request Message</h2>
 <p><code>Zend\Diactoros\Request</code> implements <a href="https://github.com/php-fig/http-message/blob/master/src/RequestInterface.php"><code>Psr\Http\Message\RequestInterface</code></a>,
 and is intended for client-side requests. It includes the following methods:</p>
-<pre class=codehilite><code class=language-php>class Request
+<pre><code class="language-php">class Request
 {
     public function __construct(
         $uri = null,
@@ -355,7 +355,9 @@ and is intended for client-side requests. It includes the following methods:</p>
     );
 
     // See psr/http-message's RequestInterface for other methods
-}</code></pre>
+}
+</code></pre>
+
 <p>Requests are immutable. Any methods that would change state &mdash; those prefixed with <code>with</code> and
 <code>without</code> &mdash; all return a new instance with the changes requested.</p>
 <h2 id="serverrequest-message">ServerRequest Message</h2>
@@ -363,7 +365,7 @@ and is intended for client-side requests. It includes the following methods:</p>
 <a href="https://github.com/php-fig/http-message/blob/master/src/ServerRequestInterface.php"><code>Psr\Http\Message\ServerRequestInterface</code></a>,
 which provides access to the elements of an HTTP request, as well as uniform access to the various
 elements of incoming data. The methods included are:</p>
-<pre class=codehilite><code class=language-php>class ServerRequest
+<pre><code class="language-php">class ServerRequest
 {
     public function __construct(
         array $serverParams = [],
@@ -375,7 +377,9 @@ elements of incoming data. The methods included are:</p>
     );
 
     // See psr/http-message's ServerRequestInterface for other methods.
-}</code></pre>
+}
+</code></pre>
+
 <p>The <code>ServerRequest</code> is immutable. Any methods that would change state &mdash; those prefixed with <code>with</code>
 and <code>without</code> &mdash; all return a new instance with the changes requested. Server parameters are
 considered completely immutable, however, as they cannot be recalculated, and, rather, is a source
@@ -385,7 +389,7 @@ for other values.</p>
 <a href="https://github.com/php-fig/http-message/blob/master/src/ResponseInterface.php"><code>Psr\Http\Message\ResponseInterface</code></a>,
 an object to be used to aggregate response information for both HTTP clients and server-side
 applications, including headers and message body content. It includes the following:</p>
-<pre class=codehilite><code class=language-php>class Response
+<pre><code class="language-php">class Response
 {
     public function __construct(
         $body = 'php://memory',
@@ -394,34 +398,40 @@ applications, including headers and message body content. It includes the follow
     );
 
     // See psr/http-message's ResponseInterface for other methods
-}</code></pre>
+}
+</code></pre>
+
 <p>Like the <code>Request</code> and <code>ServerRequest</code>, responses are immutable. Any methods that would change state
 &mdash; those prefixed with <code>with</code> and <code>without</code> &mdash; all return a new instance with the changes requested.</p>
 <h3>HtmlResponse and JsonResponse</h3>
 <p>The most common use case in server-side applications for generating responses is to provide a string
 to use for the response, typically HTML or data to serialize as JSON.  <code>Zend\Diactoros\Response\HtmlResponse</code> and <code>Zend\Diactoros\Response\JsonResponse</code> exist to facilitate these use cases:</p>
-<pre class=codehilite><code class=language-php>$htmlResponse = new HtmlResponse($html);
+<pre><code class="language-php">$htmlResponse = new HtmlResponse($html);
 
-$jsonResponse = new JsonResponse($data);</code></pre>
+$jsonResponse = new JsonResponse($data);
+</code></pre>
+
 <p>In the first example, you will receive a response with a stream containing the HTML; additionally,
 the <code>Content-Type</code> header will be set to <code>text/html</code>. In the second case, the stream will contain a
 stream containing the JSON-serialized <code>$data</code>, and have a <code>Content-Type</code> header set to
 <code>application/json</code>.</p>
 <p>Both objects allow passing the HTTP status, as well as any headers you want to specify,
 including the <code>Content-Type</code> header:</p>
-<pre class=codehilite><code class=language-php>$htmlResponse = new HtmlResponse($html, 404, [
+<pre><code class="language-php">$htmlResponse = new HtmlResponse($html, 404, [
     'Content-Type' =&gt; [ 'application/xhtml+xml' ],
 ]);
 
 $jsonResponse = new JsonResponse($data, 422, [
     'Content-Type' =&gt; [ 'application/problem+json' ],
-]);</code></pre>
+]);
+</code></pre>
+
 <h2 id="serverrequestfactory">ServerRequestFactory</h2>
 <p>This static class can be used to marshal a <code>ServerRequest</code> instance from the PHP environment. The
 primary entry point is <code>Zend\Diactoros\ServerRequestFactory::fromGlobals(array $server, array
 $query, array $body, array $cookies, array $files)</code>. This method will create a new <code>ServerRequest</code>
 instance with the data provided. Examples of usage are:</p>
-<pre class=codehilite><code class=language-php>// Returns new ServerRequest instance, using values from superglobals:
+<pre><code class="language-php">// Returns new ServerRequest instance, using values from superglobals:
 $request = ServerRequestFactory::fromGlobals();
 
 // or
@@ -434,7 +444,9 @@ $request = RequestFactory::fromGlobals(
     $_POST,
     $_COOKIE,
     $_FILES
-);</code></pre>
+);
+</code></pre>
+
 <h3>ServerRequestFactory Helper Functions</h3>
 <p>In order to create the various artifacts required by a <code>ServerRequest</code> instance,
 Diactoros also provides a number of functions under the <code>Zend\Diactoros</code>
@@ -462,12 +474,14 @@ and even the <code>Cookie</code> header. These include:</p>
 <a href="https://github.com/php-fig/http-message/blob/master/src/UriInterface.php"><code>Psr\Http\Message\UriInterface</code></a>,
 and models and validates URIs. It implements <code>__toString()</code>, allowing it to be represented as a
 string and <code>echo()</code>'d directly. The following methods are pertinent:</p>
-<pre class=codehilite><code class=language-php>class Uri
+<pre><code class="language-php">class Uri
 {
     public function __construct($uri = '');
 
     // See psr/http-message's UriInterface for other methods.
-}</code></pre>
+}
+</code></pre>
+
 <p>Like the various message objects, URIs are immutable. Any methods that would
 change state &mdash; those
 prefixed with <code>with</code> and <code>without</code> &mdash; all return a new instance with the changes requested.</p>
@@ -669,7 +683,7 @@ as a stream or moving it to a filesystem location.</p>
             
             <div class="col-md-9">
                 <h4 class="footer__headline">Copyright</h4>
-                <p>&copy; 2006-2019 by <a href="https://www.zend.com/">Zend</a>, a <a href="https://www.roguewave.com/">Rogue Wave Company</a>.</p>
+                <p>&copy; 2006-2020 by <a href="https://www.zend.com/">Zend</a> by <a href="https://www.perforce.com/">Perforce</a>.</p>
             </div>
 
             
@@ -677,10 +691,10 @@ as a stream or moving it to a filesystem location.</p>
                 <h4 class="footer__headline">Support</h4>
                 <ul class="support__list">
                     <li class="support__list-item">
-                        <a href="https://discourse.zendframework.com" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
+                        <a href="https://discourse.laminas.dev" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
                     </li>
                     <li class="support__list-item">
-                        <a href="https://zendframework-slack.herokuapp.com" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
+                        <a href="https://laminas.dev/chat/" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
                     </li>
                     <li class="support__list-item">
                         <a href="https://github.com/zendframework" class="support__link" title="Github"><i class="fa fa-github"></i></a>
@@ -688,27 +702,28 @@ as a stream or moving it to a filesystem location.</p>
                     <li class="support__list-item">
                         <a href="https://twitter.com/zfdevteam" class="support__link" title="Twitter"><i class="fa fa-twitter"></i></a>
                     </li>
-                    <li class="support__list-item">
-                        <a href="https://tinyletter.com/mwopzend" class="support__link" title="Newsletter"><i class="fa fa-envelope"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/blog/feed-rss.xml" class="support__link" title="Blog feed"><i class="fa fa-rss"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/security/feed" class="support__link" title="Security feed"><i class="fa fa-rss-square"></i></a>
-                    </li>
                 </ul>
             </div>
         </div>
     </div>
 </footer>
 
+<nav class="cookie-bar navbar navbar-fixed-bottom navbar-default hidden">
+    <div class="container">
+        <p class="navbar-text">
+            We use cookies to allow you to dismiss dialogs such as the Laminas
+            Project notification.
+        </p>
+        <button type="button" class="cookie-button btn btn-default navbar-btn">Allow Cookies</button>
+    </div>
+</nav>
+
     <script>
         var base_url = '../..',
             siteName = 'zend-diactoros';
     </script>
-    <script src="../../js/scripts-8d7ae56abf.js"></script>
-        <script src="../../search/main.js"></script>
+    <script src="/js/scripts.js"></script>
+    <script src="../../search/main.js"></script>
 
     
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">

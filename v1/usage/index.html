@@ -7,12 +7,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="PSR-7 HTTP message implementations">  
-    <link rel="canonical" href="https://docs.zendframework.com/zend-diactoros/v1/usage/">
+    <link rel="canonical" href="https://docs.zendframework.com/v1/usage/">
     <link rel="shortcut icon" href="../../img/favicon.ico">
 
     <title>Usage - zend-diactoros - Zend Framework Docs</title>
 
-    <link rel="stylesheet" href="../../css/styles-5cfabd53ee.css">
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body id="page-top">
 
@@ -231,9 +231,9 @@
     <div class="laminas-announcement">
     <div class="container">
         <div class="row">
-            <div class="col-xs-12">
-                Zend Framework transitions to the Linux Foundation. <a href="https://getlaminas.org">Learn More.</a>
-            </div>
+            <div class="col-xs-12"><strong>
+                This package has moved. Visit its replacement, <a href="https://docs.laminas.dev/laminas-diactoros/">laminas/laminas-diactoros.</a>
+            </strong></div>
         </div>
     </div>
 </div>
@@ -316,7 +316,7 @@ return a <code>Response</code> instance.</p>
 <em>populate</em> the request, and then <em>introspect</em> the response.  Both requests and responses are
 immutable; if you make changes &mdash; e.g., by calling setter methods &mdash; you must capture the return
 value, as it is a new instance.</p>
-<pre class=codehilite><code class=language-php>// Create a request
+<pre><code class="language-php">// Create a request
 $request = (new Zend\Diactoros\Request())
     -&gt;withUri(new Zend\Diactoros\Uri('http://example.com'))
     -&gt;withMethod('PATCH')
@@ -349,7 +349,9 @@ printf(&quot;Headers:\n&quot;);
 foreach ($response-&gt;getHeaders() as $header =&gt; $values) {
     printf(&quot;    %s: %s\n&quot;, $header, implode(', ', $values));
 }
-printf(&quot;Message:\n%s\n&quot;, $response-&gt;getBody());</code></pre>
+printf(&quot;Message:\n%s\n&quot;, $response-&gt;getBody());
+</code></pre>
+
 <p>(Note: <code>zend-diactoros</code> does NOT ship with a client implementation; the above is just an
 illustration of a possible implementation.)</p>
 <h2 id="server-side-applications">Server-Side Applications</h2>
@@ -369,13 +371,15 @@ that information into a request instance.</p>
 </ul>
 <p>The method will then return a <code>Zend\Diactoros\ServerRequest</code> instance. If any argument is omitted,
 the associated superglobal will be used.</p>
-<pre class=codehilite><code class=language-php>$request = Zend\Diactoros\ServerRequestFactory::fromGlobals(
+<pre><code class="language-php">$request = Zend\Diactoros\ServerRequestFactory::fromGlobals(
     $_SERVER,
     $_GET,
     $_POST,
     $_COOKIE,
     $_FILES
-);</code></pre>
+);
+</code></pre>
+
 <p>When no cookie array is supplied, <code>fromGlobals</code> will first try to parse the supplied <code>cookie</code> header
 before falling back to the <code>$_COOKIE</code> superglobal. This is done because PHP has some legacy handling
 for request parameters which were then registered as global variables. Due to this, cookies with a period
@@ -386,7 +390,7 @@ agent.</p>
 <p>Use the response object to add headers and provide content for the response.  Writing to the body
 does not create a state change in the response, so it can be done without capturing the return
 value. Manipulating headers does, however.</p>
-<pre class=codehilite><code class=language-php>$response = new Zend\Diactoros\Response();
+<pre><code class="language-php">$response = new Zend\Diactoros\Response();
 
 // Write to the response body:
 $response-&gt;getBody()-&gt;write(&quot;some content\n&quot;);
@@ -398,7 +402,9 @@ $response-&gt;getBody()-&gt;write(&quot;more content\n&quot;); // now &quot;some
 // Note: headers do not need to be added before data is written to the body!
 $response = $response
     -&gt;withHeader('Content-Type', 'text/plain')
-    -&gt;withAddedHeader('X-Show-Something', 'something');</code></pre>
+    -&gt;withAddedHeader('X-Show-Something', 'something');
+</code></pre>
+
 <h3>"Serving" an Application</h3>
 <blockquote>
 <h3>Deprecated</h3>
@@ -411,7 +417,7 @@ instead.</p>
 callback, passing it an <code>ServerRequest</code>, an <code>Response</code>, and optionally a callback to use for
 incomplete/unhandled requests.</p>
 <p>You can create a server in one of three ways:</p>
-<pre class=codehilite><code class=language-php>// Direct instantiation, with a callback handler, request, and response
+<pre><code class="language-php">// Direct instantiation, with a callback handler, request, and response
 $server = new Zend\Diactoros\Server(
     function ($request, $response, $done) {
         $response-&gt;getBody()-&gt;write(&quot;Hello world!&quot;);
@@ -438,7 +444,9 @@ $server = Zend\Diactoros\Server::createServerFromRequest(
       $response-&gt;getBody()-&gt;write(&quot;Hello world!&quot;);
   },
   $request
-);</code></pre>
+);
+</code></pre>
+
 <p>Server callbacks can expect up to three arguments, in the following order:</p>
 <ul>
 <li><code>$request</code> - the request object</li>
@@ -446,15 +454,19 @@ $server = Zend\Diactoros\Server::createServerFromRequest(
 <li><code>$done</code> - an optional callback to call when complete</li>
 </ul>
 <p>Once you have your server instance, you must instruct it to listen:</p>
-<pre class=codehilite><code class=language-php>$server-&gt;listen();</code></pre>
+<pre><code class="language-php">$server-&gt;listen();
+</code></pre>
+
 <p>At this time, you can optionally provide a callback to <code>listen()</code>; this will be passed to the
 handler as the third argument (<code>$done</code>):</p>
-<pre class=codehilite><code class=language-php>$server-&gt;listen(function ($request, $response, $error = null) {
+<pre><code class="language-php">$server-&gt;listen(function ($request, $response, $error = null) {
     if (! $error) {
         return;
     }
     // do something with the error...
-});</code></pre>
+});
+</code></pre>
+
 <p>Typically, the <code>listen</code> callback will be an error handler, and can expect to receive the request,
 response, and error as its arguments (though the error may be null).</p>
 
@@ -620,7 +632,7 @@ response, and error as its arguments (though the error may be null).</p>
             
             <div class="col-md-9">
                 <h4 class="footer__headline">Copyright</h4>
-                <p>&copy; 2006-2019 by <a href="https://www.zend.com/">Zend</a>, a <a href="https://www.roguewave.com/">Rogue Wave Company</a>.</p>
+                <p>&copy; 2006-2020 by <a href="https://www.zend.com/">Zend</a> by <a href="https://www.perforce.com/">Perforce</a>.</p>
             </div>
 
             
@@ -628,10 +640,10 @@ response, and error as its arguments (though the error may be null).</p>
                 <h4 class="footer__headline">Support</h4>
                 <ul class="support__list">
                     <li class="support__list-item">
-                        <a href="https://discourse.zendframework.com" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
+                        <a href="https://discourse.laminas.dev" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
                     </li>
                     <li class="support__list-item">
-                        <a href="https://zendframework-slack.herokuapp.com" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
+                        <a href="https://laminas.dev/chat/" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
                     </li>
                     <li class="support__list-item">
                         <a href="https://github.com/zendframework" class="support__link" title="Github"><i class="fa fa-github"></i></a>
@@ -639,27 +651,28 @@ response, and error as its arguments (though the error may be null).</p>
                     <li class="support__list-item">
                         <a href="https://twitter.com/zfdevteam" class="support__link" title="Twitter"><i class="fa fa-twitter"></i></a>
                     </li>
-                    <li class="support__list-item">
-                        <a href="https://tinyletter.com/mwopzend" class="support__link" title="Newsletter"><i class="fa fa-envelope"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/blog/feed-rss.xml" class="support__link" title="Blog feed"><i class="fa fa-rss"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/security/feed" class="support__link" title="Security feed"><i class="fa fa-rss-square"></i></a>
-                    </li>
                 </ul>
             </div>
         </div>
     </div>
 </footer>
 
+<nav class="cookie-bar navbar navbar-fixed-bottom navbar-default hidden">
+    <div class="container">
+        <p class="navbar-text">
+            We use cookies to allow you to dismiss dialogs such as the Laminas
+            Project notification.
+        </p>
+        <button type="button" class="cookie-button btn btn-default navbar-btn">Allow Cookies</button>
+    </div>
+</nav>
+
     <script>
         var base_url = '../..',
             siteName = 'zend-diactoros';
     </script>
-    <script src="../../js/scripts-8d7ae56abf.js"></script>
-        <script src="../../search/main.js"></script>
+    <script src="/js/scripts.js"></script>
+    <script src="../../search/main.js"></script>
 
     
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
